@@ -29,6 +29,9 @@ class TradeMarket {
             ;
     }
 
+    /**
+     * @return Item
+     */
     public function getItemByExactName($name) {
         $curl = CurlRequest::newInstance("https://tradingpost-live.ncplatform.net/ws/search.json?text=".urlencode($name)."&levelmin=0&levelmax=80")
              ->exec()
@@ -38,7 +41,7 @@ class TradeMarket {
 
         foreach ($data->results as $item) {
             if ($item->name == $name) {
-                return $item;
+                return Item::fromStdObject($item);
             }
         }
 

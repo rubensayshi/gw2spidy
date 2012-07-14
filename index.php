@@ -1,5 +1,6 @@
 <?php
 
+use GW2Spidy\TradeMarket\Item;
 use GW2Spidy\TradeMarket\TradeMarket;
 use GW2Spidy\Util\CurlRequest;
 require dirname(__FILE__) . '/config.inc.php';
@@ -10,6 +11,6 @@ define('AUTH_URL', 'https://account.guildwars2.com/login?redirect_uri=http://tra
 
 $trademarket = TradeMarket::getInstance();
 
-$copper = $trademarket->getItemByExactName("Copper Ore");
-var_dump($trademarket->getListingsById($copper->data_id));
+$copper = Item::getByExactName("Copper Ore");
+var_dump($copper->getSellListings());
 
