@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <log>
+        <type>file</type>
+        <name>/var/log/propel/gw2spidy.log</name>
+        <ident>propel-gw2spidy</ident>
+        <level>7</level>
+    </log>
+    <propel>
+        <datasources default="gw2spidy">
+            <datasource id="gw2spidy">
+                <adapter>mysql</adapter>
+                <connection>
+                    <dsn>mysql:host=localhost;dbname=gw2spidy</dsn>
+                    <user>root</user>
+                    <password>root</password>
+                </connection>
+            </datasource>
+        </datasources>
+    </propel>
+</config>

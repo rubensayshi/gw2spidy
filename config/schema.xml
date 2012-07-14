@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="gw2spidy" defaultIdMethod="native" namespace="\GW2Spidy\DB">
+    <table name="item_type" phpName="ItemType">
+        <column name="id" type="integer" required="true" primaryKey="true" />
+        <column name="title" type="varchar" size="255" required="true" />
+    </table>
+    <table name="item_sub_type" phpName="ItemSubType" namespace="\GW2Spidy\DB">
+        <column name="id" type="integer" required="true" primaryKey="true" />
+        <column name="title" type="varchar" size="255" required="true" />
+        <column name="main_type_id" type="integer" required="true" />
+        <foreign-key foreignTable="item_type" phpName="MainType" refPhpName="SubType">
+            <reference local="main_type_id" foreign="id" />
+        </foreign-key>  
+    </table>
+    <table name="item" phpName="Item" namespace="\GW2Spidy\DB">
+        <column name="data_id" type="integer" required="true" primaryKey="true" />
+        <column name="type_id" type="integer" required="true" />
+        <column name="name" type="varchar" size="255" required="true" />
+        <column name="gem_store_description" type="varchar" size="255" required="true" />
+        <column name="gem_store_blurb" type="varchar" size="255" required="true" />
+        <column name="restriction_level" type="varchar" size="255" required="true" />
+        <column name="rarity" type="varchar" size="255" required="true" />
+        <column name="vendor_sell_price" type="varchar" size="255" required="true" />
+        <column name="gem_store_description" type="varchar" size="255" required="true" />
+        <column name="img" type="varchar" size="255" required="true" />
+        <column name="rarity_word" type="varchar" size="255" required="true" />
+        <foreign-key foreignTable="item_type" phpName="ItemType" refPhpName="Item">
+            <reference local="type_id" foreign="id" />
+        </foreign-key>  
+    </table>
+</database>
