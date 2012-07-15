@@ -1,6 +1,6 @@
 <?php
 
-namespace \GW2Spidy\DB\om;
+namespace GW2Spidy\DB\om;
 
 use \Criteria;
 use \Exception;
@@ -13,9 +13,10 @@ use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
 use GW2Spidy\DB\Item;
-use \GW2Spidy\DB\ItemType;
-use \GW2Spidy\DB\ItemTypePeer;
-use \GW2Spidy\DB\ItemTypeQuery;
+use GW2Spidy\DB\ItemSubType;
+use GW2Spidy\DB\ItemType;
+use GW2Spidy\DB\ItemTypePeer;
+use GW2Spidy\DB\ItemTypeQuery;
 
 /**
  * Base class that represents a query for the 'item_type' table.
@@ -31,6 +32,10 @@ use \GW2Spidy\DB\ItemTypeQuery;
  * @method     ItemTypeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ItemTypeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ItemTypeQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ *
+ * @method     ItemTypeQuery leftJoinSubType($relationAlias = null) Adds a LEFT JOIN clause to the query using the SubType relation
+ * @method     ItemTypeQuery rightJoinSubType($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SubType relation
+ * @method     ItemTypeQuery innerJoinSubType($relationAlias = null) Adds a INNER JOIN clause to the query using the SubType relation
  *
  * @method     ItemTypeQuery leftJoinItem($relationAlias = null) Adds a LEFT JOIN clause to the query using the Item relation
  * @method     ItemTypeQuery rightJoinItem($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Item relation
@@ -57,7 +62,7 @@ abstract class BaseItemTypeQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'gw2spidy', $modelName = '\\GW2Spidy\\DB\\ItemType', $modelAlias = null)
+    public function __construct($dbName = 'gw2spidy', $modelName = 'GW2Spidy\\DB\\ItemType', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -277,6 +282,80 @@ abstract class BaseItemTypeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ItemTypePeer::TITLE, $title, $comparison);
+    }
+
+    /**
+     * Filter the query by a related ItemSubType object
+     *
+     * @param   ItemSubType|PropelObjectCollection $itemSubType  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return   ItemTypeQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
+     */
+    public function filterBySubType($itemSubType, $comparison = null)
+    {
+        if ($itemSubType instanceof ItemSubType) {
+            return $this
+                ->addUsingAlias(ItemTypePeer::ID, $itemSubType->getMainTypeId(), $comparison);
+        } elseif ($itemSubType instanceof PropelObjectCollection) {
+            return $this
+                ->useSubTypeQuery()
+                ->filterByPrimaryKeys($itemSubType->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterBySubType() only accepts arguments of type ItemSubType or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the SubType relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ItemTypeQuery The current query, for fluid interface
+     */
+    public function joinSubType($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('SubType');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'SubType');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the SubType relation ItemSubType object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \GW2Spidy\DB\ItemSubTypeQuery A secondary query class using the current class as primary query
+     */
+    public function useSubTypeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinSubType($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'SubType', '\GW2Spidy\DB\ItemSubTypeQuery');
     }
 
     /**

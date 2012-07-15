@@ -1,8 +1,8 @@
 <?php
 
-namespace \GW2Spidy\DB;
+namespace GW2Spidy\DB;
 
-use \GW2Spidy\DB\om\BaseItemTypePeer;
+use GW2Spidy\DB\om\BaseItemTypePeer;
 
 
 /**

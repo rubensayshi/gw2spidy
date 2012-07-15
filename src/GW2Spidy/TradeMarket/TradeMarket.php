@@ -24,7 +24,7 @@ class TradeMarket {
     public function doLogin() {
         $curl = CurlRequest::newInstance(AUTH_URL)
             ->setOption(CURLOPT_POST, true)
-            ->setOption(CURLOPT_POSTFIELDS, http_build_query(array('email' => EMAIL, 'password' => PASSWORD)))
+            ->setOption(CURLOPT_POSTFIELDS, http_build_query(array('email' => LOGIN_EMAIL, 'password' => LOGIN_PASSWORD)))
             ->exec()
             ;
     }
@@ -37,10 +37,10 @@ class TradeMarket {
              ->exec()
              ;
 
-        $data = json_decode($curl->getResult());
+        $data = json_decode($curl->getResult(), true);
 
-        foreach ($data->results as $item) {
-            if ($item->name == $name) {
+        foreach ($data['results'] as $item) {
+            if ($item['name'] == $name) {
                 return Item::fromStdObject($item);
             }
         }
@@ -53,9 +53,24 @@ class TradeMarket {
              ->exec()
              ;
 
-        $data = json_decode($curl->getResult());
+        $data = json_decode($curl->getResult(), true);
 
         return $data;
+    }
+
+    public function getMarketData() {
+        $curl = CurlRequest::newInstance("https://tradingpost-live.ncplatform.net/")
+             ->exec()
+             ;
+
+        $result = $curl->getResult();
+
+        if (preg_match("/<script>[\n ]+GW2\.market = (\{.*?\})[\n ]+<\/script>/ms", $result, $matches)) {
+            $json = json_decode($matches[1], true);
+            return $json['data'];
+        } else {
+            throw new Exception("Failed to extract GW2.market JSON from HTML");
+        }
     }
 }
 

@@ -9,56 +9,58 @@ use \PDOStatement;
 use \Propel;
 use \PropelException;
 use \PropelPDO;
-use GW2Spidy\DB\ItemPeer;
+use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemSubTypePeer;
-use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemTypePeer;
-use GW2Spidy\DB\map\ItemTypeTableMap;
+use GW2Spidy\DB\map\ItemSubTypeTableMap;
 
 /**
- * Base static class for performing query and update operations on the 'item_type' table.
+ * Base static class for performing query and update operations on the 'item_sub_type' table.
  *
  * 
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseItemTypePeer {
+abstract class BaseItemSubTypePeer {
 
     /** the default database name for this class */
     const DATABASE_NAME = 'gw2spidy';
 
     /** the table name for this class */
-    const TABLE_NAME = 'item_type';
+    const TABLE_NAME = 'item_sub_type';
 
     /** the related Propel class for this table */
-    const OM_CLASS = 'GW2Spidy\\DB\\ItemType';
+    const OM_CLASS = 'GW2Spidy\\DB\\ItemSubType';
 
     /** the related TableMap class for this table */
-    const TM_CLASS = 'ItemTypeTableMap';
+    const TM_CLASS = 'ItemSubTypeTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 3;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /** the column name for the ID field */
-    const ID = 'item_type.ID';
+    const ID = 'item_sub_type.ID';
 
     /** the column name for the TITLE field */
-    const TITLE = 'item_type.TITLE';
+    const TITLE = 'item_sub_type.TITLE';
+
+    /** the column name for the MAIN_TYPE_ID field */
+    const MAIN_TYPE_ID = 'item_sub_type.MAIN_TYPE_ID';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of ItemType objects.
+     * An identiy map to hold any loaded instances of ItemSubType objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
-     * @var        array ItemType[]
+     * @var        array ItemSubType[]
      */
     public static $instances = array();
 
@@ -67,30 +69,30 @@ abstract class BaseItemTypePeer {
      * holds an array of fieldnames
      *
      * first dimension keys are the type constants
-     * e.g. ItemTypePeer::$fieldNames[ItemTypePeer::TYPE_PHPNAME][0] = 'Id'
+     * e.g. ItemSubTypePeer::$fieldNames[ItemSubTypePeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('Id', 'Title', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'title', ),
-        BasePeer::TYPE_COLNAME => array (ItemTypePeer::ID, ItemTypePeer::TITLE, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'TITLE', ),
-        BasePeer::TYPE_FIELDNAME => array ('id', 'title', ),
-        BasePeer::TYPE_NUM => array (0, 1, )
+        BasePeer::TYPE_PHPNAME => array ('Id', 'Title', 'MainTypeId', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'title', 'mainTypeId', ),
+        BasePeer::TYPE_COLNAME => array (ItemSubTypePeer::ID, ItemSubTypePeer::TITLE, ItemSubTypePeer::MAIN_TYPE_ID, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'TITLE', 'MAIN_TYPE_ID', ),
+        BasePeer::TYPE_FIELDNAME => array ('id', 'title', 'main_type_id', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, )
     );
 
     /**
      * holds an array of keys for quick access to the fieldnames array
      *
      * first dimension keys are the type constants
-     * e.g. ItemTypePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
+     * e.g. ItemSubTypePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Title' => 1, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'title' => 1, ),
-        BasePeer::TYPE_COLNAME => array (ItemTypePeer::ID => 0, ItemTypePeer::TITLE => 1, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'TITLE' => 1, ),
-        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'title' => 1, ),
-        BasePeer::TYPE_NUM => array (0, 1, )
+        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Title' => 1, 'MainTypeId' => 2, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'title' => 1, 'mainTypeId' => 2, ),
+        BasePeer::TYPE_COLNAME => array (ItemSubTypePeer::ID => 0, ItemSubTypePeer::TITLE => 1, ItemSubTypePeer::MAIN_TYPE_ID => 2, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'TITLE' => 1, 'MAIN_TYPE_ID' => 2, ),
+        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'title' => 1, 'main_type_id' => 2, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, )
     );
 
     /**
@@ -105,10 +107,10 @@ abstract class BaseItemTypePeer {
      */
     public static function translateFieldName($name, $fromType, $toType)
     {
-        $toNames = ItemTypePeer::getFieldNames($toType);
-        $key = isset(ItemTypePeer::$fieldKeys[$fromType][$name]) ? ItemTypePeer::$fieldKeys[$fromType][$name] : null;
+        $toNames = ItemSubTypePeer::getFieldNames($toType);
+        $key = isset(ItemSubTypePeer::$fieldKeys[$fromType][$name]) ? ItemSubTypePeer::$fieldKeys[$fromType][$name] : null;
         if ($key === null) {
-            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(ItemTypePeer::$fieldKeys[$fromType], true));
+            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(ItemSubTypePeer::$fieldKeys[$fromType], true));
         }
 
         return $toNames[$key];
@@ -125,11 +127,11 @@ abstract class BaseItemTypePeer {
      */
     public static function getFieldNames($type = BasePeer::TYPE_PHPNAME)
     {
-        if (!array_key_exists($type, ItemTypePeer::$fieldNames)) {
+        if (!array_key_exists($type, ItemSubTypePeer::$fieldNames)) {
             throw new PropelException('Method getFieldNames() expects the parameter $type to be one of the class constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME, BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. ' . $type . ' was given.');
         }
 
-        return ItemTypePeer::$fieldNames[$type];
+        return ItemSubTypePeer::$fieldNames[$type];
     }
 
     /**
@@ -141,12 +143,12 @@ abstract class BaseItemTypePeer {
      *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
      * </code>
      * @param      string $alias The alias for the current table.
-     * @param      string $column The column name for current table. (i.e. ItemTypePeer::COLUMN_NAME).
+     * @param      string $column The column name for current table. (i.e. ItemSubTypePeer::COLUMN_NAME).
      * @return string
      */
     public static function alias($alias, $column)
     {
-        return str_replace(ItemTypePeer::TABLE_NAME.'.', $alias.'.', $column);
+        return str_replace(ItemSubTypePeer::TABLE_NAME.'.', $alias.'.', $column);
     }
 
     /**
@@ -164,11 +166,13 @@ abstract class BaseItemTypePeer {
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ItemTypePeer::ID);
-            $criteria->addSelectColumn(ItemTypePeer::TITLE);
+            $criteria->addSelectColumn(ItemSubTypePeer::ID);
+            $criteria->addSelectColumn(ItemSubTypePeer::TITLE);
+            $criteria->addSelectColumn(ItemSubTypePeer::MAIN_TYPE_ID);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.TITLE');
+            $criteria->addSelectColumn($alias . '.MAIN_TYPE_ID');
         }
     }
 
@@ -188,21 +192,21 @@ abstract class BaseItemTypePeer {
         // We need to set the primary table name, since in the case that there are no WHERE columns
         // it will be impossible for the BasePeer::createSelectSql() method to determine which
         // tables go into the FROM clause.
-        $criteria->setPrimaryTableName(ItemTypePeer::TABLE_NAME);
+        $criteria->setPrimaryTableName(ItemSubTypePeer::TABLE_NAME);
 
         if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
             $criteria->setDistinct();
         }
 
         if (!$criteria->hasSelectClause()) {
-            ItemTypePeer::addSelectColumns($criteria);
+            ItemSubTypePeer::addSelectColumns($criteria);
         }
 
         $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-        $criteria->setDbName(ItemTypePeer::DATABASE_NAME); // Set the correct dbName
+        $criteria->setDbName(ItemSubTypePeer::DATABASE_NAME); // Set the correct dbName
 
         if ($con === null) {
-            $con = Propel::getConnection(ItemTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
         // BasePeer returns a PDOStatement
         $stmt = BasePeer::doCount($criteria, $con);
@@ -221,7 +225,7 @@ abstract class BaseItemTypePeer {
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 ItemType
+     * @return                 ItemSubType
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -229,7 +233,7 @@ abstract class BaseItemTypePeer {
     {
         $critcopy = clone $criteria;
         $critcopy->setLimit(1);
-        $objects = ItemTypePeer::doSelect($critcopy, $con);
+        $objects = ItemSubTypePeer::doSelect($critcopy, $con);
         if ($objects) {
             return $objects[0];
         }
@@ -247,7 +251,7 @@ abstract class BaseItemTypePeer {
      */
     public static function doSelect(Criteria $criteria, PropelPDO $con = null)
     {
-        return ItemTypePeer::populateObjects(ItemTypePeer::doSelectStmt($criteria, $con));
+        return ItemSubTypePeer::populateObjects(ItemSubTypePeer::doSelectStmt($criteria, $con));
     }
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -265,16 +269,16 @@ abstract class BaseItemTypePeer {
     public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(ItemTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         if (!$criteria->hasSelectClause()) {
             $criteria = clone $criteria;
-            ItemTypePeer::addSelectColumns($criteria);
+            ItemSubTypePeer::addSelectColumns($criteria);
         }
 
         // Set the correct dbName
-        $criteria->setDbName(ItemTypePeer::DATABASE_NAME);
+        $criteria->setDbName(ItemSubTypePeer::DATABASE_NAME);
 
         // BasePeer returns a PDOStatement
         return BasePeer::doSelect($criteria, $con);
@@ -288,7 +292,7 @@ abstract class BaseItemTypePeer {
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      ItemType $obj A ItemType object.
+     * @param      ItemSubType $obj A ItemSubType object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -297,7 +301,7 @@ abstract class BaseItemTypePeer {
             if ($key === null) {
                 $key = (string) $obj->getId();
             } // if key === null
-            ItemTypePeer::$instances[$key] = $obj;
+            ItemSubTypePeer::$instances[$key] = $obj;
         }
     }
 
@@ -309,7 +313,7 @@ abstract class BaseItemTypePeer {
      * methods in your stub classes -- you may need to explicitly remove objects
      * from the cache in order to prevent returning objects that no longer exist.
      *
-     * @param      mixed $value A ItemType object or a primary key value.
+     * @param      mixed $value A ItemSubType object or a primary key value.
      *
      * @return void
      * @throws PropelException - if the value is invalid.
@@ -317,17 +321,17 @@ abstract class BaseItemTypePeer {
     public static function removeInstanceFromPool($value)
     {
         if (Propel::isInstancePoolingEnabled() && $value !== null) {
-            if (is_object($value) && $value instanceof ItemType) {
+            if (is_object($value) && $value instanceof ItemSubType) {
                 $key = (string) $value->getId();
             } elseif (is_scalar($value)) {
                 // assume we've been passed a primary key
                 $key = (string) $value;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or ItemType object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or ItemSubType object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
                 throw $e;
             }
 
-            unset(ItemTypePeer::$instances[$key]);
+            unset(ItemSubTypePeer::$instances[$key]);
         }
     } // removeInstanceFromPool()
 
@@ -338,14 +342,14 @@ abstract class BaseItemTypePeer {
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   ItemType Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return   ItemSubType Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
     {
         if (Propel::isInstancePoolingEnabled()) {
-            if (isset(ItemTypePeer::$instances[$key])) {
-                return ItemTypePeer::$instances[$key];
+            if (isset(ItemSubTypePeer::$instances[$key])) {
+                return ItemSubTypePeer::$instances[$key];
             }
         }
 
@@ -359,11 +363,11 @@ abstract class BaseItemTypePeer {
      */
     public static function clearInstancePool()
     {
-        ItemTypePeer::$instances = array();
+        ItemSubTypePeer::$instances = array();
     }
     
     /**
-     * Method to invalidate the instance pool of all tables related to item_type
+     * Method to invalidate the instance pool of all tables related to item_sub_type
      * by a foreign key with ON DELETE CASCADE
      */
     public static function clearRelatedInstancePool()
@@ -417,11 +421,11 @@ abstract class BaseItemTypePeer {
         $results = array();
     
         // set the class once to avoid overhead in the loop
-        $cls = ItemTypePeer::getOMClass();
+        $cls = ItemSubTypePeer::getOMClass();
         // populate the object(s)
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $key = ItemTypePeer::getPrimaryKeyHashFromRow($row, 0);
-            if (null !== ($obj = ItemTypePeer::getInstanceFromPool($key))) {
+            $key = ItemSubTypePeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj = ItemSubTypePeer::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -430,7 +434,7 @@ abstract class BaseItemTypePeer {
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                ItemTypePeer::addInstanceToPool($obj, $key);
+                ItemSubTypePeer::addInstanceToPool($obj, $key);
             } // if key exists
         }
         $stmt->closeCursor();
@@ -444,24 +448,262 @@ abstract class BaseItemTypePeer {
      * @param      int $startcol The 0-based offset for reading from the resultset row.
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
-     * @return array (ItemType object, last column rank)
+     * @return array (ItemSubType object, last column rank)
      */
     public static function populateObject($row, $startcol = 0)
     {
-        $key = ItemTypePeer::getPrimaryKeyHashFromRow($row, $startcol);
-        if (null !== ($obj = ItemTypePeer::getInstanceFromPool($key))) {
+        $key = ItemSubTypePeer::getPrimaryKeyHashFromRow($row, $startcol);
+        if (null !== ($obj = ItemSubTypePeer::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $startcol, true); // rehydrate
-            $col = $startcol + ItemTypePeer::NUM_HYDRATE_COLUMNS;
+            $col = $startcol + ItemSubTypePeer::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = ItemTypePeer::OM_CLASS;
+            $cls = ItemSubTypePeer::OM_CLASS;
             $obj = new $cls();
             $col = $obj->hydrate($row, $startcol);
-            ItemTypePeer::addInstanceToPool($obj, $key);
+            ItemSubTypePeer::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related MainType table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinMainType(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ItemSubTypePeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ItemSubTypePeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(ItemSubTypePeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ItemSubTypePeer::MAIN_TYPE_ID, ItemTypePeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Selects a collection of ItemSubType objects pre-filled with their ItemType objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of ItemSubType objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinMainType(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ItemSubTypePeer::DATABASE_NAME);
+        }
+
+        ItemSubTypePeer::addSelectColumns($criteria);
+        $startcol = ItemSubTypePeer::NUM_HYDRATE_COLUMNS;
+        ItemTypePeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(ItemSubTypePeer::MAIN_TYPE_ID, ItemTypePeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ItemSubTypePeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ItemSubTypePeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = ItemSubTypePeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ItemSubTypePeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = ItemTypePeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = ItemTypePeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = ItemTypePeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    ItemTypePeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (ItemSubType) to $obj2 (ItemType)
+                $obj2->addSubType($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining all related tables
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAll(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ItemSubTypePeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ItemSubTypePeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(ItemSubTypePeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ItemSubTypePeer::MAIN_TYPE_ID, ItemTypePeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+    /**
+     * Selects a collection of ItemSubType objects pre-filled with all related objects.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of ItemSubType objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ItemSubTypePeer::DATABASE_NAME);
+        }
+
+        ItemSubTypePeer::addSelectColumns($criteria);
+        $startcol2 = ItemSubTypePeer::NUM_HYDRATE_COLUMNS;
+
+        ItemTypePeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + ItemTypePeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ItemSubTypePeer::MAIN_TYPE_ID, ItemTypePeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ItemSubTypePeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ItemSubTypePeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = ItemSubTypePeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ItemSubTypePeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+            // Add objects for joined ItemType rows
+
+            $key2 = ItemTypePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = ItemTypePeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = ItemTypePeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    ItemTypePeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 loaded
+
+                // Add the $obj1 (ItemSubType) to the collection in $obj2 (ItemType)
+                $obj2->addSubType($obj1);
+            } // if joined row not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
     }
 
     /**
@@ -473,7 +715,7 @@ abstract class BaseItemTypePeer {
      */
     public static function getTableMap()
     {
-        return Propel::getDatabaseMap(ItemTypePeer::DATABASE_NAME)->getTable(ItemTypePeer::TABLE_NAME);
+        return Propel::getDatabaseMap(ItemSubTypePeer::DATABASE_NAME)->getTable(ItemSubTypePeer::TABLE_NAME);
     }
 
     /**
@@ -481,9 +723,9 @@ abstract class BaseItemTypePeer {
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getDatabaseMap(BaseItemTypePeer::DATABASE_NAME);
-      if (!$dbMap->hasTable(BaseItemTypePeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new ItemTypeTableMap());
+      $dbMap = Propel::getDatabaseMap(BaseItemSubTypePeer::DATABASE_NAME);
+      if (!$dbMap->hasTable(BaseItemSubTypePeer::TABLE_NAME)) {
+        $dbMap->addTableObject(new ItemSubTypeTableMap());
       }
     }
 
@@ -495,13 +737,13 @@ abstract class BaseItemTypePeer {
      */
     public static function getOMClass()
     {
-        return ItemTypePeer::OM_CLASS;
+        return ItemSubTypePeer::OM_CLASS;
     }
 
     /**
-     * Performs an INSERT on the database, given a ItemType or Criteria object.
+     * Performs an INSERT on the database, given a ItemSubType or Criteria object.
      *
-     * @param      mixed $values Criteria or ItemType object containing data that is used to create the INSERT statement.
+     * @param      mixed $values Criteria or ItemSubType object containing data that is used to create the INSERT statement.
      * @param      PropelPDO $con the PropelPDO connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -510,18 +752,18 @@ abstract class BaseItemTypePeer {
     public static function doInsert($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(ItemTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
         } else {
-            $criteria = $values->buildCriteria(); // build Criteria from ItemType object
+            $criteria = $values->buildCriteria(); // build Criteria from ItemSubType object
         }
 
 
         // Set the correct dbName
-        $criteria->setDbName(ItemTypePeer::DATABASE_NAME);
+        $criteria->setDbName(ItemSubTypePeer::DATABASE_NAME);
 
         try {
             // use transaction because $criteria could contain info
@@ -538,9 +780,9 @@ abstract class BaseItemTypePeer {
     }
 
     /**
-     * Performs an UPDATE on the database, given a ItemType or Criteria object.
+     * Performs an UPDATE on the database, given a ItemSubType or Criteria object.
      *
-     * @param      mixed $values Criteria or ItemType object containing data that is used to create the UPDATE statement.
+     * @param      mixed $values Criteria or ItemSubType object containing data that is used to create the UPDATE statement.
      * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
      * @return int             The number of affected rows (if supported by underlying database driver).
      * @throws PropelException Any exceptions caught during processing will be
@@ -549,35 +791,35 @@ abstract class BaseItemTypePeer {
     public static function doUpdate($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(ItemTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
-        $selectCriteria = new Criteria(ItemTypePeer::DATABASE_NAME);
+        $selectCriteria = new Criteria(ItemSubTypePeer::DATABASE_NAME);
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
 
-            $comparison = $criteria->getComparison(ItemTypePeer::ID);
-            $value = $criteria->remove(ItemTypePeer::ID);
+            $comparison = $criteria->getComparison(ItemSubTypePeer::ID);
+            $value = $criteria->remove(ItemSubTypePeer::ID);
             if ($value) {
-                $selectCriteria->add(ItemTypePeer::ID, $value, $comparison);
+                $selectCriteria->add(ItemSubTypePeer::ID, $value, $comparison);
             } else {
-                $selectCriteria->setPrimaryTableName(ItemTypePeer::TABLE_NAME);
+                $selectCriteria->setPrimaryTableName(ItemSubTypePeer::TABLE_NAME);
             }
 
-        } else { // $values is ItemType object
+        } else { // $values is ItemSubType object
             $criteria = $values->buildCriteria(); // gets full criteria
             $selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
         }
 
         // set the correct dbName
-        $criteria->setDbName(ItemTypePeer::DATABASE_NAME);
+        $criteria->setDbName(ItemSubTypePeer::DATABASE_NAME);
 
         return BasePeer::doUpdate($selectCriteria, $criteria, $con);
     }
 
     /**
-     * Deletes all rows from the item_type table.
+     * Deletes all rows from the item_sub_type table.
      *
      * @param      PropelPDO $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).
@@ -586,19 +828,19 @@ abstract class BaseItemTypePeer {
     public static function doDeleteAll(PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(ItemTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
         $affectedRows = 0; // initialize var to track total num of affected rows
         try {
             // use transaction because $criteria could contain info
             // for more than one table or we could emulating ON DELETE CASCADE, etc.
             $con->beginTransaction();
-            $affectedRows += BasePeer::doDeleteAll(ItemTypePeer::TABLE_NAME, $con, ItemTypePeer::DATABASE_NAME);
+            $affectedRows += BasePeer::doDeleteAll(ItemSubTypePeer::TABLE_NAME, $con, ItemSubTypePeer::DATABASE_NAME);
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            ItemTypePeer::clearInstancePool();
-            ItemTypePeer::clearRelatedInstancePool();
+            ItemSubTypePeer::clearInstancePool();
+            ItemSubTypePeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -609,9 +851,9 @@ abstract class BaseItemTypePeer {
     }
 
     /**
-     * Performs a DELETE on the database, given a ItemType or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a ItemSubType or Criteria object OR a primary key value.
      *
-     * @param      mixed $values Criteria or ItemType object or primary key or array of primary keys
+     * @param      mixed $values Criteria or ItemSubType object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param      PropelPDO $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -622,32 +864,32 @@ abstract class BaseItemTypePeer {
      public static function doDelete($values, PropelPDO $con = null)
      {
         if ($con === null) {
-            $con = Propel::getConnection(ItemTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
             // invalidate the cache for all objects of this type, since we have no
             // way of knowing (without running a query) what objects should be invalidated
             // from the cache based on this Criteria.
-            ItemTypePeer::clearInstancePool();
+            ItemSubTypePeer::clearInstancePool();
             // rename for clarity
             $criteria = clone $values;
-        } elseif ($values instanceof ItemType) { // it's a model object
+        } elseif ($values instanceof ItemSubType) { // it's a model object
             // invalidate the cache for this single object
-            ItemTypePeer::removeInstanceFromPool($values);
+            ItemSubTypePeer::removeInstanceFromPool($values);
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(ItemTypePeer::DATABASE_NAME);
-            $criteria->add(ItemTypePeer::ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(ItemSubTypePeer::DATABASE_NAME);
+            $criteria->add(ItemSubTypePeer::ID, (array) $values, Criteria::IN);
             // invalidate the cache for this object(s)
             foreach ((array) $values as $singleval) {
-                ItemTypePeer::removeInstanceFromPool($singleval);
+                ItemSubTypePeer::removeInstanceFromPool($singleval);
             }
         }
 
         // Set the correct dbName
-        $criteria->setDbName(ItemTypePeer::DATABASE_NAME);
+        $criteria->setDbName(ItemSubTypePeer::DATABASE_NAME);
 
         $affectedRows = 0; // initialize var to track total num of affected rows
 
@@ -657,7 +899,7 @@ abstract class BaseItemTypePeer {
             $con->beginTransaction();
             
             $affectedRows += BasePeer::doDelete($criteria, $con);
-            ItemTypePeer::clearRelatedInstancePool();
+            ItemSubTypePeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -668,13 +910,13 @@ abstract class BaseItemTypePeer {
     }
 
     /**
-     * Validates all modified columns of given ItemType object.
+     * Validates all modified columns of given ItemSubType object.
      * If parameter $columns is either a single column name or an array of column names
      * than only those columns are validated.
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      ItemType $obj The object to validate.
+     * @param      ItemSubType $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -684,8 +926,8 @@ abstract class BaseItemTypePeer {
         $columns = array();
 
         if ($cols) {
-            $dbMap = Propel::getDatabaseMap(ItemTypePeer::DATABASE_NAME);
-            $tableMap = $dbMap->getTable(ItemTypePeer::TABLE_NAME);
+            $dbMap = Propel::getDatabaseMap(ItemSubTypePeer::DATABASE_NAME);
+            $tableMap = $dbMap->getTable(ItemSubTypePeer::TABLE_NAME);
 
             if (! is_array($cols)) {
                 $cols = array($cols);
@@ -701,7 +943,7 @@ abstract class BaseItemTypePeer {
 
         }
 
-        return BasePeer::doValidate(ItemTypePeer::DATABASE_NAME, ItemTypePeer::TABLE_NAME, $columns);
+        return BasePeer::doValidate(ItemSubTypePeer::DATABASE_NAME, ItemSubTypePeer::TABLE_NAME, $columns);
     }
 
     /**
@@ -709,23 +951,23 @@ abstract class BaseItemTypePeer {
      *
      * @param      int $pk the primary key.
      * @param      PropelPDO $con the connection to use
-     * @return ItemType
+     * @return ItemSubType
      */
     public static function retrieveByPK($pk, PropelPDO $con = null)
     {
 
-        if (null !== ($obj = ItemTypePeer::getInstanceFromPool((string) $pk))) {
+        if (null !== ($obj = ItemSubTypePeer::getInstanceFromPool((string) $pk))) {
             return $obj;
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(ItemTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria = new Criteria(ItemTypePeer::DATABASE_NAME);
-        $criteria->add(ItemTypePeer::ID, $pk);
+        $criteria = new Criteria(ItemSubTypePeer::DATABASE_NAME);
+        $criteria->add(ItemSubTypePeer::ID, $pk);
 
-        $v = ItemTypePeer::doSelect($criteria, $con);
+        $v = ItemSubTypePeer::doSelect($criteria, $con);
 
         return !empty($v) > 0 ? $v[0] : null;
     }
@@ -735,31 +977,31 @@ abstract class BaseItemTypePeer {
      *
      * @param      array $pks List of primary keys
      * @param      PropelPDO $con the connection to use
-     * @return ItemType[]
+     * @return ItemSubType[]
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
     public static function retrieveByPKs($pks, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(ItemTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         $objs = null;
         if (empty($pks)) {
             $objs = array();
         } else {
-            $criteria = new Criteria(ItemTypePeer::DATABASE_NAME);
-            $criteria->add(ItemTypePeer::ID, $pks, Criteria::IN);
-            $objs = ItemTypePeer::doSelect($criteria, $con);
+            $criteria = new Criteria(ItemSubTypePeer::DATABASE_NAME);
+            $criteria->add(ItemSubTypePeer::ID, $pks, Criteria::IN);
+            $objs = ItemSubTypePeer::doSelect($criteria, $con);
         }
 
         return $objs;
     }
 
-} // BaseItemTypePeer
+} // BaseItemSubTypePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseItemTypePeer::buildTableMap();
+BaseItemSubTypePeer::buildTableMap();
 

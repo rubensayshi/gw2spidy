@@ -13,34 +13,32 @@ use \PropelCollection;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
-use GW2Spidy\DB\Item;
-use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemSubType;
+use GW2Spidy\DB\ItemSubTypePeer;
 use GW2Spidy\DB\ItemSubTypeQuery;
 use GW2Spidy\DB\ItemType;
-use GW2Spidy\DB\ItemTypePeer;
 use GW2Spidy\DB\ItemTypeQuery;
 
 /**
- * Base class that represents a row from the 'item_type' table.
+ * Base class that represents a row from the 'item_sub_type' table.
  *
  * 
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseItemType extends BaseObject implements Persistent
+abstract class BaseItemSubType extends BaseObject implements Persistent
 {
 
     /**
      * Peer class name
      */
-    const PEER = 'GW2Spidy\\DB\\ItemTypePeer';
+    const PEER = 'GW2Spidy\\DB\\ItemSubTypePeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        ItemTypePeer
+     * @var        ItemSubTypePeer
      */
     protected static $peer;
 
@@ -63,16 +61,15 @@ abstract class BaseItemType extends BaseObject implements Persistent
     protected $title;
 
     /**
-     * @var        PropelObjectCollection|ItemSubType[] Collection to store aggregation of ItemSubType objects.
+     * The value for the main_type_id field.
+     * @var        int
      */
-    protected $collSubTypes;
-    protected $collSubTypesPartial;
+    protected $main_type_id;
 
     /**
-     * @var        PropelObjectCollection|Item[] Collection to store aggregation of Item objects.
+     * @var        ItemType
      */
-    protected $collItems;
-    protected $collItemsPartial;
+    protected $aMainType;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -87,18 +84,6 @@ abstract class BaseItemType extends BaseObject implements Persistent
      * @var        boolean
      */
     protected $alreadyInValidation = false;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $subTypesScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $itemsScheduledForDeletion = null;
 
     /**
      * Get the [id] column value.
@@ -123,10 +108,21 @@ abstract class BaseItemType extends BaseObject implements Persistent
     }
 
     /**
+     * Get the [main_type_id] column value.
+     * 
+     * @return   int
+     */
+    public function getMainTypeId()
+    {
+
+        return $this->main_type_id;
+    }
+
+    /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
-     * @return   ItemType The current object (for fluent API support)
+     * @return   ItemSubType The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -136,7 +132,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[] = ItemTypePeer::ID;
+            $this->modifiedColumns[] = ItemSubTypePeer::ID;
         }
 
 
@@ -147,7 +143,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
      * Set the value of [title] column.
      * 
      * @param      string $v new value
-     * @return   ItemType The current object (for fluent API support)
+     * @return   ItemSubType The current object (for fluent API support)
      */
     public function setTitle($v)
     {
@@ -157,12 +153,37 @@ abstract class BaseItemType extends BaseObject implements Persistent
 
         if ($this->title !== $v) {
             $this->title = $v;
-            $this->modifiedColumns[] = ItemTypePeer::TITLE;
+            $this->modifiedColumns[] = ItemSubTypePeer::TITLE;
         }
 
 
         return $this;
     } // setTitle()
+
+    /**
+     * Set the value of [main_type_id] column.
+     * 
+     * @param      int $v new value
+     * @return   ItemSubType The current object (for fluent API support)
+     */
+    public function setMainTypeId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->main_type_id !== $v) {
+            $this->main_type_id = $v;
+            $this->modifiedColumns[] = ItemSubTypePeer::MAIN_TYPE_ID;
+        }
+
+        if ($this->aMainType !== null && $this->aMainType->getId() !== $v) {
+            $this->aMainType = null;
+        }
+
+
+        return $this;
+    } // setMainTypeId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -198,6 +219,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
 
             $this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
             $this->title = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+            $this->main_type_id = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -206,10 +228,10 @@ abstract class BaseItemType extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = ItemTypePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 3; // 3 = ItemSubTypePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating ItemType object", $e);
+            throw new PropelException("Error populating ItemSubType object", $e);
         }
     }
 
@@ -229,6 +251,9 @@ abstract class BaseItemType extends BaseObject implements Persistent
     public function ensureConsistency()
     {
 
+        if ($this->aMainType !== null && $this->main_type_id !== $this->aMainType->getId()) {
+            $this->aMainType = null;
+        }
     } // ensureConsistency
 
     /**
@@ -252,13 +277,13 @@ abstract class BaseItemType extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(ItemTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = ItemTypePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = ItemSubTypePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
@@ -268,10 +293,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collSubTypes = null;
-
-            $this->collItems = null;
-
+            $this->aMainType = null;
         } // if (deep)
     }
 
@@ -292,12 +314,12 @@ abstract class BaseItemType extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(ItemTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = ItemTypeQuery::create()
+            $deleteQuery = ItemSubTypeQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -335,7 +357,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(ItemTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -355,7 +377,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                ItemTypePeer::addInstanceToPool($this);
+                ItemSubTypePeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -385,6 +407,18 @@ abstract class BaseItemType extends BaseObject implements Persistent
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their coresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aMainType !== null) {
+                if ($this->aMainType->isModified() || $this->aMainType->isNew()) {
+                    $affectedRows += $this->aMainType->save($con);
+                }
+                $this->setMainType($this->aMainType);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -394,40 +428,6 @@ abstract class BaseItemType extends BaseObject implements Persistent
                 }
                 $affectedRows += 1;
                 $this->resetModified();
-            }
-
-            if ($this->subTypesScheduledForDeletion !== null) {
-                if (!$this->subTypesScheduledForDeletion->isEmpty()) {
-                    ItemSubTypeQuery::create()
-                        ->filterByPrimaryKeys($this->subTypesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->subTypesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collSubTypes !== null) {
-                foreach ($this->collSubTypes as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->itemsScheduledForDeletion !== null) {
-                if (!$this->itemsScheduledForDeletion->isEmpty()) {
-                    ItemQuery::create()
-                        ->filterByPrimaryKeys($this->itemsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->itemsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collItems !== null) {
-                foreach ($this->collItems as $referrerFK) {
-                    if (!$referrerFK->isDeleted()) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -452,15 +452,18 @@ abstract class BaseItemType extends BaseObject implements Persistent
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ItemTypePeer::ID)) {
+        if ($this->isColumnModified(ItemSubTypePeer::ID)) {
             $modifiedColumns[':p' . $index++]  = '`ID`';
         }
-        if ($this->isColumnModified(ItemTypePeer::TITLE)) {
+        if ($this->isColumnModified(ItemSubTypePeer::TITLE)) {
             $modifiedColumns[':p' . $index++]  = '`TITLE`';
+        }
+        if ($this->isColumnModified(ItemSubTypePeer::MAIN_TYPE_ID)) {
+            $modifiedColumns[':p' . $index++]  = '`MAIN_TYPE_ID`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `item_type` (%s) VALUES (%s)',
+            'INSERT INTO `item_sub_type` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -474,6 +477,9 @@ abstract class BaseItemType extends BaseObject implements Persistent
                         break;
                     case '`TITLE`':
 						$stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
+                        break;
+                    case '`MAIN_TYPE_ID`':
+						$stmt->bindValue($identifier, $this->main_type_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -562,26 +568,22 @@ abstract class BaseItemType extends BaseObject implements Persistent
             $failureMap = array();
 
 
-            if (($retval = ItemTypePeer::doValidate($this, $columns)) !== true) {
-                $failureMap = array_merge($failureMap, $retval);
+            // We call the validate method on the following object(s) if they
+            // were passed to this object by their coresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aMainType !== null) {
+                if (!$this->aMainType->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aMainType->getValidationFailures());
+                }
             }
 
 
-                if ($this->collSubTypes !== null) {
-                    foreach ($this->collSubTypes as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
+            if (($retval = ItemSubTypePeer::doValidate($this, $columns)) !== true) {
+                $failureMap = array_merge($failureMap, $retval);
+            }
 
-                if ($this->collItems !== null) {
-                    foreach ($this->collItems as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
 
 
             $this->alreadyInValidation = false;
@@ -602,7 +604,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = ItemTypePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = ItemSubTypePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -623,6 +625,9 @@ abstract class BaseItemType extends BaseObject implements Persistent
                 break;
             case 1:
                 return $this->getTitle();
+                break;
+            case 2:
+                return $this->getMainTypeId();
                 break;
             default:
                 return null;
@@ -647,21 +652,19 @@ abstract class BaseItemType extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['ItemType'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['ItemSubType'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['ItemType'][$this->getPrimaryKey()] = true;
-        $keys = ItemTypePeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['ItemSubType'][$this->getPrimaryKey()] = true;
+        $keys = ItemSubTypePeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getTitle(),
+            $keys[2] => $this->getMainTypeId(),
         );
         if ($includeForeignObjects) {
-            if (null !== $this->collSubTypes) {
-                $result['SubTypes'] = $this->collSubTypes->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collItems) {
-                $result['Items'] = $this->collItems->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            if (null !== $this->aMainType) {
+                $result['MainType'] = $this->aMainType->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -681,7 +684,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = ItemTypePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = ItemSubTypePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -702,6 +705,9 @@ abstract class BaseItemType extends BaseObject implements Persistent
                 break;
             case 1:
                 $this->setTitle($value);
+                break;
+            case 2:
+                $this->setMainTypeId($value);
                 break;
         } // switch()
     }
@@ -725,10 +731,11 @@ abstract class BaseItemType extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = ItemTypePeer::getFieldNames($keyType);
+        $keys = ItemSubTypePeer::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setTitle($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setMainTypeId($arr[$keys[2]]);
     }
 
     /**
@@ -738,10 +745,11 @@ abstract class BaseItemType extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(ItemTypePeer::DATABASE_NAME);
+        $criteria = new Criteria(ItemSubTypePeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(ItemTypePeer::ID)) $criteria->add(ItemTypePeer::ID, $this->id);
-        if ($this->isColumnModified(ItemTypePeer::TITLE)) $criteria->add(ItemTypePeer::TITLE, $this->title);
+        if ($this->isColumnModified(ItemSubTypePeer::ID)) $criteria->add(ItemSubTypePeer::ID, $this->id);
+        if ($this->isColumnModified(ItemSubTypePeer::TITLE)) $criteria->add(ItemSubTypePeer::TITLE, $this->title);
+        if ($this->isColumnModified(ItemSubTypePeer::MAIN_TYPE_ID)) $criteria->add(ItemSubTypePeer::MAIN_TYPE_ID, $this->main_type_id);
 
         return $criteria;
     }
@@ -756,8 +764,8 @@ abstract class BaseItemType extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(ItemTypePeer::DATABASE_NAME);
-        $criteria->add(ItemTypePeer::ID, $this->id);
+        $criteria = new Criteria(ItemSubTypePeer::DATABASE_NAME);
+        $criteria->add(ItemSubTypePeer::ID, $this->id);
 
         return $criteria;
     }
@@ -798,7 +806,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of ItemType (or compatible) type.
+     * @param      object $copyObj An object of ItemSubType (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -806,6 +814,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setTitle($this->getTitle());
+        $copyObj->setMainTypeId($this->getMainTypeId());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -813,18 +822,6 @@ abstract class BaseItemType extends BaseObject implements Persistent
             $copyObj->setNew(false);
             // store object hash to prevent cycle
             $this->startCopy = true;
-
-            foreach ($this->getSubTypes() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addSubType($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getItems() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addItem($relObj->copy($deepCopy));
-                }
-            }
 
             //unflag object copy
             $this->startCopy = false;
@@ -845,7 +842,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 ItemType Clone of current object.
+     * @return                 ItemSubType Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -865,448 +862,66 @@ abstract class BaseItemType extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return   ItemTypePeer
+     * @return   ItemSubTypePeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new ItemTypePeer();
+            self::$peer = new ItemSubTypePeer();
         }
 
         return self::$peer;
     }
 
-
     /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
+     * Declares an association between this object and a ItemType object.
      *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('SubType' == $relationName) {
-            $this->initSubTypes();
-        }
-        if ('Item' == $relationName) {
-            $this->initItems();
-        }
-    }
-
-    /**
-     * Clears out the collSubTypes collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addSubTypes()
-     */
-    public function clearSubTypes()
-    {
-        $this->collSubTypes = null; // important to set this to NULL since that means it is uninitialized
-        $this->collSubTypesPartial = null;
-    }
-
-    /**
-     * reset is the collSubTypes collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialSubTypes($v = true)
-    {
-        $this->collSubTypesPartial = $v;
-    }
-
-    /**
-     * Initializes the collSubTypes collection.
-     *
-     * By default this just sets the collSubTypes collection to an empty array (like clearcollSubTypes());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initSubTypes($overrideExisting = true)
-    {
-        if (null !== $this->collSubTypes && !$overrideExisting) {
-            return;
-        }
-        $this->collSubTypes = new PropelObjectCollection();
-        $this->collSubTypes->setModel('ItemSubType');
-    }
-
-    /**
-     * Gets an array of ItemSubType objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ItemType is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      PropelPDO $con optional connection object
-     * @return PropelObjectCollection|ItemSubType[] List of ItemSubType objects
+     * @param                  ItemType $v
+     * @return                 ItemSubType The current object (for fluent API support)
      * @throws PropelException
      */
-    public function getSubTypes($criteria = null, PropelPDO $con = null)
+    public function setMainType(ItemType $v = null)
     {
-        $partial = $this->collSubTypesPartial && !$this->isNew();
-        if (null === $this->collSubTypes || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collSubTypes) {
-                // return empty collection
-                $this->initSubTypes();
-            } else {
-                $collSubTypes = ItemSubTypeQuery::create(null, $criteria)
-                    ->filterByMainType($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collSubTypesPartial && count($collSubTypes)) {
-                      $this->initSubTypes(false);
-
-                      foreach($collSubTypes as $obj) {
-                        if (false == $this->collSubTypes->contains($obj)) {
-                          $this->collSubTypes->append($obj);
-                        }
-                      }
-
-                      $this->collSubTypesPartial = true;
-                    }
-
-                    return $collSubTypes;
-                }
-
-                if($partial && $this->collSubTypes) {
-                    foreach($this->collSubTypes as $obj) {
-                        if($obj->isNew()) {
-                            $collSubTypes[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collSubTypes = $collSubTypes;
-                $this->collSubTypesPartial = false;
-            }
-        }
-
-        return $this->collSubTypes;
-    }
-
-    /**
-     * Sets a collection of SubType objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      PropelCollection $subTypes A Propel collection.
-     * @param      PropelPDO $con Optional connection object
-     */
-    public function setSubTypes(PropelCollection $subTypes, PropelPDO $con = null)
-    {
-        $this->subTypesScheduledForDeletion = $this->getSubTypes(new Criteria(), $con)->diff($subTypes);
-
-        foreach ($this->subTypesScheduledForDeletion as $subTypeRemoved) {
-            $subTypeRemoved->setMainType(null);
-        }
-
-        $this->collSubTypes = null;
-        foreach ($subTypes as $subType) {
-            $this->addSubType($subType);
-        }
-
-        $this->collSubTypes = $subTypes;
-        $this->collSubTypesPartial = false;
-    }
-
-    /**
-     * Returns the number of related ItemSubType objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      PropelPDO $con
-     * @return int             Count of related ItemSubType objects.
-     * @throws PropelException
-     */
-    public function countSubTypes(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collSubTypesPartial && !$this->isNew();
-        if (null === $this->collSubTypes || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collSubTypes) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getSubTypes());
-                }
-                $query = ItemSubTypeQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByMainType($this)
-                    ->count($con);
-            }
+        if ($v === null) {
+            $this->setMainTypeId(NULL);
         } else {
-            return count($this->collSubTypes);
+            $this->setMainTypeId($v->getId());
         }
-    }
 
-    /**
-     * Method called to associate a ItemSubType object to this object
-     * through the ItemSubType foreign key attribute.
-     *
-     * @param    ItemSubType $l ItemSubType
-     * @return   ItemType The current object (for fluent API support)
-     */
-    public function addSubType(ItemSubType $l)
-    {
-        if ($this->collSubTypes === null) {
-            $this->initSubTypes();
-            $this->collSubTypesPartial = true;
+        $this->aMainType = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ItemType object, it will not be re-added.
+        if ($v !== null) {
+            $v->addSubType($this);
         }
-        if (!$this->collSubTypes->contains($l)) { // only add it if the **same** object is not already associated
-            $this->doAddSubType($l);
-        }
+
 
         return $this;
     }
 
-    /**
-     * @param	SubType $subType The subType object to add.
-     */
-    protected function doAddSubType($subType)
-    {
-        $this->collSubTypes[]= $subType;
-        $subType->setMainType($this);
-    }
 
     /**
-     * @param	SubType $subType The subType object to remove.
-     */
-    public function removeSubType($subType)
-    {
-        if ($this->getSubTypes()->contains($subType)) {
-            $this->collSubTypes->remove($this->collSubTypes->search($subType));
-            if (null === $this->subTypesScheduledForDeletion) {
-                $this->subTypesScheduledForDeletion = clone $this->collSubTypes;
-                $this->subTypesScheduledForDeletion->clear();
-            }
-            $this->subTypesScheduledForDeletion[]= $subType;
-            $subType->setMainType(null);
-        }
-    }
-
-    /**
-     * Clears out the collItems collection
+     * Get the associated ItemType object
      *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addItems()
-     */
-    public function clearItems()
-    {
-        $this->collItems = null; // important to set this to NULL since that means it is uninitialized
-        $this->collItemsPartial = null;
-    }
-
-    /**
-     * reset is the collItems collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialItems($v = true)
-    {
-        $this->collItemsPartial = $v;
-    }
-
-    /**
-     * Initializes the collItems collection.
-     *
-     * By default this just sets the collItems collection to an empty array (like clearcollItems());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initItems($overrideExisting = true)
-    {
-        if (null !== $this->collItems && !$overrideExisting) {
-            return;
-        }
-        $this->collItems = new PropelObjectCollection();
-        $this->collItems->setModel('Item');
-    }
-
-    /**
-     * Gets an array of Item objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ItemType is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      PropelPDO $con optional connection object
-     * @return PropelObjectCollection|Item[] List of Item objects
+     * @param      PropelPDO $con Optional Connection object.
+     * @return                 ItemType The associated ItemType object.
      * @throws PropelException
      */
-    public function getItems($criteria = null, PropelPDO $con = null)
+    public function getMainType(PropelPDO $con = null)
     {
-        $partial = $this->collItemsPartial && !$this->isNew();
-        if (null === $this->collItems || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collItems) {
-                // return empty collection
-                $this->initItems();
-            } else {
-                $collItems = ItemQuery::create(null, $criteria)
-                    ->filterByItemType($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collItemsPartial && count($collItems)) {
-                      $this->initItems(false);
-
-                      foreach($collItems as $obj) {
-                        if (false == $this->collItems->contains($obj)) {
-                          $this->collItems->append($obj);
-                        }
-                      }
-
-                      $this->collItemsPartial = true;
-                    }
-
-                    return $collItems;
-                }
-
-                if($partial && $this->collItems) {
-                    foreach($this->collItems as $obj) {
-                        if($obj->isNew()) {
-                            $collItems[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collItems = $collItems;
-                $this->collItemsPartial = false;
-            }
+        if ($this->aMainType === null && ($this->main_type_id !== null)) {
+            $this->aMainType = ItemTypeQuery::create()->findPk($this->main_type_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aMainType->addSubTypes($this);
+             */
         }
 
-        return $this->collItems;
-    }
-
-    /**
-     * Sets a collection of Item objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      PropelCollection $items A Propel collection.
-     * @param      PropelPDO $con Optional connection object
-     */
-    public function setItems(PropelCollection $items, PropelPDO $con = null)
-    {
-        $this->itemsScheduledForDeletion = $this->getItems(new Criteria(), $con)->diff($items);
-
-        foreach ($this->itemsScheduledForDeletion as $itemRemoved) {
-            $itemRemoved->setItemType(null);
-        }
-
-        $this->collItems = null;
-        foreach ($items as $item) {
-            $this->addItem($item);
-        }
-
-        $this->collItems = $items;
-        $this->collItemsPartial = false;
-    }
-
-    /**
-     * Returns the number of related Item objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      PropelPDO $con
-     * @return int             Count of related Item objects.
-     * @throws PropelException
-     */
-    public function countItems(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collItemsPartial && !$this->isNew();
-        if (null === $this->collItems || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collItems) {
-                return 0;
-            } else {
-                if($partial && !$criteria) {
-                    return count($this->getItems());
-                }
-                $query = ItemQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByItemType($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collItems);
-        }
-    }
-
-    /**
-     * Method called to associate a Item object to this object
-     * through the Item foreign key attribute.
-     *
-     * @param    Item $l Item
-     * @return   ItemType The current object (for fluent API support)
-     */
-    public function addItem(Item $l)
-    {
-        if ($this->collItems === null) {
-            $this->initItems();
-            $this->collItemsPartial = true;
-        }
-        if (!$this->collItems->contains($l)) { // only add it if the **same** object is not already associated
-            $this->doAddItem($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	Item $item The item object to add.
-     */
-    protected function doAddItem($item)
-    {
-        $this->collItems[]= $item;
-        $item->setItemType($this);
-    }
-
-    /**
-     * @param	Item $item The item object to remove.
-     */
-    public function removeItem($item)
-    {
-        if ($this->getItems()->contains($item)) {
-            $this->collItems->remove($this->collItems->search($item));
-            if (null === $this->itemsScheduledForDeletion) {
-                $this->itemsScheduledForDeletion = clone $this->collItems;
-                $this->itemsScheduledForDeletion->clear();
-            }
-            $this->itemsScheduledForDeletion[]= $item;
-            $item->setItemType(null);
-        }
+        return $this->aMainType;
     }
 
     /**
@@ -1316,6 +931,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
     {
         $this->id = null;
         $this->title = null;
+        $this->main_type_id = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();
@@ -1336,26 +952,9 @@ abstract class BaseItemType extends BaseObject implements Persistent
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collSubTypes) {
-                foreach ($this->collSubTypes as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collItems) {
-                foreach ($this->collItems as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        if ($this->collSubTypes instanceof PropelCollection) {
-            $this->collSubTypes->clearIterator();
-        }
-        $this->collSubTypes = null;
-        if ($this->collItems instanceof PropelCollection) {
-            $this->collItems->clearIterator();
-        }
-        $this->collItems = null;
+        $this->aMainType = null;
     }
 
     /**
@@ -1365,7 +964,7 @@ abstract class BaseItemType extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(ItemTypePeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ItemSubTypePeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
@@ -1378,4 +977,4 @@ abstract class BaseItemType extends BaseObject implements Persistent
         return $this->alreadyInSave;
     }
 
-} // BaseItemType
+} // BaseItemSubType

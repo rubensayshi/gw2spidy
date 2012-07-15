@@ -15,7 +15,7 @@ use \PropelPDO;
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemPeer;
 use GW2Spidy\DB\ItemQuery;
-use \GW2Spidy\DB\ItemType;
+use GW2Spidy\DB\ItemType;
 
 /**
  * Base class that represents a query for the 'item' table.
@@ -25,10 +25,24 @@ use \GW2Spidy\DB\ItemType;
  * @method     ItemQuery orderByDataId($order = Criteria::ASC) Order by the data_id column
  * @method     ItemQuery orderByTypeId($order = Criteria::ASC) Order by the type_id column
  * @method     ItemQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ItemQuery orderByGemStoreDescription($order = Criteria::ASC) Order by the gem_store_description column
+ * @method     ItemQuery orderByGemStoreBlurb($order = Criteria::ASC) Order by the gem_store_blurb column
+ * @method     ItemQuery orderByRestrictionLevel($order = Criteria::ASC) Order by the restriction_level column
+ * @method     ItemQuery orderByRarity($order = Criteria::ASC) Order by the rarity column
+ * @method     ItemQuery orderByVendorSellPrice($order = Criteria::ASC) Order by the vendor_sell_price column
+ * @method     ItemQuery orderByImg($order = Criteria::ASC) Order by the img column
+ * @method     ItemQuery orderByRarityWord($order = Criteria::ASC) Order by the rarity_word column
  *
  * @method     ItemQuery groupByDataId() Group by the data_id column
  * @method     ItemQuery groupByTypeId() Group by the type_id column
  * @method     ItemQuery groupByName() Group by the name column
+ * @method     ItemQuery groupByGemStoreDescription() Group by the gem_store_description column
+ * @method     ItemQuery groupByGemStoreBlurb() Group by the gem_store_blurb column
+ * @method     ItemQuery groupByRestrictionLevel() Group by the restriction_level column
+ * @method     ItemQuery groupByRarity() Group by the rarity column
+ * @method     ItemQuery groupByVendorSellPrice() Group by the vendor_sell_price column
+ * @method     ItemQuery groupByImg() Group by the img column
+ * @method     ItemQuery groupByRarityWord() Group by the rarity_word column
  *
  * @method     ItemQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ItemQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -44,10 +58,24 @@ use \GW2Spidy\DB\ItemType;
  * @method     Item findOneByDataId(int $data_id) Return the first Item filtered by the data_id column
  * @method     Item findOneByTypeId(int $type_id) Return the first Item filtered by the type_id column
  * @method     Item findOneByName(string $name) Return the first Item filtered by the name column
+ * @method     Item findOneByGemStoreDescription(string $gem_store_description) Return the first Item filtered by the gem_store_description column
+ * @method     Item findOneByGemStoreBlurb(string $gem_store_blurb) Return the first Item filtered by the gem_store_blurb column
+ * @method     Item findOneByRestrictionLevel(string $restriction_level) Return the first Item filtered by the restriction_level column
+ * @method     Item findOneByRarity(string $rarity) Return the first Item filtered by the rarity column
+ * @method     Item findOneByVendorSellPrice(string $vendor_sell_price) Return the first Item filtered by the vendor_sell_price column
+ * @method     Item findOneByImg(string $img) Return the first Item filtered by the img column
+ * @method     Item findOneByRarityWord(string $rarity_word) Return the first Item filtered by the rarity_word column
  *
  * @method     array findByDataId(int $data_id) Return Item objects filtered by the data_id column
  * @method     array findByTypeId(int $type_id) Return Item objects filtered by the type_id column
  * @method     array findByName(string $name) Return Item objects filtered by the name column
+ * @method     array findByGemStoreDescription(string $gem_store_description) Return Item objects filtered by the gem_store_description column
+ * @method     array findByGemStoreBlurb(string $gem_store_blurb) Return Item objects filtered by the gem_store_blurb column
+ * @method     array findByRestrictionLevel(string $restriction_level) Return Item objects filtered by the restriction_level column
+ * @method     array findByRarity(string $rarity) Return Item objects filtered by the rarity column
+ * @method     array findByVendorSellPrice(string $vendor_sell_price) Return Item objects filtered by the vendor_sell_price column
+ * @method     array findByImg(string $img) Return Item objects filtered by the img column
+ * @method     array findByRarityWord(string $rarity_word) Return Item objects filtered by the rarity_word column
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -138,7 +166,7 @@ abstract class BaseItemQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME` FROM `item` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `IMG`, `RARITY_WORD` FROM `item` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -327,6 +355,209 @@ abstract class BaseItemQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the gem_store_description column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByGemStoreDescription('fooValue');   // WHERE gem_store_description = 'fooValue'
+     * $query->filterByGemStoreDescription('%fooValue%'); // WHERE gem_store_description LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $gemStoreDescription The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByGemStoreDescription($gemStoreDescription = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($gemStoreDescription)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $gemStoreDescription)) {
+                $gemStoreDescription = str_replace('*', '%', $gemStoreDescription);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::GEM_STORE_DESCRIPTION, $gemStoreDescription, $comparison);
+    }
+
+    /**
+     * Filter the query on the gem_store_blurb column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByGemStoreBlurb('fooValue');   // WHERE gem_store_blurb = 'fooValue'
+     * $query->filterByGemStoreBlurb('%fooValue%'); // WHERE gem_store_blurb LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $gemStoreBlurb The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByGemStoreBlurb($gemStoreBlurb = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($gemStoreBlurb)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $gemStoreBlurb)) {
+                $gemStoreBlurb = str_replace('*', '%', $gemStoreBlurb);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::GEM_STORE_BLURB, $gemStoreBlurb, $comparison);
+    }
+
+    /**
+     * Filter the query on the restriction_level column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByRestrictionLevel('fooValue');   // WHERE restriction_level = 'fooValue'
+     * $query->filterByRestrictionLevel('%fooValue%'); // WHERE restriction_level LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $restrictionLevel The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByRestrictionLevel($restrictionLevel = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($restrictionLevel)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $restrictionLevel)) {
+                $restrictionLevel = str_replace('*', '%', $restrictionLevel);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::RESTRICTION_LEVEL, $restrictionLevel, $comparison);
+    }
+
+    /**
+     * Filter the query on the rarity column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByRarity('fooValue');   // WHERE rarity = 'fooValue'
+     * $query->filterByRarity('%fooValue%'); // WHERE rarity LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $rarity The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByRarity($rarity = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($rarity)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $rarity)) {
+                $rarity = str_replace('*', '%', $rarity);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::RARITY, $rarity, $comparison);
+    }
+
+    /**
+     * Filter the query on the vendor_sell_price column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByVendorSellPrice('fooValue');   // WHERE vendor_sell_price = 'fooValue'
+     * $query->filterByVendorSellPrice('%fooValue%'); // WHERE vendor_sell_price LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $vendorSellPrice The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByVendorSellPrice($vendorSellPrice = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($vendorSellPrice)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $vendorSellPrice)) {
+                $vendorSellPrice = str_replace('*', '%', $vendorSellPrice);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::VENDOR_SELL_PRICE, $vendorSellPrice, $comparison);
+    }
+
+    /**
+     * Filter the query on the img column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByImg('fooValue');   // WHERE img = 'fooValue'
+     * $query->filterByImg('%fooValue%'); // WHERE img LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $img The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByImg($img = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($img)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $img)) {
+                $img = str_replace('*', '%', $img);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::IMG, $img, $comparison);
+    }
+
+    /**
+     * Filter the query on the rarity_word column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByRarityWord('fooValue');   // WHERE rarity_word = 'fooValue'
+     * $query->filterByRarityWord('%fooValue%'); // WHERE rarity_word LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $rarityWord The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByRarityWord($rarityWord = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($rarityWord)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $rarityWord)) {
+                $rarityWord = str_replace('*', '%', $rarityWord);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::RARITY_WORD, $rarityWord, $comparison);
+    }
+
+    /**
      * Filter the query by a related ItemType object
      *
      * @param   ItemType|PropelObjectCollection $itemType The related object(s) to use as filter
@@ -393,13 +624,13 @@ abstract class BaseItemQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \\GW2Spidy\DB\ItemTypeQuery A secondary query class using the current class as primary query
+     * @return   \GW2Spidy\DB\ItemTypeQuery A secondary query class using the current class as primary query
      */
     public function useItemTypeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinItemType($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ItemType', '\\GW2Spidy\DB\ItemTypeQuery');
+            ->useQuery($relationAlias ? $relationAlias : 'ItemType', '\GW2Spidy\DB\ItemTypeQuery');
     }
 
     /**

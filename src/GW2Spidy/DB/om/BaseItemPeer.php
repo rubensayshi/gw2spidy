@@ -11,8 +11,8 @@ use \PropelException;
 use \PropelPDO;
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemPeer;
+use GW2Spidy\DB\ItemTypePeer;
 use GW2Spidy\DB\map\ItemTableMap;
-use \GW2Spidy\DB\ItemTypePeer;
 
 /**
  * Base static class for performing query and update operations on the 'item' table.
@@ -36,13 +36,13 @@ abstract class BaseItemPeer {
     const TM_CLASS = 'ItemTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 10;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 10;
 
     /** the column name for the DATA_ID field */
     const DATA_ID = 'item.DATA_ID';
@@ -52,6 +52,27 @@ abstract class BaseItemPeer {
 
     /** the column name for the NAME field */
     const NAME = 'item.NAME';
+
+    /** the column name for the GEM_STORE_DESCRIPTION field */
+    const GEM_STORE_DESCRIPTION = 'item.GEM_STORE_DESCRIPTION';
+
+    /** the column name for the GEM_STORE_BLURB field */
+    const GEM_STORE_BLURB = 'item.GEM_STORE_BLURB';
+
+    /** the column name for the RESTRICTION_LEVEL field */
+    const RESTRICTION_LEVEL = 'item.RESTRICTION_LEVEL';
+
+    /** the column name for the RARITY field */
+    const RARITY = 'item.RARITY';
+
+    /** the column name for the VENDOR_SELL_PRICE field */
+    const VENDOR_SELL_PRICE = 'item.VENDOR_SELL_PRICE';
+
+    /** the column name for the IMG field */
+    const IMG = 'item.IMG';
+
+    /** the column name for the RARITY_WORD field */
+    const RARITY_WORD = 'item.RARITY_WORD';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -72,12 +93,12 @@ abstract class BaseItemPeer {
      * e.g. ItemPeer::$fieldNames[ItemPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('DataId', 'TypeId', 'Name', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId', 'typeId', 'name', ),
-        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID, ItemPeer::TYPE_ID, ItemPeer::NAME, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID', 'TYPE_ID', 'NAME', ),
-        BasePeer::TYPE_FIELDNAME => array ('data_id', 'type_id', 'name', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, )
+        BasePeer::TYPE_PHPNAME => array ('DataId', 'TypeId', 'Name', 'GemStoreDescription', 'GemStoreBlurb', 'RestrictionLevel', 'Rarity', 'VendorSellPrice', 'Img', 'RarityWord', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId', 'typeId', 'name', 'gemStoreDescription', 'gemStoreBlurb', 'restrictionLevel', 'rarity', 'vendorSellPrice', 'img', 'rarityWord', ),
+        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID, ItemPeer::TYPE_ID, ItemPeer::NAME, ItemPeer::GEM_STORE_DESCRIPTION, ItemPeer::GEM_STORE_BLURB, ItemPeer::RESTRICTION_LEVEL, ItemPeer::RARITY, ItemPeer::VENDOR_SELL_PRICE, ItemPeer::IMG, ItemPeer::RARITY_WORD, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID', 'TYPE_ID', 'NAME', 'GEM_STORE_DESCRIPTION', 'GEM_STORE_BLURB', 'RESTRICTION_LEVEL', 'RARITY', 'VENDOR_SELL_PRICE', 'IMG', 'RARITY_WORD', ),
+        BasePeer::TYPE_FIELDNAME => array ('data_id', 'type_id', 'name', 'gem_store_description', 'gem_store_blurb', 'restriction_level', 'rarity', 'vendor_sell_price', 'img', 'rarity_word', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -87,12 +108,12 @@ abstract class BaseItemPeer {
      * e.g. ItemPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('DataId' => 0, 'TypeId' => 1, 'Name' => 2, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId' => 0, 'typeId' => 1, 'name' => 2, ),
-        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID => 0, ItemPeer::TYPE_ID => 1, ItemPeer::NAME => 2, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID' => 0, 'TYPE_ID' => 1, 'NAME' => 2, ),
-        BasePeer::TYPE_FIELDNAME => array ('data_id' => 0, 'type_id' => 1, 'name' => 2, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, )
+        BasePeer::TYPE_PHPNAME => array ('DataId' => 0, 'TypeId' => 1, 'Name' => 2, 'GemStoreDescription' => 3, 'GemStoreBlurb' => 4, 'RestrictionLevel' => 5, 'Rarity' => 6, 'VendorSellPrice' => 7, 'Img' => 8, 'RarityWord' => 9, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId' => 0, 'typeId' => 1, 'name' => 2, 'gemStoreDescription' => 3, 'gemStoreBlurb' => 4, 'restrictionLevel' => 5, 'rarity' => 6, 'vendorSellPrice' => 7, 'img' => 8, 'rarityWord' => 9, ),
+        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID => 0, ItemPeer::TYPE_ID => 1, ItemPeer::NAME => 2, ItemPeer::GEM_STORE_DESCRIPTION => 3, ItemPeer::GEM_STORE_BLURB => 4, ItemPeer::RESTRICTION_LEVEL => 5, ItemPeer::RARITY => 6, ItemPeer::VENDOR_SELL_PRICE => 7, ItemPeer::IMG => 8, ItemPeer::RARITY_WORD => 9, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID' => 0, 'TYPE_ID' => 1, 'NAME' => 2, 'GEM_STORE_DESCRIPTION' => 3, 'GEM_STORE_BLURB' => 4, 'RESTRICTION_LEVEL' => 5, 'RARITY' => 6, 'VENDOR_SELL_PRICE' => 7, 'IMG' => 8, 'RARITY_WORD' => 9, ),
+        BasePeer::TYPE_FIELDNAME => array ('data_id' => 0, 'type_id' => 1, 'name' => 2, 'gem_store_description' => 3, 'gem_store_blurb' => 4, 'restriction_level' => 5, 'rarity' => 6, 'vendor_sell_price' => 7, 'img' => 8, 'rarity_word' => 9, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -169,10 +190,24 @@ abstract class BaseItemPeer {
             $criteria->addSelectColumn(ItemPeer::DATA_ID);
             $criteria->addSelectColumn(ItemPeer::TYPE_ID);
             $criteria->addSelectColumn(ItemPeer::NAME);
+            $criteria->addSelectColumn(ItemPeer::GEM_STORE_DESCRIPTION);
+            $criteria->addSelectColumn(ItemPeer::GEM_STORE_BLURB);
+            $criteria->addSelectColumn(ItemPeer::RESTRICTION_LEVEL);
+            $criteria->addSelectColumn(ItemPeer::RARITY);
+            $criteria->addSelectColumn(ItemPeer::VENDOR_SELL_PRICE);
+            $criteria->addSelectColumn(ItemPeer::IMG);
+            $criteria->addSelectColumn(ItemPeer::RARITY_WORD);
         } else {
             $criteria->addSelectColumn($alias . '.DATA_ID');
             $criteria->addSelectColumn($alias . '.TYPE_ID');
             $criteria->addSelectColumn($alias . '.NAME');
+            $criteria->addSelectColumn($alias . '.GEM_STORE_DESCRIPTION');
+            $criteria->addSelectColumn($alias . '.GEM_STORE_BLURB');
+            $criteria->addSelectColumn($alias . '.RESTRICTION_LEVEL');
+            $criteria->addSelectColumn($alias . '.RARITY');
+            $criteria->addSelectColumn($alias . '.VENDOR_SELL_PRICE');
+            $criteria->addSelectColumn($alias . '.IMG');
+            $criteria->addSelectColumn($alias . '.RARITY_WORD');
         }
     }
 

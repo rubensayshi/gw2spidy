@@ -16,8 +16,8 @@ use \PropelPDO;
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemPeer;
 use GW2Spidy\DB\ItemQuery;
-use \GW2Spidy\DB\ItemType;
-use \GW2Spidy\DB\ItemTypeQuery;
+use GW2Spidy\DB\ItemType;
+use GW2Spidy\DB\ItemTypeQuery;
 
 /**
  * Base class that represents a row from the 'item' table.
@@ -65,6 +65,48 @@ abstract class BaseItem extends BaseObject implements Persistent
      * @var        string
      */
     protected $name;
+
+    /**
+     * The value for the gem_store_description field.
+     * @var        string
+     */
+    protected $gem_store_description;
+
+    /**
+     * The value for the gem_store_blurb field.
+     * @var        string
+     */
+    protected $gem_store_blurb;
+
+    /**
+     * The value for the restriction_level field.
+     * @var        string
+     */
+    protected $restriction_level;
+
+    /**
+     * The value for the rarity field.
+     * @var        string
+     */
+    protected $rarity;
+
+    /**
+     * The value for the vendor_sell_price field.
+     * @var        string
+     */
+    protected $vendor_sell_price;
+
+    /**
+     * The value for the img field.
+     * @var        string
+     */
+    protected $img;
+
+    /**
+     * The value for the rarity_word field.
+     * @var        string
+     */
+    protected $rarity_word;
 
     /**
      * @var        ItemType
@@ -116,6 +158,83 @@ abstract class BaseItem extends BaseObject implements Persistent
     {
 
         return $this->name;
+    }
+
+    /**
+     * Get the [gem_store_description] column value.
+     * 
+     * @return   string
+     */
+    public function getGemStoreDescription()
+    {
+
+        return $this->gem_store_description;
+    }
+
+    /**
+     * Get the [gem_store_blurb] column value.
+     * 
+     * @return   string
+     */
+    public function getGemStoreBlurb()
+    {
+
+        return $this->gem_store_blurb;
+    }
+
+    /**
+     * Get the [restriction_level] column value.
+     * 
+     * @return   string
+     */
+    public function getRestrictionLevel()
+    {
+
+        return $this->restriction_level;
+    }
+
+    /**
+     * Get the [rarity] column value.
+     * 
+     * @return   string
+     */
+    public function getRarity()
+    {
+
+        return $this->rarity;
+    }
+
+    /**
+     * Get the [vendor_sell_price] column value.
+     * 
+     * @return   string
+     */
+    public function getVendorSellPrice()
+    {
+
+        return $this->vendor_sell_price;
+    }
+
+    /**
+     * Get the [img] column value.
+     * 
+     * @return   string
+     */
+    public function getImg()
+    {
+
+        return $this->img;
+    }
+
+    /**
+     * Get the [rarity_word] column value.
+     * 
+     * @return   string
+     */
+    public function getRarityWord()
+    {
+
+        return $this->rarity_word;
     }
 
     /**
@@ -186,6 +305,153 @@ abstract class BaseItem extends BaseObject implements Persistent
     } // setName()
 
     /**
+     * Set the value of [gem_store_description] column.
+     * 
+     * @param      string $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setGemStoreDescription($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->gem_store_description !== $v) {
+            $this->gem_store_description = $v;
+            $this->modifiedColumns[] = ItemPeer::GEM_STORE_DESCRIPTION;
+        }
+
+
+        return $this;
+    } // setGemStoreDescription()
+
+    /**
+     * Set the value of [gem_store_blurb] column.
+     * 
+     * @param      string $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setGemStoreBlurb($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->gem_store_blurb !== $v) {
+            $this->gem_store_blurb = $v;
+            $this->modifiedColumns[] = ItemPeer::GEM_STORE_BLURB;
+        }
+
+
+        return $this;
+    } // setGemStoreBlurb()
+
+    /**
+     * Set the value of [restriction_level] column.
+     * 
+     * @param      string $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setRestrictionLevel($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->restriction_level !== $v) {
+            $this->restriction_level = $v;
+            $this->modifiedColumns[] = ItemPeer::RESTRICTION_LEVEL;
+        }
+
+
+        return $this;
+    } // setRestrictionLevel()
+
+    /**
+     * Set the value of [rarity] column.
+     * 
+     * @param      string $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setRarity($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->rarity !== $v) {
+            $this->rarity = $v;
+            $this->modifiedColumns[] = ItemPeer::RARITY;
+        }
+
+
+        return $this;
+    } // setRarity()
+
+    /**
+     * Set the value of [vendor_sell_price] column.
+     * 
+     * @param      string $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setVendorSellPrice($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->vendor_sell_price !== $v) {
+            $this->vendor_sell_price = $v;
+            $this->modifiedColumns[] = ItemPeer::VENDOR_SELL_PRICE;
+        }
+
+
+        return $this;
+    } // setVendorSellPrice()
+
+    /**
+     * Set the value of [img] column.
+     * 
+     * @param      string $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setImg($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->img !== $v) {
+            $this->img = $v;
+            $this->modifiedColumns[] = ItemPeer::IMG;
+        }
+
+
+        return $this;
+    } // setImg()
+
+    /**
+     * Set the value of [rarity_word] column.
+     * 
+     * @param      string $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setRarityWord($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->rarity_word !== $v) {
+            $this->rarity_word = $v;
+            $this->modifiedColumns[] = ItemPeer::RARITY_WORD;
+        }
+
+
+        return $this;
+    } // setRarityWord()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -220,6 +486,13 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->data_id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
             $this->type_id = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
             $this->name = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+            $this->gem_store_description = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+            $this->gem_store_blurb = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+            $this->restriction_level = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+            $this->rarity = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+            $this->vendor_sell_price = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+            $this->img = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
+            $this->rarity_word = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -228,7 +501,7 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = ItemPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = ItemPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Item object", $e);
@@ -461,6 +734,27 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::NAME)) {
             $modifiedColumns[':p' . $index++]  = '`NAME`';
         }
+        if ($this->isColumnModified(ItemPeer::GEM_STORE_DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = '`GEM_STORE_DESCRIPTION`';
+        }
+        if ($this->isColumnModified(ItemPeer::GEM_STORE_BLURB)) {
+            $modifiedColumns[':p' . $index++]  = '`GEM_STORE_BLURB`';
+        }
+        if ($this->isColumnModified(ItemPeer::RESTRICTION_LEVEL)) {
+            $modifiedColumns[':p' . $index++]  = '`RESTRICTION_LEVEL`';
+        }
+        if ($this->isColumnModified(ItemPeer::RARITY)) {
+            $modifiedColumns[':p' . $index++]  = '`RARITY`';
+        }
+        if ($this->isColumnModified(ItemPeer::VENDOR_SELL_PRICE)) {
+            $modifiedColumns[':p' . $index++]  = '`VENDOR_SELL_PRICE`';
+        }
+        if ($this->isColumnModified(ItemPeer::IMG)) {
+            $modifiedColumns[':p' . $index++]  = '`IMG`';
+        }
+        if ($this->isColumnModified(ItemPeer::RARITY_WORD)) {
+            $modifiedColumns[':p' . $index++]  = '`RARITY_WORD`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `item` (%s) VALUES (%s)',
@@ -480,6 +774,27 @@ abstract class BaseItem extends BaseObject implements Persistent
                         break;
                     case '`NAME`':
 						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+                        break;
+                    case '`GEM_STORE_DESCRIPTION`':
+						$stmt->bindValue($identifier, $this->gem_store_description, PDO::PARAM_STR);
+                        break;
+                    case '`GEM_STORE_BLURB`':
+						$stmt->bindValue($identifier, $this->gem_store_blurb, PDO::PARAM_STR);
+                        break;
+                    case '`RESTRICTION_LEVEL`':
+						$stmt->bindValue($identifier, $this->restriction_level, PDO::PARAM_STR);
+                        break;
+                    case '`RARITY`':
+						$stmt->bindValue($identifier, $this->rarity, PDO::PARAM_STR);
+                        break;
+                    case '`VENDOR_SELL_PRICE`':
+						$stmt->bindValue($identifier, $this->vendor_sell_price, PDO::PARAM_STR);
+                        break;
+                    case '`IMG`':
+						$stmt->bindValue($identifier, $this->img, PDO::PARAM_STR);
+                        break;
+                    case '`RARITY_WORD`':
+						$stmt->bindValue($identifier, $this->rarity_word, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -629,6 +944,27 @@ abstract class BaseItem extends BaseObject implements Persistent
             case 2:
                 return $this->getName();
                 break;
+            case 3:
+                return $this->getGemStoreDescription();
+                break;
+            case 4:
+                return $this->getGemStoreBlurb();
+                break;
+            case 5:
+                return $this->getRestrictionLevel();
+                break;
+            case 6:
+                return $this->getRarity();
+                break;
+            case 7:
+                return $this->getVendorSellPrice();
+                break;
+            case 8:
+                return $this->getImg();
+                break;
+            case 9:
+                return $this->getRarityWord();
+                break;
             default:
                 return null;
                 break;
@@ -661,6 +997,13 @@ abstract class BaseItem extends BaseObject implements Persistent
             $keys[0] => $this->getDataId(),
             $keys[1] => $this->getTypeId(),
             $keys[2] => $this->getName(),
+            $keys[3] => $this->getGemStoreDescription(),
+            $keys[4] => $this->getGemStoreBlurb(),
+            $keys[5] => $this->getRestrictionLevel(),
+            $keys[6] => $this->getRarity(),
+            $keys[7] => $this->getVendorSellPrice(),
+            $keys[8] => $this->getImg(),
+            $keys[9] => $this->getRarityWord(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aItemType) {
@@ -709,6 +1052,27 @@ abstract class BaseItem extends BaseObject implements Persistent
             case 2:
                 $this->setName($value);
                 break;
+            case 3:
+                $this->setGemStoreDescription($value);
+                break;
+            case 4:
+                $this->setGemStoreBlurb($value);
+                break;
+            case 5:
+                $this->setRestrictionLevel($value);
+                break;
+            case 6:
+                $this->setRarity($value);
+                break;
+            case 7:
+                $this->setVendorSellPrice($value);
+                break;
+            case 8:
+                $this->setImg($value);
+                break;
+            case 9:
+                $this->setRarityWord($value);
+                break;
         } // switch()
     }
 
@@ -736,6 +1100,13 @@ abstract class BaseItem extends BaseObject implements Persistent
         if (array_key_exists($keys[0], $arr)) $this->setDataId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setTypeId($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setName($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setGemStoreDescription($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setGemStoreBlurb($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setRestrictionLevel($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setRarity($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setVendorSellPrice($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setImg($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setRarityWord($arr[$keys[9]]);
     }
 
     /**
@@ -750,6 +1121,13 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::DATA_ID)) $criteria->add(ItemPeer::DATA_ID, $this->data_id);
         if ($this->isColumnModified(ItemPeer::TYPE_ID)) $criteria->add(ItemPeer::TYPE_ID, $this->type_id);
         if ($this->isColumnModified(ItemPeer::NAME)) $criteria->add(ItemPeer::NAME, $this->name);
+        if ($this->isColumnModified(ItemPeer::GEM_STORE_DESCRIPTION)) $criteria->add(ItemPeer::GEM_STORE_DESCRIPTION, $this->gem_store_description);
+        if ($this->isColumnModified(ItemPeer::GEM_STORE_BLURB)) $criteria->add(ItemPeer::GEM_STORE_BLURB, $this->gem_store_blurb);
+        if ($this->isColumnModified(ItemPeer::RESTRICTION_LEVEL)) $criteria->add(ItemPeer::RESTRICTION_LEVEL, $this->restriction_level);
+        if ($this->isColumnModified(ItemPeer::RARITY)) $criteria->add(ItemPeer::RARITY, $this->rarity);
+        if ($this->isColumnModified(ItemPeer::VENDOR_SELL_PRICE)) $criteria->add(ItemPeer::VENDOR_SELL_PRICE, $this->vendor_sell_price);
+        if ($this->isColumnModified(ItemPeer::IMG)) $criteria->add(ItemPeer::IMG, $this->img);
+        if ($this->isColumnModified(ItemPeer::RARITY_WORD)) $criteria->add(ItemPeer::RARITY_WORD, $this->rarity_word);
 
         return $criteria;
     }
@@ -815,6 +1193,13 @@ abstract class BaseItem extends BaseObject implements Persistent
     {
         $copyObj->setTypeId($this->getTypeId());
         $copyObj->setName($this->getName());
+        $copyObj->setGemStoreDescription($this->getGemStoreDescription());
+        $copyObj->setGemStoreBlurb($this->getGemStoreBlurb());
+        $copyObj->setRestrictionLevel($this->getRestrictionLevel());
+        $copyObj->setRarity($this->getRarity());
+        $copyObj->setVendorSellPrice($this->getVendorSellPrice());
+        $copyObj->setImg($this->getImg());
+        $copyObj->setRarityWord($this->getRarityWord());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -932,6 +1317,13 @@ abstract class BaseItem extends BaseObject implements Persistent
         $this->data_id = null;
         $this->type_id = null;
         $this->name = null;
+        $this->gem_store_description = null;
+        $this->gem_store_blurb = null;
+        $this->restriction_level = null;
+        $this->rarity = null;
+        $this->vendor_sell_price = null;
+        $this->img = null;
+        $this->rarity_word = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();
