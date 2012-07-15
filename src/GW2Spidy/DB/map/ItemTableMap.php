@@ -43,7 +43,7 @@ class ItemTableMap extends TableMap
         $this->setUseIdGenerator(false);
         // columns
         $this->addPrimaryKey('DATA_ID', 'DataId', 'INTEGER', true, null, null);
-        $this->addForeignKey('TYPE_ID', 'TypeId', 'INTEGER', 'item_type', 'ID', true, null, null);
+        $this->addColumn('TYPE_ID', 'TypeId', 'INTEGER', true, null, null);
         $this->addColumn('NAME', 'Name', 'VARCHAR', true, 255, null);
         $this->addColumn('GEM_STORE_DESCRIPTION', 'GemStoreDescription', 'VARCHAR', true, 255, null);
         $this->addColumn('GEM_STORE_BLURB', 'GemStoreBlurb', 'VARCHAR', true, 255, null);
@@ -52,6 +52,8 @@ class ItemTableMap extends TableMap
         $this->addColumn('VENDOR_SELL_PRICE', 'VendorSellPrice', 'VARCHAR', true, 255, null);
         $this->addColumn('IMG', 'Img', 'VARCHAR', true, 255, null);
         $this->addColumn('RARITY_WORD', 'RarityWord', 'VARCHAR', true, 255, null);
+        $this->addForeignKey('ITEM_TYPE_ID', 'ItemTypeId', 'INTEGER', 'item_type', 'ID', true, null, null);
+        $this->addForeignKey('ITEM_SUB_TYPE_ID', 'ItemSubTypeId', 'INTEGER', 'item_sub_type', 'ID', true, null, null);
         // validators
     } // initialize()
 
@@ -60,7 +62,8 @@ class ItemTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ItemType', 'GW2Spidy\\DB\\ItemType', RelationMap::MANY_TO_ONE, array('type_id' => 'id', ), null, null);
+        $this->addRelation('ItemType', 'GW2Spidy\\DB\\ItemType', RelationMap::MANY_TO_ONE, array('item_type_id' => 'id', ), null, null);
+        $this->addRelation('ItemSubType', 'GW2Spidy\\DB\\ItemSubType', RelationMap::MANY_TO_ONE, array('item_sub_type_id' => 'id', ), null, null);
     } // buildRelations()
 
 } // ItemTableMap

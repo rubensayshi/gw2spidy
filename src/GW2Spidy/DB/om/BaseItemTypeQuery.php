@@ -371,7 +371,7 @@ abstract class BaseItemTypeQuery extends ModelCriteria
     {
         if ($item instanceof Item) {
             return $this
-                ->addUsingAlias(ItemTypePeer::ID, $item->getTypeId(), $comparison);
+                ->addUsingAlias(ItemTypePeer::ID, $item->getItemTypeId(), $comparison);
         } elseif ($item instanceof PropelObjectCollection) {
             return $this
                 ->useItemQuery()

@@ -23,8 +23,13 @@
         <column name="vendor_sell_price" type="varchar" size="255" required="true" />
         <column name="img" type="varchar" size="255" required="true" />
         <column name="rarity_word" type="varchar" size="255" required="true" />
+        <column name="item_type_id" type="integer" required="true" />
+        <column name="item_sub_type_id" type="integer" required="true" />
         <foreign-key foreignTable="item_type" phpName="ItemType" refPhpName="Item">
-            <reference local="type_id" foreign="id" />
+            <reference local="item_type_id" foreign="id" />
+        </foreign-key>  
+        <foreign-key foreignTable="item_sub_type" phpName="ItemSubType" refPhpName="Item">
+            <reference local="item_sub_type_id" foreign="id" />
         </foreign-key>  
     </table>
 </database>

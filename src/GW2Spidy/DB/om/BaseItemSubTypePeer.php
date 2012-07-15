@@ -9,6 +9,7 @@ use \PDOStatement;
 use \Propel;
 use \PropelException;
 use \PropelPDO;
+use GW2Spidy\DB\ItemPeer;
 use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemSubTypePeer;
 use GW2Spidy\DB\ItemTypePeer;
@@ -47,11 +48,11 @@ abstract class BaseItemSubTypePeer {
     /** the column name for the ID field */
     const ID = 'item_sub_type.ID';
 
-    /** the column name for the TITLE field */
-    const TITLE = 'item_sub_type.TITLE';
-
     /** the column name for the MAIN_TYPE_ID field */
     const MAIN_TYPE_ID = 'item_sub_type.MAIN_TYPE_ID';
+
+    /** the column name for the TITLE field */
+    const TITLE = 'item_sub_type.TITLE';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -72,11 +73,11 @@ abstract class BaseItemSubTypePeer {
      * e.g. ItemSubTypePeer::$fieldNames[ItemSubTypePeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('Id', 'Title', 'MainTypeId', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'title', 'mainTypeId', ),
-        BasePeer::TYPE_COLNAME => array (ItemSubTypePeer::ID, ItemSubTypePeer::TITLE, ItemSubTypePeer::MAIN_TYPE_ID, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'TITLE', 'MAIN_TYPE_ID', ),
-        BasePeer::TYPE_FIELDNAME => array ('id', 'title', 'main_type_id', ),
+        BasePeer::TYPE_PHPNAME => array ('Id', 'MainTypeId', 'Title', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'mainTypeId', 'title', ),
+        BasePeer::TYPE_COLNAME => array (ItemSubTypePeer::ID, ItemSubTypePeer::MAIN_TYPE_ID, ItemSubTypePeer::TITLE, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'MAIN_TYPE_ID', 'TITLE', ),
+        BasePeer::TYPE_FIELDNAME => array ('id', 'main_type_id', 'title', ),
         BasePeer::TYPE_NUM => array (0, 1, 2, )
     );
 
@@ -87,11 +88,11 @@ abstract class BaseItemSubTypePeer {
      * e.g. ItemSubTypePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Title' => 1, 'MainTypeId' => 2, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'title' => 1, 'mainTypeId' => 2, ),
-        BasePeer::TYPE_COLNAME => array (ItemSubTypePeer::ID => 0, ItemSubTypePeer::TITLE => 1, ItemSubTypePeer::MAIN_TYPE_ID => 2, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'TITLE' => 1, 'MAIN_TYPE_ID' => 2, ),
-        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'title' => 1, 'main_type_id' => 2, ),
+        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'MainTypeId' => 1, 'Title' => 2, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'mainTypeId' => 1, 'title' => 2, ),
+        BasePeer::TYPE_COLNAME => array (ItemSubTypePeer::ID => 0, ItemSubTypePeer::MAIN_TYPE_ID => 1, ItemSubTypePeer::TITLE => 2, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'MAIN_TYPE_ID' => 1, 'TITLE' => 2, ),
+        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'main_type_id' => 1, 'title' => 2, ),
         BasePeer::TYPE_NUM => array (0, 1, 2, )
     );
 
@@ -167,12 +168,12 @@ abstract class BaseItemSubTypePeer {
     {
         if (null === $alias) {
             $criteria->addSelectColumn(ItemSubTypePeer::ID);
-            $criteria->addSelectColumn(ItemSubTypePeer::TITLE);
             $criteria->addSelectColumn(ItemSubTypePeer::MAIN_TYPE_ID);
+            $criteria->addSelectColumn(ItemSubTypePeer::TITLE);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.TITLE');
             $criteria->addSelectColumn($alias . '.MAIN_TYPE_ID');
+            $criteria->addSelectColumn($alias . '.TITLE');
         }
     }
 
@@ -299,7 +300,7 @@ abstract class BaseItemSubTypePeer {
     {
         if (Propel::isInstancePoolingEnabled()) {
             if ($key === null) {
-                $key = (string) $obj->getId();
+                $key = serialize(array((string) $obj->getId(), (string) $obj->getMainTypeId()));
             } // if key === null
             ItemSubTypePeer::$instances[$key] = $obj;
         }
@@ -322,10 +323,10 @@ abstract class BaseItemSubTypePeer {
     {
         if (Propel::isInstancePoolingEnabled() && $value !== null) {
             if (is_object($value) && $value instanceof ItemSubType) {
-                $key = (string) $value->getId();
-            } elseif (is_scalar($value)) {
+                $key = serialize(array((string) $value->getId(), (string) $value->getMainTypeId()));
+            } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key
-                $key = (string) $value;
+                $key = serialize(array((string) $value[0], (string) $value[1]));
             } else {
                 $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or ItemSubType object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
                 throw $e;
@@ -387,11 +388,11 @@ abstract class BaseItemSubTypePeer {
     public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[$startcol] === null) {
+        if ($row[$startcol] === null && $row[$startcol + 1] === null) {
             return null;
         }
 
-        return (string) $row[$startcol];
+        return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1]));
     }
 
     /**
@@ -406,7 +407,7 @@ abstract class BaseItemSubTypePeer {
     public static function getPrimaryKeyFromRow($row, $startcol = 0)
     {
 
-        return (int) $row[$startcol];
+        return array((int) $row[$startcol], (int) $row[$startcol + 1]);
     }
     
     /**
@@ -807,6 +808,14 @@ abstract class BaseItemSubTypePeer {
                 $selectCriteria->setPrimaryTableName(ItemSubTypePeer::TABLE_NAME);
             }
 
+            $comparison = $criteria->getComparison(ItemSubTypePeer::MAIN_TYPE_ID);
+            $value = $criteria->remove(ItemSubTypePeer::MAIN_TYPE_ID);
+            if ($value) {
+                $selectCriteria->add(ItemSubTypePeer::MAIN_TYPE_ID, $value, $comparison);
+            } else {
+                $selectCriteria->setPrimaryTableName(ItemSubTypePeer::TABLE_NAME);
+            }
+
         } else { // $values is ItemSubType object
             $criteria = $values->buildCriteria(); // gets full criteria
             $selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
@@ -881,10 +890,18 @@ abstract class BaseItemSubTypePeer {
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(ItemSubTypePeer::DATABASE_NAME);
-            $criteria->add(ItemSubTypePeer::ID, (array) $values, Criteria::IN);
-            // invalidate the cache for this object(s)
-            foreach ((array) $values as $singleval) {
-                ItemSubTypePeer::removeInstanceFromPool($singleval);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(ItemSubTypePeer::ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(ItemSubTypePeer::MAIN_TYPE_ID, $value[1]));
+                $criteria->addOr($criterion);
+                // we can invalidate the cache for this single PK
+                ItemSubTypePeer::removeInstanceFromPool($value);
             }
         }
 
@@ -947,58 +964,28 @@ abstract class BaseItemSubTypePeer {
     }
 
     /**
-     * Retrieve a single object by pkey.
-     *
-     * @param      int $pk the primary key.
-     * @param      PropelPDO $con the connection to use
-     * @return ItemSubType
+     * Retrieve object using using composite pkey values.
+     * @param   int $id
+     * @param   int $main_type_id
+     * @param      PropelPDO $con
+     * @return   ItemSubType
      */
-    public static function retrieveByPK($pk, PropelPDO $con = null)
-    {
-
-        if (null !== ($obj = ItemSubTypePeer::getInstanceFromPool((string) $pk))) {
-            return $obj;
+    public static function retrieveByPK($id, $main_type_id, PropelPDO $con = null) {
+        $_instancePoolKey = serialize(array((string) $id, (string) $main_type_id));
+         if (null !== ($obj = ItemSubTypePeer::getInstanceFromPool($_instancePoolKey))) {
+             return $obj;
         }
 
         if ($con === null) {
             $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-
         $criteria = new Criteria(ItemSubTypePeer::DATABASE_NAME);
-        $criteria->add(ItemSubTypePeer::ID, $pk);
-
+        $criteria->add(ItemSubTypePeer::ID, $id);
+        $criteria->add(ItemSubTypePeer::MAIN_TYPE_ID, $main_type_id);
         $v = ItemSubTypePeer::doSelect($criteria, $con);
 
-        return !empty($v) > 0 ? $v[0] : null;
+        return !empty($v) ? $v[0] : null;
     }
-
-    /**
-     * Retrieve multiple objects by pkey.
-     *
-     * @param      array $pks List of primary keys
-     * @param      PropelPDO $con the connection to use
-     * @return ItemSubType[]
-     * @throws PropelException Any exceptions caught during processing will be
-     *		 rethrown wrapped into a PropelException.
-     */
-    public static function retrieveByPKs($pks, PropelPDO $con = null)
-    {
-        if ($con === null) {
-            $con = Propel::getConnection(ItemSubTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
-        }
-
-        $objs = null;
-        if (empty($pks)) {
-            $objs = array();
-        } else {
-            $criteria = new Criteria(ItemSubTypePeer::DATABASE_NAME);
-            $criteria->add(ItemSubTypePeer::ID, $pks, Criteria::IN);
-            $objs = ItemSubTypePeer::doSelect($criteria, $con);
-        }
-
-        return $objs;
-    }
-
 } // BaseItemSubTypePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.

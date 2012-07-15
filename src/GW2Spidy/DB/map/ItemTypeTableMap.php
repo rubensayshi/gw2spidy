@@ -53,7 +53,7 @@ class ItemTypeTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('SubType', 'GW2Spidy\\DB\\ItemSubType', RelationMap::ONE_TO_MANY, array('id' => 'main_type_id', ), null, null, 'SubTypes');
-        $this->addRelation('Item', 'GW2Spidy\\DB\\Item', RelationMap::ONE_TO_MANY, array('id' => 'type_id', ), null, null, 'Items');
+        $this->addRelation('Item', 'GW2Spidy\\DB\\Item', RelationMap::ONE_TO_MANY, array('id' => 'item_type_id', ), null, null, 'Items');
     } // buildRelations()
 
 } // ItemTypeTableMap

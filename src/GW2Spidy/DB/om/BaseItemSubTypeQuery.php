@@ -12,6 +12,7 @@ use \PropelCollection;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
+use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemSubTypePeer;
 use GW2Spidy\DB\ItemSubTypeQuery;
@@ -23,12 +24,12 @@ use GW2Spidy\DB\ItemType;
  * 
  *
  * @method     ItemSubTypeQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ItemSubTypeQuery orderByTitle($order = Criteria::ASC) Order by the title column
  * @method     ItemSubTypeQuery orderByMainTypeId($order = Criteria::ASC) Order by the main_type_id column
+ * @method     ItemSubTypeQuery orderByTitle($order = Criteria::ASC) Order by the title column
  *
  * @method     ItemSubTypeQuery groupById() Group by the id column
- * @method     ItemSubTypeQuery groupByTitle() Group by the title column
  * @method     ItemSubTypeQuery groupByMainTypeId() Group by the main_type_id column
+ * @method     ItemSubTypeQuery groupByTitle() Group by the title column
  *
  * @method     ItemSubTypeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ItemSubTypeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -38,16 +39,20 @@ use GW2Spidy\DB\ItemType;
  * @method     ItemSubTypeQuery rightJoinMainType($relationAlias = null) Adds a RIGHT JOIN clause to the query using the MainType relation
  * @method     ItemSubTypeQuery innerJoinMainType($relationAlias = null) Adds a INNER JOIN clause to the query using the MainType relation
  *
+ * @method     ItemSubTypeQuery leftJoinItem($relationAlias = null) Adds a LEFT JOIN clause to the query using the Item relation
+ * @method     ItemSubTypeQuery rightJoinItem($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Item relation
+ * @method     ItemSubTypeQuery innerJoinItem($relationAlias = null) Adds a INNER JOIN clause to the query using the Item relation
+ *
  * @method     ItemSubType findOne(PropelPDO $con = null) Return the first ItemSubType matching the query
  * @method     ItemSubType findOneOrCreate(PropelPDO $con = null) Return the first ItemSubType matching the query, or a new ItemSubType object populated from the query conditions when no match is found
  *
  * @method     ItemSubType findOneById(int $id) Return the first ItemSubType filtered by the id column
- * @method     ItemSubType findOneByTitle(string $title) Return the first ItemSubType filtered by the title column
  * @method     ItemSubType findOneByMainTypeId(int $main_type_id) Return the first ItemSubType filtered by the main_type_id column
+ * @method     ItemSubType findOneByTitle(string $title) Return the first ItemSubType filtered by the title column
  *
  * @method     array findById(int $id) Return ItemSubType objects filtered by the id column
- * @method     array findByTitle(string $title) Return ItemSubType objects filtered by the title column
  * @method     array findByMainTypeId(int $main_type_id) Return ItemSubType objects filtered by the main_type_id column
+ * @method     array findByTitle(string $title) Return ItemSubType objects filtered by the title column
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -96,10 +101,11 @@ abstract class BaseItemSubTypeQuery extends ModelCriteria
      * Go fast if the query is untouched.
      *
      * <code>
-     * $obj  = $c->findPk(12, $con);
+     * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query 
+     * @param array $key Primary key to use for the query 
+                         A Primary key composition: [$id, $main_type_id]
      * @param     PropelPDO $con an optional connection object
      *
      * @return   ItemSubType|ItemSubType[]|mixed the result, formatted by the current formatter
@@ -109,7 +115,7 @@ abstract class BaseItemSubTypeQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = ItemSubTypePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
+        if ((null !== ($obj = ItemSubTypePeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
             // the object is alredy in the instance pool
             return $obj;
         }
@@ -138,10 +144,11 @@ abstract class BaseItemSubTypeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `ID`, `TITLE`, `MAIN_TYPE_ID` FROM `item_sub_type` WHERE `ID` = :p0';
+        $sql = 'SELECT `ID`, `MAIN_TYPE_ID`, `TITLE` FROM `item_sub_type` WHERE `ID` = :p0 AND `MAIN_TYPE_ID` = :p1';
         try {
             $stmt = $con->prepare($sql);
-			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+			$stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+			$stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -151,7 +158,7 @@ abstract class BaseItemSubTypeQuery extends ModelCriteria
         if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
             $obj = new ItemSubType();
             $obj->hydrate($row);
-            ItemSubTypePeer::addInstanceToPool($obj, (string) $key);
+            ItemSubTypePeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 
@@ -180,7 +187,7 @@ abstract class BaseItemSubTypeQuery extends ModelCriteria
     /**
      * Find objects by primary key
      * <code>
-     * $objs = $c->findPks(array(12, 56, 832), $con);
+     * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
      * </code>
      * @param     array $keys Primary keys to use for the query
      * @param     PropelPDO $con an optional connection object
@@ -210,8 +217,10 @@ abstract class BaseItemSubTypeQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
+        $this->addUsingAlias(ItemSubTypePeer::ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(ItemSubTypePeer::MAIN_TYPE_ID, $key[1], Criteria::EQUAL);
 
-        return $this->addUsingAlias(ItemSubTypePeer::ID, $key, Criteria::EQUAL);
+        return $this;
     }
 
     /**
@@ -223,8 +232,17 @@ abstract class BaseItemSubTypeQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
+        if (empty($keys)) {
+            return $this->add(null, '1<>1', Criteria::CUSTOM);
+        }
+        foreach ($keys as $key) {
+            $cton0 = $this->getNewCriterion(ItemSubTypePeer::ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(ItemSubTypePeer::MAIN_TYPE_ID, $key[1], Criteria::EQUAL);
+            $cton0->addAnd($cton1);
+            $this->addOr($cton0);
+        }
 
-        return $this->addUsingAlias(ItemSubTypePeer::ID, $keys, Criteria::IN);
+        return $this;
     }
 
     /**
@@ -255,6 +273,35 @@ abstract class BaseItemSubTypeQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the main_type_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByMainTypeId(1234); // WHERE main_type_id = 1234
+     * $query->filterByMainTypeId(array(12, 34)); // WHERE main_type_id IN (12, 34)
+     * $query->filterByMainTypeId(array('min' => 12)); // WHERE main_type_id > 12
+     * </code>
+     *
+     * @see       filterByMainType()
+     *
+     * @param     mixed $mainTypeId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemSubTypeQuery The current query, for fluid interface
+     */
+    public function filterByMainTypeId($mainTypeId = null, $comparison = null)
+    {
+        if (is_array($mainTypeId) && null === $comparison) {
+            $comparison = Criteria::IN;
+        }
+
+        return $this->addUsingAlias(ItemSubTypePeer::MAIN_TYPE_ID, $mainTypeId, $comparison);
+    }
+
+    /**
      * Filter the query on the title column
      *
      * Example usage:
@@ -281,49 +328,6 @@ abstract class BaseItemSubTypeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ItemSubTypePeer::TITLE, $title, $comparison);
-    }
-
-    /**
-     * Filter the query on the main_type_id column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByMainTypeId(1234); // WHERE main_type_id = 1234
-     * $query->filterByMainTypeId(array(12, 34)); // WHERE main_type_id IN (12, 34)
-     * $query->filterByMainTypeId(array('min' => 12)); // WHERE main_type_id > 12
-     * </code>
-     *
-     * @see       filterByMainType()
-     *
-     * @param     mixed $mainTypeId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ItemSubTypeQuery The current query, for fluid interface
-     */
-    public function filterByMainTypeId($mainTypeId = null, $comparison = null)
-    {
-        if (is_array($mainTypeId)) {
-            $useMinMax = false;
-            if (isset($mainTypeId['min'])) {
-                $this->addUsingAlias(ItemSubTypePeer::MAIN_TYPE_ID, $mainTypeId['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($mainTypeId['max'])) {
-                $this->addUsingAlias(ItemSubTypePeer::MAIN_TYPE_ID, $mainTypeId['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(ItemSubTypePeer::MAIN_TYPE_ID, $mainTypeId, $comparison);
     }
 
     /**
@@ -403,6 +407,80 @@ abstract class BaseItemSubTypeQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related Item object
+     *
+     * @param   Item|PropelObjectCollection $item  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return   ItemSubTypeQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
+     */
+    public function filterByItem($item, $comparison = null)
+    {
+        if ($item instanceof Item) {
+            return $this
+                ->addUsingAlias(ItemSubTypePeer::ID, $item->getItemSubTypeId(), $comparison);
+        } elseif ($item instanceof PropelObjectCollection) {
+            return $this
+                ->useItemQuery()
+                ->filterByPrimaryKeys($item->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByItem() only accepts arguments of type Item or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Item relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ItemSubTypeQuery The current query, for fluid interface
+     */
+    public function joinItem($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Item');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Item');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Item relation Item object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \GW2Spidy\DB\ItemQuery A secondary query class using the current class as primary query
+     */
+    public function useItemQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinItem($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Item', '\GW2Spidy\DB\ItemQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ItemSubType $itemSubType Object to remove from the list of results
@@ -412,7 +490,9 @@ abstract class BaseItemSubTypeQuery extends ModelCriteria
     public function prune($itemSubType = null)
     {
         if ($itemSubType) {
-            $this->addUsingAlias(ItemSubTypePeer::ID, $itemSubType->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(ItemSubTypePeer::ID), $itemSubType->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(ItemSubTypePeer::MAIN_TYPE_ID), $itemSubType->getMainTypeId(), Criteria::NOT_EQUAL);
+            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
         return $this;

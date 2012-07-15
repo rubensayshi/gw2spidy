@@ -43,8 +43,8 @@ class ItemSubTypeTableMap extends TableMap
         $this->setUseIdGenerator(false);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
+        $this->addForeignPrimaryKey('MAIN_TYPE_ID', 'MainTypeId', 'INTEGER' , 'item_type', 'ID', true, null, null);
         $this->addColumn('TITLE', 'Title', 'VARCHAR', true, 255, null);
-        $this->addForeignKey('MAIN_TYPE_ID', 'MainTypeId', 'INTEGER', 'item_type', 'ID', true, null, null);
         // validators
     } // initialize()
 
@@ -54,6 +54,7 @@ class ItemSubTypeTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('MainType', 'GW2Spidy\\DB\\ItemType', RelationMap::MANY_TO_ONE, array('main_type_id' => 'id', ), null, null);
+        $this->addRelation('Item', 'GW2Spidy\\DB\\Item', RelationMap::ONE_TO_MANY, array('id' => 'item_sub_type_id', ), null, null, 'Items');
     } // buildRelations()
 
 } // ItemSubTypeTableMap

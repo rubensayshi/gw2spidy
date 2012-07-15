@@ -11,6 +11,7 @@ use \PropelException;
 use \PropelPDO;
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemPeer;
+use GW2Spidy\DB\ItemSubTypePeer;
 use GW2Spidy\DB\ItemTypePeer;
 use GW2Spidy\DB\map\ItemTableMap;
 
@@ -36,13 +37,13 @@ abstract class BaseItemPeer {
     const TM_CLASS = 'ItemTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 10;
+    const NUM_COLUMNS = 12;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 10;
+    const NUM_HYDRATE_COLUMNS = 12;
 
     /** the column name for the DATA_ID field */
     const DATA_ID = 'item.DATA_ID';
@@ -74,6 +75,12 @@ abstract class BaseItemPeer {
     /** the column name for the RARITY_WORD field */
     const RARITY_WORD = 'item.RARITY_WORD';
 
+    /** the column name for the ITEM_TYPE_ID field */
+    const ITEM_TYPE_ID = 'item.ITEM_TYPE_ID';
+
+    /** the column name for the ITEM_SUB_TYPE_ID field */
+    const ITEM_SUB_TYPE_ID = 'item.ITEM_SUB_TYPE_ID';
+
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
@@ -93,12 +100,12 @@ abstract class BaseItemPeer {
      * e.g. ItemPeer::$fieldNames[ItemPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('DataId', 'TypeId', 'Name', 'GemStoreDescription', 'GemStoreBlurb', 'RestrictionLevel', 'Rarity', 'VendorSellPrice', 'Img', 'RarityWord', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId', 'typeId', 'name', 'gemStoreDescription', 'gemStoreBlurb', 'restrictionLevel', 'rarity', 'vendorSellPrice', 'img', 'rarityWord', ),
-        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID, ItemPeer::TYPE_ID, ItemPeer::NAME, ItemPeer::GEM_STORE_DESCRIPTION, ItemPeer::GEM_STORE_BLURB, ItemPeer::RESTRICTION_LEVEL, ItemPeer::RARITY, ItemPeer::VENDOR_SELL_PRICE, ItemPeer::IMG, ItemPeer::RARITY_WORD, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID', 'TYPE_ID', 'NAME', 'GEM_STORE_DESCRIPTION', 'GEM_STORE_BLURB', 'RESTRICTION_LEVEL', 'RARITY', 'VENDOR_SELL_PRICE', 'IMG', 'RARITY_WORD', ),
-        BasePeer::TYPE_FIELDNAME => array ('data_id', 'type_id', 'name', 'gem_store_description', 'gem_store_blurb', 'restriction_level', 'rarity', 'vendor_sell_price', 'img', 'rarity_word', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        BasePeer::TYPE_PHPNAME => array ('DataId', 'TypeId', 'Name', 'GemStoreDescription', 'GemStoreBlurb', 'RestrictionLevel', 'Rarity', 'VendorSellPrice', 'Img', 'RarityWord', 'ItemTypeId', 'ItemSubTypeId', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId', 'typeId', 'name', 'gemStoreDescription', 'gemStoreBlurb', 'restrictionLevel', 'rarity', 'vendorSellPrice', 'img', 'rarityWord', 'itemTypeId', 'itemSubTypeId', ),
+        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID, ItemPeer::TYPE_ID, ItemPeer::NAME, ItemPeer::GEM_STORE_DESCRIPTION, ItemPeer::GEM_STORE_BLURB, ItemPeer::RESTRICTION_LEVEL, ItemPeer::RARITY, ItemPeer::VENDOR_SELL_PRICE, ItemPeer::IMG, ItemPeer::RARITY_WORD, ItemPeer::ITEM_TYPE_ID, ItemPeer::ITEM_SUB_TYPE_ID, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID', 'TYPE_ID', 'NAME', 'GEM_STORE_DESCRIPTION', 'GEM_STORE_BLURB', 'RESTRICTION_LEVEL', 'RARITY', 'VENDOR_SELL_PRICE', 'IMG', 'RARITY_WORD', 'ITEM_TYPE_ID', 'ITEM_SUB_TYPE_ID', ),
+        BasePeer::TYPE_FIELDNAME => array ('data_id', 'type_id', 'name', 'gem_store_description', 'gem_store_blurb', 'restriction_level', 'rarity', 'vendor_sell_price', 'img', 'rarity_word', 'item_type_id', 'item_sub_type_id', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -108,12 +115,12 @@ abstract class BaseItemPeer {
      * e.g. ItemPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('DataId' => 0, 'TypeId' => 1, 'Name' => 2, 'GemStoreDescription' => 3, 'GemStoreBlurb' => 4, 'RestrictionLevel' => 5, 'Rarity' => 6, 'VendorSellPrice' => 7, 'Img' => 8, 'RarityWord' => 9, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId' => 0, 'typeId' => 1, 'name' => 2, 'gemStoreDescription' => 3, 'gemStoreBlurb' => 4, 'restrictionLevel' => 5, 'rarity' => 6, 'vendorSellPrice' => 7, 'img' => 8, 'rarityWord' => 9, ),
-        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID => 0, ItemPeer::TYPE_ID => 1, ItemPeer::NAME => 2, ItemPeer::GEM_STORE_DESCRIPTION => 3, ItemPeer::GEM_STORE_BLURB => 4, ItemPeer::RESTRICTION_LEVEL => 5, ItemPeer::RARITY => 6, ItemPeer::VENDOR_SELL_PRICE => 7, ItemPeer::IMG => 8, ItemPeer::RARITY_WORD => 9, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID' => 0, 'TYPE_ID' => 1, 'NAME' => 2, 'GEM_STORE_DESCRIPTION' => 3, 'GEM_STORE_BLURB' => 4, 'RESTRICTION_LEVEL' => 5, 'RARITY' => 6, 'VENDOR_SELL_PRICE' => 7, 'IMG' => 8, 'RARITY_WORD' => 9, ),
-        BasePeer::TYPE_FIELDNAME => array ('data_id' => 0, 'type_id' => 1, 'name' => 2, 'gem_store_description' => 3, 'gem_store_blurb' => 4, 'restriction_level' => 5, 'rarity' => 6, 'vendor_sell_price' => 7, 'img' => 8, 'rarity_word' => 9, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        BasePeer::TYPE_PHPNAME => array ('DataId' => 0, 'TypeId' => 1, 'Name' => 2, 'GemStoreDescription' => 3, 'GemStoreBlurb' => 4, 'RestrictionLevel' => 5, 'Rarity' => 6, 'VendorSellPrice' => 7, 'Img' => 8, 'RarityWord' => 9, 'ItemTypeId' => 10, 'ItemSubTypeId' => 11, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId' => 0, 'typeId' => 1, 'name' => 2, 'gemStoreDescription' => 3, 'gemStoreBlurb' => 4, 'restrictionLevel' => 5, 'rarity' => 6, 'vendorSellPrice' => 7, 'img' => 8, 'rarityWord' => 9, 'itemTypeId' => 10, 'itemSubTypeId' => 11, ),
+        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID => 0, ItemPeer::TYPE_ID => 1, ItemPeer::NAME => 2, ItemPeer::GEM_STORE_DESCRIPTION => 3, ItemPeer::GEM_STORE_BLURB => 4, ItemPeer::RESTRICTION_LEVEL => 5, ItemPeer::RARITY => 6, ItemPeer::VENDOR_SELL_PRICE => 7, ItemPeer::IMG => 8, ItemPeer::RARITY_WORD => 9, ItemPeer::ITEM_TYPE_ID => 10, ItemPeer::ITEM_SUB_TYPE_ID => 11, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID' => 0, 'TYPE_ID' => 1, 'NAME' => 2, 'GEM_STORE_DESCRIPTION' => 3, 'GEM_STORE_BLURB' => 4, 'RESTRICTION_LEVEL' => 5, 'RARITY' => 6, 'VENDOR_SELL_PRICE' => 7, 'IMG' => 8, 'RARITY_WORD' => 9, 'ITEM_TYPE_ID' => 10, 'ITEM_SUB_TYPE_ID' => 11, ),
+        BasePeer::TYPE_FIELDNAME => array ('data_id' => 0, 'type_id' => 1, 'name' => 2, 'gem_store_description' => 3, 'gem_store_blurb' => 4, 'restriction_level' => 5, 'rarity' => 6, 'vendor_sell_price' => 7, 'img' => 8, 'rarity_word' => 9, 'item_type_id' => 10, 'item_sub_type_id' => 11, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -197,6 +204,8 @@ abstract class BaseItemPeer {
             $criteria->addSelectColumn(ItemPeer::VENDOR_SELL_PRICE);
             $criteria->addSelectColumn(ItemPeer::IMG);
             $criteria->addSelectColumn(ItemPeer::RARITY_WORD);
+            $criteria->addSelectColumn(ItemPeer::ITEM_TYPE_ID);
+            $criteria->addSelectColumn(ItemPeer::ITEM_SUB_TYPE_ID);
         } else {
             $criteria->addSelectColumn($alias . '.DATA_ID');
             $criteria->addSelectColumn($alias . '.TYPE_ID');
@@ -208,6 +217,8 @@ abstract class BaseItemPeer {
             $criteria->addSelectColumn($alias . '.VENDOR_SELL_PRICE');
             $criteria->addSelectColumn($alias . '.IMG');
             $criteria->addSelectColumn($alias . '.RARITY_WORD');
+            $criteria->addSelectColumn($alias . '.ITEM_TYPE_ID');
+            $criteria->addSelectColumn($alias . '.ITEM_SUB_TYPE_ID');
         }
     }
 
@@ -540,7 +551,58 @@ abstract class BaseItemPeer {
             $con = Propel::getConnection(ItemPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria->addJoin(ItemPeer::TYPE_ID, ItemTypePeer::ID, $join_behavior);
+        $criteria->addJoin(ItemPeer::ITEM_TYPE_ID, ItemTypePeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related ItemSubType table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinItemSubType(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ItemPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ItemPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(ItemPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ItemPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ItemPeer::ITEM_SUB_TYPE_ID, ItemSubTypePeer::ID, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
 
@@ -577,7 +639,7 @@ abstract class BaseItemPeer {
         $startcol = ItemPeer::NUM_HYDRATE_COLUMNS;
         ItemTypePeer::addSelectColumns($criteria);
 
-        $criteria->addJoin(ItemPeer::TYPE_ID, ItemTypePeer::ID, $join_behavior);
+        $criteria->addJoin(ItemPeer::ITEM_TYPE_ID, ItemTypePeer::ID, $join_behavior);
 
         $stmt = BasePeer::doSelect($criteria, $con);
         $results = array();
@@ -610,6 +672,73 @@ abstract class BaseItemPeer {
                 } // if obj2 already loaded
 
                 // Add the $obj1 (Item) to $obj2 (ItemType)
+                $obj2->addItem($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Item objects pre-filled with their ItemSubType objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Item objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinItemSubType(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ItemPeer::DATABASE_NAME);
+        }
+
+        ItemPeer::addSelectColumns($criteria);
+        $startcol = ItemPeer::NUM_HYDRATE_COLUMNS;
+        ItemSubTypePeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(ItemPeer::ITEM_SUB_TYPE_ID, ItemSubTypePeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ItemPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ItemPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = ItemPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ItemPeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = ItemSubTypePeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = ItemSubTypePeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = ItemSubTypePeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    ItemSubTypePeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (Item) to $obj2 (ItemSubType)
                 $obj2->addItem($obj1);
 
             } // if joined row was not null
@@ -658,7 +787,9 @@ abstract class BaseItemPeer {
             $con = Propel::getConnection(ItemPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria->addJoin(ItemPeer::TYPE_ID, ItemTypePeer::ID, $join_behavior);
+        $criteria->addJoin(ItemPeer::ITEM_TYPE_ID, ItemTypePeer::ID, $join_behavior);
+
+        $criteria->addJoin(ItemPeer::ITEM_SUB_TYPE_ID, ItemSubTypePeer::ID, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
 
@@ -697,7 +828,12 @@ abstract class BaseItemPeer {
         ItemTypePeer::addSelectColumns($criteria);
         $startcol3 = $startcol2 + ItemTypePeer::NUM_HYDRATE_COLUMNS;
 
-        $criteria->addJoin(ItemPeer::TYPE_ID, ItemTypePeer::ID, $join_behavior);
+        ItemSubTypePeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + ItemSubTypePeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ItemPeer::ITEM_TYPE_ID, ItemTypePeer::ID, $join_behavior);
+
+        $criteria->addJoin(ItemPeer::ITEM_SUB_TYPE_ID, ItemSubTypePeer::ID, $join_behavior);
 
         $stmt = BasePeer::doSelect($criteria, $con);
         $results = array();
@@ -733,6 +869,274 @@ abstract class BaseItemPeer {
                 // Add the $obj1 (Item) to the collection in $obj2 (ItemType)
                 $obj2->addItem($obj1);
             } // if joined row not null
+
+            // Add objects for joined ItemSubType rows
+
+            $key3 = ItemSubTypePeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = ItemSubTypePeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = ItemSubTypePeer::getOMClass();
+
+                    $obj3 = new $cls();
+                    $obj3->hydrate($row, $startcol3);
+                    ItemSubTypePeer::addInstanceToPool($obj3, $key3);
+                } // if obj3 loaded
+
+                // Add the $obj1 (Item) to the collection in $obj3 (ItemSubType)
+                $obj3->addItem($obj1);
+            } // if joined row not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related ItemType table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAllExceptItemType(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ItemPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ItemPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+        // Set the correct dbName
+        $criteria->setDbName(ItemPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ItemPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+    
+        $criteria->addJoin(ItemPeer::ITEM_SUB_TYPE_ID, ItemSubTypePeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related ItemSubType table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAllExceptItemSubType(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ItemPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ItemPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+        // Set the correct dbName
+        $criteria->setDbName(ItemPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ItemPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+    
+        $criteria->addJoin(ItemPeer::ITEM_TYPE_ID, ItemTypePeer::ID, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Selects a collection of Item objects pre-filled with all related objects except ItemType.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Item objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAllExceptItemType(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        // $criteria->getDbName() will return the same object if not set to another value
+        // so == check is okay and faster
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ItemPeer::DATABASE_NAME);
+        }
+
+        ItemPeer::addSelectColumns($criteria);
+        $startcol2 = ItemPeer::NUM_HYDRATE_COLUMNS;
+
+        ItemSubTypePeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + ItemSubTypePeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ItemPeer::ITEM_SUB_TYPE_ID, ItemSubTypePeer::ID, $join_behavior);
+
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ItemPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ItemPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = ItemPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ItemPeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+                // Add objects for joined ItemSubType rows
+
+                $key2 = ItemSubTypePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                if ($key2 !== null) {
+                    $obj2 = ItemSubTypePeer::getInstanceFromPool($key2);
+                    if (!$obj2) {
+    
+                        $cls = ItemSubTypePeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    ItemSubTypePeer::addInstanceToPool($obj2, $key2);
+                } // if $obj2 already loaded
+
+                // Add the $obj1 (Item) to the collection in $obj2 (ItemSubType)
+                $obj2->addItem($obj1);
+
+            } // if joined row is not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Item objects pre-filled with all related objects except ItemSubType.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Item objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAllExceptItemSubType(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        // $criteria->getDbName() will return the same object if not set to another value
+        // so == check is okay and faster
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ItemPeer::DATABASE_NAME);
+        }
+
+        ItemPeer::addSelectColumns($criteria);
+        $startcol2 = ItemPeer::NUM_HYDRATE_COLUMNS;
+
+        ItemTypePeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + ItemTypePeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ItemPeer::ITEM_TYPE_ID, ItemTypePeer::ID, $join_behavior);
+
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ItemPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ItemPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = ItemPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ItemPeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+                // Add objects for joined ItemType rows
+
+                $key2 = ItemTypePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                if ($key2 !== null) {
+                    $obj2 = ItemTypePeer::getInstanceFromPool($key2);
+                    if (!$obj2) {
+    
+                        $cls = ItemTypePeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    ItemTypePeer::addInstanceToPool($obj2, $key2);
+                } // if $obj2 already loaded
+
+                // Add the $obj1 (Item) to the collection in $obj2 (ItemType)
+                $obj2->addItem($obj1);
+
+            } // if joined row is not null
 
             $results[] = $obj1;
         }

@@ -16,13 +16,15 @@ use \PropelPDO;
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemPeer;
 use GW2Spidy\DB\ItemQuery;
+use GW2Spidy\DB\ItemSubType;
+use GW2Spidy\DB\ItemSubTypeQuery;
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemTypeQuery;
 
 /**
  * Base class that represents a row from the 'item' table.
  *
- * 
+ *
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -109,9 +111,26 @@ abstract class BaseItem extends BaseObject implements Persistent
     protected $rarity_word;
 
     /**
+     * The value for the item_type_id field.
+     * @var        int
+     */
+    protected $item_type_id;
+
+    /**
+     * The value for the item_sub_type_id field.
+     * @var        int
+     */
+    protected $item_sub_type_id;
+
+    /**
      * @var        ItemType
      */
     protected $aItemType;
+
+    /**
+     * @var        ItemSubType
+     */
+    protected $aItemSubType;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -129,7 +148,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [data_id] column value.
-     * 
+     *
      * @return   int
      */
     public function getDataId()
@@ -140,7 +159,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [type_id] column value.
-     * 
+     *
      * @return   int
      */
     public function getTypeId()
@@ -151,7 +170,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [name] column value.
-     * 
+     *
      * @return   string
      */
     public function getName()
@@ -162,7 +181,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [gem_store_description] column value.
-     * 
+     *
      * @return   string
      */
     public function getGemStoreDescription()
@@ -173,7 +192,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [gem_store_blurb] column value.
-     * 
+     *
      * @return   string
      */
     public function getGemStoreBlurb()
@@ -184,7 +203,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [restriction_level] column value.
-     * 
+     *
      * @return   string
      */
     public function getRestrictionLevel()
@@ -195,7 +214,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [rarity] column value.
-     * 
+     *
      * @return   string
      */
     public function getRarity()
@@ -206,7 +225,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [vendor_sell_price] column value.
-     * 
+     *
      * @return   string
      */
     public function getVendorSellPrice()
@@ -217,7 +236,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [img] column value.
-     * 
+     *
      * @return   string
      */
     public function getImg()
@@ -228,7 +247,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [rarity_word] column value.
-     * 
+     *
      * @return   string
      */
     public function getRarityWord()
@@ -238,8 +257,30 @@ abstract class BaseItem extends BaseObject implements Persistent
     }
 
     /**
+     * Get the [item_type_id] column value.
+     *
+     * @return   int
+     */
+    public function getItemTypeId()
+    {
+
+        return $this->item_type_id;
+    }
+
+    /**
+     * Get the [item_sub_type_id] column value.
+     *
+     * @return   int
+     */
+    public function getItemSubTypeId()
+    {
+
+        return $this->item_sub_type_id;
+    }
+
+    /**
      * Set the value of [data_id] column.
-     * 
+     *
      * @param      int $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -260,7 +301,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [type_id] column.
-     * 
+     *
      * @param      int $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -275,17 +316,13 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->modifiedColumns[] = ItemPeer::TYPE_ID;
         }
 
-        if ($this->aItemType !== null && $this->aItemType->getId() !== $v) {
-            $this->aItemType = null;
-        }
-
 
         return $this;
     } // setTypeId()
 
     /**
      * Set the value of [name] column.
-     * 
+     *
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -306,7 +343,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [gem_store_description] column.
-     * 
+     *
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -327,7 +364,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [gem_store_blurb] column.
-     * 
+     *
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -348,7 +385,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [restriction_level] column.
-     * 
+     *
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -369,7 +406,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [rarity] column.
-     * 
+     *
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -390,7 +427,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [vendor_sell_price] column.
-     * 
+     *
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -411,7 +448,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [img] column.
-     * 
+     *
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -432,7 +469,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [rarity_word] column.
-     * 
+     *
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -450,6 +487,56 @@ abstract class BaseItem extends BaseObject implements Persistent
 
         return $this;
     } // setRarityWord()
+
+    /**
+     * Set the value of [item_type_id] column.
+     *
+     * @param      int $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setItemTypeId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->item_type_id !== $v) {
+            $this->item_type_id = $v;
+            $this->modifiedColumns[] = ItemPeer::ITEM_TYPE_ID;
+        }
+
+        if ($this->aItemType !== null && $this->aItemType->getId() !== $v) {
+            $this->aItemType = null;
+        }
+
+
+        return $this;
+    } // setItemTypeId()
+
+    /**
+     * Set the value of [item_sub_type_id] column.
+     *
+     * @param      int $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setItemSubTypeId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->item_sub_type_id !== $v) {
+            $this->item_sub_type_id = $v;
+            $this->modifiedColumns[] = ItemPeer::ITEM_SUB_TYPE_ID;
+        }
+
+        if ($this->aItemSubType !== null && $this->aItemSubType->getId() !== $v) {
+            $this->aItemSubType = null;
+        }
+
+
+        return $this;
+    } // setItemSubTypeId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -493,6 +580,8 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->vendor_sell_price = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
             $this->img = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
             $this->rarity_word = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+            $this->item_type_id = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+            $this->item_sub_type_id = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -501,7 +590,7 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 10; // 10 = ItemPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 12; // 12 = ItemPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Item object", $e);
@@ -524,8 +613,11 @@ abstract class BaseItem extends BaseObject implements Persistent
     public function ensureConsistency()
     {
 
-        if ($this->aItemType !== null && $this->type_id !== $this->aItemType->getId()) {
+        if ($this->aItemType !== null && $this->item_type_id !== $this->aItemType->getId()) {
             $this->aItemType = null;
+        }
+        if ($this->aItemSubType !== null && $this->item_sub_type_id !== $this->aItemSubType->getId()) {
+            $this->aItemSubType = null;
         }
     } // ensureConsistency
 
@@ -567,6 +659,7 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($deep) {  // also de-associate any related objects?
 
             $this->aItemType = null;
+            $this->aItemSubType = null;
         } // if (deep)
     }
 
@@ -692,6 +785,13 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->setItemType($this->aItemType);
             }
 
+            if ($this->aItemSubType !== null) {
+                if ($this->aItemSubType->isModified() || $this->aItemSubType->isNew()) {
+                    $affectedRows += $this->aItemSubType->save($con);
+                }
+                $this->setItemSubType($this->aItemSubType);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -755,6 +855,12 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::RARITY_WORD)) {
             $modifiedColumns[':p' . $index++]  = '`RARITY_WORD`';
         }
+        if ($this->isColumnModified(ItemPeer::ITEM_TYPE_ID)) {
+            $modifiedColumns[':p' . $index++]  = '`ITEM_TYPE_ID`';
+        }
+        if ($this->isColumnModified(ItemPeer::ITEM_SUB_TYPE_ID)) {
+            $modifiedColumns[':p' . $index++]  = '`ITEM_SUB_TYPE_ID`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `item` (%s) VALUES (%s)',
@@ -795,6 +901,12 @@ abstract class BaseItem extends BaseObject implements Persistent
                         break;
                     case '`RARITY_WORD`':
 						$stmt->bindValue($identifier, $this->rarity_word, PDO::PARAM_STR);
+                        break;
+                    case '`ITEM_TYPE_ID`':
+						$stmt->bindValue($identifier, $this->item_type_id, PDO::PARAM_INT);
+                        break;
+                    case '`ITEM_SUB_TYPE_ID`':
+						$stmt->bindValue($identifier, $this->item_sub_type_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -894,6 +1006,12 @@ abstract class BaseItem extends BaseObject implements Persistent
                 }
             }
 
+            if ($this->aItemSubType !== null) {
+                if (!$this->aItemSubType->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aItemSubType->getValidationFailures());
+                }
+            }
+
 
             if (($retval = ItemPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
@@ -965,6 +1083,12 @@ abstract class BaseItem extends BaseObject implements Persistent
             case 9:
                 return $this->getRarityWord();
                 break;
+            case 10:
+                return $this->getItemTypeId();
+                break;
+            case 11:
+                return $this->getItemSubTypeId();
+                break;
             default:
                 return null;
                 break;
@@ -1004,10 +1128,15 @@ abstract class BaseItem extends BaseObject implements Persistent
             $keys[7] => $this->getVendorSellPrice(),
             $keys[8] => $this->getImg(),
             $keys[9] => $this->getRarityWord(),
+            $keys[10] => $this->getItemTypeId(),
+            $keys[11] => $this->getItemSubTypeId(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aItemType) {
                 $result['ItemType'] = $this->aItemType->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aItemSubType) {
+                $result['ItemSubType'] = $this->aItemSubType->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -1073,6 +1202,12 @@ abstract class BaseItem extends BaseObject implements Persistent
             case 9:
                 $this->setRarityWord($value);
                 break;
+            case 10:
+                $this->setItemTypeId($value);
+                break;
+            case 11:
+                $this->setItemSubTypeId($value);
+                break;
         } // switch()
     }
 
@@ -1107,6 +1242,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         if (array_key_exists($keys[7], $arr)) $this->setVendorSellPrice($arr[$keys[7]]);
         if (array_key_exists($keys[8], $arr)) $this->setImg($arr[$keys[8]]);
         if (array_key_exists($keys[9], $arr)) $this->setRarityWord($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setItemTypeId($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setItemSubTypeId($arr[$keys[11]]);
     }
 
     /**
@@ -1128,6 +1265,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::VENDOR_SELL_PRICE)) $criteria->add(ItemPeer::VENDOR_SELL_PRICE, $this->vendor_sell_price);
         if ($this->isColumnModified(ItemPeer::IMG)) $criteria->add(ItemPeer::IMG, $this->img);
         if ($this->isColumnModified(ItemPeer::RARITY_WORD)) $criteria->add(ItemPeer::RARITY_WORD, $this->rarity_word);
+        if ($this->isColumnModified(ItemPeer::ITEM_TYPE_ID)) $criteria->add(ItemPeer::ITEM_TYPE_ID, $this->item_type_id);
+        if ($this->isColumnModified(ItemPeer::ITEM_SUB_TYPE_ID)) $criteria->add(ItemPeer::ITEM_SUB_TYPE_ID, $this->item_sub_type_id);
 
         return $criteria;
     }
@@ -1200,6 +1339,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         $copyObj->setVendorSellPrice($this->getVendorSellPrice());
         $copyObj->setImg($this->getImg());
         $copyObj->setRarityWord($this->getRarityWord());
+        $copyObj->setItemTypeId($this->getItemTypeId());
+        $copyObj->setItemSubTypeId($this->getItemSubTypeId());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1268,9 +1409,9 @@ abstract class BaseItem extends BaseObject implements Persistent
     public function setItemType(ItemType $v = null)
     {
         if ($v === null) {
-            $this->setTypeId(NULL);
+            $this->setItemTypeId(NULL);
         } else {
-            $this->setTypeId($v->getId());
+            $this->setItemTypeId($v->getId());
         }
 
         $this->aItemType = $v;
@@ -1295,8 +1436,8 @@ abstract class BaseItem extends BaseObject implements Persistent
      */
     public function getItemType(PropelPDO $con = null)
     {
-        if ($this->aItemType === null && ($this->type_id !== null)) {
-            $this->aItemType = ItemTypeQuery::create()->findPk($this->type_id, $con);
+        if ($this->aItemType === null && ($this->item_type_id !== null)) {
+            $this->aItemType = ItemTypeQuery::create()->findPk($this->item_type_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
@@ -1307,6 +1448,59 @@ abstract class BaseItem extends BaseObject implements Persistent
         }
 
         return $this->aItemType;
+    }
+
+    /**
+     * Declares an association between this object and a ItemSubType object.
+     *
+     * @param                  ItemSubType $v
+     * @return                 Item The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setItemSubType(ItemSubType $v = null)
+    {
+        if ($v === null) {
+            $this->setItemSubTypeId(NULL);
+        } else {
+            $this->setItemSubTypeId($v->getId());
+        }
+
+        $this->aItemSubType = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ItemSubType object, it will not be re-added.
+        if ($v !== null) {
+            $v->addItem($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ItemSubType object
+     *
+     * @param      PropelPDO $con Optional Connection object.
+     * @return                 ItemSubType The associated ItemSubType object.
+     * @throws PropelException
+     */
+    public function getItemSubType(PropelPDO $con = null)
+    {
+        if ($this->aItemSubType === null && ($this->item_sub_type_id !== null)) {
+            $this->aItemSubType = ItemSubTypeQuery::create()
+                ->filterByItem($this) // here
+                ->findOne($con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aItemSubType->addItems($this);
+             */
+        }
+
+        return $this->aItemSubType;
     }
 
     /**
@@ -1324,6 +1518,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         $this->vendor_sell_price = null;
         $this->img = null;
         $this->rarity_word = null;
+        $this->item_type_id = null;
+        $this->item_sub_type_id = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();
@@ -1347,6 +1543,7 @@ abstract class BaseItem extends BaseObject implements Persistent
         } // if ($deep)
 
         $this->aItemType = null;
+        $this->aItemSubType = null;
     }
 
     /**

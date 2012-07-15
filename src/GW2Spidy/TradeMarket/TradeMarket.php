@@ -2,6 +2,10 @@
 
 namespace GW2Spidy\TradeMarket;
 
+use GW2Spidy\DB\ItemSubType;
+
+use GW2Spidy\DB\ItemType;
+
 use GW2Spidy\Util\CurlRequest;
 
 class TradeMarket {
@@ -70,6 +74,34 @@ class TradeMarket {
             return $json['data'];
         } else {
             throw new Exception("Failed to extract GW2.market JSON from HTML");
+        }
+    }
+
+    public function getItemList($type=null, $subType=null, $offset=0) {
+
+        $typeId    = ($type instanceof ItemType)       ? $type->getId()    : $type;
+        $subTypeId = ($subType instanceof ItemSubType) ? $subType->getId() : $subType;
+
+        $url = "https://tradingpost-live.ncplatform.net/ws/search.json?text=&levelmin=0&levelmax=80&offset={$offset}";
+
+        if ($typeId !== null) {
+            $url = "{$url}&type={$typeId}";
+        }
+        if ($subTypeId !== null) {
+            $url = "{$url}&subtype={$subTypeId}";
+        }
+
+        $curl = CurlRequest::newInstance($url)
+             ->exec()
+             ;
+
+        $result = $curl->getResult();
+        $json   = json_decode($result, true);
+
+        if (isset($json['results']) && $json['results']) {
+            return $json['results'];
+        } else {
+            return false;
         }
     }
 }
