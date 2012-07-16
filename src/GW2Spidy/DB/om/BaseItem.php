@@ -24,7 +24,7 @@ use GW2Spidy\DB\ItemTypeQuery;
 /**
  * Base class that represents a row from the 'item' table.
  *
- *
+ * 
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -148,7 +148,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [data_id] column value.
-     *
+     * 
      * @return   int
      */
     public function getDataId()
@@ -159,7 +159,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [type_id] column value.
-     *
+     * 
      * @return   int
      */
     public function getTypeId()
@@ -170,7 +170,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [name] column value.
-     *
+     * 
      * @return   string
      */
     public function getName()
@@ -181,7 +181,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [gem_store_description] column value.
-     *
+     * 
      * @return   string
      */
     public function getGemStoreDescription()
@@ -192,7 +192,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [gem_store_blurb] column value.
-     *
+     * 
      * @return   string
      */
     public function getGemStoreBlurb()
@@ -203,7 +203,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [restriction_level] column value.
-     *
+     * 
      * @return   string
      */
     public function getRestrictionLevel()
@@ -214,7 +214,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [rarity] column value.
-     *
+     * 
      * @return   string
      */
     public function getRarity()
@@ -225,7 +225,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [vendor_sell_price] column value.
-     *
+     * 
      * @return   string
      */
     public function getVendorSellPrice()
@@ -236,7 +236,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [img] column value.
-     *
+     * 
      * @return   string
      */
     public function getImg()
@@ -247,7 +247,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [rarity_word] column value.
-     *
+     * 
      * @return   string
      */
     public function getRarityWord()
@@ -258,7 +258,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [item_type_id] column value.
-     *
+     * 
      * @return   int
      */
     public function getItemTypeId()
@@ -269,7 +269,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Get the [item_sub_type_id] column value.
-     *
+     * 
      * @return   int
      */
     public function getItemSubTypeId()
@@ -280,7 +280,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [data_id] column.
-     *
+     * 
      * @param      int $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -301,7 +301,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [type_id] column.
-     *
+     * 
      * @param      int $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -322,7 +322,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [name] column.
-     *
+     * 
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -343,7 +343,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [gem_store_description] column.
-     *
+     * 
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -364,7 +364,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [gem_store_blurb] column.
-     *
+     * 
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -385,7 +385,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [restriction_level] column.
-     *
+     * 
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -406,7 +406,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [rarity] column.
-     *
+     * 
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -427,7 +427,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [vendor_sell_price] column.
-     *
+     * 
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -448,7 +448,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [img] column.
-     *
+     * 
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -469,7 +469,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [rarity_word] column.
-     *
+     * 
      * @param      string $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -490,7 +490,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [item_type_id] column.
-     *
+     * 
      * @param      int $v new value
      * @return   Item The current object (for fluent API support)
      */
@@ -515,7 +515,7 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * Set the value of [item_sub_type_id] column.
-     *
+     * 
      * @param      int $v new value
      * @return   Item The current object (for fluent API support)
      */

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-PROJECTDIR="/var/sandbox/gw2spidy"
+PROJECTDIR=`php -r "echo dirname(dirname(realpath('$(pwd)/$0')));"`
 
 cd $PROJECTDIR/config
-$PROJECTDIR/propel-gen 
+$PROJECTDIR/vendor/propel/generator/bin/propel-gen
 cp $PROJECTDIR/config/build/classes/gw2spidy/map/* $PROJECTDIR/src/GW2Spidy/DB/map/
 cp $PROJECTDIR/config/build/classes/gw2spidy/om/*  $PROJECTDIR/src/GW2Spidy/DB/om/
 cp $PROJECTDIR/config/build/conf/* $PROJECTDIR/config/
