@@ -65,5 +65,24 @@ CREATE TABLE `item`
         REFERENCES `item_sub_type` (`id`)
 ) ENGINE=MyISAM;
 
+-- ---------------------------------------------------------------------
+-- request_worker_queue
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `request_worker_queue`;
+
+CREATE TABLE `request_worker_queue`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `priority` INTEGER DEFAULT 1,
+    `status` VARCHAR(45) DEFAULT '' NOT NULL,
+    `worker` VARCHAR(255) DEFAULT '' NOT NULL,
+    `data` VARCHAR(255) DEFAULT '' NOT NULL,
+    `handler_uuid` VARCHAR(255) DEFAULT '' NOT NULL,
+    `touched` DATETIME,
+    `max_timeout` INTEGER DEFAULT 3600 NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

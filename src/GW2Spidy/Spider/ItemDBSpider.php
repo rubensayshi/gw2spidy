@@ -12,10 +12,8 @@ use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\TradeMarket\TradeMarket;
 
 class ItemDBSpider {
-    public function run() {
+    public function work($item) {
         $this->buildItemTypeDB();
-        $this->buildItemDB();
-
     }
 
     public function buildItemDB() {
