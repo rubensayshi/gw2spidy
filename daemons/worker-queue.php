@@ -1,20 +1,79 @@
 <?php
 
+use GW2Spidy\DB\RequestFloodControlPeer;
+
+use GW2Spidy\DB\RequestFloodControlQuery;
+
 use GW2Spidy\DB\WorkerQueueItemQuery;
 use GW2Spidy\DB\WorkerQueueItemPeer;
 
 require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
 
+define('SLOT_DEV_MODE', 'SLOT_DEV_MODE');
 $UUID    = getmypid() . "::" . time();
 $workers = array();
 $con     = Propel::getConnection();
+$run     = 0;
+$max     = 50;
+$slottime= SLOT_TIMEOUT . "sec";
 
 /*
- * we loop 50 times to accept a total of 50 queue items in 1 process,
- *  after that we let our process exit to avoid memory problems etc
+ * $run up to $max in 1 process, then exit so process gets revived
+ *  this is to avoid any memory problems (propel keeps a lot of stuff in memory)
  */
-for ($i = 0; $i < 50; $i++) {
+while ($run < $max) {
+    /*
+     * query with LOCK IN SHARE MORE for the oldest request_flood_control slot
+     */
+    $sql = "SELECT
+            *
+        FROM `".RequestFloodControlPeer::TABLE_NAME."`
+        ORDER BY `touched` ASC, `id` ASC
+        LIMIT 1
+        LOCK IN SHARE MODE";
+
+    // START TRANSACTION
+    $con->beginTransaction();
+
+    $prep = $con->prepare($sql);
+    $prep->execute();
+
+    /*
+     * if there are no slots then this is development, FFA do whatever you want ;)
+     *  otherwise we grab the first (should be the only)
+     */
+    $slots = RequestFloodControlPeer::populateObjects($prep);
+    if (!count($slots)) {
+        // CLOSE TRANSACTION
+        $con->commit();
+
+        $slot = SLOT_DEV_MODE;
+    } else {
+        $slot = $slots[0];
+    }
+
+    /*
+     * check if we have a slot which we're allowed to use (within the timebox)
+     *  if not then we sleep until that slot would be available
+     *
+     *  if the slot is ok, we touch it and we can run
+     */
+    if ($slot != SLOT_DEV_MODE) {
+        if ($slot->getTouched('U') > strtotime("-{$slottime}")) {
+            // CLOSE TRANSACTION
+            $con->commit();
+
+            $sleep = $slot->getTouched('U') - strtotime("-{$slottime}");
+            print "no slots, sleeping [{$sleep}] ... \n";
+            sleep($sleep);
+
+            continue;
+        }
+    }
+
+    echo "got slot \n";
+
     /*
      * query with LOCK IN SHARE MODE for the highest priority, oldest item
      *  which hasn't been touched yet, or was touched before it's max timeout
@@ -28,9 +87,6 @@ for ($i = 0; $i < 50; $i++) {
         ORDER BY `priority` DESC, `id` ASC
         LIMIT 1
         LOCK IN SHARE MODE";
-
-    // START TRANSACTION
-    $con->beginTransaction();
 
     $prep = $con->prepare($sql);
     $prep->execute();
@@ -47,68 +103,75 @@ for ($i = 0; $i < 50; $i++) {
         $con->commit();
 
         if (!in_array('--dev', $argv)) {
-            print "no items, sleeping ... \n";
+            print "no items, sleeping [60] ... \n";
             sleep(60);
         }
 
+        $run++;
         continue;
     /*
      * if we do have items
      *  mark them touched and with our UUID
      *  then close the transaction
+     *
+     * also touch our slot
      */
     } else {
-        foreach ($items as $item) {
-            $item->setHandlerUUID($UUID);
-            $item->setTouched(new DateTime());
-            $item->save();
+        $item = $items[0];
+
+        $item->setHandlerUUID($UUID);
+        $item->setTouched(new DateTime());
+        $item->save();
+
+        if ($slot != SLOT_DEV_MODE) {
+            $slot->setTouched(new DateTime());
+            $slot->save();
         }
 
         // CLOSE TRANSACTION
         $con->commit();
     }
 
+    echo "got item \n";
 
     /*
-     * process the items
+     * process the item
      *  wrapped in trycatch to catch and log exceptions
      *  get a worker (reuse old instances) and let it work the item
      *
      * mark done/error and add log
      * finish with touching it one final time and saving
      */
-    foreach ($items as $item) {
-        $done = false;
 
-        try {
-            $workerName = $item->getWorker();
+    $done = false;
 
-            if (!isset($workers[$workerName])) {
-                $workers[$workerName] = new $workerName;
-            }
+    try {
+        $workerName = $item->getWorker();
 
-            ob_start();
-            $workers[$workerName]->work($item);
-
-            $done = true;
-        } catch (Exception $e) {
-            $log = ob_get_clean();
-            $item->setStatus('ERROR');
-            $item->setLastLog("{$log} \n\n\n --------------- \n\n\n {$e}");
-
-            echo " !! worker process threw exception !! \n\n\n --------------- \n\n\n {$log} \n\n\n --------------- \n\n\n {$e} ";
+        if (!isset($workers[$workerName])) {
+            $workers[$workerName] = new $workerName;
         }
 
-        if ($done) {
-            $item->setStatus('DONE');
-            $item->setLastLog(ob_get_clean());
-        }
+        ob_start();
+        $workers[$workerName]->work($item);
 
-        $item->setTouched(new DateTime());
-        $item->save();
+        $done = true;
+    } catch (Exception $e) {
+        $log = ob_get_clean();
+        $item->setStatus('ERROR');
+        $item->setLastLog("{$log} \n\n\n --------------- \n\n\n {$e}");
+
+        echo " !! worker process threw exception !! \n\n\n --------------- \n\n\n {$log} \n\n\n --------------- \n\n\n {$e} ";
     }
 
-    var_dump(memory_get_usage());
+    if ($done) {
+        $item->setStatus('DONE');
+        $item->setLastLog(ob_get_clean());
+    }
+
+    $item->setTouched(new DateTime());
+    $item->save();
+    $run++;
 }
 
 /*
