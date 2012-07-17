@@ -57,7 +57,7 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
 
     /**
      * The value for the priority field.
-     * Note: this column has a database default value of: 1
+     * Note: this column has a database default value of: 100
      * @var        int
      */
     protected $priority;
@@ -131,7 +131,7 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
      */
     public function applyDefaultValues()
     {
-        $this->priority = 1;
+        $this->priority = 100;
         $this->status = '';
         $this->worker = '';
         $this->raw_data = '';
@@ -476,7 +476,7 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->priority !== 1) {
+            if ($this->priority !== 100) {
                 return false;
             }
 

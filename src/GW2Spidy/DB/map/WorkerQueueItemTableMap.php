@@ -43,7 +43,7 @@ class WorkerQueueItemTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('PRIORITY', 'Priority', 'INTEGER', false, null, 1);
+        $this->addColumn('PRIORITY', 'Priority', 'INTEGER', false, null, 100);
         $this->addColumn('STATUS', 'Status', 'VARCHAR', true, 45, '');
         $this->addColumn('WORKER', 'Worker', 'VARCHAR', true, 255, '');
         $this->addColumn('RAW_DATA', 'RawData', 'CLOB', true, 255, '');

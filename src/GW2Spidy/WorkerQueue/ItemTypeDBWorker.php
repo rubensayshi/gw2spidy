@@ -58,14 +58,9 @@ class ItemTypeDBWorker implements Worker {
         }
     }
 
-    public static function enqueueWorker($type, $subtype, $offset) {
+    public static function enqueueWorker() {
         $queueItem = new WorkerQueueItem();
-        $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\ItemDBWorker");
-        $queueItem->setData(array(
-            'type'    => $type,
-            'subtype' => $subtype,
-            'offset'  => $offset,
-        ));
+        $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\ItemTypeDBWorker");
 
         $queueItem->save();
 

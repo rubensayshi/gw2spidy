@@ -34,7 +34,7 @@
     </table>
     <table name="worker_queue_item" phpName="WorkerQueueItem">
         <column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true" phpName="Id" />
-        <column name="priority" type="integer" default="1" phpName="Priority" />
+        <column name="priority" type="integer" default="100" phpName="Priority" />
         <column name="status" type="varchar" size="45" required="true" default="" phpName="Status" />
         <column name="worker" type="varchar" size="255" required="true" default="" phpName="Worker" />
         <column name="raw_data" type="clob" size="255" required="true" default="" phpName="RawData" />

@@ -74,7 +74,7 @@ DROP TABLE IF EXISTS `worker_queue_item`;
 CREATE TABLE `worker_queue_item`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `priority` INTEGER DEFAULT 1,
+    `priority` INTEGER DEFAULT 100,
     `status` VARCHAR(45) DEFAULT '' NOT NULL,
     `worker` VARCHAR(255) DEFAULT '' NOT NULL,
     `raw_data` LONGTEXT DEFAULT '' NOT NULL,
