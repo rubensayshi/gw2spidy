@@ -77,11 +77,11 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
     protected $worker;
 
     /**
-     * The value for the data field.
+     * The value for the raw_data field.
      * Note: this column has a database default value of: ''
      * @var        string
      */
-    protected $data;
+    protected $raw_data;
 
     /**
      * The value for the handler_uuid field.
@@ -102,6 +102,12 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
      * @var        int
      */
     protected $max_timeout;
+
+    /**
+     * The value for the last_log field.
+     * @var        string
+     */
+    protected $last_log;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -128,7 +134,7 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
         $this->priority = 1;
         $this->status = '';
         $this->worker = '';
-        $this->data = '';
+        $this->raw_data = '';
         $this->handler_uuid = '';
         $this->max_timeout = 3600;
     }
@@ -188,14 +194,14 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
     }
 
     /**
-     * Get the [data] column value.
+     * Get the [raw_data] column value.
      * 
      * @return   string
      */
-    public function getData()
+    public function getRawData()
     {
 
-        return $this->data;
+        return $this->raw_data;
     }
 
     /**
@@ -256,6 +262,17 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
     {
 
         return $this->max_timeout;
+    }
+
+    /**
+     * Get the [last_log] column value.
+     * 
+     * @return   string
+     */
+    public function getLastLog()
+    {
+
+        return $this->last_log;
     }
 
     /**
@@ -343,25 +360,25 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
     } // setWorker()
 
     /**
-     * Set the value of [data] column.
+     * Set the value of [raw_data] column.
      * 
      * @param      string $v new value
      * @return   WorkerQueueItem The current object (for fluent API support)
      */
-    public function setData($v)
+    public function setRawData($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->data !== $v) {
-            $this->data = $v;
-            $this->modifiedColumns[] = WorkerQueueItemPeer::DATA;
+        if ($this->raw_data !== $v) {
+            $this->raw_data = $v;
+            $this->modifiedColumns[] = WorkerQueueItemPeer::RAW_DATA;
         }
 
 
         return $this;
-    } // setData()
+    } // setRawData()
 
     /**
      * Set the value of [handler_uuid] column.
@@ -429,6 +446,27 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
     } // setMaxTimeout()
 
     /**
+     * Set the value of [last_log] column.
+     * 
+     * @param      string $v new value
+     * @return   WorkerQueueItem The current object (for fluent API support)
+     */
+    public function setLastLog($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->last_log !== $v) {
+            $this->last_log = $v;
+            $this->modifiedColumns[] = WorkerQueueItemPeer::LAST_LOG;
+        }
+
+
+        return $this;
+    } // setLastLog()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -450,7 +488,7 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
                 return false;
             }
 
-            if ($this->data !== '') {
+            if ($this->raw_data !== '') {
                 return false;
             }
 
@@ -488,10 +526,11 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
             $this->priority = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
             $this->status = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
             $this->worker = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-            $this->data = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+            $this->raw_data = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
             $this->handler_uuid = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
             $this->touched = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
             $this->max_timeout = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+            $this->last_log = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -500,7 +539,7 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = WorkerQueueItemPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = WorkerQueueItemPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating WorkerQueueItem object", $e);
@@ -724,8 +763,8 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
         if ($this->isColumnModified(WorkerQueueItemPeer::WORKER)) {
             $modifiedColumns[':p' . $index++]  = '`WORKER`';
         }
-        if ($this->isColumnModified(WorkerQueueItemPeer::DATA)) {
-            $modifiedColumns[':p' . $index++]  = '`DATA`';
+        if ($this->isColumnModified(WorkerQueueItemPeer::RAW_DATA)) {
+            $modifiedColumns[':p' . $index++]  = '`RAW_DATA`';
         }
         if ($this->isColumnModified(WorkerQueueItemPeer::HANDLER_UUID)) {
             $modifiedColumns[':p' . $index++]  = '`HANDLER_UUID`';
@@ -735,6 +774,9 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
         }
         if ($this->isColumnModified(WorkerQueueItemPeer::MAX_TIMEOUT)) {
             $modifiedColumns[':p' . $index++]  = '`MAX_TIMEOUT`';
+        }
+        if ($this->isColumnModified(WorkerQueueItemPeer::LAST_LOG)) {
+            $modifiedColumns[':p' . $index++]  = '`LAST_LOG`';
         }
 
         $sql = sprintf(
@@ -759,8 +801,8 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
                     case '`WORKER`':
 						$stmt->bindValue($identifier, $this->worker, PDO::PARAM_STR);
                         break;
-                    case '`DATA`':
-						$stmt->bindValue($identifier, $this->data, PDO::PARAM_STR);
+                    case '`RAW_DATA`':
+						$stmt->bindValue($identifier, $this->raw_data, PDO::PARAM_STR);
                         break;
                     case '`HANDLER_UUID`':
 						$stmt->bindValue($identifier, $this->handler_uuid, PDO::PARAM_STR);
@@ -770,6 +812,9 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
                         break;
                     case '`MAX_TIMEOUT`':
 						$stmt->bindValue($identifier, $this->max_timeout, PDO::PARAM_INT);
+                        break;
+                    case '`LAST_LOG`':
+						$stmt->bindValue($identifier, $this->last_log, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -918,7 +963,7 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
                 return $this->getWorker();
                 break;
             case 4:
-                return $this->getData();
+                return $this->getRawData();
                 break;
             case 5:
                 return $this->getHandlerUUID();
@@ -928,6 +973,9 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
                 break;
             case 7:
                 return $this->getMaxTimeout();
+                break;
+            case 8:
+                return $this->getLastLog();
                 break;
             default:
                 return null;
@@ -961,10 +1009,11 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
             $keys[1] => $this->getPriority(),
             $keys[2] => $this->getStatus(),
             $keys[3] => $this->getWorker(),
-            $keys[4] => $this->getData(),
+            $keys[4] => $this->getRawData(),
             $keys[5] => $this->getHandlerUUID(),
             $keys[6] => $this->getTouched(),
             $keys[7] => $this->getMaxTimeout(),
+            $keys[8] => $this->getLastLog(),
         );
 
         return $result;
@@ -1012,7 +1061,7 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
                 $this->setWorker($value);
                 break;
             case 4:
-                $this->setData($value);
+                $this->setRawData($value);
                 break;
             case 5:
                 $this->setHandlerUUID($value);
@@ -1022,6 +1071,9 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
                 break;
             case 7:
                 $this->setMaxTimeout($value);
+                break;
+            case 8:
+                $this->setLastLog($value);
                 break;
         } // switch()
     }
@@ -1051,10 +1103,11 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
         if (array_key_exists($keys[1], $arr)) $this->setPriority($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setStatus($arr[$keys[2]]);
         if (array_key_exists($keys[3], $arr)) $this->setWorker($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setData($arr[$keys[4]]);
+        if (array_key_exists($keys[4], $arr)) $this->setRawData($arr[$keys[4]]);
         if (array_key_exists($keys[5], $arr)) $this->setHandlerUUID($arr[$keys[5]]);
         if (array_key_exists($keys[6], $arr)) $this->setTouched($arr[$keys[6]]);
         if (array_key_exists($keys[7], $arr)) $this->setMaxTimeout($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setLastLog($arr[$keys[8]]);
     }
 
     /**
@@ -1070,10 +1123,11 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
         if ($this->isColumnModified(WorkerQueueItemPeer::PRIORITY)) $criteria->add(WorkerQueueItemPeer::PRIORITY, $this->priority);
         if ($this->isColumnModified(WorkerQueueItemPeer::STATUS)) $criteria->add(WorkerQueueItemPeer::STATUS, $this->status);
         if ($this->isColumnModified(WorkerQueueItemPeer::WORKER)) $criteria->add(WorkerQueueItemPeer::WORKER, $this->worker);
-        if ($this->isColumnModified(WorkerQueueItemPeer::DATA)) $criteria->add(WorkerQueueItemPeer::DATA, $this->data);
+        if ($this->isColumnModified(WorkerQueueItemPeer::RAW_DATA)) $criteria->add(WorkerQueueItemPeer::RAW_DATA, $this->raw_data);
         if ($this->isColumnModified(WorkerQueueItemPeer::HANDLER_UUID)) $criteria->add(WorkerQueueItemPeer::HANDLER_UUID, $this->handler_uuid);
         if ($this->isColumnModified(WorkerQueueItemPeer::TOUCHED)) $criteria->add(WorkerQueueItemPeer::TOUCHED, $this->touched);
         if ($this->isColumnModified(WorkerQueueItemPeer::MAX_TIMEOUT)) $criteria->add(WorkerQueueItemPeer::MAX_TIMEOUT, $this->max_timeout);
+        if ($this->isColumnModified(WorkerQueueItemPeer::LAST_LOG)) $criteria->add(WorkerQueueItemPeer::LAST_LOG, $this->last_log);
 
         return $criteria;
     }
@@ -1140,10 +1194,11 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
         $copyObj->setPriority($this->getPriority());
         $copyObj->setStatus($this->getStatus());
         $copyObj->setWorker($this->getWorker());
-        $copyObj->setData($this->getData());
+        $copyObj->setRawData($this->getRawData());
         $copyObj->setHandlerUUID($this->getHandlerUUID());
         $copyObj->setTouched($this->getTouched());
         $copyObj->setMaxTimeout($this->getMaxTimeout());
+        $copyObj->setLastLog($this->getLastLog());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1199,10 +1254,11 @@ abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
         $this->priority = null;
         $this->status = null;
         $this->worker = null;
-        $this->data = null;
+        $this->raw_data = null;
         $this->handler_uuid = null;
         $this->touched = null;
         $this->max_timeout = null;
+        $this->last_log = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();

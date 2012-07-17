@@ -37,10 +37,11 @@
         <column name="priority" type="integer" default="1" phpName="Priority" />
         <column name="status" type="varchar" size="45" required="true" default="" phpName="Status" />
         <column name="worker" type="varchar" size="255" required="true" default="" phpName="Worker" />
-        <column name="data" type="varchar" size="255" required="true" default="" phpName="Data" />
+        <column name="raw_data" type="clob" size="255" required="true" default="" phpName="RawData" />
         <column name="handler_uuid" type="varchar" size="255" required="true" default="" phpName="HandlerUUID" />
         <column name="touched" type="timestamp" phpName="Touched" />
         <column name="max_timeout" type="integer" required="true" default="3600" phpName="MaxTimeout" />
+        <column name="last_log" type="clob" phpName="LastLog" />
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB" />
         </vendor>

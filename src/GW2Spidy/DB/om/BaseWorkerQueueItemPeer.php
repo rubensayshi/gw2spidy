@@ -35,13 +35,13 @@ abstract class BaseWorkerQueueItemPeer {
     const TM_CLASS = 'WorkerQueueItemTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 9;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 9;
 
     /** the column name for the ID field */
     const ID = 'worker_queue_item.ID';
@@ -55,8 +55,8 @@ abstract class BaseWorkerQueueItemPeer {
     /** the column name for the WORKER field */
     const WORKER = 'worker_queue_item.WORKER';
 
-    /** the column name for the DATA field */
-    const DATA = 'worker_queue_item.DATA';
+    /** the column name for the RAW_DATA field */
+    const RAW_DATA = 'worker_queue_item.RAW_DATA';
 
     /** the column name for the HANDLER_UUID field */
     const HANDLER_UUID = 'worker_queue_item.HANDLER_UUID';
@@ -66,6 +66,9 @@ abstract class BaseWorkerQueueItemPeer {
 
     /** the column name for the MAX_TIMEOUT field */
     const MAX_TIMEOUT = 'worker_queue_item.MAX_TIMEOUT';
+
+    /** the column name for the LAST_LOG field */
+    const LAST_LOG = 'worker_queue_item.LAST_LOG';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -86,12 +89,12 @@ abstract class BaseWorkerQueueItemPeer {
      * e.g. WorkerQueueItemPeer::$fieldNames[WorkerQueueItemPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('Id', 'Priority', 'Status', 'Worker', 'Data', 'HandlerUUID', 'Touched', 'MaxTimeout', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'priority', 'status', 'worker', 'data', 'handlerUUID', 'touched', 'maxTimeout', ),
-        BasePeer::TYPE_COLNAME => array (WorkerQueueItemPeer::ID, WorkerQueueItemPeer::PRIORITY, WorkerQueueItemPeer::STATUS, WorkerQueueItemPeer::WORKER, WorkerQueueItemPeer::DATA, WorkerQueueItemPeer::HANDLER_UUID, WorkerQueueItemPeer::TOUCHED, WorkerQueueItemPeer::MAX_TIMEOUT, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'PRIORITY', 'STATUS', 'WORKER', 'DATA', 'HANDLER_UUID', 'TOUCHED', 'MAX_TIMEOUT', ),
-        BasePeer::TYPE_FIELDNAME => array ('id', 'priority', 'status', 'worker', 'data', 'handler_uuid', 'touched', 'max_timeout', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
+        BasePeer::TYPE_PHPNAME => array ('Id', 'Priority', 'Status', 'Worker', 'RawData', 'HandlerUUID', 'Touched', 'MaxTimeout', 'LastLog', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'priority', 'status', 'worker', 'rawData', 'handlerUUID', 'touched', 'maxTimeout', 'lastLog', ),
+        BasePeer::TYPE_COLNAME => array (WorkerQueueItemPeer::ID, WorkerQueueItemPeer::PRIORITY, WorkerQueueItemPeer::STATUS, WorkerQueueItemPeer::WORKER, WorkerQueueItemPeer::RAW_DATA, WorkerQueueItemPeer::HANDLER_UUID, WorkerQueueItemPeer::TOUCHED, WorkerQueueItemPeer::MAX_TIMEOUT, WorkerQueueItemPeer::LAST_LOG, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'PRIORITY', 'STATUS', 'WORKER', 'RAW_DATA', 'HANDLER_UUID', 'TOUCHED', 'MAX_TIMEOUT', 'LAST_LOG', ),
+        BasePeer::TYPE_FIELDNAME => array ('id', 'priority', 'status', 'worker', 'raw_data', 'handler_uuid', 'touched', 'max_timeout', 'last_log', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -101,12 +104,12 @@ abstract class BaseWorkerQueueItemPeer {
      * e.g. WorkerQueueItemPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Priority' => 1, 'Status' => 2, 'Worker' => 3, 'Data' => 4, 'HandlerUUID' => 5, 'Touched' => 6, 'MaxTimeout' => 7, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'priority' => 1, 'status' => 2, 'worker' => 3, 'data' => 4, 'handlerUUID' => 5, 'touched' => 6, 'maxTimeout' => 7, ),
-        BasePeer::TYPE_COLNAME => array (WorkerQueueItemPeer::ID => 0, WorkerQueueItemPeer::PRIORITY => 1, WorkerQueueItemPeer::STATUS => 2, WorkerQueueItemPeer::WORKER => 3, WorkerQueueItemPeer::DATA => 4, WorkerQueueItemPeer::HANDLER_UUID => 5, WorkerQueueItemPeer::TOUCHED => 6, WorkerQueueItemPeer::MAX_TIMEOUT => 7, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'PRIORITY' => 1, 'STATUS' => 2, 'WORKER' => 3, 'DATA' => 4, 'HANDLER_UUID' => 5, 'TOUCHED' => 6, 'MAX_TIMEOUT' => 7, ),
-        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'priority' => 1, 'status' => 2, 'worker' => 3, 'data' => 4, 'handler_uuid' => 5, 'touched' => 6, 'max_timeout' => 7, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
+        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Priority' => 1, 'Status' => 2, 'Worker' => 3, 'RawData' => 4, 'HandlerUUID' => 5, 'Touched' => 6, 'MaxTimeout' => 7, 'LastLog' => 8, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'priority' => 1, 'status' => 2, 'worker' => 3, 'rawData' => 4, 'handlerUUID' => 5, 'touched' => 6, 'maxTimeout' => 7, 'lastLog' => 8, ),
+        BasePeer::TYPE_COLNAME => array (WorkerQueueItemPeer::ID => 0, WorkerQueueItemPeer::PRIORITY => 1, WorkerQueueItemPeer::STATUS => 2, WorkerQueueItemPeer::WORKER => 3, WorkerQueueItemPeer::RAW_DATA => 4, WorkerQueueItemPeer::HANDLER_UUID => 5, WorkerQueueItemPeer::TOUCHED => 6, WorkerQueueItemPeer::MAX_TIMEOUT => 7, WorkerQueueItemPeer::LAST_LOG => 8, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'PRIORITY' => 1, 'STATUS' => 2, 'WORKER' => 3, 'RAW_DATA' => 4, 'HANDLER_UUID' => 5, 'TOUCHED' => 6, 'MAX_TIMEOUT' => 7, 'LAST_LOG' => 8, ),
+        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'priority' => 1, 'status' => 2, 'worker' => 3, 'raw_data' => 4, 'handler_uuid' => 5, 'touched' => 6, 'max_timeout' => 7, 'last_log' => 8, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -184,19 +187,21 @@ abstract class BaseWorkerQueueItemPeer {
             $criteria->addSelectColumn(WorkerQueueItemPeer::PRIORITY);
             $criteria->addSelectColumn(WorkerQueueItemPeer::STATUS);
             $criteria->addSelectColumn(WorkerQueueItemPeer::WORKER);
-            $criteria->addSelectColumn(WorkerQueueItemPeer::DATA);
+            $criteria->addSelectColumn(WorkerQueueItemPeer::RAW_DATA);
             $criteria->addSelectColumn(WorkerQueueItemPeer::HANDLER_UUID);
             $criteria->addSelectColumn(WorkerQueueItemPeer::TOUCHED);
             $criteria->addSelectColumn(WorkerQueueItemPeer::MAX_TIMEOUT);
+            $criteria->addSelectColumn(WorkerQueueItemPeer::LAST_LOG);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.PRIORITY');
             $criteria->addSelectColumn($alias . '.STATUS');
             $criteria->addSelectColumn($alias . '.WORKER');
-            $criteria->addSelectColumn($alias . '.DATA');
+            $criteria->addSelectColumn($alias . '.RAW_DATA');
             $criteria->addSelectColumn($alias . '.HANDLER_UUID');
             $criteria->addSelectColumn($alias . '.TOUCHED');
             $criteria->addSelectColumn($alias . '.MAX_TIMEOUT');
+            $criteria->addSelectColumn($alias . '.LAST_LOG');
         }
     }
 

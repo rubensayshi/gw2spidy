@@ -46,10 +46,11 @@ class WorkerQueueItemTableMap extends TableMap
         $this->addColumn('PRIORITY', 'Priority', 'INTEGER', false, null, 1);
         $this->addColumn('STATUS', 'Status', 'VARCHAR', true, 45, '');
         $this->addColumn('WORKER', 'Worker', 'VARCHAR', true, 255, '');
-        $this->addColumn('DATA', 'Data', 'VARCHAR', true, 255, '');
+        $this->addColumn('RAW_DATA', 'RawData', 'CLOB', true, 255, '');
         $this->addColumn('HANDLER_UUID', 'HandlerUUID', 'VARCHAR', true, 255, '');
         $this->addColumn('TOUCHED', 'Touched', 'TIMESTAMP', false, null, null);
         $this->addColumn('MAX_TIMEOUT', 'MaxTimeout', 'INTEGER', true, null, 3600);
+        $this->addColumn('LAST_LOG', 'LastLog', 'CLOB', false, null, null);
         // validators
     } // initialize()
 

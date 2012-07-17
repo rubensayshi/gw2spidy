@@ -24,19 +24,21 @@ use GW2Spidy\DB\WorkerQueueItemQuery;
  * @method     WorkerQueueItemQuery orderByPriority($order = Criteria::ASC) Order by the priority column
  * @method     WorkerQueueItemQuery orderByStatus($order = Criteria::ASC) Order by the status column
  * @method     WorkerQueueItemQuery orderByWorker($order = Criteria::ASC) Order by the worker column
- * @method     WorkerQueueItemQuery orderByData($order = Criteria::ASC) Order by the data column
+ * @method     WorkerQueueItemQuery orderByRawData($order = Criteria::ASC) Order by the raw_data column
  * @method     WorkerQueueItemQuery orderByHandlerUUID($order = Criteria::ASC) Order by the handler_uuid column
  * @method     WorkerQueueItemQuery orderByTouched($order = Criteria::ASC) Order by the touched column
  * @method     WorkerQueueItemQuery orderByMaxTimeout($order = Criteria::ASC) Order by the max_timeout column
+ * @method     WorkerQueueItemQuery orderByLastLog($order = Criteria::ASC) Order by the last_log column
  *
  * @method     WorkerQueueItemQuery groupById() Group by the id column
  * @method     WorkerQueueItemQuery groupByPriority() Group by the priority column
  * @method     WorkerQueueItemQuery groupByStatus() Group by the status column
  * @method     WorkerQueueItemQuery groupByWorker() Group by the worker column
- * @method     WorkerQueueItemQuery groupByData() Group by the data column
+ * @method     WorkerQueueItemQuery groupByRawData() Group by the raw_data column
  * @method     WorkerQueueItemQuery groupByHandlerUUID() Group by the handler_uuid column
  * @method     WorkerQueueItemQuery groupByTouched() Group by the touched column
  * @method     WorkerQueueItemQuery groupByMaxTimeout() Group by the max_timeout column
+ * @method     WorkerQueueItemQuery groupByLastLog() Group by the last_log column
  *
  * @method     WorkerQueueItemQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     WorkerQueueItemQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -49,19 +51,21 @@ use GW2Spidy\DB\WorkerQueueItemQuery;
  * @method     WorkerQueueItem findOneByPriority(int $priority) Return the first WorkerQueueItem filtered by the priority column
  * @method     WorkerQueueItem findOneByStatus(string $status) Return the first WorkerQueueItem filtered by the status column
  * @method     WorkerQueueItem findOneByWorker(string $worker) Return the first WorkerQueueItem filtered by the worker column
- * @method     WorkerQueueItem findOneByData(string $data) Return the first WorkerQueueItem filtered by the data column
+ * @method     WorkerQueueItem findOneByRawData(string $raw_data) Return the first WorkerQueueItem filtered by the raw_data column
  * @method     WorkerQueueItem findOneByHandlerUUID(string $handler_uuid) Return the first WorkerQueueItem filtered by the handler_uuid column
  * @method     WorkerQueueItem findOneByTouched(string $touched) Return the first WorkerQueueItem filtered by the touched column
  * @method     WorkerQueueItem findOneByMaxTimeout(int $max_timeout) Return the first WorkerQueueItem filtered by the max_timeout column
+ * @method     WorkerQueueItem findOneByLastLog(string $last_log) Return the first WorkerQueueItem filtered by the last_log column
  *
  * @method     array findById(int $id) Return WorkerQueueItem objects filtered by the id column
  * @method     array findByPriority(int $priority) Return WorkerQueueItem objects filtered by the priority column
  * @method     array findByStatus(string $status) Return WorkerQueueItem objects filtered by the status column
  * @method     array findByWorker(string $worker) Return WorkerQueueItem objects filtered by the worker column
- * @method     array findByData(string $data) Return WorkerQueueItem objects filtered by the data column
+ * @method     array findByRawData(string $raw_data) Return WorkerQueueItem objects filtered by the raw_data column
  * @method     array findByHandlerUUID(string $handler_uuid) Return WorkerQueueItem objects filtered by the handler_uuid column
  * @method     array findByTouched(string $touched) Return WorkerQueueItem objects filtered by the touched column
  * @method     array findByMaxTimeout(int $max_timeout) Return WorkerQueueItem objects filtered by the max_timeout column
+ * @method     array findByLastLog(string $last_log) Return WorkerQueueItem objects filtered by the last_log column
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -152,7 +156,7 @@ abstract class BaseWorkerQueueItemQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `ID`, `PRIORITY`, `STATUS`, `WORKER`, `DATA`, `HANDLER_UUID`, `TOUCHED`, `MAX_TIMEOUT` FROM `worker_queue_item` WHERE `ID` = :p0';
+        $sql = 'SELECT `ID`, `PRIORITY`, `STATUS`, `WORKER`, `RAW_DATA`, `HANDLER_UUID`, `TOUCHED`, `MAX_TIMEOUT`, `LAST_LOG` FROM `worker_queue_item` WHERE `ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -368,32 +372,32 @@ abstract class BaseWorkerQueueItemQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the data column
+     * Filter the query on the raw_data column
      *
      * Example usage:
      * <code>
-     * $query->filterByData('fooValue');   // WHERE data = 'fooValue'
-     * $query->filterByData('%fooValue%'); // WHERE data LIKE '%fooValue%'
+     * $query->filterByRawData('fooValue');   // WHERE raw_data = 'fooValue'
+     * $query->filterByRawData('%fooValue%'); // WHERE raw_data LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $data The value to use as filter.
+     * @param     string $rawData The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return WorkerQueueItemQuery The current query, for fluid interface
      */
-    public function filterByData($data = null, $comparison = null)
+    public function filterByRawData($rawData = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($data)) {
+            if (is_array($rawData)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $data)) {
-                $data = str_replace('*', '%', $data);
+            } elseif (preg_match('/[\%\*]/', $rawData)) {
+                $rawData = str_replace('*', '%', $rawData);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(WorkerQueueItemPeer::DATA, $data, $comparison);
+        return $this->addUsingAlias(WorkerQueueItemPeer::RAW_DATA, $rawData, $comparison);
     }
 
     /**
@@ -507,6 +511,35 @@ abstract class BaseWorkerQueueItemQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(WorkerQueueItemPeer::MAX_TIMEOUT, $maxTimeout, $comparison);
+    }
+
+    /**
+     * Filter the query on the last_log column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByLastLog('fooValue');   // WHERE last_log = 'fooValue'
+     * $query->filterByLastLog('%fooValue%'); // WHERE last_log LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $lastLog The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return WorkerQueueItemQuery The current query, for fluid interface
+     */
+    public function filterByLastLog($lastLog = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($lastLog)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $lastLog)) {
+                $lastLog = str_replace('*', '%', $lastLog);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(WorkerQueueItemPeer::LAST_LOG, $lastLog, $comparison);
     }
 
     /**

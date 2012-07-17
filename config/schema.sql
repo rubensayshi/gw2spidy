@@ -77,10 +77,11 @@ CREATE TABLE `worker_queue_item`
     `priority` INTEGER DEFAULT 1,
     `status` VARCHAR(45) DEFAULT '' NOT NULL,
     `worker` VARCHAR(255) DEFAULT '' NOT NULL,
-    `data` VARCHAR(255) DEFAULT '' NOT NULL,
+    `raw_data` LONGTEXT DEFAULT '' NOT NULL,
     `handler_uuid` VARCHAR(255) DEFAULT '' NOT NULL,
     `touched` DATETIME,
     `max_timeout` INTEGER DEFAULT 3600 NOT NULL,
+    `last_log` LONGTEXT,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
