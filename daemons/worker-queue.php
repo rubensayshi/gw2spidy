@@ -10,7 +10,6 @@ use GW2Spidy\DB\WorkerQueueItemPeer;
 require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
 
-define('SLOT_DEV_MODE', 'SLOT_DEV_MODE');
 $UUID    = getmypid() . "::" . time();
 $workers = array();
 $con     = Propel::getConnection();
@@ -24,14 +23,14 @@ $slottime= SLOT_TIMEOUT . "sec";
  */
 while ($run < $max) {
     /*
-     * query with LOCK IN SHARE MORE for the oldest request_flood_control slot
+     * query with LOCK FOR UPDATE for the oldest request_flood_control slot
      */
     $sql = "SELECT
             *
         FROM `".RequestFloodControlPeer::TABLE_NAME."`
         ORDER BY `touched` ASC, `id` ASC
         LIMIT 1
-        LOCK IN SHARE MODE";
+        FOR UPDATE";
 
     // START TRANSACTION
     $con->beginTransaction();
@@ -48,7 +47,7 @@ while ($run < $max) {
         // CLOSE TRANSACTION
         $con->commit();
 
-        $slot = SLOT_DEV_MODE;
+        throw new Exception("No RequestFoodControl setup");
     } else {
         $slot = $slots[0];
     }
@@ -59,23 +58,21 @@ while ($run < $max) {
      *
      *  if the slot is ok, we touch it and we can run
      */
-    if ($slot != SLOT_DEV_MODE) {
-        if ($slot->getTouched('U') > strtotime("-{$slottime}")) {
-            // CLOSE TRANSACTION
-            $con->commit();
+    if ($slot->getTouched('U') > strtotime("-{$slottime}")) {
+        // CLOSE TRANSACTION
+        $con->commit();
 
-            $sleep = $slot->getTouched('U') - strtotime("-{$slottime}");
-            print "no slots, sleeping [{$sleep}] ... \n";
-            sleep($sleep);
+        $sleep = $slot->getTouched('U') - strtotime("-{$slottime}");
+        print "no slots, sleeping [{$sleep}] ... \n";
+        sleep($sleep);
 
-            continue;
-        }
+        continue;
     }
 
     echo "got slot \n";
 
     /*
-     * query with LOCK IN SHARE MODE for the highest priority, oldest item
+     * query with LOCK FOR UPDATE for the highest priority, oldest item
      *  which hasn't been touched yet, or was touched before it's max timeout
      *  and isn't done already (ofcourse)
      */
@@ -86,7 +83,7 @@ while ($run < $max) {
         AND   `status` <> 'DONE'
         ORDER BY `priority` DESC, `id` ASC
         LIMIT 1
-        LOCK IN SHARE MODE";
+        FOR UPDATE";
 
     $prep = $con->prepare($sql);
     $prep->execute();
@@ -123,10 +120,8 @@ while ($run < $max) {
         $item->setTouched(new DateTime());
         $item->save();
 
-        if ($slot != SLOT_DEV_MODE) {
-            $slot->setTouched(new DateTime());
-            $slot->save();
-        }
+        $slot->setTouched(new DateTime());
+        $slot->save();
 
         // CLOSE TRANSACTION
         $con->commit();
