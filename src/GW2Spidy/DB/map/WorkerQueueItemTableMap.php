@@ -7,7 +7,7 @@ use \TableMap;
 
 
 /**
- * This class defines the structure of the 'request_worker_queue' table.
+ * This class defines the structure of the 'worker_queue_item' table.
  *
  *
  *
@@ -18,13 +18,13 @@ use \TableMap;
  *
  * @package    propel.generator.gw2spidy.map
  */
-class RequestWorkerQueueTableMap extends TableMap
+class WorkerQueueItemTableMap extends TableMap
 {
 
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'gw2spidy.map.RequestWorkerQueueTableMap';
+    const CLASS_NAME = 'gw2spidy.map.WorkerQueueItemTableMap';
 
     /**
      * Initialize the table attributes, columns and validators
@@ -36,9 +36,9 @@ class RequestWorkerQueueTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('request_worker_queue');
-        $this->setPhpName('RequestWorkerQueue');
-        $this->setClassname('GW2Spidy\\DB\\RequestWorkerQueue');
+        $this->setName('worker_queue_item');
+        $this->setPhpName('WorkerQueueItem');
+        $this->setClassname('GW2Spidy\\DB\\WorkerQueueItem');
         $this->setPackage('gw2spidy');
         $this->setUseIdGenerator(true);
         // columns
@@ -60,4 +60,4 @@ class RequestWorkerQueueTableMap extends TableMap
     {
     } // buildRelations()
 
-} // RequestWorkerQueueTableMap
+} // WorkerQueueItemTableMap

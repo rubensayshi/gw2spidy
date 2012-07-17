@@ -2,11 +2,11 @@
 
 namespace GW2Spidy\DB;
 
-use GW2Spidy\DB\om\BaseRequestWorkerQueue;
+use GW2Spidy\DB\om\BaseWorkerQueueItemPeer;
 
 
 /**
- * Skeleton subclass for representing a row from the 'request_worker_queue' table.
+ * Skeleton subclass for performing query and update operations on the 'worker_queue_item' table.
  *
  * 
  *
@@ -16,6 +16,6 @@ use GW2Spidy\DB\om\BaseRequestWorkerQueue;
  *
  * @package    propel.generator.gw2spidy
  */
-class RequestWorkerQueue extends BaseRequestWorkerQueue {
+class WorkerQueueItemPeer extends BaseWorkerQueueItemPeer {
 
-} // RequestWorkerQueue
+} // WorkerQueueItemPeer

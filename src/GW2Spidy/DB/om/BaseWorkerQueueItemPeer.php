@@ -9,30 +9,30 @@ use \PDOStatement;
 use \Propel;
 use \PropelException;
 use \PropelPDO;
-use GW2Spidy\DB\RequestWorkerQueue;
-use GW2Spidy\DB\RequestWorkerQueuePeer;
-use GW2Spidy\DB\map\RequestWorkerQueueTableMap;
+use GW2Spidy\DB\WorkerQueueItem;
+use GW2Spidy\DB\WorkerQueueItemPeer;
+use GW2Spidy\DB\map\WorkerQueueItemTableMap;
 
 /**
- * Base static class for performing query and update operations on the 'request_worker_queue' table.
+ * Base static class for performing query and update operations on the 'worker_queue_item' table.
  *
  * 
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseRequestWorkerQueuePeer {
+abstract class BaseWorkerQueueItemPeer {
 
     /** the default database name for this class */
     const DATABASE_NAME = 'gw2spidy';
 
     /** the table name for this class */
-    const TABLE_NAME = 'request_worker_queue';
+    const TABLE_NAME = 'worker_queue_item';
 
     /** the related Propel class for this table */
-    const OM_CLASS = 'GW2Spidy\\DB\\RequestWorkerQueue';
+    const OM_CLASS = 'GW2Spidy\\DB\\WorkerQueueItem';
 
     /** the related TableMap class for this table */
-    const TM_CLASS = 'RequestWorkerQueueTableMap';
+    const TM_CLASS = 'WorkerQueueItemTableMap';
 
     /** The total number of columns. */
     const NUM_COLUMNS = 8;
@@ -44,37 +44,37 @@ abstract class BaseRequestWorkerQueuePeer {
     const NUM_HYDRATE_COLUMNS = 8;
 
     /** the column name for the ID field */
-    const ID = 'request_worker_queue.ID';
+    const ID = 'worker_queue_item.ID';
 
     /** the column name for the PRIORITY field */
-    const PRIORITY = 'request_worker_queue.PRIORITY';
+    const PRIORITY = 'worker_queue_item.PRIORITY';
 
     /** the column name for the STATUS field */
-    const STATUS = 'request_worker_queue.STATUS';
+    const STATUS = 'worker_queue_item.STATUS';
 
     /** the column name for the WORKER field */
-    const WORKER = 'request_worker_queue.WORKER';
+    const WORKER = 'worker_queue_item.WORKER';
 
     /** the column name for the DATA field */
-    const DATA = 'request_worker_queue.DATA';
+    const DATA = 'worker_queue_item.DATA';
 
     /** the column name for the HANDLER_UUID field */
-    const HANDLER_UUID = 'request_worker_queue.HANDLER_UUID';
+    const HANDLER_UUID = 'worker_queue_item.HANDLER_UUID';
 
     /** the column name for the TOUCHED field */
-    const TOUCHED = 'request_worker_queue.TOUCHED';
+    const TOUCHED = 'worker_queue_item.TOUCHED';
 
     /** the column name for the MAX_TIMEOUT field */
-    const MAX_TIMEOUT = 'request_worker_queue.MAX_TIMEOUT';
+    const MAX_TIMEOUT = 'worker_queue_item.MAX_TIMEOUT';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of RequestWorkerQueue objects.
+     * An identiy map to hold any loaded instances of WorkerQueueItem objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
-     * @var        array RequestWorkerQueue[]
+     * @var        array WorkerQueueItem[]
      */
     public static $instances = array();
 
@@ -83,12 +83,12 @@ abstract class BaseRequestWorkerQueuePeer {
      * holds an array of fieldnames
      *
      * first dimension keys are the type constants
-     * e.g. RequestWorkerQueuePeer::$fieldNames[RequestWorkerQueuePeer::TYPE_PHPNAME][0] = 'Id'
+     * e.g. WorkerQueueItemPeer::$fieldNames[WorkerQueueItemPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
         BasePeer::TYPE_PHPNAME => array ('Id', 'Priority', 'Status', 'Worker', 'Data', 'HandlerUUID', 'Touched', 'MaxTimeout', ),
         BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'priority', 'status', 'worker', 'data', 'handlerUUID', 'touched', 'maxTimeout', ),
-        BasePeer::TYPE_COLNAME => array (RequestWorkerQueuePeer::ID, RequestWorkerQueuePeer::PRIORITY, RequestWorkerQueuePeer::STATUS, RequestWorkerQueuePeer::WORKER, RequestWorkerQueuePeer::DATA, RequestWorkerQueuePeer::HANDLER_UUID, RequestWorkerQueuePeer::TOUCHED, RequestWorkerQueuePeer::MAX_TIMEOUT, ),
+        BasePeer::TYPE_COLNAME => array (WorkerQueueItemPeer::ID, WorkerQueueItemPeer::PRIORITY, WorkerQueueItemPeer::STATUS, WorkerQueueItemPeer::WORKER, WorkerQueueItemPeer::DATA, WorkerQueueItemPeer::HANDLER_UUID, WorkerQueueItemPeer::TOUCHED, WorkerQueueItemPeer::MAX_TIMEOUT, ),
         BasePeer::TYPE_RAW_COLNAME => array ('ID', 'PRIORITY', 'STATUS', 'WORKER', 'DATA', 'HANDLER_UUID', 'TOUCHED', 'MAX_TIMEOUT', ),
         BasePeer::TYPE_FIELDNAME => array ('id', 'priority', 'status', 'worker', 'data', 'handler_uuid', 'touched', 'max_timeout', ),
         BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
@@ -98,12 +98,12 @@ abstract class BaseRequestWorkerQueuePeer {
      * holds an array of keys for quick access to the fieldnames array
      *
      * first dimension keys are the type constants
-     * e.g. RequestWorkerQueuePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
+     * e.g. WorkerQueueItemPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
         BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Priority' => 1, 'Status' => 2, 'Worker' => 3, 'Data' => 4, 'HandlerUUID' => 5, 'Touched' => 6, 'MaxTimeout' => 7, ),
         BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'priority' => 1, 'status' => 2, 'worker' => 3, 'data' => 4, 'handlerUUID' => 5, 'touched' => 6, 'maxTimeout' => 7, ),
-        BasePeer::TYPE_COLNAME => array (RequestWorkerQueuePeer::ID => 0, RequestWorkerQueuePeer::PRIORITY => 1, RequestWorkerQueuePeer::STATUS => 2, RequestWorkerQueuePeer::WORKER => 3, RequestWorkerQueuePeer::DATA => 4, RequestWorkerQueuePeer::HANDLER_UUID => 5, RequestWorkerQueuePeer::TOUCHED => 6, RequestWorkerQueuePeer::MAX_TIMEOUT => 7, ),
+        BasePeer::TYPE_COLNAME => array (WorkerQueueItemPeer::ID => 0, WorkerQueueItemPeer::PRIORITY => 1, WorkerQueueItemPeer::STATUS => 2, WorkerQueueItemPeer::WORKER => 3, WorkerQueueItemPeer::DATA => 4, WorkerQueueItemPeer::HANDLER_UUID => 5, WorkerQueueItemPeer::TOUCHED => 6, WorkerQueueItemPeer::MAX_TIMEOUT => 7, ),
         BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'PRIORITY' => 1, 'STATUS' => 2, 'WORKER' => 3, 'DATA' => 4, 'HANDLER_UUID' => 5, 'TOUCHED' => 6, 'MAX_TIMEOUT' => 7, ),
         BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'priority' => 1, 'status' => 2, 'worker' => 3, 'data' => 4, 'handler_uuid' => 5, 'touched' => 6, 'max_timeout' => 7, ),
         BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
@@ -121,10 +121,10 @@ abstract class BaseRequestWorkerQueuePeer {
      */
     public static function translateFieldName($name, $fromType, $toType)
     {
-        $toNames = RequestWorkerQueuePeer::getFieldNames($toType);
-        $key = isset(RequestWorkerQueuePeer::$fieldKeys[$fromType][$name]) ? RequestWorkerQueuePeer::$fieldKeys[$fromType][$name] : null;
+        $toNames = WorkerQueueItemPeer::getFieldNames($toType);
+        $key = isset(WorkerQueueItemPeer::$fieldKeys[$fromType][$name]) ? WorkerQueueItemPeer::$fieldKeys[$fromType][$name] : null;
         if ($key === null) {
-            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(RequestWorkerQueuePeer::$fieldKeys[$fromType], true));
+            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(WorkerQueueItemPeer::$fieldKeys[$fromType], true));
         }
 
         return $toNames[$key];
@@ -141,11 +141,11 @@ abstract class BaseRequestWorkerQueuePeer {
      */
     public static function getFieldNames($type = BasePeer::TYPE_PHPNAME)
     {
-        if (!array_key_exists($type, RequestWorkerQueuePeer::$fieldNames)) {
+        if (!array_key_exists($type, WorkerQueueItemPeer::$fieldNames)) {
             throw new PropelException('Method getFieldNames() expects the parameter $type to be one of the class constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME, BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. ' . $type . ' was given.');
         }
 
-        return RequestWorkerQueuePeer::$fieldNames[$type];
+        return WorkerQueueItemPeer::$fieldNames[$type];
     }
 
     /**
@@ -157,12 +157,12 @@ abstract class BaseRequestWorkerQueuePeer {
      *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
      * </code>
      * @param      string $alias The alias for the current table.
-     * @param      string $column The column name for current table. (i.e. RequestWorkerQueuePeer::COLUMN_NAME).
+     * @param      string $column The column name for current table. (i.e. WorkerQueueItemPeer::COLUMN_NAME).
      * @return string
      */
     public static function alias($alias, $column)
     {
-        return str_replace(RequestWorkerQueuePeer::TABLE_NAME.'.', $alias.'.', $column);
+        return str_replace(WorkerQueueItemPeer::TABLE_NAME.'.', $alias.'.', $column);
     }
 
     /**
@@ -180,14 +180,14 @@ abstract class BaseRequestWorkerQueuePeer {
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(RequestWorkerQueuePeer::ID);
-            $criteria->addSelectColumn(RequestWorkerQueuePeer::PRIORITY);
-            $criteria->addSelectColumn(RequestWorkerQueuePeer::STATUS);
-            $criteria->addSelectColumn(RequestWorkerQueuePeer::WORKER);
-            $criteria->addSelectColumn(RequestWorkerQueuePeer::DATA);
-            $criteria->addSelectColumn(RequestWorkerQueuePeer::HANDLER_UUID);
-            $criteria->addSelectColumn(RequestWorkerQueuePeer::TOUCHED);
-            $criteria->addSelectColumn(RequestWorkerQueuePeer::MAX_TIMEOUT);
+            $criteria->addSelectColumn(WorkerQueueItemPeer::ID);
+            $criteria->addSelectColumn(WorkerQueueItemPeer::PRIORITY);
+            $criteria->addSelectColumn(WorkerQueueItemPeer::STATUS);
+            $criteria->addSelectColumn(WorkerQueueItemPeer::WORKER);
+            $criteria->addSelectColumn(WorkerQueueItemPeer::DATA);
+            $criteria->addSelectColumn(WorkerQueueItemPeer::HANDLER_UUID);
+            $criteria->addSelectColumn(WorkerQueueItemPeer::TOUCHED);
+            $criteria->addSelectColumn(WorkerQueueItemPeer::MAX_TIMEOUT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.PRIORITY');
@@ -216,21 +216,21 @@ abstract class BaseRequestWorkerQueuePeer {
         // We need to set the primary table name, since in the case that there are no WHERE columns
         // it will be impossible for the BasePeer::createSelectSql() method to determine which
         // tables go into the FROM clause.
-        $criteria->setPrimaryTableName(RequestWorkerQueuePeer::TABLE_NAME);
+        $criteria->setPrimaryTableName(WorkerQueueItemPeer::TABLE_NAME);
 
         if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
             $criteria->setDistinct();
         }
 
         if (!$criteria->hasSelectClause()) {
-            RequestWorkerQueuePeer::addSelectColumns($criteria);
+            WorkerQueueItemPeer::addSelectColumns($criteria);
         }
 
         $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-        $criteria->setDbName(RequestWorkerQueuePeer::DATABASE_NAME); // Set the correct dbName
+        $criteria->setDbName(WorkerQueueItemPeer::DATABASE_NAME); // Set the correct dbName
 
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
         // BasePeer returns a PDOStatement
         $stmt = BasePeer::doCount($criteria, $con);
@@ -249,7 +249,7 @@ abstract class BaseRequestWorkerQueuePeer {
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 RequestWorkerQueue
+     * @return                 WorkerQueueItem
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -257,7 +257,7 @@ abstract class BaseRequestWorkerQueuePeer {
     {
         $critcopy = clone $criteria;
         $critcopy->setLimit(1);
-        $objects = RequestWorkerQueuePeer::doSelect($critcopy, $con);
+        $objects = WorkerQueueItemPeer::doSelect($critcopy, $con);
         if ($objects) {
             return $objects[0];
         }
@@ -275,7 +275,7 @@ abstract class BaseRequestWorkerQueuePeer {
      */
     public static function doSelect(Criteria $criteria, PropelPDO $con = null)
     {
-        return RequestWorkerQueuePeer::populateObjects(RequestWorkerQueuePeer::doSelectStmt($criteria, $con));
+        return WorkerQueueItemPeer::populateObjects(WorkerQueueItemPeer::doSelectStmt($criteria, $con));
     }
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -293,16 +293,16 @@ abstract class BaseRequestWorkerQueuePeer {
     public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         if (!$criteria->hasSelectClause()) {
             $criteria = clone $criteria;
-            RequestWorkerQueuePeer::addSelectColumns($criteria);
+            WorkerQueueItemPeer::addSelectColumns($criteria);
         }
 
         // Set the correct dbName
-        $criteria->setDbName(RequestWorkerQueuePeer::DATABASE_NAME);
+        $criteria->setDbName(WorkerQueueItemPeer::DATABASE_NAME);
 
         // BasePeer returns a PDOStatement
         return BasePeer::doSelect($criteria, $con);
@@ -316,7 +316,7 @@ abstract class BaseRequestWorkerQueuePeer {
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      RequestWorkerQueue $obj A RequestWorkerQueue object.
+     * @param      WorkerQueueItem $obj A WorkerQueueItem object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -325,7 +325,7 @@ abstract class BaseRequestWorkerQueuePeer {
             if ($key === null) {
                 $key = (string) $obj->getId();
             } // if key === null
-            RequestWorkerQueuePeer::$instances[$key] = $obj;
+            WorkerQueueItemPeer::$instances[$key] = $obj;
         }
     }
 
@@ -337,7 +337,7 @@ abstract class BaseRequestWorkerQueuePeer {
      * methods in your stub classes -- you may need to explicitly remove objects
      * from the cache in order to prevent returning objects that no longer exist.
      *
-     * @param      mixed $value A RequestWorkerQueue object or a primary key value.
+     * @param      mixed $value A WorkerQueueItem object or a primary key value.
      *
      * @return void
      * @throws PropelException - if the value is invalid.
@@ -345,17 +345,17 @@ abstract class BaseRequestWorkerQueuePeer {
     public static function removeInstanceFromPool($value)
     {
         if (Propel::isInstancePoolingEnabled() && $value !== null) {
-            if (is_object($value) && $value instanceof RequestWorkerQueue) {
+            if (is_object($value) && $value instanceof WorkerQueueItem) {
                 $key = (string) $value->getId();
             } elseif (is_scalar($value)) {
                 // assume we've been passed a primary key
                 $key = (string) $value;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or RequestWorkerQueue object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or WorkerQueueItem object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
                 throw $e;
             }
 
-            unset(RequestWorkerQueuePeer::$instances[$key]);
+            unset(WorkerQueueItemPeer::$instances[$key]);
         }
     } // removeInstanceFromPool()
 
@@ -366,14 +366,14 @@ abstract class BaseRequestWorkerQueuePeer {
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   RequestWorkerQueue Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return   WorkerQueueItem Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
     {
         if (Propel::isInstancePoolingEnabled()) {
-            if (isset(RequestWorkerQueuePeer::$instances[$key])) {
-                return RequestWorkerQueuePeer::$instances[$key];
+            if (isset(WorkerQueueItemPeer::$instances[$key])) {
+                return WorkerQueueItemPeer::$instances[$key];
             }
         }
 
@@ -387,11 +387,11 @@ abstract class BaseRequestWorkerQueuePeer {
      */
     public static function clearInstancePool()
     {
-        RequestWorkerQueuePeer::$instances = array();
+        WorkerQueueItemPeer::$instances = array();
     }
     
     /**
-     * Method to invalidate the instance pool of all tables related to request_worker_queue
+     * Method to invalidate the instance pool of all tables related to worker_queue_item
      * by a foreign key with ON DELETE CASCADE
      */
     public static function clearRelatedInstancePool()
@@ -445,11 +445,11 @@ abstract class BaseRequestWorkerQueuePeer {
         $results = array();
     
         // set the class once to avoid overhead in the loop
-        $cls = RequestWorkerQueuePeer::getOMClass();
+        $cls = WorkerQueueItemPeer::getOMClass();
         // populate the object(s)
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $key = RequestWorkerQueuePeer::getPrimaryKeyHashFromRow($row, 0);
-            if (null !== ($obj = RequestWorkerQueuePeer::getInstanceFromPool($key))) {
+            $key = WorkerQueueItemPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj = WorkerQueueItemPeer::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -458,7 +458,7 @@ abstract class BaseRequestWorkerQueuePeer {
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                RequestWorkerQueuePeer::addInstanceToPool($obj, $key);
+                WorkerQueueItemPeer::addInstanceToPool($obj, $key);
             } // if key exists
         }
         $stmt->closeCursor();
@@ -472,21 +472,21 @@ abstract class BaseRequestWorkerQueuePeer {
      * @param      int $startcol The 0-based offset for reading from the resultset row.
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
-     * @return array (RequestWorkerQueue object, last column rank)
+     * @return array (WorkerQueueItem object, last column rank)
      */
     public static function populateObject($row, $startcol = 0)
     {
-        $key = RequestWorkerQueuePeer::getPrimaryKeyHashFromRow($row, $startcol);
-        if (null !== ($obj = RequestWorkerQueuePeer::getInstanceFromPool($key))) {
+        $key = WorkerQueueItemPeer::getPrimaryKeyHashFromRow($row, $startcol);
+        if (null !== ($obj = WorkerQueueItemPeer::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $startcol, true); // rehydrate
-            $col = $startcol + RequestWorkerQueuePeer::NUM_HYDRATE_COLUMNS;
+            $col = $startcol + WorkerQueueItemPeer::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = RequestWorkerQueuePeer::OM_CLASS;
+            $cls = WorkerQueueItemPeer::OM_CLASS;
             $obj = new $cls();
             $col = $obj->hydrate($row, $startcol);
-            RequestWorkerQueuePeer::addInstanceToPool($obj, $key);
+            WorkerQueueItemPeer::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -501,7 +501,7 @@ abstract class BaseRequestWorkerQueuePeer {
      */
     public static function getTableMap()
     {
-        return Propel::getDatabaseMap(RequestWorkerQueuePeer::DATABASE_NAME)->getTable(RequestWorkerQueuePeer::TABLE_NAME);
+        return Propel::getDatabaseMap(WorkerQueueItemPeer::DATABASE_NAME)->getTable(WorkerQueueItemPeer::TABLE_NAME);
     }
 
     /**
@@ -509,9 +509,9 @@ abstract class BaseRequestWorkerQueuePeer {
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getDatabaseMap(BaseRequestWorkerQueuePeer::DATABASE_NAME);
-      if (!$dbMap->hasTable(BaseRequestWorkerQueuePeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new RequestWorkerQueueTableMap());
+      $dbMap = Propel::getDatabaseMap(BaseWorkerQueueItemPeer::DATABASE_NAME);
+      if (!$dbMap->hasTable(BaseWorkerQueueItemPeer::TABLE_NAME)) {
+        $dbMap->addTableObject(new WorkerQueueItemTableMap());
       }
     }
 
@@ -523,13 +523,13 @@ abstract class BaseRequestWorkerQueuePeer {
      */
     public static function getOMClass()
     {
-        return RequestWorkerQueuePeer::OM_CLASS;
+        return WorkerQueueItemPeer::OM_CLASS;
     }
 
     /**
-     * Performs an INSERT on the database, given a RequestWorkerQueue or Criteria object.
+     * Performs an INSERT on the database, given a WorkerQueueItem or Criteria object.
      *
-     * @param      mixed $values Criteria or RequestWorkerQueue object containing data that is used to create the INSERT statement.
+     * @param      mixed $values Criteria or WorkerQueueItem object containing data that is used to create the INSERT statement.
      * @param      PropelPDO $con the PropelPDO connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -538,22 +538,22 @@ abstract class BaseRequestWorkerQueuePeer {
     public static function doInsert($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
         } else {
-            $criteria = $values->buildCriteria(); // build Criteria from RequestWorkerQueue object
+            $criteria = $values->buildCriteria(); // build Criteria from WorkerQueueItem object
         }
 
-        if ($criteria->containsKey(RequestWorkerQueuePeer::ID) && $criteria->keyContainsValue(RequestWorkerQueuePeer::ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.RequestWorkerQueuePeer::ID.')');
+        if ($criteria->containsKey(WorkerQueueItemPeer::ID) && $criteria->keyContainsValue(WorkerQueueItemPeer::ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.WorkerQueueItemPeer::ID.')');
         }
 
 
         // Set the correct dbName
-        $criteria->setDbName(RequestWorkerQueuePeer::DATABASE_NAME);
+        $criteria->setDbName(WorkerQueueItemPeer::DATABASE_NAME);
 
         try {
             // use transaction because $criteria could contain info
@@ -570,9 +570,9 @@ abstract class BaseRequestWorkerQueuePeer {
     }
 
     /**
-     * Performs an UPDATE on the database, given a RequestWorkerQueue or Criteria object.
+     * Performs an UPDATE on the database, given a WorkerQueueItem or Criteria object.
      *
-     * @param      mixed $values Criteria or RequestWorkerQueue object containing data that is used to create the UPDATE statement.
+     * @param      mixed $values Criteria or WorkerQueueItem object containing data that is used to create the UPDATE statement.
      * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
      * @return int             The number of affected rows (if supported by underlying database driver).
      * @throws PropelException Any exceptions caught during processing will be
@@ -581,35 +581,35 @@ abstract class BaseRequestWorkerQueuePeer {
     public static function doUpdate($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
-        $selectCriteria = new Criteria(RequestWorkerQueuePeer::DATABASE_NAME);
+        $selectCriteria = new Criteria(WorkerQueueItemPeer::DATABASE_NAME);
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
 
-            $comparison = $criteria->getComparison(RequestWorkerQueuePeer::ID);
-            $value = $criteria->remove(RequestWorkerQueuePeer::ID);
+            $comparison = $criteria->getComparison(WorkerQueueItemPeer::ID);
+            $value = $criteria->remove(WorkerQueueItemPeer::ID);
             if ($value) {
-                $selectCriteria->add(RequestWorkerQueuePeer::ID, $value, $comparison);
+                $selectCriteria->add(WorkerQueueItemPeer::ID, $value, $comparison);
             } else {
-                $selectCriteria->setPrimaryTableName(RequestWorkerQueuePeer::TABLE_NAME);
+                $selectCriteria->setPrimaryTableName(WorkerQueueItemPeer::TABLE_NAME);
             }
 
-        } else { // $values is RequestWorkerQueue object
+        } else { // $values is WorkerQueueItem object
             $criteria = $values->buildCriteria(); // gets full criteria
             $selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
         }
 
         // set the correct dbName
-        $criteria->setDbName(RequestWorkerQueuePeer::DATABASE_NAME);
+        $criteria->setDbName(WorkerQueueItemPeer::DATABASE_NAME);
 
         return BasePeer::doUpdate($selectCriteria, $criteria, $con);
     }
 
     /**
-     * Deletes all rows from the request_worker_queue table.
+     * Deletes all rows from the worker_queue_item table.
      *
      * @param      PropelPDO $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).
@@ -618,19 +618,19 @@ abstract class BaseRequestWorkerQueuePeer {
     public static function doDeleteAll(PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
         $affectedRows = 0; // initialize var to track total num of affected rows
         try {
             // use transaction because $criteria could contain info
             // for more than one table or we could emulating ON DELETE CASCADE, etc.
             $con->beginTransaction();
-            $affectedRows += BasePeer::doDeleteAll(RequestWorkerQueuePeer::TABLE_NAME, $con, RequestWorkerQueuePeer::DATABASE_NAME);
+            $affectedRows += BasePeer::doDeleteAll(WorkerQueueItemPeer::TABLE_NAME, $con, WorkerQueueItemPeer::DATABASE_NAME);
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            RequestWorkerQueuePeer::clearInstancePool();
-            RequestWorkerQueuePeer::clearRelatedInstancePool();
+            WorkerQueueItemPeer::clearInstancePool();
+            WorkerQueueItemPeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -641,9 +641,9 @@ abstract class BaseRequestWorkerQueuePeer {
     }
 
     /**
-     * Performs a DELETE on the database, given a RequestWorkerQueue or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a WorkerQueueItem or Criteria object OR a primary key value.
      *
-     * @param      mixed $values Criteria or RequestWorkerQueue object or primary key or array of primary keys
+     * @param      mixed $values Criteria or WorkerQueueItem object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param      PropelPDO $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -654,32 +654,32 @@ abstract class BaseRequestWorkerQueuePeer {
      public static function doDelete($values, PropelPDO $con = null)
      {
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
             // invalidate the cache for all objects of this type, since we have no
             // way of knowing (without running a query) what objects should be invalidated
             // from the cache based on this Criteria.
-            RequestWorkerQueuePeer::clearInstancePool();
+            WorkerQueueItemPeer::clearInstancePool();
             // rename for clarity
             $criteria = clone $values;
-        } elseif ($values instanceof RequestWorkerQueue) { // it's a model object
+        } elseif ($values instanceof WorkerQueueItem) { // it's a model object
             // invalidate the cache for this single object
-            RequestWorkerQueuePeer::removeInstanceFromPool($values);
+            WorkerQueueItemPeer::removeInstanceFromPool($values);
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(RequestWorkerQueuePeer::DATABASE_NAME);
-            $criteria->add(RequestWorkerQueuePeer::ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(WorkerQueueItemPeer::DATABASE_NAME);
+            $criteria->add(WorkerQueueItemPeer::ID, (array) $values, Criteria::IN);
             // invalidate the cache for this object(s)
             foreach ((array) $values as $singleval) {
-                RequestWorkerQueuePeer::removeInstanceFromPool($singleval);
+                WorkerQueueItemPeer::removeInstanceFromPool($singleval);
             }
         }
 
         // Set the correct dbName
-        $criteria->setDbName(RequestWorkerQueuePeer::DATABASE_NAME);
+        $criteria->setDbName(WorkerQueueItemPeer::DATABASE_NAME);
 
         $affectedRows = 0; // initialize var to track total num of affected rows
 
@@ -689,7 +689,7 @@ abstract class BaseRequestWorkerQueuePeer {
             $con->beginTransaction();
             
             $affectedRows += BasePeer::doDelete($criteria, $con);
-            RequestWorkerQueuePeer::clearRelatedInstancePool();
+            WorkerQueueItemPeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -700,13 +700,13 @@ abstract class BaseRequestWorkerQueuePeer {
     }
 
     /**
-     * Validates all modified columns of given RequestWorkerQueue object.
+     * Validates all modified columns of given WorkerQueueItem object.
      * If parameter $columns is either a single column name or an array of column names
      * than only those columns are validated.
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      RequestWorkerQueue $obj The object to validate.
+     * @param      WorkerQueueItem $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -716,8 +716,8 @@ abstract class BaseRequestWorkerQueuePeer {
         $columns = array();
 
         if ($cols) {
-            $dbMap = Propel::getDatabaseMap(RequestWorkerQueuePeer::DATABASE_NAME);
-            $tableMap = $dbMap->getTable(RequestWorkerQueuePeer::TABLE_NAME);
+            $dbMap = Propel::getDatabaseMap(WorkerQueueItemPeer::DATABASE_NAME);
+            $tableMap = $dbMap->getTable(WorkerQueueItemPeer::TABLE_NAME);
 
             if (! is_array($cols)) {
                 $cols = array($cols);
@@ -733,7 +733,7 @@ abstract class BaseRequestWorkerQueuePeer {
 
         }
 
-        return BasePeer::doValidate(RequestWorkerQueuePeer::DATABASE_NAME, RequestWorkerQueuePeer::TABLE_NAME, $columns);
+        return BasePeer::doValidate(WorkerQueueItemPeer::DATABASE_NAME, WorkerQueueItemPeer::TABLE_NAME, $columns);
     }
 
     /**
@@ -741,23 +741,23 @@ abstract class BaseRequestWorkerQueuePeer {
      *
      * @param      int $pk the primary key.
      * @param      PropelPDO $con the connection to use
-     * @return RequestWorkerQueue
+     * @return WorkerQueueItem
      */
     public static function retrieveByPK($pk, PropelPDO $con = null)
     {
 
-        if (null !== ($obj = RequestWorkerQueuePeer::getInstanceFromPool((string) $pk))) {
+        if (null !== ($obj = WorkerQueueItemPeer::getInstanceFromPool((string) $pk))) {
             return $obj;
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria = new Criteria(RequestWorkerQueuePeer::DATABASE_NAME);
-        $criteria->add(RequestWorkerQueuePeer::ID, $pk);
+        $criteria = new Criteria(WorkerQueueItemPeer::DATABASE_NAME);
+        $criteria->add(WorkerQueueItemPeer::ID, $pk);
 
-        $v = RequestWorkerQueuePeer::doSelect($criteria, $con);
+        $v = WorkerQueueItemPeer::doSelect($criteria, $con);
 
         return !empty($v) > 0 ? $v[0] : null;
     }
@@ -767,31 +767,31 @@ abstract class BaseRequestWorkerQueuePeer {
      *
      * @param      array $pks List of primary keys
      * @param      PropelPDO $con the connection to use
-     * @return RequestWorkerQueue[]
+     * @return WorkerQueueItem[]
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
     public static function retrieveByPKs($pks, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         $objs = null;
         if (empty($pks)) {
             $objs = array();
         } else {
-            $criteria = new Criteria(RequestWorkerQueuePeer::DATABASE_NAME);
-            $criteria->add(RequestWorkerQueuePeer::ID, $pks, Criteria::IN);
-            $objs = RequestWorkerQueuePeer::doSelect($criteria, $con);
+            $criteria = new Criteria(WorkerQueueItemPeer::DATABASE_NAME);
+            $criteria->add(WorkerQueueItemPeer::ID, $pks, Criteria::IN);
+            $objs = WorkerQueueItemPeer::doSelect($criteria, $con);
         }
 
         return $objs;
     }
 
-} // BaseRequestWorkerQueuePeer
+} // BaseWorkerQueueItemPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseRequestWorkerQueuePeer::buildTableMap();
+BaseWorkerQueueItemPeer::buildTableMap();
 

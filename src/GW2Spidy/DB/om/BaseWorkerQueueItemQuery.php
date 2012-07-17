@@ -11,89 +11,89 @@ use \Propel;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
-use GW2Spidy\DB\RequestWorkerQueue;
-use GW2Spidy\DB\RequestWorkerQueuePeer;
-use GW2Spidy\DB\RequestWorkerQueueQuery;
+use GW2Spidy\DB\WorkerQueueItem;
+use GW2Spidy\DB\WorkerQueueItemPeer;
+use GW2Spidy\DB\WorkerQueueItemQuery;
 
 /**
- * Base class that represents a query for the 'request_worker_queue' table.
+ * Base class that represents a query for the 'worker_queue_item' table.
  *
  * 
  *
- * @method     RequestWorkerQueueQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     RequestWorkerQueueQuery orderByPriority($order = Criteria::ASC) Order by the priority column
- * @method     RequestWorkerQueueQuery orderByStatus($order = Criteria::ASC) Order by the status column
- * @method     RequestWorkerQueueQuery orderByWorker($order = Criteria::ASC) Order by the worker column
- * @method     RequestWorkerQueueQuery orderByData($order = Criteria::ASC) Order by the data column
- * @method     RequestWorkerQueueQuery orderByHandlerUUID($order = Criteria::ASC) Order by the handler_uuid column
- * @method     RequestWorkerQueueQuery orderByTouched($order = Criteria::ASC) Order by the touched column
- * @method     RequestWorkerQueueQuery orderByMaxTimeout($order = Criteria::ASC) Order by the max_timeout column
+ * @method     WorkerQueueItemQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     WorkerQueueItemQuery orderByPriority($order = Criteria::ASC) Order by the priority column
+ * @method     WorkerQueueItemQuery orderByStatus($order = Criteria::ASC) Order by the status column
+ * @method     WorkerQueueItemQuery orderByWorker($order = Criteria::ASC) Order by the worker column
+ * @method     WorkerQueueItemQuery orderByData($order = Criteria::ASC) Order by the data column
+ * @method     WorkerQueueItemQuery orderByHandlerUUID($order = Criteria::ASC) Order by the handler_uuid column
+ * @method     WorkerQueueItemQuery orderByTouched($order = Criteria::ASC) Order by the touched column
+ * @method     WorkerQueueItemQuery orderByMaxTimeout($order = Criteria::ASC) Order by the max_timeout column
  *
- * @method     RequestWorkerQueueQuery groupById() Group by the id column
- * @method     RequestWorkerQueueQuery groupByPriority() Group by the priority column
- * @method     RequestWorkerQueueQuery groupByStatus() Group by the status column
- * @method     RequestWorkerQueueQuery groupByWorker() Group by the worker column
- * @method     RequestWorkerQueueQuery groupByData() Group by the data column
- * @method     RequestWorkerQueueQuery groupByHandlerUUID() Group by the handler_uuid column
- * @method     RequestWorkerQueueQuery groupByTouched() Group by the touched column
- * @method     RequestWorkerQueueQuery groupByMaxTimeout() Group by the max_timeout column
+ * @method     WorkerQueueItemQuery groupById() Group by the id column
+ * @method     WorkerQueueItemQuery groupByPriority() Group by the priority column
+ * @method     WorkerQueueItemQuery groupByStatus() Group by the status column
+ * @method     WorkerQueueItemQuery groupByWorker() Group by the worker column
+ * @method     WorkerQueueItemQuery groupByData() Group by the data column
+ * @method     WorkerQueueItemQuery groupByHandlerUUID() Group by the handler_uuid column
+ * @method     WorkerQueueItemQuery groupByTouched() Group by the touched column
+ * @method     WorkerQueueItemQuery groupByMaxTimeout() Group by the max_timeout column
  *
- * @method     RequestWorkerQueueQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     RequestWorkerQueueQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     RequestWorkerQueueQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     WorkerQueueItemQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     WorkerQueueItemQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     WorkerQueueItemQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     RequestWorkerQueue findOne(PropelPDO $con = null) Return the first RequestWorkerQueue matching the query
- * @method     RequestWorkerQueue findOneOrCreate(PropelPDO $con = null) Return the first RequestWorkerQueue matching the query, or a new RequestWorkerQueue object populated from the query conditions when no match is found
+ * @method     WorkerQueueItem findOne(PropelPDO $con = null) Return the first WorkerQueueItem matching the query
+ * @method     WorkerQueueItem findOneOrCreate(PropelPDO $con = null) Return the first WorkerQueueItem matching the query, or a new WorkerQueueItem object populated from the query conditions when no match is found
  *
- * @method     RequestWorkerQueue findOneById(int $id) Return the first RequestWorkerQueue filtered by the id column
- * @method     RequestWorkerQueue findOneByPriority(int $priority) Return the first RequestWorkerQueue filtered by the priority column
- * @method     RequestWorkerQueue findOneByStatus(string $status) Return the first RequestWorkerQueue filtered by the status column
- * @method     RequestWorkerQueue findOneByWorker(string $worker) Return the first RequestWorkerQueue filtered by the worker column
- * @method     RequestWorkerQueue findOneByData(string $data) Return the first RequestWorkerQueue filtered by the data column
- * @method     RequestWorkerQueue findOneByHandlerUUID(string $handler_uuid) Return the first RequestWorkerQueue filtered by the handler_uuid column
- * @method     RequestWorkerQueue findOneByTouched(string $touched) Return the first RequestWorkerQueue filtered by the touched column
- * @method     RequestWorkerQueue findOneByMaxTimeout(int $max_timeout) Return the first RequestWorkerQueue filtered by the max_timeout column
+ * @method     WorkerQueueItem findOneById(int $id) Return the first WorkerQueueItem filtered by the id column
+ * @method     WorkerQueueItem findOneByPriority(int $priority) Return the first WorkerQueueItem filtered by the priority column
+ * @method     WorkerQueueItem findOneByStatus(string $status) Return the first WorkerQueueItem filtered by the status column
+ * @method     WorkerQueueItem findOneByWorker(string $worker) Return the first WorkerQueueItem filtered by the worker column
+ * @method     WorkerQueueItem findOneByData(string $data) Return the first WorkerQueueItem filtered by the data column
+ * @method     WorkerQueueItem findOneByHandlerUUID(string $handler_uuid) Return the first WorkerQueueItem filtered by the handler_uuid column
+ * @method     WorkerQueueItem findOneByTouched(string $touched) Return the first WorkerQueueItem filtered by the touched column
+ * @method     WorkerQueueItem findOneByMaxTimeout(int $max_timeout) Return the first WorkerQueueItem filtered by the max_timeout column
  *
- * @method     array findById(int $id) Return RequestWorkerQueue objects filtered by the id column
- * @method     array findByPriority(int $priority) Return RequestWorkerQueue objects filtered by the priority column
- * @method     array findByStatus(string $status) Return RequestWorkerQueue objects filtered by the status column
- * @method     array findByWorker(string $worker) Return RequestWorkerQueue objects filtered by the worker column
- * @method     array findByData(string $data) Return RequestWorkerQueue objects filtered by the data column
- * @method     array findByHandlerUUID(string $handler_uuid) Return RequestWorkerQueue objects filtered by the handler_uuid column
- * @method     array findByTouched(string $touched) Return RequestWorkerQueue objects filtered by the touched column
- * @method     array findByMaxTimeout(int $max_timeout) Return RequestWorkerQueue objects filtered by the max_timeout column
+ * @method     array findById(int $id) Return WorkerQueueItem objects filtered by the id column
+ * @method     array findByPriority(int $priority) Return WorkerQueueItem objects filtered by the priority column
+ * @method     array findByStatus(string $status) Return WorkerQueueItem objects filtered by the status column
+ * @method     array findByWorker(string $worker) Return WorkerQueueItem objects filtered by the worker column
+ * @method     array findByData(string $data) Return WorkerQueueItem objects filtered by the data column
+ * @method     array findByHandlerUUID(string $handler_uuid) Return WorkerQueueItem objects filtered by the handler_uuid column
+ * @method     array findByTouched(string $touched) Return WorkerQueueItem objects filtered by the touched column
+ * @method     array findByMaxTimeout(int $max_timeout) Return WorkerQueueItem objects filtered by the max_timeout column
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
+abstract class BaseWorkerQueueItemQuery extends ModelCriteria
 {
     
     /**
-     * Initializes internal state of BaseRequestWorkerQueueQuery object.
+     * Initializes internal state of BaseWorkerQueueItemQuery object.
      *
      * @param     string $dbName The dabase name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'gw2spidy', $modelName = 'GW2Spidy\\DB\\RequestWorkerQueue', $modelAlias = null)
+    public function __construct($dbName = 'gw2spidy', $modelName = 'GW2Spidy\\DB\\WorkerQueueItem', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new RequestWorkerQueueQuery object.
+     * Returns a new WorkerQueueItemQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param     RequestWorkerQueueQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param     WorkerQueueItemQuery|Criteria $criteria Optional Criteria to build the query from
      *
-     * @return RequestWorkerQueueQuery
+     * @return WorkerQueueItemQuery
      */
     public static function create($modelAlias = null, $criteria = null)
     {
-        if ($criteria instanceof RequestWorkerQueueQuery) {
+        if ($criteria instanceof WorkerQueueItemQuery) {
             return $criteria;
         }
-        $query = new RequestWorkerQueueQuery();
+        $query = new WorkerQueueItemQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -116,19 +116,19 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query 
      * @param     PropelPDO $con an optional connection object
      *
-     * @return   RequestWorkerQueue|RequestWorkerQueue[]|mixed the result, formatted by the current formatter
+     * @return   WorkerQueueItem|WorkerQueueItem[]|mixed the result, formatted by the current formatter
      */
     public function findPk($key, $con = null)
     {
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RequestWorkerQueuePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
+        if ((null !== ($obj = WorkerQueueItemPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is alredy in the instance pool
             return $obj;
         }
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
@@ -147,12 +147,12 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return   RequestWorkerQueue A model object, or null if the key is not found
+     * @return   WorkerQueueItem A model object, or null if the key is not found
      * @throws   PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `ID`, `PRIORITY`, `STATUS`, `WORKER`, `DATA`, `HANDLER_UUID`, `TOUCHED`, `MAX_TIMEOUT` FROM `request_worker_queue` WHERE `ID` = :p0';
+        $sql = 'SELECT `ID`, `PRIORITY`, `STATUS`, `WORKER`, `DATA`, `HANDLER_UUID`, `TOUCHED`, `MAX_TIMEOUT` FROM `worker_queue_item` WHERE `ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -163,9 +163,9 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $obj = new RequestWorkerQueue();
+            $obj = new WorkerQueueItem();
             $obj->hydrate($row);
-            RequestWorkerQueuePeer::addInstanceToPool($obj, (string) $key);
+            WorkerQueueItemPeer::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 
@@ -178,7 +178,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return RequestWorkerQueue|RequestWorkerQueue[]|mixed the result, formatted by the current formatter
+     * @return WorkerQueueItem|WorkerQueueItem[]|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, $con)
     {
@@ -199,7 +199,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      * @param     array $keys Primary keys to use for the query
      * @param     PropelPDO $con an optional connection object
      *
-     * @return PropelObjectCollection|RequestWorkerQueue[]|mixed the list of results, formatted by the current formatter
+     * @return PropelObjectCollection|WorkerQueueItem[]|mixed the list of results, formatted by the current formatter
      */
     public function findPks($keys, $con = null)
     {
@@ -220,12 +220,12 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return RequestWorkerQueueQuery The current query, for fluid interface
+     * @return WorkerQueueItemQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(RequestWorkerQueuePeer::ID, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(WorkerQueueItemPeer::ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -233,12 +233,12 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return RequestWorkerQueueQuery The current query, for fluid interface
+     * @return WorkerQueueItemQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(RequestWorkerQueuePeer::ID, $keys, Criteria::IN);
+        return $this->addUsingAlias(WorkerQueueItemPeer::ID, $keys, Criteria::IN);
     }
 
     /**
@@ -257,7 +257,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return RequestWorkerQueueQuery The current query, for fluid interface
+     * @return WorkerQueueItemQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
@@ -265,7 +265,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
             $comparison = Criteria::IN;
         }
 
-        return $this->addUsingAlias(RequestWorkerQueuePeer::ID, $id, $comparison);
+        return $this->addUsingAlias(WorkerQueueItemPeer::ID, $id, $comparison);
     }
 
     /**
@@ -284,18 +284,18 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return RequestWorkerQueueQuery The current query, for fluid interface
+     * @return WorkerQueueItemQuery The current query, for fluid interface
      */
     public function filterByPriority($priority = null, $comparison = null)
     {
         if (is_array($priority)) {
             $useMinMax = false;
             if (isset($priority['min'])) {
-                $this->addUsingAlias(RequestWorkerQueuePeer::PRIORITY, $priority['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(WorkerQueueItemPeer::PRIORITY, $priority['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($priority['max'])) {
-                $this->addUsingAlias(RequestWorkerQueuePeer::PRIORITY, $priority['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(WorkerQueueItemPeer::PRIORITY, $priority['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -306,7 +306,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(RequestWorkerQueuePeer::PRIORITY, $priority, $comparison);
+        return $this->addUsingAlias(WorkerQueueItemPeer::PRIORITY, $priority, $comparison);
     }
 
     /**
@@ -322,7 +322,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return RequestWorkerQueueQuery The current query, for fluid interface
+     * @return WorkerQueueItemQuery The current query, for fluid interface
      */
     public function filterByStatus($status = null, $comparison = null)
     {
@@ -335,7 +335,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(RequestWorkerQueuePeer::STATUS, $status, $comparison);
+        return $this->addUsingAlias(WorkerQueueItemPeer::STATUS, $status, $comparison);
     }
 
     /**
@@ -351,7 +351,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return RequestWorkerQueueQuery The current query, for fluid interface
+     * @return WorkerQueueItemQuery The current query, for fluid interface
      */
     public function filterByWorker($worker = null, $comparison = null)
     {
@@ -364,7 +364,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(RequestWorkerQueuePeer::WORKER, $worker, $comparison);
+        return $this->addUsingAlias(WorkerQueueItemPeer::WORKER, $worker, $comparison);
     }
 
     /**
@@ -380,7 +380,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return RequestWorkerQueueQuery The current query, for fluid interface
+     * @return WorkerQueueItemQuery The current query, for fluid interface
      */
     public function filterByData($data = null, $comparison = null)
     {
@@ -393,7 +393,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(RequestWorkerQueuePeer::DATA, $data, $comparison);
+        return $this->addUsingAlias(WorkerQueueItemPeer::DATA, $data, $comparison);
     }
 
     /**
@@ -409,7 +409,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return RequestWorkerQueueQuery The current query, for fluid interface
+     * @return WorkerQueueItemQuery The current query, for fluid interface
      */
     public function filterByHandlerUUID($handlerUUID = null, $comparison = null)
     {
@@ -422,7 +422,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(RequestWorkerQueuePeer::HANDLER_UUID, $handlerUUID, $comparison);
+        return $this->addUsingAlias(WorkerQueueItemPeer::HANDLER_UUID, $handlerUUID, $comparison);
     }
 
     /**
@@ -443,18 +443,18 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return RequestWorkerQueueQuery The current query, for fluid interface
+     * @return WorkerQueueItemQuery The current query, for fluid interface
      */
     public function filterByTouched($touched = null, $comparison = null)
     {
         if (is_array($touched)) {
             $useMinMax = false;
             if (isset($touched['min'])) {
-                $this->addUsingAlias(RequestWorkerQueuePeer::TOUCHED, $touched['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(WorkerQueueItemPeer::TOUCHED, $touched['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($touched['max'])) {
-                $this->addUsingAlias(RequestWorkerQueuePeer::TOUCHED, $touched['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(WorkerQueueItemPeer::TOUCHED, $touched['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -465,7 +465,7 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(RequestWorkerQueuePeer::TOUCHED, $touched, $comparison);
+        return $this->addUsingAlias(WorkerQueueItemPeer::TOUCHED, $touched, $comparison);
     }
 
     /**
@@ -484,18 +484,18 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return RequestWorkerQueueQuery The current query, for fluid interface
+     * @return WorkerQueueItemQuery The current query, for fluid interface
      */
     public function filterByMaxTimeout($maxTimeout = null, $comparison = null)
     {
         if (is_array($maxTimeout)) {
             $useMinMax = false;
             if (isset($maxTimeout['min'])) {
-                $this->addUsingAlias(RequestWorkerQueuePeer::MAX_TIMEOUT, $maxTimeout['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(WorkerQueueItemPeer::MAX_TIMEOUT, $maxTimeout['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($maxTimeout['max'])) {
-                $this->addUsingAlias(RequestWorkerQueuePeer::MAX_TIMEOUT, $maxTimeout['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(WorkerQueueItemPeer::MAX_TIMEOUT, $maxTimeout['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -506,23 +506,23 @@ abstract class BaseRequestWorkerQueueQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(RequestWorkerQueuePeer::MAX_TIMEOUT, $maxTimeout, $comparison);
+        return $this->addUsingAlias(WorkerQueueItemPeer::MAX_TIMEOUT, $maxTimeout, $comparison);
     }
 
     /**
      * Exclude object from result
      *
-     * @param   RequestWorkerQueue $requestWorkerQueue Object to remove from the list of results
+     * @param   WorkerQueueItem $workerQueueItem Object to remove from the list of results
      *
-     * @return RequestWorkerQueueQuery The current query, for fluid interface
+     * @return WorkerQueueItemQuery The current query, for fluid interface
      */
-    public function prune($requestWorkerQueue = null)
+    public function prune($workerQueueItem = null)
     {
-        if ($requestWorkerQueue) {
-            $this->addUsingAlias(RequestWorkerQueuePeer::ID, $requestWorkerQueue->getId(), Criteria::NOT_EQUAL);
+        if ($workerQueueItem) {
+            $this->addUsingAlias(WorkerQueueItemPeer::ID, $workerQueueItem->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;
     }
 
-} // BaseRequestWorkerQueueQuery
+} // BaseWorkerQueueItemQuery

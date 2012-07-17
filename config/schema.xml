@@ -32,7 +32,7 @@
             <reference local="item_sub_type_id" foreign="id" />
         </foreign-key>  
     </table>
-    <table name="request_worker_queue" phpName="RequestWorkerQueue">
+    <table name="worker_queue_item" phpName="WorkerQueueItem">
         <column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true" phpName="Id" />
         <column name="priority" type="integer" default="1" phpName="Priority" />
         <column name="status" type="varchar" size="45" required="true" default="" phpName="Status" />

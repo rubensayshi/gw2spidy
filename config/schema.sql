@@ -66,12 +66,12 @@ CREATE TABLE `item`
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
--- request_worker_queue
+-- worker_queue_item
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `request_worker_queue`;
+DROP TABLE IF EXISTS `worker_queue_item`;
 
-CREATE TABLE `request_worker_queue`
+CREATE TABLE `worker_queue_item`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `priority` INTEGER DEFAULT 1,

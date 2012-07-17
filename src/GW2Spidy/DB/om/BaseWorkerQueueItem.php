@@ -16,30 +16,30 @@ use \PropelDateTime;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
-use GW2Spidy\DB\RequestWorkerQueue;
-use GW2Spidy\DB\RequestWorkerQueuePeer;
-use GW2Spidy\DB\RequestWorkerQueueQuery;
+use GW2Spidy\DB\WorkerQueueItem;
+use GW2Spidy\DB\WorkerQueueItemPeer;
+use GW2Spidy\DB\WorkerQueueItemQuery;
 
 /**
- * Base class that represents a row from the 'request_worker_queue' table.
+ * Base class that represents a row from the 'worker_queue_item' table.
  *
  * 
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
+abstract class BaseWorkerQueueItem extends BaseObject implements Persistent
 {
 
     /**
      * Peer class name
      */
-    const PEER = 'GW2Spidy\\DB\\RequestWorkerQueuePeer';
+    const PEER = 'GW2Spidy\\DB\\WorkerQueueItemPeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        RequestWorkerQueuePeer
+     * @var        WorkerQueueItemPeer
      */
     protected static $peer;
 
@@ -134,7 +134,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
     }
 
     /**
-     * Initializes internal state of BaseRequestWorkerQueue object.
+     * Initializes internal state of BaseWorkerQueueItem object.
      * @see        applyDefaults()
      */
     public function __construct()
@@ -262,7 +262,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      * Set the value of [id] column.
      * 
      * @param      int $v new value
-     * @return   RequestWorkerQueue The current object (for fluent API support)
+     * @return   WorkerQueueItem The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -272,7 +272,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[] = RequestWorkerQueuePeer::ID;
+            $this->modifiedColumns[] = WorkerQueueItemPeer::ID;
         }
 
 
@@ -283,7 +283,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      * Set the value of [priority] column.
      * 
      * @param      int $v new value
-     * @return   RequestWorkerQueue The current object (for fluent API support)
+     * @return   WorkerQueueItem The current object (for fluent API support)
      */
     public function setPriority($v)
     {
@@ -293,7 +293,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
 
         if ($this->priority !== $v) {
             $this->priority = $v;
-            $this->modifiedColumns[] = RequestWorkerQueuePeer::PRIORITY;
+            $this->modifiedColumns[] = WorkerQueueItemPeer::PRIORITY;
         }
 
 
@@ -304,7 +304,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      * Set the value of [status] column.
      * 
      * @param      string $v new value
-     * @return   RequestWorkerQueue The current object (for fluent API support)
+     * @return   WorkerQueueItem The current object (for fluent API support)
      */
     public function setStatus($v)
     {
@@ -314,7 +314,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
 
         if ($this->status !== $v) {
             $this->status = $v;
-            $this->modifiedColumns[] = RequestWorkerQueuePeer::STATUS;
+            $this->modifiedColumns[] = WorkerQueueItemPeer::STATUS;
         }
 
 
@@ -325,7 +325,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      * Set the value of [worker] column.
      * 
      * @param      string $v new value
-     * @return   RequestWorkerQueue The current object (for fluent API support)
+     * @return   WorkerQueueItem The current object (for fluent API support)
      */
     public function setWorker($v)
     {
@@ -335,7 +335,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
 
         if ($this->worker !== $v) {
             $this->worker = $v;
-            $this->modifiedColumns[] = RequestWorkerQueuePeer::WORKER;
+            $this->modifiedColumns[] = WorkerQueueItemPeer::WORKER;
         }
 
 
@@ -346,7 +346,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      * Set the value of [data] column.
      * 
      * @param      string $v new value
-     * @return   RequestWorkerQueue The current object (for fluent API support)
+     * @return   WorkerQueueItem The current object (for fluent API support)
      */
     public function setData($v)
     {
@@ -356,7 +356,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
 
         if ($this->data !== $v) {
             $this->data = $v;
-            $this->modifiedColumns[] = RequestWorkerQueuePeer::DATA;
+            $this->modifiedColumns[] = WorkerQueueItemPeer::DATA;
         }
 
 
@@ -367,7 +367,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      * Set the value of [handler_uuid] column.
      * 
      * @param      string $v new value
-     * @return   RequestWorkerQueue The current object (for fluent API support)
+     * @return   WorkerQueueItem The current object (for fluent API support)
      */
     public function setHandlerUUID($v)
     {
@@ -377,7 +377,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
 
         if ($this->handler_uuid !== $v) {
             $this->handler_uuid = $v;
-            $this->modifiedColumns[] = RequestWorkerQueuePeer::HANDLER_UUID;
+            $this->modifiedColumns[] = WorkerQueueItemPeer::HANDLER_UUID;
         }
 
 
@@ -389,7 +389,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      * 
      * @param      mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as NULL.
-     * @return   RequestWorkerQueue The current object (for fluent API support)
+     * @return   WorkerQueueItem The current object (for fluent API support)
      */
     public function setTouched($v)
     {
@@ -399,7 +399,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->touched = $newDateAsString;
-                $this->modifiedColumns[] = RequestWorkerQueuePeer::TOUCHED;
+                $this->modifiedColumns[] = WorkerQueueItemPeer::TOUCHED;
             }
         } // if either are not null
 
@@ -411,7 +411,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      * Set the value of [max_timeout] column.
      * 
      * @param      int $v new value
-     * @return   RequestWorkerQueue The current object (for fluent API support)
+     * @return   WorkerQueueItem The current object (for fluent API support)
      */
     public function setMaxTimeout($v)
     {
@@ -421,7 +421,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
 
         if ($this->max_timeout !== $v) {
             $this->max_timeout = $v;
-            $this->modifiedColumns[] = RequestWorkerQueuePeer::MAX_TIMEOUT;
+            $this->modifiedColumns[] = WorkerQueueItemPeer::MAX_TIMEOUT;
         }
 
 
@@ -500,10 +500,10 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = RequestWorkerQueuePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = WorkerQueueItemPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating RequestWorkerQueue object", $e);
+            throw new PropelException("Error populating WorkerQueueItem object", $e);
         }
     }
 
@@ -546,13 +546,13 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = RequestWorkerQueuePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = WorkerQueueItemPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
@@ -582,12 +582,12 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = RequestWorkerQueueQuery::create()
+            $deleteQuery = WorkerQueueItemQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -625,7 +625,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(RequestWorkerQueuePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(WorkerQueueItemPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -645,7 +645,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                RequestWorkerQueuePeer::addInstanceToPool($this);
+                WorkerQueueItemPeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -706,39 +706,39 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[] = RequestWorkerQueuePeer::ID;
+        $this->modifiedColumns[] = WorkerQueueItemPeer::ID;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . RequestWorkerQueuePeer::ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . WorkerQueueItemPeer::ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(RequestWorkerQueuePeer::ID)) {
+        if ($this->isColumnModified(WorkerQueueItemPeer::ID)) {
             $modifiedColumns[':p' . $index++]  = '`ID`';
         }
-        if ($this->isColumnModified(RequestWorkerQueuePeer::PRIORITY)) {
+        if ($this->isColumnModified(WorkerQueueItemPeer::PRIORITY)) {
             $modifiedColumns[':p' . $index++]  = '`PRIORITY`';
         }
-        if ($this->isColumnModified(RequestWorkerQueuePeer::STATUS)) {
+        if ($this->isColumnModified(WorkerQueueItemPeer::STATUS)) {
             $modifiedColumns[':p' . $index++]  = '`STATUS`';
         }
-        if ($this->isColumnModified(RequestWorkerQueuePeer::WORKER)) {
+        if ($this->isColumnModified(WorkerQueueItemPeer::WORKER)) {
             $modifiedColumns[':p' . $index++]  = '`WORKER`';
         }
-        if ($this->isColumnModified(RequestWorkerQueuePeer::DATA)) {
+        if ($this->isColumnModified(WorkerQueueItemPeer::DATA)) {
             $modifiedColumns[':p' . $index++]  = '`DATA`';
         }
-        if ($this->isColumnModified(RequestWorkerQueuePeer::HANDLER_UUID)) {
+        if ($this->isColumnModified(WorkerQueueItemPeer::HANDLER_UUID)) {
             $modifiedColumns[':p' . $index++]  = '`HANDLER_UUID`';
         }
-        if ($this->isColumnModified(RequestWorkerQueuePeer::TOUCHED)) {
+        if ($this->isColumnModified(WorkerQueueItemPeer::TOUCHED)) {
             $modifiedColumns[':p' . $index++]  = '`TOUCHED`';
         }
-        if ($this->isColumnModified(RequestWorkerQueuePeer::MAX_TIMEOUT)) {
+        if ($this->isColumnModified(WorkerQueueItemPeer::MAX_TIMEOUT)) {
             $modifiedColumns[':p' . $index++]  = '`MAX_TIMEOUT`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `request_worker_queue` (%s) VALUES (%s)',
+            'INSERT INTO `worker_queue_item` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -865,7 +865,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
             $failureMap = array();
 
 
-            if (($retval = RequestWorkerQueuePeer::doValidate($this, $columns)) !== true) {
+            if (($retval = WorkerQueueItemPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
@@ -889,7 +889,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = RequestWorkerQueuePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = WorkerQueueItemPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -951,11 +951,11 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
-        if (isset($alreadyDumpedObjects['RequestWorkerQueue'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['WorkerQueueItem'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['RequestWorkerQueue'][$this->getPrimaryKey()] = true;
-        $keys = RequestWorkerQueuePeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['WorkerQueueItem'][$this->getPrimaryKey()] = true;
+        $keys = WorkerQueueItemPeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getPriority(),
@@ -983,7 +983,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = RequestWorkerQueuePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = WorkerQueueItemPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -1045,7 +1045,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = RequestWorkerQueuePeer::getFieldNames($keyType);
+        $keys = WorkerQueueItemPeer::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setPriority($arr[$keys[1]]);
@@ -1064,16 +1064,16 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(RequestWorkerQueuePeer::DATABASE_NAME);
+        $criteria = new Criteria(WorkerQueueItemPeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(RequestWorkerQueuePeer::ID)) $criteria->add(RequestWorkerQueuePeer::ID, $this->id);
-        if ($this->isColumnModified(RequestWorkerQueuePeer::PRIORITY)) $criteria->add(RequestWorkerQueuePeer::PRIORITY, $this->priority);
-        if ($this->isColumnModified(RequestWorkerQueuePeer::STATUS)) $criteria->add(RequestWorkerQueuePeer::STATUS, $this->status);
-        if ($this->isColumnModified(RequestWorkerQueuePeer::WORKER)) $criteria->add(RequestWorkerQueuePeer::WORKER, $this->worker);
-        if ($this->isColumnModified(RequestWorkerQueuePeer::DATA)) $criteria->add(RequestWorkerQueuePeer::DATA, $this->data);
-        if ($this->isColumnModified(RequestWorkerQueuePeer::HANDLER_UUID)) $criteria->add(RequestWorkerQueuePeer::HANDLER_UUID, $this->handler_uuid);
-        if ($this->isColumnModified(RequestWorkerQueuePeer::TOUCHED)) $criteria->add(RequestWorkerQueuePeer::TOUCHED, $this->touched);
-        if ($this->isColumnModified(RequestWorkerQueuePeer::MAX_TIMEOUT)) $criteria->add(RequestWorkerQueuePeer::MAX_TIMEOUT, $this->max_timeout);
+        if ($this->isColumnModified(WorkerQueueItemPeer::ID)) $criteria->add(WorkerQueueItemPeer::ID, $this->id);
+        if ($this->isColumnModified(WorkerQueueItemPeer::PRIORITY)) $criteria->add(WorkerQueueItemPeer::PRIORITY, $this->priority);
+        if ($this->isColumnModified(WorkerQueueItemPeer::STATUS)) $criteria->add(WorkerQueueItemPeer::STATUS, $this->status);
+        if ($this->isColumnModified(WorkerQueueItemPeer::WORKER)) $criteria->add(WorkerQueueItemPeer::WORKER, $this->worker);
+        if ($this->isColumnModified(WorkerQueueItemPeer::DATA)) $criteria->add(WorkerQueueItemPeer::DATA, $this->data);
+        if ($this->isColumnModified(WorkerQueueItemPeer::HANDLER_UUID)) $criteria->add(WorkerQueueItemPeer::HANDLER_UUID, $this->handler_uuid);
+        if ($this->isColumnModified(WorkerQueueItemPeer::TOUCHED)) $criteria->add(WorkerQueueItemPeer::TOUCHED, $this->touched);
+        if ($this->isColumnModified(WorkerQueueItemPeer::MAX_TIMEOUT)) $criteria->add(WorkerQueueItemPeer::MAX_TIMEOUT, $this->max_timeout);
 
         return $criteria;
     }
@@ -1088,8 +1088,8 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(RequestWorkerQueuePeer::DATABASE_NAME);
-        $criteria->add(RequestWorkerQueuePeer::ID, $this->id);
+        $criteria = new Criteria(WorkerQueueItemPeer::DATABASE_NAME);
+        $criteria->add(WorkerQueueItemPeer::ID, $this->id);
 
         return $criteria;
     }
@@ -1130,7 +1130,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of RequestWorkerQueue (or compatible) type.
+     * @param      object $copyObj An object of WorkerQueueItem (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1159,7 +1159,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 RequestWorkerQueue Clone of current object.
+     * @return                 WorkerQueueItem Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1179,12 +1179,12 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return   RequestWorkerQueuePeer
+     * @return   WorkerQueueItemPeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new RequestWorkerQueuePeer();
+            self::$peer = new WorkerQueueItemPeer();
         }
 
         return self::$peer;
@@ -1235,7 +1235,7 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(RequestWorkerQueuePeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(WorkerQueueItemPeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
@@ -1248,4 +1248,4 @@ abstract class BaseRequestWorkerQueue extends BaseObject implements Persistent
         return $this->alreadyInSave;
     }
 
-} // BaseRequestWorkerQueue
+} // BaseWorkerQueueItem

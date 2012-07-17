@@ -1,6 +1,6 @@
 <?php
 
-use GW2Spidy\DB\RequestWorkerQueuePeer;
+use GW2Spidy\DB\WorkerQueueItemPeer;
 
 require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
@@ -12,7 +12,7 @@ $con     = Propel::getConnection();
 for ($i = 0; $i < 10; $i++) {
     $sql = "SELECT
             *
-        FROM `".RequestWorkerQueuePeer::TABLE_NAME."`
+        FROM `".WorkerQueueItemPeer::TABLE_NAME."`
         WHERE (`touched` IS NULL OR `touched` + `max_timeout` < NOW())
         AND   `status` <> 'DONE'
         ORDER BY `priority` DESC, `id` ASC
@@ -24,7 +24,7 @@ for ($i = 0; $i < 10; $i++) {
     $prep = $con->prepare($sql);
     $prep->execute();
 
-    $items = RequestWorkerQueuePeer::populateObjects($prep);
+    $items = WorkerQueueItemPeer::populateObjects($prep);
 
     foreach ($items as $item) {
         $item->setHandlerUUID($UUID);
