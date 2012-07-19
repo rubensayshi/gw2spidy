@@ -14,7 +14,7 @@ $UUID    = getmypid() . "::" . time();
 $workers = array();
 $con     = Propel::getConnection();
 $run     = 0;
-$max     = 50;
+$max     = in_array('--debug', $argv) ? 1 : 50;
 $slottime= SLOT_TIMEOUT . "sec";
 
 /*
@@ -99,7 +99,7 @@ while ($run < $max) {
         // CLOSE TRANSACTION
         $con->commit();
 
-        if (!in_array('--dev', $argv)) {
+        if (!in_array('--debug', $argv)) {
             print "no items, sleeping [60] ... \n";
             sleep(60);
         }
@@ -160,8 +160,13 @@ while ($run < $max) {
     }
 
     if ($done) {
+        $log = ob_get_clean();
         $item->setStatus('DONE');
-        $item->setLastLog(ob_get_clean());
+        $item->setLastLog($log);
+
+        if (in_array('--debug', $argv)) {
+            echo $log;
+        }
     }
 
     $item->setTouched(new DateTime());

@@ -66,6 +66,28 @@ CREATE TABLE `item`
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
+-- listing
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `listing`;
+
+CREATE TABLE `listing`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `listing_date` DATE NOT NULL,
+    `listing_time` TIME NOT NULL,
+    `item_id` INTEGER NOT NULL,
+    `listings` INTEGER NOT NULL,
+    `unit_price` INTEGER NOT NULL,
+    `quantity` INTEGER NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `listing_FI_1` (`item_id`),
+    CONSTRAINT `listing_FK_1`
+        FOREIGN KEY (`item_id`)
+        REFERENCES `item` (`data_id`)
+) ENGINE=MyISAM;
+
+-- ---------------------------------------------------------------------
 -- worker_queue_item
 -- ---------------------------------------------------------------------
 

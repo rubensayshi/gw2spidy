@@ -3,6 +3,8 @@
 namespace GW2Spidy\WorkerQueue;
 
 
+use GW2Spidy\DB\Listing;
+
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\WorkerQueueItem;
@@ -16,20 +18,24 @@ class ItemListingsDBWorker implements Worker {
         $item = $item->getData();
 
         $this->buildListingsDB($item);
-        $this->enqeueNextHour($item);
     }
 
     protected function buildListingsDB(Item $item) {
+        $now      = new \DateTime();
         $market   = TradeMarket::getInstance();
         $listings = $market->getListingsById($item->getDataId());
 
         if ($listings) {
-            var_dump($listings);
-        }
-    }
+            foreach ($listings as $listingData) {
+                $listing = new Listing();
+                $listing->fromArray($listingData, \BasePeer::TYPE_FIELDNAME);
+                $listing->setItem($item);
+                $listing->setListingDate($now);
+                $listing->setListingTime($now);
 
-    protected function enqeueNextHour(Item $item) {
-        return self::enqueueWorker($item, strtotime("+1 hour"));
+                $listing->save();
+            }
+        }
     }
 
     public static function enqueueWorker($item, $time = null) {

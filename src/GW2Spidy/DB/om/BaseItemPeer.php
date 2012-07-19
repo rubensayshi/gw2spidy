@@ -13,6 +13,7 @@ use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemPeer;
 use GW2Spidy\DB\ItemSubTypePeer;
 use GW2Spidy\DB\ItemTypePeer;
+use GW2Spidy\DB\ListingPeer;
 use GW2Spidy\DB\map\ItemTableMap;
 
 /**

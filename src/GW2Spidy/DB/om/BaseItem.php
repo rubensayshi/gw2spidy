@@ -20,6 +20,8 @@ use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemSubTypeQuery;
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemTypeQuery;
+use GW2Spidy\DB\Listing;
+use GW2Spidy\DB\ListingQuery;
 
 /**
  * Base class that represents a row from the 'item' table.
@@ -133,6 +135,12 @@ abstract class BaseItem extends BaseObject implements Persistent
     protected $aItemSubType;
 
     /**
+     * @var        PropelObjectCollection|Listing[] Collection to store aggregation of Listing objects.
+     */
+    protected $collListings;
+    protected $collListingsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      * @var        boolean
@@ -145,6 +153,12 @@ abstract class BaseItem extends BaseObject implements Persistent
      * @var        boolean
      */
     protected $alreadyInValidation = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $listingsScheduledForDeletion = null;
 
     /**
      * Get the [data_id] column value.
@@ -660,6 +674,8 @@ abstract class BaseItem extends BaseObject implements Persistent
 
             $this->aItemType = null;
             $this->aItemSubType = null;
+            $this->collListings = null;
+
         } // if (deep)
     }
 
@@ -801,6 +817,23 @@ abstract class BaseItem extends BaseObject implements Persistent
                 }
                 $affectedRows += 1;
                 $this->resetModified();
+            }
+
+            if ($this->listingsScheduledForDeletion !== null) {
+                if (!$this->listingsScheduledForDeletion->isEmpty()) {
+                    ListingQuery::create()
+                        ->filterByPrimaryKeys($this->listingsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->listingsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collListings !== null) {
+                foreach ($this->collListings as $referrerFK) {
+                    if (!$referrerFK->isDeleted()) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             $this->alreadyInSave = false;
@@ -1018,6 +1051,14 @@ abstract class BaseItem extends BaseObject implements Persistent
             }
 
 
+                if ($this->collListings !== null) {
+                    foreach ($this->collListings as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
 
             $this->alreadyInValidation = false;
         }
@@ -1137,6 +1178,9 @@ abstract class BaseItem extends BaseObject implements Persistent
             }
             if (null !== $this->aItemSubType) {
                 $result['ItemSubType'] = $this->aItemSubType->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collListings) {
+                $result['Listings'] = $this->collListings->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1349,6 +1393,12 @@ abstract class BaseItem extends BaseObject implements Persistent
             // store object hash to prevent cycle
             $this->startCopy = true;
 
+            foreach ($this->getListings() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addListing($relObj->copy($deepCopy));
+                }
+            }
+
             //unflag object copy
             $this->startCopy = false;
         } // if ($deepCopy)
@@ -1503,6 +1553,229 @@ abstract class BaseItem extends BaseObject implements Persistent
         return $this->aItemSubType;
     }
 
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('Listing' == $relationName) {
+            $this->initListings();
+        }
+    }
+
+    /**
+     * Clears out the collListings collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addListings()
+     */
+    public function clearListings()
+    {
+        $this->collListings = null; // important to set this to NULL since that means it is uninitialized
+        $this->collListingsPartial = null;
+    }
+
+    /**
+     * reset is the collListings collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialListings($v = true)
+    {
+        $this->collListingsPartial = $v;
+    }
+
+    /**
+     * Initializes the collListings collection.
+     *
+     * By default this just sets the collListings collection to an empty array (like clearcollListings());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initListings($overrideExisting = true)
+    {
+        if (null !== $this->collListings && !$overrideExisting) {
+            return;
+        }
+        $this->collListings = new PropelObjectCollection();
+        $this->collListings->setModel('Listing');
+    }
+
+    /**
+     * Gets an array of Listing objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Item is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Listing[] List of Listing objects
+     * @throws PropelException
+     */
+    public function getListings($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collListingsPartial && !$this->isNew();
+        if (null === $this->collListings || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collListings) {
+                // return empty collection
+                $this->initListings();
+            } else {
+                $collListings = ListingQuery::create(null, $criteria)
+                    ->filterByItem($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collListingsPartial && count($collListings)) {
+                      $this->initListings(false);
+
+                      foreach($collListings as $obj) {
+                        if (false == $this->collListings->contains($obj)) {
+                          $this->collListings->append($obj);
+                        }
+                      }
+
+                      $this->collListingsPartial = true;
+                    }
+
+                    return $collListings;
+                }
+
+                if($partial && $this->collListings) {
+                    foreach($this->collListings as $obj) {
+                        if($obj->isNew()) {
+                            $collListings[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collListings = $collListings;
+                $this->collListingsPartial = false;
+            }
+        }
+
+        return $this->collListings;
+    }
+
+    /**
+     * Sets a collection of Listing objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      PropelCollection $listings A Propel collection.
+     * @param      PropelPDO $con Optional connection object
+     */
+    public function setListings(PropelCollection $listings, PropelPDO $con = null)
+    {
+        $this->listingsScheduledForDeletion = $this->getListings(new Criteria(), $con)->diff($listings);
+
+        foreach ($this->listingsScheduledForDeletion as $listingRemoved) {
+            $listingRemoved->setItem(null);
+        }
+
+        $this->collListings = null;
+        foreach ($listings as $listing) {
+            $this->addListing($listing);
+        }
+
+        $this->collListings = $listings;
+        $this->collListingsPartial = false;
+    }
+
+    /**
+     * Returns the number of related Listing objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      PropelPDO $con
+     * @return int             Count of related Listing objects.
+     * @throws PropelException
+     */
+    public function countListings(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collListingsPartial && !$this->isNew();
+        if (null === $this->collListings || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collListings) {
+                return 0;
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getListings());
+                }
+                $query = ListingQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByItem($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collListings);
+        }
+    }
+
+    /**
+     * Method called to associate a Listing object to this object
+     * through the Listing foreign key attribute.
+     *
+     * @param    Listing $l Listing
+     * @return   Item The current object (for fluent API support)
+     */
+    public function addListing(Listing $l)
+    {
+        if ($this->collListings === null) {
+            $this->initListings();
+            $this->collListingsPartial = true;
+        }
+        if (!$this->collListings->contains($l)) { // only add it if the **same** object is not already associated
+            $this->doAddListing($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Listing $listing The listing object to add.
+     */
+    protected function doAddListing($listing)
+    {
+        $this->collListings[]= $listing;
+        $listing->setItem($this);
+    }
+
+    /**
+     * @param	Listing $listing The listing object to remove.
+     */
+    public function removeListing($listing)
+    {
+        if ($this->getListings()->contains($listing)) {
+            $this->collListings->remove($this->collListings->search($listing));
+            if (null === $this->listingsScheduledForDeletion) {
+                $this->listingsScheduledForDeletion = clone $this->collListings;
+                $this->listingsScheduledForDeletion->clear();
+            }
+            $this->listingsScheduledForDeletion[]= $listing;
+            $listing->setItem(null);
+        }
+    }
+
     /**
      * Clears the current object and sets all attributes to their default values
      */
@@ -1540,8 +1813,17 @@ abstract class BaseItem extends BaseObject implements Persistent
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collListings) {
+                foreach ($this->collListings as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        if ($this->collListings instanceof PropelCollection) {
+            $this->collListings->clearIterator();
+        }
+        $this->collListings = null;
         $this->aItemType = null;
         $this->aItemSubType = null;
     }

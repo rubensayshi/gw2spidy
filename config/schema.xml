@@ -32,6 +32,18 @@
             <reference local="item_sub_type_id" foreign="id" />
         </foreign-key>  
     </table>
+    <table name="listing" phpName="Listing">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="listing_date" type="date" required="true" />
+        <column name="listing_time" type="time" required="true" />
+        <column name="item_id" type="integer" required="true" />
+        <column name="listings" type="integer" required="true" />
+        <column name="unit_price" type="integer" required="true" />
+        <column name="quantity" type="integer" required="true" />
+        <foreign-key foreignTable="item" phpName="Item" refPhpName="Listing">
+            <reference local="item_id" foreign="data_id" />
+        </foreign-key>  
+    </table>
     <table name="worker_queue_item" phpName="WorkerQueueItem">
         <column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true" phpName="Id" />
         <column name="priority" type="integer" default="100" phpName="Priority" />

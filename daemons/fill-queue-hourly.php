@@ -11,7 +11,7 @@ $manager = new QueueManager();
  * build Item DB, but only the first slice
  *  we're doing this so that any sudden major changes will alert us in time
  */
-$manager->buildItemDB(false);
+!in_array('--debug', $argv) && $manager->buildItemDB(false);
 
 /*
  * build Listings DB

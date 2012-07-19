@@ -56,7 +56,7 @@ class TradeMarket {
 
         $data = json_decode($curl->getResult(), true);
 
-        return $data;
+        return isset($data['listings'][$type]) ? $data['listings'][$type] : null;
     }
 
     public function getMarketData() {
