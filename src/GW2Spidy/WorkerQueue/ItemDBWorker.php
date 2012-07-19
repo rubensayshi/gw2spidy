@@ -2,7 +2,6 @@
 
 namespace GW2Spidy\WorkerQueue;
 
-
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\WorkerQueueItem;
@@ -15,8 +14,12 @@ class ItemDBWorker implements Worker {
     public function work(WorkerQueueItem $item) {
         $data = $item->getData();
 
-        $this->buildItemDB($data['type'], $data['subtype'], $data['offset']);
-        $this->enqeueNextOffset($data['type'], $data['subtype'], $data['offset']);
+        $res = $this->buildItemDB($data['type'], $data['subtype'], $data['offset']);
+
+        // we stop enqueueing the next slice when we stop getting results
+        if ($data['full'] && $res) {
+            $this->enqeueNextOffset($data['type'], $data['subtype'], $data['offset']);
+        }
     }
 
     protected function buildItemDB($type, $subtype, $offset) {
@@ -40,13 +43,15 @@ class ItemDBWorker implements Worker {
                 }
             }
         }
+
+        return (boolean)$items;
     }
 
     protected function enqeueNextOffset($type, $subtype, $offset) {
-        return self::enqueueWorker($type, $subtype, $offset + 10);
+        return self::enqueueWorker($type, $subtype, $offset + 10, true);
     }
 
-    public static function enqueueWorker($type, $subtype, $offset = 0) {
+    public static function enqueueWorker($type, $subtype, $offset = 0, $full = true) {
         $queueItem = new WorkerQueueItem();
         $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\ItemDBWorker");
         $queueItem->setPriority(WorkerQueueItem::PRIORITY_ITEMDB);
@@ -54,6 +59,7 @@ class ItemDBWorker implements Worker {
             'type'    => $type,
             'subtype' => $subtype,
             'offset'  => $offset,
+            'full'    => $full,
         ));
 
         $queueItem->save();
