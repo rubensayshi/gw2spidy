@@ -36,6 +36,8 @@ if ($item->getListings()->count()) {
             ->groupByListingTime()
             ->select(array('id', 'listingdate', 'listingtime'))
             ->withColumn('SUM(unit_price * quantity) / SUM(quantity)', 'avgunitprice')
+            ->orderByListingDate('asc')
+            ->orderByListingTime('asc')
             ->filterByItemId($item->getDataId())
             ->find();
 
