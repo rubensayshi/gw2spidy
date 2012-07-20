@@ -127,7 +127,7 @@ while ($run < $max) {
         $con->commit();
     }
 
-    echo "got item \n";
+    echo "got item {$run} \n";
 
     /*
      * process the item

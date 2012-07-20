@@ -7,6 +7,12 @@ require dirname(__FILE__) . '/autoload.php';
  * bleh HTML directly in PHP, but fuck it for now ...
  */
 
+if (!isset($_GET['id']) || (string)(int)(string)$_GET['id'] !== (string)$_GET['id']) {
+    $id = (int)(string)$_GET['id'];
+} else {
+    $id = 4016;
+}
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -20,7 +26,7 @@ require dirname(__FILE__) . '/autoload.php';
 <div id="placeholder" style="width:600px;height:300px;"></div>
 
 <script type="text/javascript">
-$.ajax("/chart.php?id=4496", {
+$.ajax("/chart.php?id=<?php echo $id ?>", {
     success: function(data) {
         console.log(data);
         $.plot($("#placeholder"), data);

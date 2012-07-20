@@ -10,10 +10,6 @@ use GW2Spidy\DB\ItemQuery;
 require dirname(__FILE__) . '/config/config.inc.php';
 require dirname(__FILE__) . '/autoload.php';
 
-if (isset($argv[1])) {
-    $_GET['id'] = $argv[1];
-}
-
 if (!isset($_GET['id']) || (string)(int)(string)$_GET['id'] !== (string)$_GET['id']) {
     throw new Exception('invalid request');
 }
@@ -24,7 +20,8 @@ if (!$item || !($item instanceof Item)) {
     throw new Exception('invalid request');
 }
 
-$data = array();
+$chart   = array();
+$dataset = array();
 
 if ($item->getListings()->count()) {
     $c = new Criteria();
@@ -35,8 +32,11 @@ if ($item->getListings()->count()) {
     $c->add(ListingPeer::ITEM_ID, $item->getDataId());
 
     foreach (BasePeer::doSelect($c)->fetchAll(PDO::FETCH_ASSOC) as $listingDayAvg) {
-        $data[] = array($listingDayAvg['LISTING_DATE'], $listingDayAvg['AVG_UNIT_PRICE']);
+        $date = new DateTime($listingDayAvg['LISTING_DATE']);
+        $dataset[] = array($date->getTimestamp()*1000, $listingDayAvg['AVG_UNIT_PRICE']);
     }
 }
 
-echo json_encode($data);
+$chart[] = $dataset;
+
+echo json_encode($chart);
