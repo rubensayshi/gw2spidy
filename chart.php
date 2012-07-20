@@ -28,11 +28,12 @@ if ($item->getListings()->count()) {
     $c->addGroupByColumn(ListingPeer::ITEM_ID);
     $c->addGroupByColumn(ListingPeer::LISTING_DATE);
     $c->addSelectColumn(ListingPeer::LISTING_DATE);
+    $c->addSelectColumn(ListingPeer::LISTING_TIME);
     $c->addSelectColumn("SUM(unit_price * quantity) / SUM(quantity) as AVG_UNIT_PRICE");
     $c->add(ListingPeer::ITEM_ID, $item->getDataId());
 
     foreach (BasePeer::doSelect($c)->fetchAll(PDO::FETCH_ASSOC) as $listingDayAvg) {
-        $date = new DateTime($listingDayAvg['LISTING_DATE']);
+        $date = new DateTime("{$listingDayAvg['LISTING_DATE']} {$listingDayAvg['LISTING_TIME']}");
         $dataset[] = array($date->getTimestamp()*1000, $listingDayAvg['AVG_UNIT_PRICE']);
     }
 }

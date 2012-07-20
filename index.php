@@ -7,7 +7,7 @@ require dirname(__FILE__) . '/autoload.php';
  * bleh HTML directly in PHP, but fuck it for now ...
  */
 
-if (!isset($_GET['id']) || (string)(int)(string)$_GET['id'] !== (string)$_GET['id']) {
+if (isset($_GET['id']) && (string)(int)(string)$_GET['id'] === (string)$_GET['id']) {
     $id = (int)(string)$_GET['id'];
 } else {
     $id = 4016;
@@ -27,9 +27,22 @@ if (!isset($_GET['id']) || (string)(int)(string)$_GET['id'] !== (string)$_GET['i
 
 <script type="text/javascript">
 $.ajax("/chart.php?id=<?php echo $id ?>", {
-    success: function(data) {
-        console.log(data);
-        $.plot($("#placeholder"), data);
+    success: function(chart) {
+        chart = $.parseJSON(chart);
+
+        $.each(chart, function(dataserie) {
+            $.each(dataserie, function(entry) {
+                var date = new Date(entry[0]);
+
+                console.log("" + date + "");
+            });
+        });
+        $.plot($("#placeholder"), chart, {
+            xaxis: {
+                mode: "time",
+                timeformat: "%y-%0m-%0d %H:%S"
+            }
+        });
     }
 });
 </script>
