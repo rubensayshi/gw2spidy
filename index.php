@@ -72,7 +72,7 @@ if ($_GET['act'] == 'item') {
     $wrap    = false;
     $content = json_encode($chart);
 } else {
-    $ids = array(4016);
+    $ids = array(4016, 1140, 19675);
 
     $items = ItemQuery::create()->findPks($ids);
 
