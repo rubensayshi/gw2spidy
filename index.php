@@ -16,10 +16,15 @@ if ($_GET['act'] == 'item') {
     if (isset($_GET['id']) && (string)(int)(string)$_GET['id'] === (string)$_GET['id']) {
         $id = (int)(string)$_GET['id'];
     } else {
-        $id = 4016;
+        throw new \Exception("Item not found");
     }
 
     $item = ItemQuery::create()->findPK($id);
+
+    if (!$item) {
+        throw new \Exception("Item not found");
+    }
+
 
     $content = $app->render("item", array(
         'item' => $item,

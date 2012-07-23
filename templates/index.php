@@ -15,7 +15,7 @@
     <ul>
         <?php foreach ($items as $item): ?>
             <li>
-                <a href="/index.php?act=item&id=<?php $item->getDataId() ?>">
+                <a href="/index.php?act=item&id=<?php echo $item->getDataId() ?>">
                     <h3><?php echo $item->getName(); ?> <small><?php echo $item->getRestrictionLevel(); ?></small></h3>
                     <img src="<?php echo $item->getImg() ?>" />
                 </a>
