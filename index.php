@@ -5,7 +5,6 @@ use GW2Spidy\Application;
 use GW2Spidy\DB\ListingQuery;
 use GW2Spidy\DB\ListingPeer;
 use GW2Spidy\DB\Item;
-use GW2Spidy\DB\ItemQuery;
 
 require dirname(__FILE__) . '/config/config.inc.php';
 require dirname(__FILE__) . '/autoload.php';
