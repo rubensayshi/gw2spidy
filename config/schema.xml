@@ -30,7 +30,7 @@
         </foreign-key>  
         <foreign-key foreignTable="item_sub_type" phpName="ItemSubType" refPhpName="Item">
             <reference local="item_sub_type_id" foreign="id" />
-        </foreign-key>  
+        </foreign-key>
     </table>
     <table name="listing" phpName="Listing">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
@@ -54,6 +54,11 @@
         <column name="touched" type="timestamp" phpName="Touched" />
         <column name="max_timeout" type="integer" required="true" default="3600" phpName="MaxTimeout" />
         <column name="last_log" type="clob" phpName="LastLog" />
+        <index name="retrieve_next">
+            <index-column name="status" />
+            <index-column name="priority" />
+            <index-column name="id" />
+        </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB" />
         </vendor>

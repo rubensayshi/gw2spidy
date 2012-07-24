@@ -104,7 +104,8 @@ CREATE TABLE `worker_queue_item`
     `touched` DATETIME,
     `max_timeout` INTEGER DEFAULT 3600 NOT NULL,
     `last_log` LONGTEXT,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    INDEX `retrieve_next` (`status`, `priority`, `id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
