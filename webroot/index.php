@@ -8,8 +8,8 @@ use GW2Spidy\DB\ListingQuery;
 use GW2Spidy\DB\ListingPeer;
 use GW2Spidy\DB\Item;
 
-require dirname(__FILE__) . '/config/config.inc.php';
-require dirname(__FILE__) . '/autoload.php';
+require dirname(__FILE__) . '/../config/config.inc.php';
+require dirname(__FILE__) . '/../autoload.php';
 
 $app  = Application::getInstance();
 $wrap = true;
@@ -18,6 +18,10 @@ if ($app->isCLI()) {
     if (isset($argv[1])) {
         $_GET['act'] = $argv[1];
     }
+}
+
+if (!isset($_GET['act'])) {
+    $_GET['act'] = 'index';
 }
 
 if ($_GET['act'] == 'item') {
