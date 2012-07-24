@@ -7,7 +7,7 @@
 <div id="placeholder" style="width:600px;height:300px;"></div>
 
 <script type="text/javascript">
-$.ajax("/chart.php?id=<?php echo $item->getDataId() ?>", {
+$.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
     success: function(chart) {
         chart = $.parseJSON(chart);
 
