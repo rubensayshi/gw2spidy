@@ -3,7 +3,7 @@
  * @var \GW2Spidy\DB\Item    $item
  */
 ?>
-<h2><?php echo $item->getName(); ?> <small><?php echo $item->getRestrictionLevel(); ?></small></h2>
+<h1><?php echo $item->getName(); ?> <small><?php echo $item->getRestrictionLevel(); ?></small></h1>
 <div id="placeholder" style="width: 950px; height: 400px;"></div>
 
 <script type="text/javascript">
