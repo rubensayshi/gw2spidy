@@ -5,10 +5,23 @@
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="http://people.iola.dk/olau/flot/excanvas.min.js"></script><![endif]-->
-<script language="javascript" type="text/javascript" src="http://people.iola.dk/olau/flot/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="http://people.iola.dk/olau/flot/jquery.flot.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="http://people.iola.dk/olau/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript" src="http://people.iola.dk/olau/flot/jquery.flot.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-transition.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-alert.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
+
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet" />
+
+    <title></title>
 </head>
 <body>
 <?php echo $content ?>
