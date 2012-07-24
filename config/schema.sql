@@ -81,7 +81,7 @@ CREATE TABLE `listing`
     `unit_price` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
     PRIMARY KEY (`id`),
-    INDEX `listing_FI_1` (`item_id`),
+    INDEX `retrieve_by_date_time` (`item_id`, `listing_date`, `listing_time`),
     CONSTRAINT `listing_FK_1`
         FOREIGN KEY (`item_id`)
         REFERENCES `item` (`data_id`)

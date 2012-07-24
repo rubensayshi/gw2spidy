@@ -42,6 +42,13 @@ class Application {
     public function isCLI() {
         return (php_sapi_name() == 'cli');
     }
+
+    public function debugSQL() {
+        $con = \Propel::getConnection();
+
+        $con->setLogLevel(\Propel::LOG_DEBUG);
+        $con->useDebug(true);
+    }
 }
 
 ?>

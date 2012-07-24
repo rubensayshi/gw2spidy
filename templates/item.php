@@ -4,7 +4,7 @@
  */
 ?>
 <h2><?php echo $item->getName(); ?> <small><?php echo $item->getRestrictionLevel(); ?></small></h2>
-<div id="placeholder" style="width:600px;height:300px;"></div>
+<div id="placeholder" style="width: 950px; height: 400px;"></div>
 
 <script type="text/javascript">
 $.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
@@ -20,8 +20,9 @@ $.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
         });
         $.plot($("#placeholder"), chart, {
             xaxis: {
-                mode: "time",
-                timeformat: "%y-%0m-%0d %H:%S"
+                mode:            "time",
+                timeformat:      "%y-%0m-%0d %H:%S",
+                twelveHourClock: false
             }
         });
     }

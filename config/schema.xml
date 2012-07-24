@@ -43,6 +43,11 @@
         <foreign-key foreignTable="item" phpName="Item" refPhpName="Listing">
             <reference local="item_id" foreign="data_id" />
         </foreign-key>  
+        <index name="retrieve_by_date_time">
+            <index-column name="item_id" />
+            <index-column name="listing_date" />
+            <index-column name="listing_time" />
+        </index>
     </table>
     <table name="worker_queue_item" phpName="WorkerQueueItem">
         <column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true" phpName="Id" />
