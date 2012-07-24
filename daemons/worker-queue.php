@@ -35,6 +35,9 @@ while ($run < $max) {
     // START TRANSACTION
     $con->beginTransaction();
 
+    $begin = microtime(true);
+    echo "begin \n";
+
     $prep = $con->prepare($sql);
     $prep->execute();
 
@@ -45,6 +48,7 @@ while ($run < $max) {
     $slots = RequestFloodControlPeer::populateObjects($prep);
     if (!count($slots)) {
         // CLOSE TRANSACTION
+        echo "commit [".__LINE__."] [".(microtime(true) - $begin)."] \n";
         $con->commit();
 
         throw new Exception("No RequestFoodControl setup");
@@ -60,6 +64,7 @@ while ($run < $max) {
      */
     if ($slot->getTouched('U') > strtotime("-{$slottime}")) {
         // CLOSE TRANSACTION
+        echo "commit [".__LINE__."] [".(microtime(true) - $begin)."] \n";
         $con->commit();
 
         $sleep = $slot->getTouched('U') - strtotime("-{$slottime}");
@@ -69,7 +74,7 @@ while ($run < $max) {
         continue;
     }
 
-    echo "got slot \n";
+    echo "got slot [".(microtime(true) - $begin)."] \n";
 
     /*
      * query with LOCK FOR UPDATE for the highest priority, oldest item
@@ -97,6 +102,7 @@ while ($run < $max) {
      */
     if (count($items) == 0) {
         // CLOSE TRANSACTION
+        echo "commit [".__LINE__."] [".(microtime(true) - $begin)."] \n";
         $con->commit();
 
         if (!in_array('--debug', $argv)) {
@@ -124,10 +130,11 @@ while ($run < $max) {
         $slot->save();
 
         // CLOSE TRANSACTION
+        echo "commit [".__LINE__."] [".(microtime(true) - $begin)."] \n";
         $con->commit();
     }
 
-    echo "got item {$run} \n";
+    echo "got item {$run} [".(microtime(true) - $begin)."] \n";
 
     /*
      * process the item
