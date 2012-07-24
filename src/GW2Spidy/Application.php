@@ -38,6 +38,10 @@ class Application {
 
         return ob_get_clean();
     }
+
+    public function isCLI() {
+        return (php_sapi_name() == 'cli');
+    }
 }
 
 ?>

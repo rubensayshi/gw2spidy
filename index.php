@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\DB\WorkerQueueItemQuery;
+
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\Application;
 use GW2Spidy\DB\ListingQuery;
@@ -11,6 +13,12 @@ require dirname(__FILE__) . '/autoload.php';
 
 $app  = Application::getInstance();
 $wrap = true;
+
+if ($app->isCLI()) {
+    if (isset($argv[1])) {
+        $_GET['act'] = $argv[1];
+    }
+}
 
 if ($_GET['act'] == 'item') {
     if (isset($_GET['id']) && (string)(int)(string)$_GET['id'] === (string)$_GET['id']) {
@@ -45,8 +53,6 @@ if ($_GET['act'] == 'item') {
     $dataset = array();
 
     if ($item->getListings()->count()) {
-        $c = new Criteria();
-
         $res = ListingQuery::create()
                 ->groupByItemId()
                 ->groupByListingDate()
@@ -71,6 +77,19 @@ if ($_GET['act'] == 'item') {
 
     $wrap    = false;
     $content = json_encode($chart);
+} else if ($_GET['act'] == 'status') {
+        $res = WorkerQueueItemQuery::create()
+                ->withColumn('COUNT(*)', 'Count')
+                ->select(array('Status', 'Count'))
+                ->groupByStatus()
+                ->find();
+
+        ob_start();
+        foreach ($res as $statusCount) {
+            var_dump($statusCount);
+        }
+
+        $content = "<pre>".ob_get_clean()."</pre>";
 } else {
     $ids = array(4016, 1140, 19675);
 
