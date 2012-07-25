@@ -45,6 +45,8 @@ if ($_GET['act'] == 'item') {
     ));
 
 } else if ($_GET['act'] == 'type') {
+    $itemsperpage = 25;
+
     if (isset($_GET['type']) && (string)(int)(string)$_GET['type'] === (string)$_GET['type']) {
         $type = (int)(string)$_GET['type'];
     } else {
@@ -54,6 +56,13 @@ if ($_GET['act'] == 'item') {
         $subtype = null;
     } else if((string)(int)(string)$_GET['subtype'] === (string)$_GET['subtype']) {
         $subtype = (int)(string)$_GET['subtype'];
+    } else {
+        throw new \Exception("Item not found");
+    }
+    if (!isset($_GET['page'])) {
+        $page = 1;
+    } else if((string)(int)(string)$_GET['page'] === (string)$_GET['page']) {
+        $page = (int)(string)$_GET['page'];
     } else {
         throw new \Exception("Item not found");
     }
@@ -67,10 +76,20 @@ if ($_GET['act'] == 'item') {
         $q->filterByItemSubTypeId($subtype);
     }
 
-    $items = $q->find();
+    $count   = $q->count();
+    $maxpage = ceil($count / $itemsperpage);
+    if ($page > $maxpage) {
+        $page = $maxpage;
+    }
+
+    $items   = $q->offset($itemsperpage * $page)
+                 ->limit($itemsperpage)
+                 ->find();
 
     $content = $app->render("items", array(
-        'items' => $items,
+        'page'    => $page,
+        'maxpage' => $maxpage,
+        'items'   => $items,
     ));
 
 } else if ($_GET['act'] == 'chart') {
