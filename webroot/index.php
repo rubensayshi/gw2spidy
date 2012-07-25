@@ -46,6 +46,7 @@ if ($_GET['act'] == 'item') {
 
 } else if ($_GET['act'] == 'type') {
     $itemsperpage = 25;
+    $baseurl      = "index.php?act=type";
 
     if (isset($_GET['type']) && (string)(int)(string)$_GET['type'] === (string)$_GET['type']) {
         $type = (int)(string)$_GET['type'];
@@ -70,26 +71,29 @@ if ($_GET['act'] == 'item') {
     $q = ItemQuery::create();
 
     if (!is_null($type)) {
+        $baseurl = "{$baseurl}&type={$type}";
         $q->filterByItemTypeId($type);
     }
     if (!is_null($subtype)) {
+        $baseurl = "{$baseurl}&subtype={$subtype}";
         $q->filterByItemSubTypeId($subtype);
     }
 
-    $count   = $q->count();
-    $maxpage = ceil($count / $itemsperpage);
-    if ($page > $maxpage) {
-        $page = $maxpage;
+    $count    = $q->count();
+    $lastpage = ceil($count / $itemsperpage);
+    if ($page > $lastpage) {
+        $page = $lastpage;
     }
 
-    $items   = $q->offset($itemsperpage * $page)
-                 ->limit($itemsperpage)
-                 ->find();
+    $items = $q->offset($itemsperpage * $page)
+               ->limit($itemsperpage)
+               ->find();
 
     $content = $app->render("items", array(
-        'page'    => $page,
-        'maxpage' => $maxpage,
-        'items'   => $items,
+        'page'     => $page,
+        'lastpage' => $lastpage,
+        'items'    => $items,
+        'baseurl'  => $baseurl,
     ));
 
 } else if ($_GET['act'] == 'chart') {
