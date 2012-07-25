@@ -61,10 +61,10 @@ if ($_GET['act'] == 'item') {
     $q = ItemQuery::create();
 
     if (!is_null($type)) {
-        $q->findByItemTypeId($type);
+        $q->filterByItemTypeId($type);
     }
     if (!is_null($subtype)) {
-        $q->findByItemSubTypeId($subtype);
+        $q->filterByItemSubTypeId($subtype);
     }
 
     $items = $q->find();
