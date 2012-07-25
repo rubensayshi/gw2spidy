@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\DB\ItemTypeQuery;
+
 use GW2Spidy\DB\WorkerQueueItemQuery;
 
 use GW2Spidy\DB\ItemQuery;
@@ -39,7 +41,36 @@ if ($_GET['act'] == 'item') {
 
 
     $content = $app->render("item", array(
-        'item' => $item,
+            'item' => $item,
+    ));
+
+} else if ($_GET['act'] == 'type') {
+    if (isset($_GET['type']) && (string)(int)(string)$_GET['type'] === (string)$_GET['type']) {
+        $type = (int)(string)$_GET['type'];
+    } else {
+        throw new \Exception("Item not found");
+    }
+    if (!isset($_GET['subtype'])) {
+        $subtype = null;
+    } else if((string)(int)(string)$_GET['subtype'] === (string)$_GET['subtype']) {
+        $subtype = (int)(string)$_GET['subtype'];
+    } else {
+        throw new \Exception("Item not found");
+    }
+
+    $q = ItemQuery::create();
+
+    if (!is_null($type)) {
+        $q->findByItemTypeId($type);
+    }
+    if (!is_null($subtype)) {
+        $q->findByItemSubTypeId($subtype);
+    }
+
+    $items = $q->find();
+
+    $content = $app->render("items", array(
+        'items' => $items,
     ));
 
 } else if ($_GET['act'] == 'chart') {
@@ -95,12 +126,12 @@ if ($_GET['act'] == 'item') {
 
         $content = "<pre>".ob_get_clean()."</pre>";
 } else {
-    $ids = array(4016, 1140, 19675);
-
-    $items = ItemQuery::create()->findPks($ids);
+    $types = ItemTypeQuery::create()
+                    ->orderByTitle()
+                    ->find();
 
     $content = $app->render("index", array(
-        'items' => $items,
+        'types' => $types,
     ));
 }
 
