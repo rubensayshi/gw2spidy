@@ -187,6 +187,4 @@ while ($run < $max) {
 $query = WorkerQueueItemQuery::create();
 $query->add(WorkerQueueItemPeer::TOUCHED, (time() + 12 * 3600), Criteria::GREATER_THAN)
       ->add(WorkerQueueItemPeer::STATUS, 'DONE');
-foreach ($query->find() as $item) {
-    $item->delete();
-}
+$query->delete();
