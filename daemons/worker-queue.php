@@ -185,6 +185,6 @@ while ($run < $max) {
  * clean up all items marked as 'DONE' and older then 12 hours
  */
 $query = WorkerQueueItemQuery::create();
-$query->add(WorkerQueueItemPeer::TOUCHED, (time() + 12 * 3600), Criteria::GREATER_THAN)
+$query->add(WorkerQueueItemPeer::TOUCHED, (time() + (1 * 3600)), Criteria::LESS_THAN)
       ->add(WorkerQueueItemPeer::STATUS, 'DONE');
 $query->delete();
