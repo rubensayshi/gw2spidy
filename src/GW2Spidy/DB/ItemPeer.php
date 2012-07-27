@@ -3,6 +3,7 @@
 namespace GW2Spidy\DB;
 
 use GW2Spidy\DB\om\BaseItemPeer;
+use \Propel;
 
 
 /**
