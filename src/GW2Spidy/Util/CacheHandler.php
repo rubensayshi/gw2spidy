@@ -11,16 +11,16 @@ class CacheHandler extends Memcache
 
     static public function getInstance($key = null)
     {
-        if (!isset(self::$instances[$key])) {
-            self::$instances[$key] = new self($key);
-            $connected = self::$instances[$key]->connect();
+        if (!isset(static::$instances[$key])) {
+            static::$instances[$key] = new static($key);
+            $connected = static::$instances[$key]->connect('localhost');
 
             if (!$connected) {
-                self::$instances[$key] = $connected;
+                static::$instances[$key] = $connected;
             }
         }
 
-        return self::$instances[$key];
+        return static::$instances[$key];
     }
 
     protected function __construct($key) {
