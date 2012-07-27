@@ -24,10 +24,10 @@ class ItemTypePeer extends BaseItemTypePeer {
      */
     protected static function getMemPool() {
         if (is_null(self::$memPool)) {
-            self::$memPool = MemcacheInstancePool::getInstance(self::DATABASE_NAME . "::" . self::TABLE_NAME);
+            static::$memPool = MemcacheInstancePool::getInstance(static::DATABASE_NAME . "::" . static::TABLE_NAME);
         }
 
-        return self::$memPool;
+        return static::$memPool;
     }
 
     public static function addInstanceToPool($obj, $key = null) {
@@ -36,11 +36,11 @@ class ItemTypePeer extends BaseItemTypePeer {
                 $key = (string) $obj->getDataId();
             } // if key === null
 
-            if ($memPool = self::getMemPool()) {
+            if ($memPool = static::getMemPool()) {
                 $memPool->addInstanceToPool($obj, $key);
             }
 
-            ItemPeer::$instances[$key] = $obj;
+            ItemTypePeer::$instances[$key] = $obj;
         }
     }
 
@@ -57,22 +57,22 @@ class ItemTypePeer extends BaseItemTypePeer {
                 throw $e;
             }
 
-            if ($memPool = self::getMemPool()) {
+            if ($memPool = static::getMemPool()) {
                 $memPool->removeInstanceFromPool($key);
             }
 
-            unset(ItemPeer::$instances[$key]);
+            unset(ItemTypePeer::$instances[$key]);
         }
     }
 
     public static function getInstanceFromPool($key)
     {
         if (Propel::isInstancePoolingEnabled()) {
-            if (isset(ItemPeer::$instances[$key])) {
-                return ItemPeer::$instances[$key];
+            if (isset(ItemTypePeer::$instances[$key])) {
+                return ItemTypePeer::$instances[$key];
             }
 
-            if ($memPool = self::getMemPool()) {
+            if ($memPool = static::getMemPool()) {
                 return $memPool->getInstanceFromPool($key);
             }
         }
@@ -82,11 +82,11 @@ class ItemTypePeer extends BaseItemTypePeer {
 
     public static function clearInstancePool()
     {
-        if ($memPool = self::getMemPool()) {
+        if ($memPool = static::getMemPool()) {
             $memPool->clearInstancePool();
         }
 
-        ItemPeer::$instances = array();
+        ItemTypePeer::$instances = array();
     }
 
 }

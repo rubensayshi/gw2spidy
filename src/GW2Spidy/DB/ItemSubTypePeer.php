@@ -24,11 +24,11 @@ class ItemSubTypePeer extends BaseItemSubTypePeer {
      * @return MemcacheInstancePool
      */
     protected static function getMemPool() {
-        if (is_null(self::$memPool)) {
-            self::$memPool = MemcacheInstancePool::getInstance(self::DATABASE_NAME . "::" . self::TABLE_NAME);
+        if (is_null(static::$memPool)) {
+            static::$memPool = MemcacheInstancePool::getInstance(static::DATABASE_NAME . "::" . static::TABLE_NAME);
         }
 
-        return self::$memPool;
+        return static::$memPool;
     }
 
     public static function addInstanceToPool($obj, $key = null) {
@@ -37,11 +37,11 @@ class ItemSubTypePeer extends BaseItemSubTypePeer {
                 $key = (string) $obj->getDataId();
             } // if key === null
 
-            if ($memPool = self::getMemPool()) {
+            if ($memPool = static::getMemPool()) {
                 $memPool->addInstanceToPool($obj, $key);
             }
 
-            ItemPeer::$instances[$key] = $obj;
+            ItemSubTypePeer::$instances[$key] = $obj;
         }
     }
 
@@ -58,22 +58,22 @@ class ItemSubTypePeer extends BaseItemSubTypePeer {
                 throw $e;
             }
 
-            if ($memPool = self::getMemPool()) {
+            if ($memPool = static::getMemPool()) {
                 $memPool->removeInstanceFromPool($key);
             }
 
-            unset(ItemPeer::$instances[$key]);
+            unset(ItemSubTypePeer::$instances[$key]);
         }
     }
 
     public static function getInstanceFromPool($key)
     {
         if (Propel::isInstancePoolingEnabled()) {
-            if (isset(ItemPeer::$instances[$key])) {
-                return ItemPeer::$instances[$key];
+            if (isset(ItemSubTypePeer::$instances[$key])) {
+                return ItemSubTypePeer::$instances[$key];
             }
 
-            if ($memPool = self::getMemPool()) {
+            if ($memPool = static::getMemPool()) {
                 return $memPool->getInstanceFromPool($key);
             }
         }
@@ -83,11 +83,11 @@ class ItemSubTypePeer extends BaseItemSubTypePeer {
 
     public static function clearInstancePool()
     {
-        if ($memPool = self::getMemPool()) {
+        if ($memPool = static::getMemPool()) {
             $memPool->clearInstancePool();
         }
 
-        ItemPeer::$instances = array();
+        ItemSubTypePeer::$instances = array();
     }
 
 }
