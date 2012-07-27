@@ -13,7 +13,7 @@ class MemcacheInstancePool extends CacheHandler
     }
 
     public function getInstanceFromPool($key) {
-        $this->get($this->generateKey($key));
+        return $this->get($this->generateKey($key));
     }
 
     public function removeInstanceFromPool($key) {

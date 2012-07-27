@@ -74,7 +74,7 @@ class ItemPeer extends BaseItemPeer {
             }
 
             if ($memPool = self::getMemPool()) {
-                $memPool->getInstanceFromPool($key);
+                return $memPool->getInstanceFromPool($key);
             }
         }
 
