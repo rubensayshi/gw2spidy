@@ -111,25 +111,23 @@ if ($_GET['act'] == 'item') {
     $chart   = array();
     $dataset = array();
 
-    if ($item->getListings()->count()) {
-        $res = ListingQuery::create()
-                ->groupByItemId()
-                ->groupByListingDate()
-                ->groupByListingTime()
-                ->select(array('id', 'listingdate', 'listingtime'))
-                ->withColumn('SUM(unit_price * quantity) / SUM(quantity)', 'avgunitprice')
-                ->orderByListingDate('asc')
-                ->orderByListingTime('asc')
-                ->filterByItemId($item->getDataId())
-                ->find();
+    $res = ListingQuery::create()
+            ->groupByItemId()
+            ->groupByListingDate()
+            ->groupByListingTime()
+            ->select(array('id', 'listingdate', 'listingtime'))
+            ->withColumn('SUM(unit_price * quantity) / SUM(quantity)', 'avgunitprice')
+            ->orderByListingDate('asc')
+            ->orderByListingTime('asc')
+            ->filterByItemId($item->getDataId())
+            ->find();
 
-        foreach ($res as $listingEntry) {
-            $date = new DateTime("{$listingEntry['listingdate']} {$listingEntry['listingtime']}");
+    foreach ($res as $listingEntry) {
+        $date = new DateTime("{$listingEntry['listingdate']} {$listingEntry['listingtime']}");
 
-            $listingEntry['avgunitprice'] = round($listingEntry['avgunitprice'], 2);
+        $listingEntry['avgunitprice'] = round($listingEntry['avgunitprice'], 2);
 
-            $dataset[] = array($date->getTimestamp()*1000, $listingEntry['avgunitprice']);
-        }
+        $dataset[] = array($date->getTimestamp()*1000, $listingEntry['avgunitprice']);
     }
 
     $chart[] = $dataset;
