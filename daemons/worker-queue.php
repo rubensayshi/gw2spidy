@@ -136,6 +136,9 @@ while ($run < $max) {
 
     echo "got item {$run} [".(microtime(true) - $begin)."] \n";
 
+    // CLOSE CONNECTION - should already be closed, just to be sure
+    $con->commit();
+
     /*
      * process the item
      *  wrapped in trycatch to catch and log exceptions

@@ -59,10 +59,12 @@
         <column name="touched" type="timestamp" phpName="Touched" />
         <column name="max_timeout" type="integer" required="true" default="3600" phpName="MaxTimeout" />
         <column name="last_log" type="clob" phpName="LastLog" />
-        <index name="retrieve_next">
+        <index name="status_touched">
             <index-column name="status" />
+            <index-column name="touched" />
+        </index>
+        <index name="priority">
             <index-column name="priority" />
-            <index-column name="id" />
         </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB" />
@@ -71,7 +73,11 @@
     <table name="request_flood_control" phpName="RequestFloodControl">
         <column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true" phpName="Id" />
         <column name="handler_uuid" type="varchar" size="255" required="true" default="" phpName="HandlerUUID" />
-        <column name="touched" type="timestamp" phpName="Touched" />
+        <column name="touched" type="timestamp" phpName="Touched" />        
+        <index name="next_slot">
+            <index-column name="touched" />
+            <index-column name="id" />
+        </index>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB" />
         </vendor>
