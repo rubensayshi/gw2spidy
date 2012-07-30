@@ -21,7 +21,7 @@
             <div class="item-sub-type"><?php echo $item->getItemSubType()->getTitle(); ?></div>
         <?php endif; ?>
         <div class="name"><?php echo $item->getName(); ?></div>
-        <div class="rarity <?php echo $item->getRarityCSSClass(); ?>"><?php echo $item->getRarity(); ?></div>
+        <div class="rarity <?php echo $item->getRarityCSSClass(); ?>"><?php echo $item->getRarityName(); ?></div>
         <?php if ($item->getRestrictionLevel()): ?>
             <div class="restriction-level">Required Level: <?php echo $item->getRestrictionLevel(); ?></div>
         <?php endif; ?>

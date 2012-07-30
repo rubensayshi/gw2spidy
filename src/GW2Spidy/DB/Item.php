@@ -21,8 +21,8 @@ class Item extends BaseItem {
 
     public function getRarityName() {
         switch ($this->getRarity()) {
-            case RARITY_COMMON:    return "Common";
-            default:               return "Rarity [{$this->getRarity()}]";
+            case self::RARITY_COMMON:    return "Common";
+            default:                     return "Rarity [{$this->getRarity()}]";
         }
     }
 
