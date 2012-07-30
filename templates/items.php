@@ -11,7 +11,7 @@ use GW2Spidy\Application;
 ?>
 <ul class="nav nav-pills nav-stacked">
     <?php foreach ($items as $item): ?>
-        <?php echo Application::getInstance()->render("item_snippet", array('item' => $item, 'tag' => 'li', 'href'' => "/index.php?act=item&id={$item->getDataId()}")); ?>
+        <?php echo Application::getInstance()->render("item_snippet", array('item' => $item, 'tag' => 'li', 'href' => "/index.php?act=item&id={$item->getDataId()}")); ?>
     <?php endforeach; ?>
 </ul>
 <div class="pagination">
