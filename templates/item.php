@@ -1,4 +1,7 @@
 <?php
+
+use GW2Spidy\Application;
+
 /**
  * @var \GW2Spidy\DB\Item    $item
  */
