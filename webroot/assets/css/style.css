@@ -1,3 +1,24 @@
 body {
     overflow-y: scroll;
 }
+
+.item {
+    clear: both;
+}
+
+.item .image {
+    float: left;
+}
+
+.item .stats {
+    float: left;
+    margin-left: 5px;
+}
+
+.item .stats .name {
+    font-weight: bold;
+}
+
+.item .stats .rarity.common {
+    color: gray;
+}
