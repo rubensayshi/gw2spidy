@@ -30,4 +30,22 @@ class Item extends BaseItem {
         return strtolower(str_replace(" ", "-", $this->getRarityName()));
     }
 
+    /**
+     * Get the associated ItemSubType object
+     *
+     * @param      PropelPDO   $con    Optional Connection object.
+     * @return     ItemSubType         The associated ItemSubType object.
+     * @throws     PropelException
+     */
+    public function getItemSubType(PropelPDO $con = null) {
+        if ($this->aItemSubType === null && ($this->item_sub_type_id !== null)) {
+            $this->aItemSubType = ItemSubTypeQuery::create()
+            ->filterByItem($this)
+            ->filterByMainTypeId($this->getItemTypeId())
+            ->findOne($con);
+        }
+
+        return $this->aItemSubType;
+    }
+
 } // Item
