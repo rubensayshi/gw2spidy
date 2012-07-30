@@ -5,9 +5,9 @@
  * @var string               $href       link to (or null/empty if no link required)
  */
 ?>
-<<?php echo $tag; ?> class="item">
+<<?php echo $tag; ?> class="item  clearfix">
     <?php if (isset($href) && $href): ?>
-        <a href="<?php echo $href; ?>">
+        <a href="<?php echo $href; ?>" class="clearfix">
     <?php endif; ?>
     <div class="image">
         <img src="<?php echo $item->getImg(); ?>" />
