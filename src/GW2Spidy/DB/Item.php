@@ -17,8 +17,17 @@ use GW2Spidy\DB\om\BaseItem;
  * @package    propel.generator.gw2spidy
  */
 class Item extends BaseItem {
+    const RARITY_COMMON = 1;
+
+    public function getRarityName() {
+        switch ($this->getRarity()) {
+            case RARITY_COMMON:    return "Common";
+            default:               return "Rarity [{$this->getRarity()}]";
+        }
+    }
+
     public function getRarityCSSClass() {
-        return $this->getRarity();
+        return strtolower(str_replace(" ", "-", $this->getRarityName()));
     }
 
 } // Item
