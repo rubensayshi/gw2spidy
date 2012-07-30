@@ -37,7 +37,7 @@ class Application {
             throw new \Exception("Failed to find template [{$tplpath}]");
         }
 
-        require_once $tplpath;
+        require $tplpath;
 
         return ob_get_clean();
     }
