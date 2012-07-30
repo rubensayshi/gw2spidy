@@ -41,7 +41,8 @@ use GW2Spidy\Application;
             <div class="span1"></div>
         </div>
         <div class="row-fluid">
-            <div id="content" class="offset7 span4"><small>rending page took <?php echo Application::getInstance()->getTime() ?></small></div>
+            <div class="span7"></div>
+            <div class="span4"><small>rending page took <?php echo Application::getInstance()->getTime() ?></small></div>
             <div class="span1"></div>
 
         </div>
