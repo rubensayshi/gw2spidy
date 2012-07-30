@@ -12,13 +12,6 @@ $.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
     success: function(chart) {
         chart = $.parseJSON(chart);
 
-        $.each(chart, function(dataserie) {
-            $.each(dataserie, function(entry) {
-                var date = new Date(entry[0]);
-
-                console.log("" + date + "");
-            });
-        });
         $.plot($("#placeholder"), chart, {
             xaxis: {
                 mode:            "time",
