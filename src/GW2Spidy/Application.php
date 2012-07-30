@@ -4,11 +4,13 @@ namespace GW2Spidy;
 
 class Application {
     protected $basedir;
+    protected $time;
 
     protected static $instance;
 
     protected function __construct() {
         $this->basedir = dirname(dirname(dirname(__FILE__)));
+        $this->time    = microtime(true);
     }
 
     /**
@@ -51,6 +53,10 @@ class Application {
 
         $con->setLogLevel(\Propel::LOG_DEBUG);
         $con->useDebug(true);
+    }
+
+    public function getTime() {
+        return microtime(true) - $this->time;
     }
 }
 

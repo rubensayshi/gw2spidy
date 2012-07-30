@@ -2,6 +2,8 @@
 /**
  * @var string    $content
  */
+use GW2Spidy\Application;
+
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -35,6 +37,9 @@
     <div class="container-fluid">
         <div class="row-fluid">
             <div id="content" class="span9"><?php echo $content ?></div>
+        </div>
+        <div class="row-fluid">
+            <small>rending page took <?php echo Application::getInstance()->getTime() ?></small>
         </div>
     </div>
 
