@@ -1,17 +1,17 @@
 <?php
+
+use GW2Spidy\Application;
+
 /**
  * @var string                      $baseurl
  * @var int                         $page
  * @var int                         $lastpage
  * @var array[\GW2Spidy\DB\Item]    $items
  */
-
-use GW2Spidy\Application;
-
 ?>
 <ul class="nav nav-pills nav-stacked">
     <?php foreach ($items as $item): ?>
-        <?php echo Application::getInstance()->render("item_snippet", array('item' => $item, 'tag' => 'li', 'href'' => "/index.php?act=item&id={$item->getDataId()}")) ?>
+        <?php echo Application::getInstance()->render("item_snippet", array('item' => $item, 'tag' => 'li', 'href'' => "/index.php?act=item&id={$item->getDataId()}")); ?>
     <?php endforeach; ?>
 </ul>
 <div class="pagination">
