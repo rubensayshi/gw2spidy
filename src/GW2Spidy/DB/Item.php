@@ -8,7 +8,7 @@ use GW2Spidy\DB\om\BaseItem;
 /**
  * Skeleton subclass for representing a row from the 'item' table.
  *
- * 
+ *
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -17,5 +17,8 @@ use GW2Spidy\DB\om\BaseItem;
  * @package    propel.generator.gw2spidy
  */
 class Item extends BaseItem {
+    public function getRarityCSSClass() {
+        return $this->getRarity();
+    }
 
 } // Item
