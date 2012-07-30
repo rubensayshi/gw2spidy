@@ -28,7 +28,7 @@
     <div class="navbar">
         <div class="navbar-inner">
             <div class="container">
-                <span class="brand" href="#">Guild Wars 2 Spidy</span>
+                <a class="brand" href="/">Guild Wars 2 Spidy</a>
             </div>
         </div>
     </div>
