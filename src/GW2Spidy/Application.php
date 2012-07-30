@@ -11,6 +11,9 @@ class Application {
         $this->basedir = dirname(dirname(dirname(__FILE__)));
     }
 
+    /**
+     * @return \GW2Spidy\Application
+     */
     public static function getInstance() {
         if (is_null(static::$instance)) {
             static::$instance = new static();
