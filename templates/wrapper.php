@@ -43,7 +43,10 @@ use GW2Spidy\Application;
         <div class="row-fluid">
             <div class="span1"></div>
             <div class="span10">
-                <div class="pull-right"><small>rending page took <?php echo Application::getInstance()->getTime() ?></small></div>
+                this is a <a href="https://github.com/rubensayshi/gw2spidy">open source project</a> by <a href="http://www.guildwars2guru.com/user/39936-drakie/">Drakie</a> / <a href="https://github.com/rubensayshi">rubensayshi</a>
+                <div class="pull-right">
+                    <small>rending page took <?php echo Application::getInstance()->getTime() ?></small>
+                </div>
             </div>
             <div class="span1"></div>
 
