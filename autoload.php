@@ -10,6 +10,7 @@ use Symfony\Component\ClassLoader\UniversalClassLoader;
 $loader = new UniversalClassLoader();
 
 $loader->registerNamespace('GW2Spidy', __DIR__.'/src');
+$loader->registerNamespace('Predis',   __DIR__.'/vendor/nrk-predis/lib');
 
 $loader->register();
 

@@ -1,11 +1,10 @@
 <?php
 
-use GW2Spidy\DB\ItemTypeQuery;
-
-use GW2Spidy\DB\WorkerQueueItemQuery;
-
-use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\Application;
+
+use GW2Spidy\DB\ItemTypeQuery;
+use GW2Spidy\DB\WorkerQueueItemQuery;
+use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ListingQuery;
 use GW2Spidy\DB\ListingPeer;
 use GW2Spidy\DB\Item;
