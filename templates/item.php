@@ -15,13 +15,16 @@ $.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
     success: function(chart) {
         chart = $.parseJSON(chart);
 
-        $.plot($("#placeholder"), chart, {
+        var plot = $.plot($("#placeholder"), chart, {
             xaxis: {
                 mode:            "time",
                 timeformat:      "%y-%0m-%0d %H:%S",
                 twelveHourClock: false
             }
         });
+
+        plot.drawAxisDivs();
+
     }
 });
 </script>

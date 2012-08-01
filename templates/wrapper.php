@@ -12,6 +12,7 @@ use GW2Spidy\Application;
     <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="http://people.iola.dk/olau/flot/excanvas.min.js"></script><![endif]-->
     <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script language="javascript" type="text/javascript" src="http://people.iola.dk/olau/flot/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="https://raw.github.com/spezeski/Flot-Plugin/master/jquery.flot.multinav.js"></script>
 
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-transition.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-alert.js"></script>
