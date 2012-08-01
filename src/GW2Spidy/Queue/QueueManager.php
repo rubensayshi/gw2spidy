@@ -1,6 +1,6 @@
 <?php
 
-namespace GW2Spidy\QueueManager;
+namespace GW2Spidy\Queue;
 
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemTypeQuery;
