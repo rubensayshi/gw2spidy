@@ -1,16 +1,17 @@
 <?php
 
-use GW2Spidy\Application;
-
-use GW2Spidy\DB\ItemTypeQuery;
-use GW2Spidy\DB\WorkerQueueItemQuery;
-use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\DB\ListingQuery;
-use GW2Spidy\DB\ListingPeer;
-use GW2Spidy\DB\Item;
-
 require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
+
+$app = new Silex\Application();
+
+$app->get("/", function() {
+    return "Hello World!";
+});
+
+$app->run();
+
+exit(0);
 
 $app  = Application::getInstance();
 0 && $app->debugSQL();
