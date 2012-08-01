@@ -43,6 +43,7 @@ $.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
         var plot = $.plot(placeholder, chartdata, options);
 
         $("#clear-selection").click(function () {
+            console.log('clear');
             plot.clearSelection();
         });
     }
