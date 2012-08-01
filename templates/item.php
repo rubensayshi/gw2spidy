@@ -11,7 +11,7 @@ use GW2Spidy\Application;
 <div id="placeholder" style="width: 950px; height: 400px;"></div>
 <p>
 You can zoom into the chart by drawing a selection (xaxis) and use the button below to reset. <br />
-<button class="btn" value="reset zoom" id="clear-selection" />
+<button class="btn" id="clear-selection">Reset Zoom</button>
 </p>
 
 
@@ -32,8 +32,16 @@ $.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
             },
             selection: { mode: "x" }
         };
+        var xaxis_default = null;
 
         placeholder.bind("plotselected", function (event, ranges) {
+            if (xaxis_default === null) {
+                xaxis_default = {
+                    from: 1,
+                    to:   1
+                };
+            }
+
             plot = $.plot(placeholder, chartdata,
                           $.extend(true, {}, options, {
                               xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
@@ -45,6 +53,8 @@ $.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
         $("#clear-selection").click(function () {
             console.log('clear');
             plot.clearSelection();
+
+            console.log(plot);
         });
     }
 });
