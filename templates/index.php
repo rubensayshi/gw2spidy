@@ -4,6 +4,10 @@
  */
 
 ?>
+<p>
+Welcome to the Guild Wars 2 Spidy website! <br />
+For discussion, questions, etc please goto <a href="http://www.guildwars2guru.com/topic/45667-guildwars2spidy-graphs-of-the-trade-market/">Guild Wars 2 Guru Forum</a>.
+</p>
 <?php foreach ($types as $type):
         if ($type->getTitle()):
 ?>
