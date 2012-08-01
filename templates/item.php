@@ -54,7 +54,9 @@ $.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
             console.log('clear');
             plot.clearSelection();
 
-            console.log(plot);
+            console.log(plot.getXAxes());
+            console.log(plot.getAxes());
+            console.log(plot.getAxes());
         });
     }
 });
