@@ -5,8 +5,12 @@ require dirname(__FILE__) . '/../autoload.php';
 
 $app = new Silex\Application();
 
-$app->get("/", function() {
-    return "Hello World!";
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
+    'twig.path' => dirname(__FILE__) . '/../templates',
+));
+
+$app->get("/", function() use($app) {
+    return $app['twig']->render('index.twig', array());
 });
 
 $app->run();
