@@ -1,9 +1,6 @@
 <?php
 
-use GW2Spidy\DB\RequestFloodControlPeer;
-
-use GW2Spidy\DB\RequestFloodControlQuery;
-
+use GW2Spidy\Queue\RequestSlotManager;
 use GW2Spidy\DB\WorkerQueueItemQuery;
 use GW2Spidy\DB\WorkerQueueItemPeer;
 
@@ -15,66 +12,28 @@ $workers = array();
 $con     = Propel::getConnection();
 $run     = 0;
 $max     = in_array('--debug', $argv) ? 1 : 50;
-$slottime= SLOT_TIMEOUT . "sec";
+
+$slotManager = RequestSlotManager::getInstance();
 
 /*
  * $run up to $max in 1 process, then exit so process gets revived
  *  this is to avoid any memory problems (propel keeps a lot of stuff in memory)
  */
 while ($run < $max) {
-    /*
-     * query with LOCK FOR UPDATE for the oldest request_flood_control slot
-     */
-    $sql = "SELECT
-            *
-        FROM `".RequestFloodControlPeer::TABLE_NAME."`
-        ORDER BY `touched` ASC, `id` ASC
-        LIMIT 1
-        FOR UPDATE";
+    $slot = $slotManager->getAvailableSlot();
 
-    // START TRANSACTION
-    $con->beginTransaction();
-
-    $begin = microtime(true);
-    echo "begin \n";
-
-    $prep = $con->prepare($sql);
-    $prep->execute();
-
-    /*
-     * if there are no slots then this is development, FFA do whatever you want ;)
-     *  otherwise we grab the first (should be the only)
-     */
-    $slots = RequestFloodControlPeer::populateObjects($prep);
-    if (!count($slots)) {
-        // CLOSE TRANSACTION
-        echo "commit [".__LINE__."] [".(microtime(true) - $begin)."] \n";
-        $con->commit();
-
-        throw new Exception("No RequestFoodControl setup");
-    } else {
-        $slot = $slots[0];
-    }
-
-    /*
-     * check if we have a slot which we're allowed to use (within the timebox)
-     *  if not then we sleep until that slot would be available
-     *
-     *  if the slot is ok, we touch it and we can run
-     */
-    if ($slot->getTouched('U') > strtotime("-{$slottime}")) {
-        // CLOSE TRANSACTION
-        echo "commit [".__LINE__."] [".(microtime(true) - $begin)."] \n";
-        $con->commit();
-
-        $sleep = $slot->getTouched('U') - strtotime("-{$slottime}");
-        print "no slots, sleeping [{$sleep}] ... \n";
-        sleep($sleep);
+    if (!$slot) {
+        print "no slots, sleeping [10] ... \n";
+        sleep(10);
 
         continue;
     }
 
-    echo "got slot [".(microtime(true) - $begin)."] \n";
+    // START TRANSACTION
+    $con->beginTransaction();
+    $begin = microtime(true);
+
+    echo "got slot, begin \n";
 
     /*
      * query with LOCK FOR UPDATE for the highest priority, oldest item
@@ -105,6 +64,8 @@ while ($run < $max) {
         echo "commit [".__LINE__."] [".(microtime(true) - $begin)."] \n";
         $con->commit();
 
+        $slot->release();
+
         if (!in_array('--debug', $argv)) {
             print "no items, sleeping [60] ... \n";
             sleep(60);
@@ -126,9 +87,6 @@ while ($run < $max) {
         $item->setTouched(new DateTime());
         $item->save();
 
-        $slot->setTouched(new DateTime());
-        $slot->save();
-
         // CLOSE TRANSACTION
         echo "commit [".__LINE__."] [".(microtime(true) - $begin)."] \n";
         $con->commit();
@@ -138,6 +96,8 @@ while ($run < $max) {
 
     // CLOSE CONNECTION - should already be closed, just to be sure
     $con->commit();
+
+    $slot->hold();
 
     /*
      * process the item

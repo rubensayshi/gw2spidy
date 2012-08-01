@@ -7,7 +7,7 @@ use GW2Spidy\DB\ItemSubTypeQuery;
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\DB\WorkerQueueItem;
-use GW2Spidy\TradeMarket\TradeMarket;
+use GW2Spidy\TradeMarket;
 
 class ItemTypeDBWorker implements Worker {
     public function work(WorkerQueueItem $item) {

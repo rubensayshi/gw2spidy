@@ -1,6 +1,6 @@
 <?php
 
-namespace GW2Spidy\TradeMarket;
+namespace GW2Spidy;
 
 use GW2Spidy\DB\ItemSubType;
 

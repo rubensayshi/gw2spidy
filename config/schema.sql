@@ -105,21 +105,8 @@ CREATE TABLE `worker_queue_item`
     `max_timeout` INTEGER DEFAULT 3600 NOT NULL,
     `last_log` LONGTEXT,
     PRIMARY KEY (`id`),
-    INDEX `retrieve_next` (`status`, `priority`, `id`)
-) ENGINE=InnoDB;
-
--- ---------------------------------------------------------------------
--- request_flood_control
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `request_flood_control`;
-
-CREATE TABLE `request_flood_control`
-(
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `handler_uuid` VARCHAR(255) DEFAULT '' NOT NULL,
-    `touched` DATETIME,
-    PRIMARY KEY (`id`)
+    INDEX `status_touched` (`status`, `touched`),
+    INDEX `priority` (`priority`)
 ) ENGINE=InnoDB;
 
 # This restores the fkey checks, after having unset them earlier

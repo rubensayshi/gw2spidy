@@ -8,7 +8,7 @@ use GW2Spidy\DB\Listing;
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\WorkerQueueItem;
-use GW2Spidy\TradeMarket\TradeMarket;
+use GW2Spidy\TradeMarket;
 
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemSubType;
