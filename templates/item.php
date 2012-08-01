@@ -37,8 +37,8 @@ $.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
         placeholder.bind("plotselected", function (event, ranges) {
             if (xaxis_default === null) {
                 xaxis_default = {
-                    from: 1,
-                    to:   1
+                    from: plot.getAxes().xaxis.datamin,
+                    to:   plot.getAxes().xaxis.datamax
                 };
             }
 
@@ -51,12 +51,12 @@ $.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
         var plot = $.plot(placeholder, chartdata, options);
 
         $("#clear-selection").click(function () {
-            console.log('clear');
             plot.clearSelection();
 
-            console.log(plot.getXAxes());
-            console.log(plot.getAxes());
-            console.log(plot.getAxes());
+            plot = $.plot(placeholder, chartdata,
+                          $.extend(true, {}, options, {
+                              xaxis: { min: xaxis_default.from, max: xaxis_default.to }
+                          }));
         });
     }
 });
