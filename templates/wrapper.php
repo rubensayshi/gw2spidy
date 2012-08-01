@@ -26,6 +26,30 @@ use GW2Spidy\Application;
     <link href="assets/css/style.css" rel="stylesheet" />
 
     <title>Guild Wars 2 Spidy</title>
+    <style>
+        html, body, .container-fluid, .content {
+            height: 100%;
+        }
+
+        .container-fluid, .content {
+            position: relative;
+        }
+
+        .wrapper {
+            min-height: 100%;
+            height: auto !important;
+            height: 100%;
+            margin: 0 auto -50px; /* same as the footer */
+        }
+
+        .push {
+            height: 50px; /* same as the footer */
+        }
+        .footer-wrapper {
+            position: relative;
+            height: 50px;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar">
@@ -36,12 +60,13 @@ use GW2Spidy\Application;
         </div>
     </div>
     <div class="container-fluid">
-        <div class="row-fluid">
+        <div class="row-fluid wrapper">
             <div class="span1"></div>
             <div id="content" class="span10"><?php echo $content ?></div>
             <div class="span1"></div>
         </div>
-        <div class="row-fluid">
+        <div class="row-fluid push"></div>
+        <div class="row-fluid footer-wrapper">
             <div class="span1"></div>
             <div class="span10">
                 this is a <a href="https://github.com/rubensayshi/gw2spidy">open source project</a> by <a href="http://www.guildwars2guru.com/user/39936-drakie/">Drakie</a> / <a href="https://github.com/rubensayshi">rubensayshi</a>
