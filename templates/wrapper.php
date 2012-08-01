@@ -64,8 +64,8 @@ use GW2Spidy\Application;
             <div class="span1"></div>
             <div id="content" class="span10"><?php echo $content ?></div>
             <div class="span1"></div>
+            <div class="push"></div>
         </div>
-        <div class="row-fluid push"></div>
         <div class="row-fluid footer-wrapper">
             <div class="span1"></div>
             <div class="span10">
