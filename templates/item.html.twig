@@ -1,4 +1,4 @@
-{% extends "content_sidebar.html.twig" %}
+{% extends not included is defined ? "content_sidebar.html.twig" : "empty_shell.html.twig" %}
 
 {% block content %}
 {% include "item_snippet.html.twig" with {'item': item, 'tag': 'div'} %}

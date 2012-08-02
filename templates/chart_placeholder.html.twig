@@ -1,4 +1,4 @@
-<div id="placeholder" style="width: 950px; height: 400px;"></div>
+<div id="placeholder" style="width: {% if width is defined %}width{% else %}950px{% endif %}; height: 400px;"></div>
 <p>
 You can zoom into the chart by drawing a selection (xaxis) and use the button below to reset. <br />
 <button class="btn" id="clear-selection">Reset Zoom</button>
