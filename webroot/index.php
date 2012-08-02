@@ -73,6 +73,7 @@ $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use(
     }
 
     $items = $q->offset($itemsperpage * $page)
+                    ->orderBy("Name", "ASC")
                     ->limit($itemsperpage)
                     ->find();
 
