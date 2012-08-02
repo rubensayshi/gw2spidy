@@ -1,0 +1,9 @@
+{% extends "wrapper.html.twig" %}
+
+{% block content_body %}
+    <div class="span1"></div>
+    <div id="content" class="span10">{% block content %}{% endblock %}
+        <div class="footer-spacer"></div>
+    </div>
+    <div class="span1"></div>
+{% endblock content_body %}

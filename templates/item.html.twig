@@ -1,12 +1,7 @@
-<?php
+{% extends "content_sidebar.html.twig" %}
 
-use GW2Spidy\Application;
-
-/**
- * @var \GW2Spidy\DB\Item    $item
- */
-?>
-<?php echo Application::getInstance()->render("item_snippet", array('item' => $item, 'tag' => 'div')) ?>
+{% block content %}
+{% include "item_snippet.html.twig" with {'item': item, 'tag': 'div'} %}
 
 <div id="placeholder" style="width: 950px; height: 400px;"></div>
 <p>
@@ -16,7 +11,7 @@ You can zoom into the chart by drawing a selection (xaxis) and use the button be
 
 
 <script type="text/javascript">
-$.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
+$.ajax("{{ "/chart/" ~ item.dataId }}", {
     success: function(chartdata) {
         var chartdata   = $.parseJSON(chartdata);
         var placeholder = $("#placeholder");
@@ -61,3 +56,5 @@ $.ajax("/index.php?act=chart&id=<?php echo $item->getDataId() ?>", {
     }
 });
 </script>
+
+{% endblock %}

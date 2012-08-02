@@ -1,0 +1,33 @@
+{% extends "content_sidebar.html.twig" %}
+
+{% block content %}
+<h3>Welcome to the Guild Wars 2 Spidy website!</h3>
+<p>This website aims to provide you with graphs of the sale and buy listings of items on the Guild Wars 2 Trade Market.
+</p>
+<p>Using this information we can get a better understanding of the economy in Guild Wars 2. <br />
+It can also prevent you from getting caught in other players monopolizing the Trade Market with sudden spikes in prices.
+</p>
+
+<h3>You do <em>NOT</em> need to login to use this website!</h3>
+<p>I'm using my own game account to gather the information and this website is only showing you what I've gathered over time.
+</p>
+
+<h3>How does it work?</h3>
+<p>ArenaNet has build the Trade Market so that it's loaded into the game from a website. <br />
+You can also access this website with a browser and use your game account to login and view all the items and listings. <br />
+<br />
+Now what I've build is some tools which will run constantly to automatically login to that website and record all data we can find, <br />
+as a result I can record the sale listings for all the items about every hour and with that data I can create graphs with the price changing over time!
+</p>
+
+<h3>Discussion / Questions / Feedback / Contribute</h3>
+<p>The project is build in PHP 5.3 / HTML / CSS/ JS and is open source on <a href="https://github.com/rubensayshi/gw2spidy">github</a>. <br />
+Everyone is free to setup the project for yourself (though atm without setup instructions it might be hard) <br >
+and you're <em>very much</em> welcome to contribute pull requests and I'll do my best to merge them asap! <br />
+<br />
+For discussion, questions, etc please goto <a href="http://www.guildwars2guru.com/topic/45667-guildwars2spidy-graphs-of-the-trade-market/">Guild Wars 2 Guru Forum</a> or use the issue system on <a href="https://github.com/rubensayshi/gw2spidy/issues">github</a>.
+</p>
+
+<h3>Shut up, I just want to see the graphs!</h3>
+<p>Go to the <a href="/types">browse page</a> or use the <a href="/search">search</a> (both also located in the top bar) and enjoy ;)</p>
+{% endblock %}

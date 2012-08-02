@@ -1,86 +1,63 @@
 <?php
 
+use GW2Spidy\Application;
+use GW2Spidy\DB\ItemQuery;
+use GW2Spidy\DB\ItemTypeQuery;
+use GW2Spidy\DB\ListingQuery;
+use GW2Spidy\DB\WorkerQueueItemQuery;
+
 require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
 
-$app = new Silex\Application();
+$app = new Application();
+$app['debug'] = true;
+
+$toInt = function($val) {
+    return (int) $val;
+};
 
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => dirname(__FILE__) . '/../templates',
 ));
 
+/**
+ * ----------------------
+ *  route /
+ * ----------------------
+ */
 $app->get("/", function() use($app) {
-    return $app['twig']->render('index.twig', array());
+    return $app['twig']->render('index.html.twig', array());
 });
 
-$app->run();
+/**
+ * ----------------------
+ *  route /types
+ * ----------------------
+ */
+$app->get("/types", function() use($app) {
+    $types = ItemTypeQuery::create()
+    ->orderByTitle()
+    ->find();
 
-exit(0);
-
-$app  = Application::getInstance();
-0 && $app->debugSQL();
-$wrap = true;
-
-if ($app->isCLI()) {
-    if (isset($argv[1])) {
-        $_GET['act'] = $argv[1];
-    }
-}
-
-if (!isset($_GET['act'])) {
-    $_GET['act'] = 'index';
-}
-
-if ($_GET['act'] == 'item') {
-    if (isset($_GET['id']) && (string)(int)(string)$_GET['id'] === (string)$_GET['id']) {
-        $id = (int)(string)$_GET['id'];
-    } else {
-        throw new \Exception("Item not found");
-    }
-
-    $item = ItemQuery::create()->findPK($id);
-
-    if (!$item) {
-        throw new \Exception("Item not found");
-    }
-
-
-    $content = $app->render("item", array(
-            'item' => $item,
+    return $app['twig']->render('types.html.twig', array(
+            'types' => $types,
     ));
+});
 
-} else if ($_GET['act'] == 'type') {
+/**
+ * ----------------------
+ *  route /type
+ * ----------------------
+ */
+$app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use($app) {
     $itemsperpage = 25;
-    $baseurl      = "index.php?act=type";
-
-    if (isset($_GET['type']) && (string)(int)(string)$_GET['type'] === (string)$_GET['type']) {
-        $type = (int)(string)$_GET['type'];
-    } else {
-        throw new \Exception("Item not found");
-    }
-    if (!isset($_GET['subtype'])) {
-        $subtype = null;
-    } else if((string)(int)(string)$_GET['subtype'] === (string)$_GET['subtype']) {
-        $subtype = (int)(string)$_GET['subtype'];
-    } else {
-        throw new \Exception("Item not found");
-    }
-    if (!isset($_GET['page'])) {
-        $page = 1;
-    } else if((string)(int)(string)$_GET['page'] === (string)$_GET['page']) {
-        $page = (int)(string)$_GET['page'];
-    } else {
-        throw new \Exception("Item not found");
-    }
-
-    $q = ItemQuery::create();
+    $baseurl      = "/type/{$type}/{$subtype}";
+    $q            = ItemQuery::create();
 
     if (!is_null($type)) {
-        $baseurl = "{$baseurl}&type={$type}";
         $q->filterByItemTypeId($type);
     }
     if (!is_null($subtype)) {
-        $baseurl = "{$baseurl}&subtype={$subtype}";
         $q->filterByItemSubTypeId($subtype);
     }
 
@@ -91,40 +68,62 @@ if ($_GET['act'] == 'item') {
     }
 
     $items = $q->offset($itemsperpage * $page)
-               ->limit($itemsperpage)
-               ->find();
+                    ->limit($itemsperpage)
+                    ->find();
 
-    $content = $app->render("items", array(
-        'page'     => $page,
-        'lastpage' => $lastpage,
-        'items'    => $items,
-        'baseurl'  => $baseurl,
+    return $app['twig']->render('type.html.twig', array(
+            'page'     => $page,
+            'lastpage' => $lastpage,
+            'items'    => $items,
+            'baseurl'  => $baseurl,
     ));
+})
+->assert('type',     '\d+')
+->assert('subtype',  '\d+')
+->assert('page',     '\d+')
+->convert('type',    $toInt)
+->convert('subtype', $toInt)
+->convert('page',    $toInt)
+->value('type',      null)
+->value('subtype',   null)
+->value('page',      1);
 
-} else if ($_GET['act'] == 'chart') {
-    if (!isset($_GET['id']) || (string)(int)(string)$_GET['id'] !== (string)$_GET['id']) {
-        throw new Exception('invalid request');
-    }
+/**
+ * ----------------------
+ *  route /item
+ * ----------------------
+ */
+$app->get("/item/{dataId}", function($dataId) use ($app) {
+    $item = ItemQuery::create()->findPK($dataId);
 
-    $item = ItemQuery::create()->findPk((int)(string)$_GET['id']);
+    return $app['twig']->render('item.html.twig', array(
+        'item'        => $item,
+    ));
+})
+->assert('dataId',  '\d+')
+->convert('dataId', $toInt);
 
-    if (!$item || !($item instanceof Item)) {
-        throw new Exception('invalid request');
-    }
+/**
+ * ----------------------
+ *  route /chart
+ * ----------------------
+ */
+$app->get("/chart/{dataId}", function($dataId) use ($app) {
+    $item = ItemQuery::create()->findPK($dataId);
 
     $chart   = array();
     $dataset = array();
 
     $res = ListingQuery::create()
-            ->groupByItemId()
-            ->groupByListingDate()
-            ->groupByListingTime()
-            ->select(array('id', 'listingdate', 'listingtime'))
-            ->withColumn('SUM(unit_price * quantity) / SUM(quantity)', 'avgunitprice')
-            ->orderByListingDate('asc')
-            ->orderByListingTime('asc')
-            ->filterByItemId($item->getDataId())
-            ->find();
+                ->groupByItemId()
+                ->groupByListingDate()
+                ->groupByListingTime()
+                ->select(array('id', 'listingdate', 'listingtime'))
+                ->withColumn('SUM(unit_price * quantity) / SUM(quantity)', 'avgunitprice')
+                ->orderByListingDate('asc')
+                ->orderByListingTime('asc')
+                ->filterByItemId($item->getDataId())
+                ->find();
 
     foreach ($res as $listingEntry) {
         $date = new DateTime("{$listingEntry['listingdate']} {$listingEntry['listingtime']}");
@@ -138,35 +137,45 @@ if ($_GET['act'] == 'item') {
 
     $wrap    = false;
     $content = json_encode($chart);
-} else if ($_GET['act'] == 'status') {
-        $res = WorkerQueueItemQuery::create()
-                ->withColumn('COUNT(*)', 'Count')
-                ->select(array('Status', 'Count'))
-                ->groupByStatus()
-                ->find();
 
-        ob_start();
-        foreach ($res as $statusCount) {
-            var_dump($statusCount);
-        }
+    return $content;
+})
+->assert('dataId',  '\d+')
+->convert('dataId', $toInt);
 
-        $content = "<pre>".ob_get_clean()."</pre>";
-} else {
-    $types = ItemTypeQuery::create()
-                    ->orderByTitle()
-                    ->find();
+/**
+ * ----------------------
+ *  route /status
+ * ----------------------
+ */
+$app->get("/status", function() use($app) {
+    $res = WorkerQueueItemQuery::create()
+    ->withColumn('COUNT(*)', 'Count')
+    ->select(array('Status', 'Count'))
+    ->groupByStatus()
+    ->find();
 
-    $content = $app->render("index", array(
-        'types' => $types,
+    ob_start();
+    foreach ($res as $statusCount) {
+        var_dump($statusCount);
+    }
+
+    $content = ob_get_clean();
+
+    return $app['twig']->render('dump.html.twig', array(
+            'dump' => $content,
     ));
-}
+});
 
-if ($wrap) {
-    echo $app->render("wrapper", array(
-        'content' => $content
-    ));
-} else {
-    echo $content;
-}
+/**
+ * ----------------------
+ *  route /search
+ * ----------------------
+ */
+$app->get("/search", function() use($app) {
+    return $app['twig']->render('search.html.twig', array());
+});
+
+$app->run();
 
 ?>

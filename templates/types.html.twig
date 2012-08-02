@@ -1,0 +1,25 @@
+{% extends "content_sidebar.html.twig" %}
+
+{% block content %}
+<p>
+Welcome to the Guild Wars 2 Spidy website! <br />
+For discussion, questions, etc please goto <a href="http://www.guildwars2guru.com/topic/45667-guildwars2spidy-graphs-of-the-trade-market/">Guild Wars 2 Guru Forum</a>.
+</p>
+{% for type in types %}
+    {% if type.title %}
+    <div class="well">
+        <a href="/type/{{ type.id }}"><h4>{{ type.title }}</h4></a>
+        <ul class="nav nav-pills nav-stacked">
+            {% for subtype in type.subtypes %}
+                {% if subtype.title %}
+                <li>
+                    <a href="/type/{{ type.id }}/{{ subtype.id }}">{{ subtype.title }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "content_sidebar.html.twig" %}
+
+{% block content %}
+<ul class="nav nav-pills nav-stacked">
+    {% for item in items %}
+        {% include "item_snippet.html.twig" with {'item': item, 'tag': 'li', 'href': '/item/' ~ item.dataId} %}
+    {% endfor %}
+</ul>
+
+<div class="pagination">
+    <ul>
+        <li class="{% if page <= 1 %}disabled{% endif %}"><a href="{{ baseurl ~ "/" ~ (page-1) }}">Prev</a></li>
+        {% for i in range(1, lastpage) %}
+            <li class="{% if i == page %}active{% endif %}">
+                <a href="{{ baseurl ~ "/" ~ i }}">{{ i }}</a>
+            </li>
+        {% endfor %}
+        <li class="{% if page >= lastpage %}disabled{% endif %}"><a href="{{ baseurl ~ "/" ~ (page+1) }}">Next</a></li>
+    </ul>
+</div>
+
+{% endblock %}
