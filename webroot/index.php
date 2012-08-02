@@ -116,7 +116,11 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     $item = ItemQuery::create()->findPK($dataId);
 
     $chart   = array();
-    $dataset = array();
+
+    $dataset = array(
+        'data'   => array(),
+        'label'  => $item->getName(),
+    );
 
     $res = ListingQuery::create()
                 ->groupByItemId()
@@ -134,7 +138,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
 
         $listingEntry['avgunitprice'] = round($listingEntry['avgunitprice'], 2);
 
-        $dataset[] = array($date->getTimestamp()*1000, $listingEntry['avgunitprice']);
+        $dataset['data'][] = array($date->getTimestamp()*1000, $listingEntry['avgunitprice']);
     }
 
     $chart[] = $dataset;

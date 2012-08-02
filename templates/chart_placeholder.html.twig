@@ -9,7 +9,15 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
     success: function(chartdata) {
         var chartdata   = $.parseJSON(chartdata);
         var placeholder = $("#placeholder");
+        var plot;
         var options     = {
+            grid: {
+                hoverable: true,
+            },
+            tooltip:  true,
+            tooltipOpts: {
+                content: "%s | %x | %y.0c"
+            },
             series: {
                 lines:  { show: true },
                 points: { show: true }
@@ -23,6 +31,12 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
         };
         var xaxis_default = null;
 
+        var render = function(extraoptions) {
+            var extraoptions = extraoptions || {};
+
+            plot = $.plot(placeholder, chartdata, $.extend(true, {}, options, extraoptions));
+        }
+
         placeholder.bind("plotselected", function (event, ranges) {
             if (xaxis_default === null) {
                 xaxis_default = {
@@ -31,21 +45,15 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
                 };
             }
 
-            plot = $.plot(placeholder, chartdata,
-                          $.extend(true, {}, options, {
-                              xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
-                          }));
+            render({ xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to } });
         });
 
-        var plot = $.plot(placeholder, chartdata, options);
+        render();
 
         $("#clear-selection").click(function () {
             plot.clearSelection();
 
-            plot = $.plot(placeholder, chartdata,
-                          $.extend(true, {}, options, {
-                              xaxis: { min: xaxis_default.from, max: xaxis_default.to }
-                          }));
+            render({ xaxis: { min: xaxis_default.from, max: xaxis_default.to } });
         });
     }
 });
