@@ -26,6 +26,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
  * ----------------------
  */
 $app->get("/", function() use($app) {
+    $app->setHomeActive();
     $featured = ItemQuery::create()->findPk(1140);
 
     return $app['twig']->render('index.html.twig', array(

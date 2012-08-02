@@ -29,9 +29,15 @@
                 <div class="container">
                     <a class="brand" href="/">{% block navtitle %}Guild Wars 2 Spidy{% endblock %}</a>
                     <ul class="nav">
-                        <li>
+                        <li class="divider-vertical"></li>
+                        <li {% if app.isHomeActive %}class="active"{% endif %}>
+                            <a href="/">Home</a>
+                        </li>
+                        <li class="divider-vertical"></li>
+                        <li {% if app.isBrowseActive %}class="active"{% endif %}>
                             <a href="/types">Browse</a>
                         </li>
+                        <li class="divider-vertical"></li>
                     </ul>
                 </div>
             </div>

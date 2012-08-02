@@ -53,3 +53,9 @@ body {
 .item .stats .rarity.common {
     color: gray;
 }
+
+.navbar .nav > li > a {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
