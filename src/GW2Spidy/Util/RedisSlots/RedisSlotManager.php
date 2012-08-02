@@ -39,15 +39,42 @@ abstract class RedisSlotManager {
     }
 
     public function getAvailableSlot() {
-        $slots = $this->client->zrangeByScore($this->getSlotsQueueName(), 0, time(), array('limit' => array(0, 1)));
-        $slot  = $slots ? $slots[0] : null;
-        if (is_null($slot)) {
-            return false;
-        }
+        $queueKey  = $this->getSlotsQueueName();
+        $triesLeft = 2;
 
-        $this->client->zrem($this->getSlotsQueueName(), $slot);
+        do {
+            // set a watch on the $queueKey
+            $this->client->watch($queueKey);
 
-        return new RedisSlot($this, $slot);
+            // pop the hotest slot off $queueKey which is between 0 and time() with limit 0,1
+            $slots = $this->client->zrangeByScore($queueKey, 0, time(), array('limit' => array(0, 1)));
+            // grab the slot we popped off
+            $slot  = $slots ? $slots[0] : null;
+
+            // no slot :(
+            if (is_null($slot)) {
+                return null;
+            }
+
+            // start transaction
+            $tx = $this->client->multi();
+
+            // removed the slot from the $queueKey
+            $this->client->zrem($queueKey, $slot);
+
+            // execute the transaction
+            $results = $this->client->exec();
+
+            // check if the zrem command removed 1 (or more)
+            // if it did we can use this slot
+            if ($results[0] >= 1) {
+                return new RedisSlot($this, $slot);
+            }
+
+            // if we didn't get a usable slot we retry
+        } while ($triesLeft-- > 0);
+
+        return null;
     }
 
     public function release(RedisSlot $slot) {
