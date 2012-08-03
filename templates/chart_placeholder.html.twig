@@ -28,6 +28,7 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
                 twelveHourClock: false,
                 zoomRange: null,
                 panRange: null,
+                minTickSize: [1, "day"]
             },
             yaxis: {
                 zoomRange: false,
