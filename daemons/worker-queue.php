@@ -1,8 +1,10 @@
 <?php
 
+
+use GW2Spidy\TradeMarket;
+
 use GW2Spidy\Queue\RequestSlotManager;
-use GW2Spidy\DB\WorkerQueueItemQuery;
-use GW2Spidy\DB\WorkerQueueItemPeer;
+use GW2Spidy\Queue\WorkerQueueManager;
 
 require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
@@ -13,13 +15,20 @@ $con     = Propel::getConnection();
 $run     = 0;
 $max     = in_array('--debug', $argv) ? 1 : 50;
 
-$slotManager = RequestSlotManager::getInstance();
+$slotManager  = RequestSlotManager::getInstance();
+$queueManager = WorkerQueueManager::getInstance();
+
+// login here so our benchmarking per item ain't offset by it
+print "login ... \n";
+TradeMarket::getInstance()->doLogin();
 
 /*
  * $run up to $max in 1 process, then exit so process gets revived
  *  this is to avoid any memory problems (propel keeps a lot of stuff in memory)
  */
 while ($run < $max) {
+    $begin = microtime(true);
+
     $slot = $slotManager->getAvailableSlot();
 
     if (!$slot) {
@@ -29,41 +38,16 @@ while ($run < $max) {
         continue;
     }
 
-    // START TRANSACTION
-    $con->beginTransaction();
-    $begin = microtime(true);
+    echo "got slot, begin [".(microtime(true) - $begin)."] \n";
 
-    echo "got slot, begin \n";
-
-    /*
-     * query with LOCK FOR UPDATE for the highest priority, oldest item
-     *  which hasn't been touched yet, or was touched before it's max timeout
-     *  and isn't done already (ofcourse)
-     */
-    $sql = "SELECT
-            *
-        FROM `".WorkerQueueItemPeer::TABLE_NAME."`
-        WHERE (`touched` IS NULL OR `touched` + `max_timeout` < NOW())
-        AND   `status` <> 'DONE'
-        ORDER BY `priority` DESC, `id` ASC
-        LIMIT 1
-        FOR UPDATE";
-
-    $prep = $con->prepare($sql);
-    $prep->execute();
-
-    $items = WorkerQueueItemPeer::populateObjects($prep);
+    $queueItem = $queueManager->next();
 
     /*
      * if we have no items
-     *  close the transaction
-     *  sleep for a bit before trying again
-     */
-    if (count($items) == 0) {
-        // CLOSE TRANSACTION
-        echo "commit [".__LINE__."] [".(microtime(true) - $begin)."] \n";
-        $con->commit();
-
+    *  sleep for a bit before trying again
+    */
+    if (!$queueItem) {
+        // return the slot
         $slot->release();
 
         if (!in_array('--debug', $argv)) {
@@ -73,81 +57,36 @@ while ($run < $max) {
 
         $run++;
         continue;
-    /*
-     * if we do have items
-     *  mark them touched and with our UUID
-     *  then close the transaction
-     *
-     * also touch our slot
-     */
-    } else {
-        $item = $items[0];
-
-        $item->setHandlerUUID($UUID);
-        $item->setTouched(new DateTime());
-        $item->save();
-
-        // CLOSE TRANSACTION
-        echo "commit [".__LINE__."] [".(microtime(true) - $begin)."] \n";
-        $con->commit();
     }
 
     echo "got item {$run} [".(microtime(true) - $begin)."] \n";
 
-    // CLOSE CONNECTION - should already be closed, just to be sure
-    $con->commit();
-
+    // mark our slot as held
     $slot->hold();
 
     /*
      * process the item
      *  wrapped in trycatch to catch and log exceptions
      *  get a worker (reuse old instances) and let it work the item
-     *
-     * mark done/error and add log
-     * finish with touching it one final time and saving
      */
-
-    $done = false;
-
     try {
-        $workerName = $item->getWorker();
+        $workerName = $queueItem->getWorker();
 
         if (!isset($workers[$workerName])) {
             $workers[$workerName] = new $workerName;
         }
 
         ob_start();
-        $workers[$workerName]->work($item);
+        $workers[$workerName]->work($queueItem);
 
-        $done = true;
+        ob_get_clean();
     } catch (Exception $e) {
         $log = ob_get_clean();
-        $item->setStatus('ERROR');
-        $item->setLastLog("{$log} \n\n\n --------------- \n\n\n {$e}");
-
         echo " !! worker process threw exception !! \n\n\n --------------- \n\n\n {$log} \n\n\n --------------- \n\n\n {$e} ";
     }
 
-    if ($done) {
-        $log = ob_get_clean();
-        $item->setStatus('DONE');
-        $item->setLastLog($log);
+    echo "done [".(microtime(true) - $begin)."] \n";
 
-        if (in_array('--debug', $argv)) {
-            echo $log;
-        }
-    }
-
-    $item->setTouched(new DateTime());
-    $item->save();
     $run++;
 }
 
-/*
- * clean up all items marked as 'DONE' and older then 12 hours
- */
-$query = WorkerQueueItemQuery::create();
-$query->add(WorkerQueueItemPeer::TOUCHED, (time() + (1 * 3600)), Criteria::LESS_THAN)
-      ->add(WorkerQueueItemPeer::STATUS, 'DONE');
-$query->delete();

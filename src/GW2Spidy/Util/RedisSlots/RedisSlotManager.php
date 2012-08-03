@@ -9,7 +9,7 @@ abstract class RedisSlotManager {
 
     protected static $instance;
 
-    private function __construct() {
+    protected function __construct() {
         $this->client = new Client();
     }
 

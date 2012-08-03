@@ -49,27 +49,6 @@
             <index-column name="listing_time" />
         </index>
     </table>
-    <table name="worker_queue_item" phpName="WorkerQueueItem">
-        <column name="id" type="integer" required="true" autoIncrement="true" primaryKey="true" phpName="Id" />
-        <column name="priority" type="integer" default="100" phpName="Priority" />
-        <column name="status" type="varchar" size="45" required="true" default="" phpName="Status" />
-        <column name="worker" type="varchar" size="255" required="true" default="" phpName="Worker" />
-        <column name="raw_data" type="clob" size="255" required="true" default="" phpName="RawData" />
-        <column name="handler_uuid" type="varchar" size="255" required="true" default="" phpName="HandlerUUID" />
-        <column name="touched" type="timestamp" phpName="Touched" />
-        <column name="max_timeout" type="integer" required="true" default="3600" phpName="MaxTimeout" />
-        <column name="last_log" type="clob" phpName="LastLog" />
-        <index name="status_touched">
-            <index-column name="status" />
-            <index-column name="touched" />
-        </index>
-        <index name="priority">
-            <index-column name="priority" />
-        </index>
-        <vendor type="mysql">
-            <parameter name="Engine" value="InnoDB" />
-        </vendor>
-    </table>
     <table name="tinyint_asc" phpName="TinyIntAsc">
         <column name="value" type="integer" required="true" primaryKey="true" phpName="Value" />
     </table>

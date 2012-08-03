@@ -2,11 +2,13 @@
 
 namespace GW2Spidy\WorkerQueue;
 
+use GW2Spidy\Queue\WorkerQueueManager;
+use GW2Spidy\Queue\WorkerQueueItem;
+
 use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemSubTypeQuery;
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemTypeQuery;
-use GW2Spidy\DB\WorkerQueueItem;
 use GW2Spidy\TradeMarket;
 
 class ItemTypeDBWorker implements Worker {
@@ -58,11 +60,11 @@ class ItemTypeDBWorker implements Worker {
         }
     }
 
-    public static function enqueueWorker() {
+    public static function enqueueWorker($type, $subtype, $offset = 0, $full = true) {
         $queueItem = new WorkerQueueItem();
         $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\ItemTypeDBWorker");
 
-        $queueItem->save();
+        WorkerQueueManager::getInstance()->enqueue($queueItem);
 
         return $queueItem;
     }

@@ -2,9 +2,11 @@
 
 namespace GW2Spidy\WorkerQueue;
 
+use GW2Spidy\Queue\WorkerQueueManager;
+use GW2Spidy\Queue\WorkerQueueItem;
+
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\DB\WorkerQueueItem;
 use GW2Spidy\TradeMarket;
 
 use GW2Spidy\DB\ItemType;
@@ -62,7 +64,7 @@ class ItemDBWorker implements Worker {
             'full'    => $full,
         ));
 
-        $queueItem->save();
+        WorkerQueueManager::getInstance()->enqueue($queueItem);
 
         return $queueItem;
     }

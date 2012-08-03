@@ -2,12 +2,13 @@
 
 namespace GW2Spidy\WorkerQueue;
 
+use GW2Spidy\Queue\WorkerQueueManager;
+use GW2Spidy\Queue\WorkerQueueItem;
 
 use GW2Spidy\DB\Listing;
 
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\DB\WorkerQueueItem;
 use GW2Spidy\TradeMarket;
 
 use GW2Spidy\DB\ItemType;
@@ -38,17 +39,13 @@ class ItemListingsDBWorker implements Worker {
         }
     }
 
-    public static function enqueueWorker($item, $time = null) {
+    public static function enqueueWorker($item) {
         $queueItem = new WorkerQueueItem();
         $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\ItemListingsDBWorker");
         $queueItem->setPriority(WorkerQueueItem::PRIORITY_LISTINGSDB);
         $queueItem->setData($item);
 
-        if ($time) {
-            $queueItem->setTouched($time);
-        }
-
-        $queueItem->save();
+        WorkerQueueManager::getInstance()->enqueue($queueItem);
 
         return $queueItem;
     }
