@@ -21,7 +21,7 @@ class ItemListingsDBWorker implements Worker {
         $this->buildListingsDB($item);
     }
 
-    protected function buildListingsDB(Item $item) {
+    public function buildListingsDB(Item $item) {
         $now      = new \DateTime();
         $market   = TradeMarket::getInstance();
         $listings = $market->getListingsById($item->getDataId());
@@ -37,6 +37,8 @@ class ItemListingsDBWorker implements Worker {
                 $listing->save();
             }
         }
+
+        return $listings;
     }
 
     public static function enqueueWorker($item) {
