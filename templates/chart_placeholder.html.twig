@@ -44,6 +44,10 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
         };
         var xaxis_default = null;
 
+        placeholder.bind('plotzoom', function() {
+            plot.pan({left: 0, top: 0});
+        });
+
         var render = function(extraoptions) {
             var extraoptions  = extraoptions || {};
             var renderoptions = {};
