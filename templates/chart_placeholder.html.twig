@@ -60,7 +60,7 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
             plot = $.plot(placeholder, chartdata, $.extend(true, {}, options, renderoptions, extraoptions));
 
             // add zoom out button
-            $('<div class="btn" style="right:37px; bottom:23px; position:absolute;">zoom out</div>').appendTo(placeholder).click(function (e) {
+            $('<div class="btn" style="right:20px; bottom:23px; position:absolute;">zoom out</div>').appendTo(placeholder).click(function (e) {
                 e.preventDefault();
                 plot.zoomOut();
             });
