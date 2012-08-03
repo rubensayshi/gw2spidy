@@ -109,5 +109,17 @@ CREATE TABLE `worker_queue_item`
     INDEX `priority` (`priority`)
 ) ENGINE=InnoDB;
 
+-- ---------------------------------------------------------------------
+-- tinyint_asc
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tinyint_asc`;
+
+CREATE TABLE `tinyint_asc`
+(
+    `value` TINYINT NOT NULL,
+    PRIMARY KEY (`value`)
+) ENGINE=MyISAM;
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
