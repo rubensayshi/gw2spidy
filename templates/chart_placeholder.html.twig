@@ -16,7 +16,8 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
             },
             tooltip:  true,
             tooltipOpts: {
-                content: "%s | %x | %y.0c"
+                content:    "%s | %x | %y.0c",
+                dateFormat: "%y-%0m-%0d %H:%S"
             },
             series: {
                 lines:  { show: true },
