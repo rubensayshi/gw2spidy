@@ -9,7 +9,7 @@ body {
 }
 
 .footer-spacer {
-    height: 50px;
+    height: 40px;
 }
 
 .navbar {
@@ -18,7 +18,7 @@ body {
 }
 
 .footer-row {
-    height: 50px;
+    height: 40px;
     position: absolute;
     bottom: 0px;
     margin: 0 -20px;
