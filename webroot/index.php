@@ -153,7 +153,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
         FROM
             listing, tinyint_asc
         WHERE
-            item_id = 4496
+            item_id = :item_id
         AND
             tinyint_asc.value >= 1 AND tinyint_asc.value <= 10
         GROUP BY
@@ -165,6 +165,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     ";
 
     $stmt = $con->prepare($query);
+    $stmt->bindValue(":item_id", $item->getDataId());
     $stmt->execute();
 
     $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
