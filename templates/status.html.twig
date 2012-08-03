@@ -1,0 +1,11 @@
+{% extends "content_wide.html.twig" %}
+
+{% block content %}
+<pre>{{ dump }}</pre>
+
+<script type="text/javascript">
+setTimeout(function() {
+    window.location.reload(true);
+}, 5000);
+</script>
+{% endblock content %}

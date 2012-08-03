@@ -239,7 +239,7 @@ $app->get("/status", function() use($app) {
 
     $content = ob_get_clean();
 
-    return $app['twig']->render('dump.html.twig', array(
+    return $app['twig']->render('status.html.twig', array(
             'dump' => $content,
     ));
 });
