@@ -45,9 +45,15 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
         var xaxis_default = null;
 
         var render = function(extraoptions) {
-            var extraoptions = extraoptions || {};
+            var extraoptions  = extraoptions || {};
+            var renderoptions = {};
+            var first = chartdata[0]['data'][0][0];
 
-            plot = $.plot(placeholder, chartdata, $.extend(true, {}, options, extraoptions));
+            renderoptions.xaxis = {};
+            renderoptions.xaxis.zoomRange = [first, null];
+            renderoptions.xaxis.panRange  = [first, null];
+
+            plot = $.plot(placeholder, chartdata, $.extend(true, {}, options, renderoptions, extraoptions));
 
             // add zoom out button
             $('<div class="btn" style="right:37px; bottom:23px; position:absolute;">zoom out</div>').appendTo(placeholder).click(function (e) {
