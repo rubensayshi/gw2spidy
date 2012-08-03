@@ -1,7 +1,6 @@
 <div id="placeholder" style="width: {% if width is defined %}width{% else %}950px{% endif %}; height: 400px;"></div>
 <p>
-You can zoom into the chart by drawing a selection (xaxis) and use the button below to reset. <br />
-<button class="btn" id="clear-selection">Reset Zoom</button>
+You can zoom into the chart by dragging, double clicking or using your scrollwheel. <br />
 </p>
 
 <script type="text/javascript">
@@ -17,7 +16,7 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
             tooltip:  true,
             tooltipOpts: {
                 content:    "%s | %x | %y.0c",
-                dateFormat: "%y-%0m-%0d %H:%S"
+                dateFormat: "%Y-%m-%d %H:%S"
             },
             series: {
                 lines:  { show: true },
@@ -25,10 +24,15 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
             },
             xaxis: {
                 mode:            "time",
-                timeformat:      "%y-%0m-%0d %H:%S",
+                timeformat:      "%Y-%m-%d %H:%S",
                 twelveHourClock: false
             },
-            selection: { mode: "x" }
+            zoom: {
+                interactive: true
+            },
+            pan: {
+                interactive: true
+            }
         };
         var xaxis_default = null;
 
@@ -36,26 +40,15 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
             var extraoptions = extraoptions || {};
 
             plot = $.plot(placeholder, chartdata, $.extend(true, {}, options, extraoptions));
+
+            // add zoom out button
+            $('<div class="btn" style="right:37px; bottom:23px; position:absolute;">zoom out</div>').appendTo(placeholder).click(function (e) {
+                e.preventDefault();
+                plot.zoomOut();
+            });
+
         }
-
-        placeholder.bind("plotselected", function (event, ranges) {
-            if (xaxis_default === null) {
-                xaxis_default = {
-                    from: plot.getAxes().xaxis.datamin,
-                    to:   plot.getAxes().xaxis.datamax
-                };
-            }
-
-            render({ xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to } });
-        });
-
         render();
-
-        $("#clear-selection").click(function () {
-            plot.clearSelection();
-
-            render({ xaxis: { min: xaxis_default.from, max: xaxis_default.to } });
-        });
     }
 });
 </script>
