@@ -26,13 +26,14 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
                 mode:            "time",
                 timeformat:      "%d-%b",
                 twelveHourClock: false,
-                zoomRange: null,
-                panRange: null,
-                minTickSize: [1, "day"]
+                zoomRange:       null,
+                panRange:        null,
+                minTickSize:     [1, "day"]
             },
             yaxis: {
-                zoomRange: false,
-                panRange: false,
+                zoomRange:   false,
+                panRange:    true,
+                minTickSize: 1
             },
             zoom: {
                 interactive: true
