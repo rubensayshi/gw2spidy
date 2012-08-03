@@ -209,7 +209,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     //*/
 
     foreach ($res as $listingEntry) {
-        $date = new DateTime("{$listingEntry['listing_date']} {$listingEntry['listing_time']}");
+        $date = new DateTime("{$listingEntry['listing_date']} {$listingEntry['listing_time']} UTC");
 
         $listingEntry['avgunitprice'] = round($listingEntry['avgunitprice'], 2);
 
