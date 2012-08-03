@@ -25,7 +25,13 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
             xaxis: {
                 mode:            "time",
                 timeformat:      "%Y-%m-%d %H:%S",
-                twelveHourClock: false
+                twelveHourClock: false,
+                zoomRange: null,
+                panRange: null,
+            },
+            yaxis: {
+                zoomRange: false,
+                panRange: false,
             },
             zoom: {
                 interactive: true
