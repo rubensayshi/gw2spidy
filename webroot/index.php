@@ -1,10 +1,14 @@
 <?php
 
 use GW2Spidy\Application;
+
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\DB\ListingQuery;
 use GW2Spidy\DB\WorkerQueueItemQuery;
+
+use GW2Spidy\Queue\RequestSlotManager;
+use GW2Spidy\Queue\WorkerQueueManager;
 
 require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
@@ -228,16 +232,10 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
  * ----------------------
  */
 $app->get("/status", function() use($app) {
-    $res = WorkerQueueItemQuery::create()
-    ->withColumn('COUNT(*)', 'Count')
-    ->select(array('Status', 'Count'))
-    ->groupByStatus()
-    ->find();
-
     ob_start();
-    foreach ($res as $statusCount) {
-        var_dump($statusCount);
-    }
+
+    echo "there are [[ " . RequestSlotManager::getInstance()->getLength() . " ]] available slots right now \n";
+    echo "there are still [[ " . WorkerQueueManager::getInstance()->getLength() . " ]] items in the queue \n";
 
     $content = ob_get_clean();
 

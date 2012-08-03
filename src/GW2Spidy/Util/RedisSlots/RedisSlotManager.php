@@ -84,6 +84,10 @@ abstract class RedisSlotManager {
     public function hold(RedisSlot $slot) {
         $this->client->zadd($this->getSlotsQueueName(), time() + $this->getTimeout(), $slot->getSlot());
     }
+
+    public function getLength() {
+        return $this->client->zcount($this->getSlotsQueueName(), 0, time());
+    }
 }
 
 ?>
