@@ -117,7 +117,7 @@ DROP TABLE IF EXISTS `tinyint_asc`;
 
 CREATE TABLE `tinyint_asc`
 (
-    `value` TINYINT NOT NULL,
+    `value` INTEGER NOT NULL,
     PRIMARY KEY (`value`)
 ) ENGINE=MyISAM;
 

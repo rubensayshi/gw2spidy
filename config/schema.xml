@@ -71,6 +71,6 @@
         </vendor>
     </table>
     <table name="tinyint_asc" phpName="TinyIntAsc">
-        <column name="value" type="tinyint" required="true" primaryKey="true" phpName="Value" />
+        <column name="value" type="integer" required="true" primaryKey="true" phpName="Value" />
     </table>
 </database>

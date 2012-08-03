@@ -233,22 +233,8 @@ abstract class BaseTinyIntAscQuery extends ModelCriteria
      */
     public function filterByValue($value = null, $comparison = null)
     {
-        if (is_array($value)) {
-            $useMinMax = false;
-            if (isset($value['min'])) {
-                $this->addUsingAlias(TinyIntAscPeer::VALUE, $value['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($value['max'])) {
-                $this->addUsingAlias(TinyIntAscPeer::VALUE, $value['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
+        if (is_array($value) && null === $comparison) {
+            $comparison = Criteria::IN;
         }
 
         return $this->addUsingAlias(TinyIntAscPeer::VALUE, $value, $comparison);

@@ -42,7 +42,7 @@ class TinyIntAscTableMap extends TableMap
         $this->setPackage('gw2spidy');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('VALUE', 'Value', 'TINYINT', true, null, null);
+        $this->addPrimaryKey('VALUE', 'Value', 'INTEGER', true, null, null);
         // validators
     } // initialize()
 
