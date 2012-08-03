@@ -18,6 +18,8 @@ class CurlRequest {
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_FAILONERROR    => false,
+        CURLOPT_TIMEOUT        => 10,
+        CURLOPT_CONNECTTIMEOUT => 10,
     );
     protected static $defaultHeaders = array(
         "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
