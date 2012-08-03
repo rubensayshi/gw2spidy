@@ -63,7 +63,7 @@ $app->get("/types", function() use($app) {
  * ----------------------
  */
 $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use($app) {
-    $itemsperpage = 25;
+    $itemsperpage = 11;
     $baseurl      = "/type/{$type}/{$subtype}";
     $q            = ItemQuery::create();
 
@@ -268,7 +268,7 @@ $app->get("/search/{search}/{page}", function($search, $page) use($app) {
         return $app->handle(Request::create("/searchform", 'GET'), HttpKernelInterface::SUB_REQUEST);
     }
 
-    $itemsperpage = 25;
+    $itemsperpage = 11;
     $baseurl      = "/search/{$search}";
     $q = ItemQuery::create()
             ->filterByName("%{$search}%");
