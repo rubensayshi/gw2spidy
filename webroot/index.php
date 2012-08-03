@@ -1,5 +1,9 @@
 <?php
 
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+
+use Symfony\Component\HttpFoundation\Request;
+
 use GW2Spidy\Application;
 
 use GW2Spidy\DB\ItemQuery;
@@ -49,7 +53,7 @@ $app->get("/types", function() use($app) {
     ->find();
 
     return $app['twig']->render('types.html.twig', array(
-            'types' => $types,
+        'types' => $types,
     ));
 });
 
@@ -82,10 +86,10 @@ $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use(
                     ->find();
 
     return $app['twig']->render('type.html.twig', array(
-            'page'     => $page,
-            'lastpage' => $lastpage,
-            'items'    => $items,
-            'baseurl'  => $baseurl,
+        'page'     => $page,
+        'lastpage' => $lastpage,
+        'items'    => $items,
+        'baseurl'  => $baseurl,
     ));
 })
 ->assert('type',     '\d+')
@@ -240,16 +244,65 @@ $app->get("/status", function() use($app) {
     $content = ob_get_clean();
 
     return $app['twig']->render('status.html.twig', array(
-            'dump' => $content,
+        'dump' => $content,
     ));
 });
 
 /**
  * ----------------------
- *  route /search
+ *  route /search POST
  * ----------------------
  */
-$app->get("/search", function() use($app) {
+$app->post("/search", function (Request $request) use ($app) {
+    $search = $request->get('search');
+    return $app->handle(Request::create("/search/{$search}", 'GET'), HttpKernelInterface::SUB_REQUEST);
+});
+
+/**
+ * ----------------------
+ *  route /search GET
+ * ----------------------
+ */
+$app->get("/search/{search}/{page}", function($search, $page) use($app) {
+    if (!$search) {
+        return $app->handle(Request::create("/searchform", 'GET'), HttpKernelInterface::SUB_REQUEST);
+    }
+
+    $itemsperpage = 25;
+    $baseurl      = "/search/{$search}";
+    $q = ItemQuery::create()
+            ->filterByName("%{$search}%");
+
+    $count    = $q->count();
+    $lastpage = ceil($count / $itemsperpage);
+    if ($page > $lastpage) {
+        $page = $lastpage;
+    }
+
+    $items = $q->offset($itemsperpage * ($page - 1))
+                    ->orderBy("Name", "ASC")
+                    ->limit($itemsperpage)
+                    ->find();
+
+    return $app['twig']->render('type.html.twig', array(
+        'page'     => $page,
+        'lastpage' => $lastpage,
+        'items'    => $items,
+        'baseurl'  => $baseurl,
+    ));
+})
+->assert('page',     '\d+')
+->convert('page',    $toInt)
+->convert('search',  function($search) { return urldecode($search); })
+->value('search',    null)
+->value('page',      1);
+
+/**
+ * ----------------------
+ *  route /searchform
+ * ----------------------
+ */
+$app->get("/searchform", function() use($app) {
     return $app['twig']->render('search.html.twig', array());
 });
 
