@@ -9,8 +9,6 @@ use GW2Spidy\DB\ItemType;
 use GW2Spidy\Util\CurlRequest;
 
 class TradeMarket {
-    protected $cookiejar;
-
     protected static $instance;
 
     public function __construct() {
