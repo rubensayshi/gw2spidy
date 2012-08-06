@@ -4,6 +4,33 @@ You can zoom into the chart by dragging, double clicking or using your scrollwhe
 </p>
 
 <script type="text/javascript">
+var formatGW2Money = function(copper) {
+    copper *= 99 * 99;
+    var string = "";
+
+    var gold = Math.floor(copper / 10000);
+    if (gold) {
+        copper = copper % (gold * 10000);
+        string += gold + "g ";
+    }
+
+    var silver = Math.floor(copper / 100);
+    if (silver) {
+        copper = copper % (silver * 100);
+        if (silver) string += silver + "s ";
+    }
+
+    copper = Math.floor(copper);
+
+    if (copper) string += copper + "c ";
+
+    if (!string) {
+        return copper + "c";
+    } else {
+        return string;
+    }
+};
+
 $.ajax("{{ "/chart/" ~ item.dataId }}", {
     success: function(chartdata) {
         var chartdata   = $.parseJSON(chartdata);
@@ -15,7 +42,10 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
             },
             tooltip:  true,
             tooltipOpts: {
-                content:    "%s | %x | %y.0c",
+                content:    "%s | %x | %y",
+                stringFormat: {
+                    yFormat: formatGW2Money
+                },
                 dateFormat: "%Y-%m-%d %H:%S"
             },
             series: {
@@ -34,29 +64,7 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
                 zoomRange:   false,
                 panRange:    false,
                 minTickSize: 1,
-                tickFormatter: function(copper) {
-                    var string = "";
-
-                    var gold = Math.floor(copper / 10000);
-                    if (gold) {
-                        copper = copper % (gold * 10000);
-                        string += gold + "g ";
-                    }
-
-                    var silver = Math.floor(copper / 100);
-                    if (silver) {
-                        copper = copper % (silver * 100);
-                        if (silver) string += silver + "s ";
-                    }
-
-                    if (copper) string += copper + "c ";
-
-                    if (!string) {
-                        return copper + "c";
-                    } else {
-                        return string;
-                    }
-                }
+                tickFormatter: formatGW2Money
             },
             zoom: {
                 interactive: true
