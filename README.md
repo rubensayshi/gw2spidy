@@ -40,6 +40,7 @@ If you want to run the code that spiders through the trade market then you'll ne
 
 ### Memcache
 Using memcached daemon and PHP Memcache lib to easily cache some stuff in memory (item and type data).
+However, everything will work fine without memcached, if you have memcached installed but don't want the project to use it then define MEMCACHED_DISABLED in your config.inc.php and set it to true.
 
 ### Redis
 The spidering code uses a custom brew queue and some custom brew system to make sure we don't do more then x amount of requests.

@@ -16,7 +16,12 @@ class CacheHandler extends Memcache implements MemcacheReplacement
     static public function getInstance($key) {
         if (!isset(static::$instances[$key])) {
             static::$instances[$key] = new static($key);
-            static::$instances[$key]->connect('localhost');
+
+            // don't connect if MEMCACHED_DISABLED is defined and true
+            // unconnected memcache instance will not throw errors when we call the methods but it won't store anything either ;)
+            if (!(defined('MEMCACHED_DISABLED') && MEMCACHED_DISABLED)) {
+                static::$instances[$key]->connect('localhost');
+            }
         }
 
         return static::$instances[$key];
