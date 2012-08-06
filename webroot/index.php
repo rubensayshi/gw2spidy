@@ -48,9 +48,7 @@ $app->get("/", function() use($app) {
  * ----------------------
  */
 $app->get("/types", function() use($app) {
-    $types = ItemTypeQuery::create()
-    ->orderByTitle()
-    ->find();
+    $types = ItemTypeQuery::getAllTypes();
 
     return $app['twig']->render('types.html.twig', array(
         'types' => $types,

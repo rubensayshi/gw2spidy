@@ -38,6 +38,9 @@ On the PHP side of things I'm using PropelORM, thanks to that you could probally
 The project will work fine with both Apache or Nginx (I actually run apache on my dev machine and nginx in production), you can find example configs in the `docs` folder of this project.
 If you want to run the code that spiders through the trade market then you'll need command line access, if you just want to run the frontend code (and get a database dump from me) then you can live without ;)
 
+### Memcache
+Using memcached daemon and PHP Memcache lib to easily cache some stuff in memory (item and type data).
+
 ### Redis
 The spidering code uses a custom brew queue and some custom brew system to make sure we don't do more then x amount of requests.
 Both the queue and the slots are build using Redis (Predis library is already included in the `vendor` folder).

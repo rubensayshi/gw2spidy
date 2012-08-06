@@ -9,17 +9,17 @@ class MemcacheInstancePool extends CacheHandler
     const EXPIRES = 3600;
 
     public function addInstanceToPool($obj, $key) {
-        $this->set($this->generateKey($key), $obj, MEMCACHE_COMPRESSED, self::EXPIRES);
+        $this->set($key, $obj, MEMCACHE_COMPRESSED, self::EXPIRES);
     }
 
     public function getInstanceFromPool($key) {
-        $obj = $this->get($this->generateKey($key));
+        $obj = $this->get($key);
 
         return $obj ?: null;
     }
 
     public function removeInstanceFromPool($key) {
-        $this->delete($this->generateKey($key));
+        $this->delete($key);
     }
 
     public function clearInstancePool() {
