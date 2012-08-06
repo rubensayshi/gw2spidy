@@ -17,6 +17,12 @@
 		tooltipOpts: {
 			content: "%s | X: %x | Y: %y.2", //%s -> series label, %x -> X value, %y -> Y value, %x.2 -> precision of X value, %p -> percent
 			dateFormat: "%y-%0m-%0d",
+			stringFormat: {
+				percentFormat: null,
+				seriesFormat: null,
+				xFormat: null,
+				yFormat: null
+			},
 			shifts: {
 				x: 10,
 				y: 20
@@ -84,10 +90,10 @@
 					var tipText;
 
 					if(opts.xaxis.mode === "time" || opts.xaxes[0].mode === "time") {
-						tipText = stringFormat(to.content, item, timestampToDate);
+						tipText = stringFormat(to.content, to.stringFormat, item, timestampToDate);
 					}
 					else {
-						tipText = stringFormat(to.content, item);						
+						tipText = stringFormat(to.content, to.stringFormat, item);						
 					}
 					
 					$tip.html( tipText ).css({left: tipPosition.x + to.shifts.x, top: tipPosition.y + to.shifts.y}).show();
@@ -100,8 +106,7 @@
 			eventHolder.mousemove(onMouseMove);
 		});
 		
-		var stringFormat = function(content, item, fnct) {
-		
+		var stringFormat = function(content, stringFormat, item, fnct) {
 			var percentPattern = /%p\.{0,1}(\d{0,})/;
 			var seriesPattern = /%s/;
 			var xPattern = /%x\.{0,1}(\d{0,})/;
@@ -109,22 +114,36 @@
 			
 			//percent match
 			if( typeof (item.series.percent) !== 'undefined' ) {
-				content = adjustValPrecision(percentPattern, content, item.series.percent);
+				if (stringFormat.percentFormat && typeof(stringFormat.percentFormat) === 'function') {
+					content = content.replace(percentPattern, stringFormat.seriesFormat(item.series.percent));
+				} else {
+					content = adjustValPrecision(percentPattern, content, item.series.percent);
+				}
 			}
 			//series match
 			if( typeof(item.series.label) !== 'undefined' ) {
-				content = content.replace(seriesPattern, item.series.label);
+				if (stringFormat.seriesFormat && typeof(stringFormat.seriesFormat) === 'function') {
+					content = content.replace(seriesPattern, stringFormat.seriesFormat(item.series.label));
+				} else {
+					content = adjustValPrecision(seriesPattern, content, item.series.label);
+				}
 			}
 			// xVal match
-			if( typeof(fnct) === 'function' ) {
-				content = content.replace(xPattern, fnct(item.series.data[item.dataIndex][0]) );
+			if (stringFormat.xFormat && typeof(stringFormat.xFormat) === 'function') {
+				content = content.replace(xPattern, stringFormat.xFormat(item.series.data[item.dataIndex][0]));
+			} else if( typeof(fnct) === 'function' ) {
+				content = content.replace(xPattern, fnct(item.series.data[item.dataIndex][0]));
 			}
 			else if( typeof item.series.data[item.dataIndex][0] === 'number' ) {
 				content = adjustValPrecision(xPattern, content, item.series.data[item.dataIndex][0]);
 			}
 			// yVal match
 			if( typeof item.series.data[item.dataIndex][1] === 'number' ) {
-				content = adjustValPrecision(yPattern, content, item.series.data[item.dataIndex][1]);
+				if (stringFormat.yFormat && typeof(stringFormat.yFormat) === 'function') {
+					content = content.replace(yPattern, stringFormat.yFormat(item.series.data[item.dataIndex][1]));
+				} else {
+					content = adjustValPrecision(yPattern, content, item.series.data[item.dataIndex][1]);
+				}
 			}
 
 			return content;
