@@ -138,7 +138,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
                 ->find();
 
     foreach ($listings as $listingEntry) {
-        $date = new DateTime("{$listingEntry['listing_date']} {$listingEntry['listing_time']} UTC");
+        $date = new DateTime("{$listingEntry['listingDate']} {$listingEntry['listingTime']} UTC");
 
         $listingEntry['min_unit_price'] = round($listingEntry['min_unit_price'], 2);
 
