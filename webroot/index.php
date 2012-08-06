@@ -129,93 +129,20 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
         'data'   => array(),
         'label'  => $item->getName(),
     );
-
-    ///*
-    $con   = Propel::getConnection();
-    $query = "
-    SELECT
-        listing_date,
-        listing_time,
-        SUM(unit_price * quantity) / SUM(quantity) as avgunitprice
-    FROM (
-        SELECT
-            item_id,
-            listing_date,
-            listing_time,
-            CAST(
-                SUBSTRING_INDEX(
-                    SUBSTRING_INDEX(
-                        GROUP_CONCAT(unit_price ORDER BY unit_price ASC),
-                    ',', value),
-                ',', -1)
-             AS UNSIGNED) AS unit_price,
-        CAST(
-            SUBSTRING_INDEX(
-                SUBSTRING_INDEX(
-                    GROUP_CONCAT(quantity ORDER BY unit_price ASC),
-                ',', value),
-            ',', -1)
-        AS UNSIGNED) AS quantity
-        FROM
-            listing, tinyint_asc
-        WHERE
-            item_id = :item_id
-        AND
-            tinyint_asc.value >= 1 AND tinyint_asc.value <= 10
-        GROUP BY
-            listing_date, listing_time, value
-    ) listing
-    GROUP BY
-        listing_date, listing_time
-    ORDER BY listing_date ASC, listing_time ASC
-    ";
-
-    $stmt = $con->prepare($query);
-    $stmt->bindValue(":item_id", $item->getDataId());
-    $stmt->execute();
-
-    $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    //*/
-
-    /*
-
     $listings = ListingQuery::create()
-                ->select(array('listing_date', 'listing_time'))
-                ->leftJoin('tinyint_asc')
-                ->withColumn("CAST( SUBSTRING_INDEX( SUBSTRING_INDEX( GROUP_CONCAT(unit_price ORDER BY unit_price ASC), ',', value), ',', -1) AS UNSIGNED)",
-                                    'unit_price')
-                ->withColumn("CAST( SUBSTRING_INDEX( SUBSTRING_INDEX( GROUP_CONCAT(quantity ORDER BY unit_price ASC), ',', value), ',', -1) AS UNSIGNED)",
-                                    'quantity')
-                ->where('tinyint_asc.value', 1, ListingQuery::GREATER_EQUAL)
-                ->where('tinyint_asc.value', 10, ListingQuery::LESS_EQUAL)
-                ->groupBy('listing_date')
-                ->groupBy('listing_time')
-                ->groupBy('tinyint_asc.value')
-                ->filterByItemId($item->getDataId());
-
-
-    var_dump($listings->find());
-    die();
-    //*/
-    /*
-    $res      = ListingQuery::create()
-                ->addSelectQuery($listing, 'last_10_listing')
-                ->find()
-
-    ->groupByItemId()
-    ->groupByListingDate()
-    ->groupByListingTime()
-    ->orderByListingDate('asc')
-    ->orderByListingTime('asc')
-    ->withColumn('SUM(unit_price * quantity) / SUM(quantity)', 'avgunitprice');
-    //*/
+                ->select(array('listingDate', 'listingTime'))
+                ->withColumn('MIN(unit_price)', 'min_unit_price')
+                ->groupBy('listingDate')
+                ->groupBy('listingTime')
+                ->filterByItemId($item->getDataId())
+                ->find();
 
     foreach ($res as $listingEntry) {
         $date = new DateTime("{$listingEntry['listing_date']} {$listingEntry['listing_time']} UTC");
 
-        $listingEntry['avgunitprice'] = round($listingEntry['avgunitprice'], 2);
+        $listingEntry['min_unit_price'] = round($listingEntry['min_unit_price'], 2);
 
-        $dataset['data'][] = array($date->getTimestamp()*1000, $listingEntry['avgunitprice']);
+        $dataset['data'][] = array($date->getTimestamp()*1000, $listingEntry['min_unit_price']);
     }
 
     $chart[] = $dataset;
