@@ -33,7 +33,30 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
             yaxis: {
                 zoomRange:   false,
                 panRange:    false,
-                minTickSize: 1
+                minTickSize: 1,
+                tickFormatter: function(copper) {
+                    var string = "";
+
+                    var gold = Math.floor(copper / 10000);
+                    if (gold) {
+                        copper = copper % (gold * 10000);
+                        string += gold + "g ";
+                    }
+
+                    var silver = Math.floor(copper / 100);
+                    if (silver) {
+                        copper = copper % (silver * 100);
+                        if (silver) string += silver + "s ";
+                    }
+
+                    if (copper) string += copper + "c ";
+
+                    if (!string) {
+                        return copper + "c";
+                    } else {
+                        return string;
+                    }
+                }
             },
             zoom: {
                 interactive: true
