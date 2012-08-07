@@ -44,7 +44,7 @@ class ItemListingsDBWorker implements Worker {
     public static function enqueueWorker($item) {
         $queueItem = new WorkerQueueItem();
         $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\ItemListingsDBWorker");
-        $queueItem->setPriority(WorkerQueueItem::PRIORITY_LISTINGSDB);
+        // $queueItem->setPriority(WorkerQueueItem::PRIORITY_LISTINGSDB);
         $queueItem->setData($item);
 
         WorkerQueueManager::getInstance()->enqueue($queueItem);

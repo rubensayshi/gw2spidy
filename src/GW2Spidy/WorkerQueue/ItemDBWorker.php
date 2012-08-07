@@ -56,7 +56,7 @@ class ItemDBWorker implements Worker {
     public static function enqueueWorker($type, $subtype, $offset = 0, $full = true) {
         $queueItem = new WorkerQueueItem();
         $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\ItemDBWorker");
-        $queueItem->setPriority(WorkerQueueItem::PRIORITY_ITEMDB);
+        // $queueItem->setPriority(WorkerQueueItem::PRIORITY_ITEMDB);
         $queueItem->setData(array(
             'type'    => $type,
             'subtype' => $subtype,

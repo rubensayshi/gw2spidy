@@ -63,6 +63,7 @@ class ItemTypeDBWorker implements Worker {
     public static function enqueueWorker() {
         $queueItem = new WorkerQueueItem();
         $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\ItemTypeDBWorker");
+        // $queueItem->setPriority(WorkerQueueItem::PRIORITY_TYPEDB);
 
         WorkerQueueManager::getInstance()->enqueue($queueItem);
 

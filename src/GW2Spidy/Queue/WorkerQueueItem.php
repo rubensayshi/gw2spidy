@@ -15,7 +15,6 @@ class WorkerQueueItem extends RedisQueueItem {
     const PRIORITY_VERY_LOW   = 0;
 
     protected $worker;
-    protected $priority;
 
     public function setWorker($worker) {
         $this->worker = $worker;
@@ -25,16 +24,6 @@ class WorkerQueueItem extends RedisQueueItem {
 
     public function getWorker() {
         return $this->worker;
-    }
-
-    public function setPriority($priority) {
-        $this->priority = $priority;
-
-        return $this;
-    }
-
-    public function getPriority() {
-        return $this->priority;
     }
 
 }
