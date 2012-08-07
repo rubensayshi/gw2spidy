@@ -68,7 +68,7 @@ class TradeMarket {
             $json = json_decode($matches[1], true);
             return $json['data'];
         } else {
-            throw new Exception("Failed to extract GW2.market JSON from HTML");
+            throw new \Exception("Failed to extract GW2.market JSON from HTML");
         }
     }
 
