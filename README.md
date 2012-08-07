@@ -53,6 +53,9 @@ Just some PHP libs, already included in the `vendor` folder.
 ### jQuery / Flot / Twitter Bootstrap
 Just some HTML / JS / CSS libs, already included in `webroot/assets/vendor` folder.
 
+### You will need a pear library Log
+pear install Log
+
 RequestSlots
 ------------
 ArenaNet is okay with me doing this, but nonetheless I want to limit the amount of requests I'm shooting at their website or at least spread them out a bit.
