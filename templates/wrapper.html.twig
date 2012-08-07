@@ -73,9 +73,47 @@
                 <span class="pull-right">
                     <small>rending page took {{ app.time | number_format(5) }}</small>
                 </span>
+                <span class="pull-right" title="&copy; 2011 ArenaNet, Inc. All rights reserved. NCsoft, the interlocking NC logo, ArenaNet, Arena.net, Guild Wars, Guild Wars Factions, Factions, Guild Wars Nightfall, Nightfall, Guild Wars: Eye of the North, Guild Wars Eye of the North, Eye of the North, Guild Wars 2, and all associated logos and designs are trademarks or registered trademarks of NCsoft Corporation. All other trademarks are the property of their respective owners.">&copy; 2011 ArenaNet, Inc. All rights reserved.</span>
                 <span>this is a <a href="https://github.com/rubensayshi/gw2spidy">open source project</a> by <a href="http://www.guildwars2guru.com/user/39936-drakie/">Drakie</a> / <a href="https://github.com/rubensayshi">rubensayshi</a></span>
         </div>
     </div>
+
+    <script type="text/javascript">
+        /*
+         * set a random wallpaper (from the guildwars website)
+         *  there's a semi-transparent div over it with default 0.8 opacity,
+         *  the 2nd value for each entry can be an altered opacity
+         */
+        $(window).ready(function() {
+            var images = [
+                // some black and white wallpapers
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GW2_GhostsOfAscalonWallpaper-1920x1200.jpg", 0.4],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GuildWars2-12-1920x1200.jpg", null],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GuildWars2-10-1920x1200.jpg", null],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GuildWars2-04-1920x1200.jpg", null],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GW2_GuardianWallpaper01-1920x1200.jpg", null],
+
+                // some color wallpapers
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/HumanBonusWP02-1920x1200.jpg", null],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GW2Warrior02-1920x1200.jpg", null],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GW2_RangerWallpaper02-1920x1200.jpg", null],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GW2_HumanNecromancer-1920x1200.jpg", null],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GuildWars2-13-1920x1200.jpg", null],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GuildWars2-07-1920x1200.jpg", null],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GuildWars2-05-1920x1200.jpg", null],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GuildWars2-11-1920x1200.jpg", null]
+            ];
+
+
+            var random = Math.floor(Math.random() * images.length);
+
+            image   = images[random][0];
+            opacity = images[random][1] || 0.8;
+
+            $(document.body).css('background', "url(" + image + ")");
+            $('.container-fluid').each(function(k, o) { o.style.backgroundColor = "rgba(255, 255, 255, " + opacity + ")"; });
+    });
+    </script>
 
     <script type="text/javascript">
     var _gaq = _gaq || [];
