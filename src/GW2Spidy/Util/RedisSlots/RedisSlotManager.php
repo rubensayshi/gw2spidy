@@ -28,13 +28,72 @@ abstract class RedisSlotManager {
         return static::$instance;
     }
 
+    /**
+     * generate an MD5 hash based on processID, time and the provided $i
+     *  to be used as the 'name' of a slot
+     *
+     * @param  int       $i
+     * @return string
+     */
+    static public function getSlotName($i) {
+        return md5(getmypid() . "::" . time() . "" . $i);
+    }
+
+    /**
+     * setup the required amount of slots
+     *  first truncate any old data
+     *
+     * @param  int        $slots        defaults to the configured amount
+     */
     public function setup($slots = null) {
         $slots = $slots ?: $this->getSlots();
 
         $this->client->del($this->getSlotsQueueName());
 
         for ($i = 1; $i <= $slots; $i++) {
-            $this->client->zadd($this->getSlotsQueueName(), 0, $i);
+            $this->client->zadd($this->getSlotsQueueName(), 0, self::getSlotName($i));
+        }
+    }
+
+
+    /**
+     * check if we still have the required amount of slots
+     *  if we have to many or to few we correct that
+     *
+     * counting is done within a transaction
+     *  since we retrieve slots by popping them off the set, without this we'd always have to few ;)
+     *
+     * @param  int        $slots        defaults to the configured amount
+     */
+    public function check($slots = null) {
+        $slots    = $slots ?: $this->getSlots();
+        $queueKey = $this->getSlotsQueueName();
+
+        // set a watch on the $queueKey
+        $this->client->watch($queueKey);
+
+        // start transaction
+        $tx = $this->client->multi();
+
+        // removed the slot from the $queueKey
+        $this->client->zcard($queueKey);
+
+        // execute the transaction
+        $results = $this->client->exec();
+
+        if ($results[0] > $slots) {
+            $rem = $results[0] - $slots;
+            echo "we need to remove [{$rem}] slots \n";
+
+            $this->client->zremrangebyrank($queueKey, 0, $rem-1);
+        } else if ($results[0] < $slots) {
+            $add = $slots - $results[0];
+
+            echo "we need to add [{$add}] slots \n";
+
+            for ($i = 0; $i < $add; $i++) {
+                $this->client->zadd($queueKey, 0, self::getSlotName($i));
+            }
         }
     }
 
