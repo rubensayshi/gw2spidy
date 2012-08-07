@@ -83,6 +83,9 @@ while ($run < $max) {
     } catch (Exception $e) {
         $log = ob_get_clean();
         echo " !! worker process threw exception !! \n\n\n --------------- \n\n\n {$log} \n\n\n --------------- \n\n\n {$e} ";
+
+        echo "error, sleeping [60] ... \n";
+        sleep(60);
     }
 
     echo "done [".(microtime(true) - $begin)."] \n";

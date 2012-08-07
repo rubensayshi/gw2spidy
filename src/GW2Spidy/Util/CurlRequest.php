@@ -2,6 +2,10 @@
 
 namespace GW2Spidy\Util;
 
+<<<<<<< HEAD
+=======
+use \Exception;
+>>>>>>> 29c94409f9989901c80c16fe1158b546e9779978
 
 class CurlRequest {
     protected $url;
