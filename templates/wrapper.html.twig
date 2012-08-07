@@ -35,8 +35,26 @@
                             <a href="/">Home</a>
                         </li>
                         <li class="divider-vertical"></li>
-                        <li {% if app.isBrowseActive %}class="active"{% endif %}>
-                            <a href="/types">Browse</a>
+                        <li class="dropdown {% if app.isBrowseActive %}active{% endif %}">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="/types" data-target="#">Browse <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                {% for type in app.displayTypes %}
+                                    {% if type.title %}
+                                        <li class="dropdown">
+                                            <a href="/type/{{ type.id }}">{{ type }} {% if not type.displaySubTypes.isEmpty %}<i class="icon-arrow-right"></i>{% endif %}</a>
+                                            {% if not type.displaySubTypes.isEmpty %}
+                                                <ul class="dropdown-menu sub-menu">
+                                                    {% for subtype in type.displaySubTypes %}
+                                                        {% if subtype.title %}
+                                                        <li><a href="/type/{{ type.id }}/{{ subtype.id }}">{{ subtype }}</a></li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
                         </li>
                         <li class="divider-vertical"></li>
                         <form class="navbar-search" action="/search" method="POST">
