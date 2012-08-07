@@ -2,10 +2,7 @@
 
 namespace GW2Spidy\Util;
 
-<<<<<<< HEAD
-=======
 use \Exception;
->>>>>>> 29c94409f9989901c80c16fe1158b546e9779978
 
 class CurlRequest {
     protected $url;
@@ -55,7 +52,7 @@ class CurlRequest {
 
     public function exec() {
         if (!is_null($this->result)) {
-            throw new \Exception("Can't reuse CurlRequest");
+            throw new Exception("Can't reuse CurlRequest");
         }
 
         $ch = curl_init($this->url);
@@ -78,7 +75,7 @@ class CurlRequest {
         curl_close($ch);
 
         if (!$this->result) {
-            throw new \Exception("CurlRequest failed");
+            throw new Exception("CurlRequest failed");
         }
 
         return $this;
