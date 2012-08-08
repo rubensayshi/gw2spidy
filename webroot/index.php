@@ -25,7 +25,10 @@ $toInt = function($val) {
 };
 
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => dirname(__FILE__) . '/../templates',
+    'twig.path'    => dirname(__FILE__) . '/../templates',
+    'twig.options' => array(
+        'cache' => dirname(__FILE__) . '/../tmp/twig-cache',
+    ),
 ));
 
 /**
