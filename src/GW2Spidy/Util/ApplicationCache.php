@@ -8,7 +8,7 @@ class ApplicationCache extends CacheHandler {
     /**
      * @return ApplicationCache
      */
-    static public function getInstance() {
+    static public function getInstance($key = null) {
         return parent::getInstance(self::$applicationCacheKey);
     }
 
