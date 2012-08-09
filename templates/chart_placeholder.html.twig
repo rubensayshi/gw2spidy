@@ -66,12 +66,11 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
                 tickFormatter: formatGW2Money
             },
             zoom: {
-                // interactive: true
+                interactive: true
             },
             pan: {
-                // interactive: true
-            },
-            selection: { mode: "x" }
+                interactive: true
+            }
         };
         var xaxis_default = null;
 
