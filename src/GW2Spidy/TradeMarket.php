@@ -50,8 +50,12 @@ class TradeMarket {
         return null;
     }
 
-    public function getListingsById($id, $type = static::LISTING_TYPE_SELL) {
-        $curl = CurlRequest::newInstance("https://tradingpost-live.ncplatform.net/ws/listings.json?id={$id}&type={$type}")
+    public function getListingsById($id, $type = self::LISTING_TYPE_SELL) {
+        // for now we can query for 'all' and get both sell and buy in the return
+        //  should it stop working like that we can just query for what we want
+        $queryType = 'all';
+
+        $curl = CurlRequest::newInstance("https://tradingpost-live.ncplatform.net/ws/listings.json?id={$id}&type={$queryType}")
              ->exec()
              ;
 
