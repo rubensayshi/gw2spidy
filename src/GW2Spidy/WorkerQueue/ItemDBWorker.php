@@ -32,7 +32,7 @@ class ItemDBWorker implements Worker {
                 $item = ItemQuery::create()->findPK($itemData['data_id']);
 
                 if ($item) {
-                    if ($this->almostEqualCompare($itemData['name'], $item->getName())) {
+                    if (\Functions::almostEqualCompare($itemData['name'], $item->getName())) {
                         $item->fromArray($itemData);
                         $item->save();
                     } else {
