@@ -33,7 +33,7 @@ class ItemDBWorker implements Worker {
 
                 if ($item) {
                     if ($item->getName() != $itemData['name']) {
-                        throw new \Exception("Title for ID no longer matches! [{$itemData['name']}] [{$itemData['id']}]");
+                        throw new \Exception("Title for ID no longer matches! [json::{$itemData['id']}::{$itemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}]");
                     }
                 } else {
                     $item = new Item();

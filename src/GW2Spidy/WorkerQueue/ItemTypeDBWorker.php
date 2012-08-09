@@ -28,7 +28,7 @@ class ItemTypeDBWorker implements Worker {
 
             if ($type) {
                 if ($type->getTitle() != $mainTypeData['name']) {
-                    throw new \Exception("Title for ID no longer matches! maintype [{$mainTypeData['name']}] [{$mainTypeData['id']}]");
+                    throw new \Exception("Title for ID no longer matches! maintype [json::{$mainTypeData['id']}::{$mainTypeData['name']}] vs [db::{$type->getDataId()}::{$item->getTitle()}]");
                 }
             } else {
                 $type = new ItemType();
@@ -46,7 +46,7 @@ class ItemTypeDBWorker implements Worker {
 
                 if ($subtype) {
                     if ($subtype->getTitle() != $subTypeData['name']) {
-                        throw new \Exception("Title for ID no longer matches! subtype [{$subTypeData['name']}] [{$subTypeData['id']}]");
+                        throw new \Exception("Title for ID no longer matches! subtype [json::{$subTypeData['id']}::{$subTypeData['name']}] vs [db::{$subtype->getDataId()}::{$subtype->getTitle()}]");
                     }
                     if (!$subtype->getMainType()->equals($type)) {
                         throw new \Exception("Maintype no longer matches! [{$subTypeData['name']}] [{$subTypeData['id']}]");
