@@ -1,7 +1,16 @@
 <div id="placeholder" style="width: {% if width is defined %}width{% else %}950px{% endif %}; height: 400px;"></div>
-<p>
-You can zoom into the chart by dragging, double clicking or using your scrollwheel. <br />
-</p>
+<div id="normal_zoom_mode">
+    <p>You can zoom into the chart by dragging, double clicking or using your scrollwheel. <br />
+    </p>
+    <p>You can switch to expertimental zooming mode; <button class="btn">clicky!</button>
+    </p>
+</div>
+<div id="experimental_zoom_mode" style="display: none;">
+    <p> ou can zoom into the chart by dragging a selection of the area you want to zoom into. <br />
+    </p>
+    <p>You can switch to normal zooming mode; <button class="btn">clicky!</button>
+    </p>
+</div>
 
 <script type="text/javascript">
 var formatGW2Money = function(copper) {
@@ -30,73 +39,178 @@ var formatGW2Money = function(copper) {
     }
 };
 
-$.ajax("{{ "/chart/" ~ item.dataId }}", {
-    success: function(chartdata) {
-        var chartdata   = $.parseJSON(chartdata);
-        var placeholder = $("#placeholder");
-        var plot;
-        var options     = {
-            grid: {
-                hoverable: true,
+var initchart_normal = function(chartdata, callback) {
+    var chartdata   = $.parseJSON(chartdata);
+    var placeholder = $("#placeholder");
+    var plot;
+    var options     = {
+        grid: {
+            hoverable: true,
+        },
+        tooltip:  true,
+        tooltipOpts: {
+            content:    "%s | %x | %y",
+            stringFormat: {
+                yFormat: formatGW2Money
             },
-            tooltip:  true,
-            tooltipOpts: {
-                content:    "%s | %x | %y",
-                stringFormat: {
-                    yFormat: formatGW2Money
-                },
-                dateFormat: "%Y-%m-%d %H:%S"
-            },
-            series: {
-                lines:  { show: true },
-                points: { show: true }
-            },
-            xaxis: {
-                mode:            "time",
-                timeformat:      "%d-%b",
-                twelveHourClock: false,
-                zoomRange:       null,
-                panRange:        null,
-                minTickSize:     [1, "day"]
-            },
-            yaxis: {
-                zoomRange:   false,
-                panRange:    false,
-                minTickSize: 1,
-                tickFormatter: formatGW2Money
-            },
-            zoom: {
-                interactive: true
-            },
-            pan: {
-                interactive: true
-            }
-        };
-        var xaxis_default = null;
+            dateFormat: "%Y-%m-%d %H:%S"
+        },
+        series: {
+            lines:  { show: true },
+            points: { show: true }
+        },
+        xaxis: {
+            mode:            "time",
+            timeformat:      "%d-%b",
+            twelveHourClock: false,
+            zoomRange:       null,
+            panRange:        null,
+            minTickSize:     [1, "day"]
+        },
+        yaxis: {
+            zoomRange:   false,
+            panRange:    false,
+            minTickSize: 1,
+            tickFormatter: formatGW2Money
+        },
+        zoom: {
+            interactive: true
+        },
+        pan: {
+            interactive: true
+        }
+    };
+    var xaxis_default = null;
 
-        placeholder.bind('plotzoom', function() {
-            plot.pan({left: 0, top: 0});
+    placeholder.bind('plotzoom', function() {
+        plot.pan({left: 0, top: 0});
+    });
+
+    var render = function(extraoptions) {
+        var extraoptions  = extraoptions || {};
+        var renderoptions = {};
+        var first = chartdata[0]['data'][0][0];
+
+        renderoptions.xaxis = {};
+        // renderoptions.xaxis.zoomRange = [first, null];
+        renderoptions.xaxis.panRange  = [first, null];
+
+        plot = $.plot(placeholder, chartdata, $.extend(true, {}, options, renderoptions, extraoptions));
+
+        // add zoom out button
+        $('<div class="btn" style="right:20px; bottom:23px; position:absolute;">zoom out</div>').appendTo(placeholder).click(function (e) {
+            e.preventDefault();
+            plot.zoomOut();
         });
 
-        var render = function(extraoptions) {
-            var extraoptions  = extraoptions || {};
-            var renderoptions = {};
-            var first = chartdata[0]['data'][0][0];
-
-            renderoptions.xaxis = {};
-            // renderoptions.xaxis.zoomRange = [first, null];
-            renderoptions.xaxis.panRange  = [first, null];
-
-            plot = $.plot(placeholder, chartdata, $.extend(true, {}, options, renderoptions, extraoptions));
-
-            // add zoom out button
-            $('<div class="btn" style="right:20px; bottom:23px; position:absolute;">zoom out</div>').appendTo(placeholder).click(function (e) {
-                e.preventDefault();
-                plot.zoomOut();
-            });
-
-        }
-        render();
     }
+
+    render();
+
+    if (typeof(callback) == 'function') {
+        callback();
+    }
+};
+
+var initchart_selectzoom = function(chartdata, callback) {
+    var chartdata   = $.parseJSON(chartdata);
+    var placeholder = $("#placeholder");
+    var plot;
+    var options     = {
+        tooltip:  true,
+        tooltipOpts: {
+            content:    "%s | %x | %y",
+            stringFormat: {
+                yFormat: formatGW2Money
+            },
+            dateFormat: "%Y-%m-%d %H:%S"
+        },
+        series: {
+            lines:  { show: true },
+            points: { show: true }
+        },
+        xaxis: {
+            mode:            "time",
+            timeformat:      "%d-%b",
+            twelveHourClock: false,
+            minTickSize:     [1, "day"]
+        },
+        yaxis: {
+            minTickSize: 1,
+            tickFormatter: formatGW2Money
+        },
+        selection: { mode: "x" }
+    };
+    var xaxis_default = null;
+
+    placeholder.unbind();
+    placeholder.bind("plotselected", function (event, ranges) {
+        if (xaxis_default === null) {
+            xaxis_default = {
+                from: plot.getAxes().xaxis.datamin,
+                to:   plot.getAxes().xaxis.datamax
+            };
+        }
+
+        render({ xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to } });
+    });
+
+    var render = function(extraoptions) {
+        var extraoptions  = extraoptions || {};
+        var renderoptions = {};
+        var first = chartdata[0]['data'][0][0];
+
+        renderoptions.xaxis = {};
+        // renderoptions.xaxis.zoomRange = [first, null];
+        renderoptions.xaxis.panRange  = [first, null];
+
+        plot = $.plot(placeholder, chartdata, $.extend(true, {}, options, renderoptions, extraoptions));
+
+        // add zoom out button
+        $('<div class="btn" style="right:20px; bottom:23px; position:absolute;">zoom out</div>').appendTo(placeholder).click(function (e) {
+            e.preventDefault();
+
+            plot.clearSelection();
+            render({ xaxis: { min: xaxis_default.from, max: xaxis_default.to } });
+        });
+
+    }
+
+    render();
+
+    if (typeof(callback) == 'function') {
+        callback();
+    }
+};
+
+var initchart = initchart_normal;
+
+var fetchchart = function(callback) {
+    $.ajax("{{ "/chart/" ~ item.dataId }}", {
+        success: function(chartdata) {
+            initchart(chartdata, callback);
+        }
+    });
+}
+
+$("#normal_zoom_mode button").click(function() {
+    $("#normal_zoom_mode").hide();
+    $("#experimental_zoom_mode").show();
+
+    initchart = initchart_selectzoom;
+    fetchchart(function() {
+        alert('switched to experimental zoom mode!');
+    });
 });
+$("#experimental_zoom_mode button").click(function() {
+    $("#normal_zoom_mode").show();
+    $("#experimental_zoom_mode").hide();
+
+    initchart = initchart_normal;
+    fetchchart(function() {
+        alert('switched to normal zoom mode!');
+    });
+});
+
+fetchchart();
 </script>
