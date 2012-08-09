@@ -29,7 +29,7 @@ class ItemTypeDBWorker implements Worker {
             var_dump($type);
 
             if ($type) {
-                if ($p = Functions::almostEqualCompare($mainTypeData['name'], $type->getTitle())) {
+                if (($p = Functions::almostEqualCompare($mainTypeData['name'], $type->getTitle())) > 50) {
                     $type->setTitle($mainTypeData['name']);
                     $type->save();
 
@@ -51,7 +51,7 @@ class ItemTypeDBWorker implements Worker {
                 $subtype = ItemSubTypeQuery::create()->findPK(array($subTypeData['id'], $type->getId()));
 
                 if ($subtype) {
-                    if ($p = Functions::almostEqualCompare($mainTypeData['name'], $type->getTitle())) {
+                    if (($p = Functions::almostEqualCompare($mainTypeData['name'], $type->getTitle())) > 50) {
                         if (!$subtype->getMainType()->equals($type)) {
                             throw new \Exception("Maintype no longer matches! [{$subTypeData['name']}] [{$subTypeData['id']}]");
                         }
