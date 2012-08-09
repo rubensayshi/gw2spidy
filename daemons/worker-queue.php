@@ -79,7 +79,7 @@ while ($run < $max) {
         ob_start();
         $workers[$workerName]->work($queueItem);
 
-        ob_get_clean();
+        echo ob_get_clean();
     } catch (Exception $e) {
         $log = ob_get_clean();
         echo " !! worker process threw exception !! \n\n\n --------------- \n\n\n {$log} \n\n\n --------------- \n\n\n {$e} ";

@@ -29,12 +29,12 @@ class ItemTypeDBWorker implements Worker {
             var_dump($type);
 
             if ($type) {
-                if (Functions::almostEqualCompare($mainTypeData['name'], $type->getTitle())) {
+                if ($p = Functions::almostEqualCompare($mainTypeData['name'], $type->getTitle())) {
                     $type->setTitle($mainTypeData['name']);
                     $type->save();
 
                 } else {
-                    throw new \Exception("Title for ID no longer matches! maintype [json::{$mainTypeData['id']}::{$mainTypeData['name']}] vs [db::{$type->getDataId()}::{$item->getTitle()}]");
+                    throw new \Exception("Title for ID no longer matches! maintype [{$p}] [json::{$mainTypeData['id']}::{$mainTypeData['name']}] vs [db::{$type->getId()}::{$item->getTitle()}]");
                 }
             } else {
                 $type = new ItemType();
@@ -51,7 +51,7 @@ class ItemTypeDBWorker implements Worker {
                 $subtype = ItemSubTypeQuery::create()->findPK(array($subTypeData['id'], $type->getId()));
 
                 if ($subtype) {
-                    if (Functions::almostEqualCompare($mainTypeData['name'], $type->getTitle())) {
+                    if ($p = Functions::almostEqualCompare($mainTypeData['name'], $type->getTitle())) {
                         if (!$subtype->getMainType()->equals($type)) {
                             throw new \Exception("Maintype no longer matches! [{$subTypeData['name']}] [{$subTypeData['id']}]");
                         }
@@ -60,7 +60,7 @@ class ItemTypeDBWorker implements Worker {
                         $subtype->save();
 
                     } else {
-                        throw new \Exception("Title for ID no longer matches! subtype [json::{$subTypeData['id']}::{$subTypeData['name']}] vs [db::{$subtype->getDataId()}::{$subtype->getTitle()}]");
+                        throw new \Exception("Title for ID no longer matches! subtype [{$p}] [json::{$subTypeData['id']}::{$subTypeData['name']}] vs [db::{$subtype->getId()}::{$subtype->getTitle()}]");
                     }
                 } else {
                     $subtype = new ItemSubType();
