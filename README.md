@@ -54,7 +54,7 @@ Just some PHP libs, already included in the `vendor` folder.
 Just some HTML / JS / CSS libs, already included in `webroot/assets/vendor` folder.
 
 ### yui-compressor
-You will need to install yui-compressor and then run ```make``` in the js/vendor/flot directory to minify the javascript
+You will need to install yui-compressor and then run ```make``` in the ```webroot/assets/js/vendor/flot``` directory to minify the javascript
 
 ### You will need a pear library Log
 pear install Log
