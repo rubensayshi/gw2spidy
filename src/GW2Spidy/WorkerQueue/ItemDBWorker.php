@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\WorkerQueue;
 
+use GW2Spidy\Util\Functions;
+
 use GW2Spidy\Queue\WorkerQueueManager;
 use GW2Spidy\Queue\WorkerQueueItem;
 
@@ -32,7 +34,7 @@ class ItemDBWorker implements Worker {
                 $item = ItemQuery::create()->findPK($itemData['data_id']);
 
                 if ($item) {
-                    if (\Functions::almostEqualCompare($itemData['name'], $item->getName())) {
+                    if (Functions::almostEqualCompare($itemData['name'], $item->getName())) {
                         $item->fromArray($itemData);
                         $item->save();
                     } else {

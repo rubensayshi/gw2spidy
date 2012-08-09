@@ -1,5 +1,7 @@
 <?php
 
+namespace GW2Spidy\Util;
+
 abstract class Functions {
     public static function almostEqualCompare($left, $right) {
         return static::cleanUpStringForCompare($left) == static::cleanUpStringForCompare($right);

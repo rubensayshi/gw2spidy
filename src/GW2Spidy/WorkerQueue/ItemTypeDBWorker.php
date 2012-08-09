@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\WorkerQueue;
 
+use GW2Spidy\Util\Functions;
+
 use GW2Spidy\Queue\WorkerQueueManager;
 use GW2Spidy\Queue\WorkerQueueItem;
 
