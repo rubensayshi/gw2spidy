@@ -5,6 +5,7 @@ namespace GW2Spidy\WorkerQueue;
 use GW2Spidy\Queue\WorkerQueueManager;
 use GW2Spidy\Queue\WorkerQueueItem;
 
+use GW2Spidy\DB\BuyListing;
 use GW2Spidy\DB\SellListing;
 
 use GW2Spidy\DB\Item;
@@ -24,11 +25,22 @@ class ItemListingsDBWorker implements Worker {
     public function buildListingsDB(Item $item) {
         $now      = new \DateTime();
         $market   = TradeMarket::getInstance();
-        $listings = $market->getListingsById($item->getDataId());
 
-        if ($listings) {
+        if ($listings = $market->getListingsById($item->getDataId(), TradeMarket::LISTING_TYPE_SELL)) {
             foreach ($listings as $listingData) {
                 $listing = new SellListing();
+                $listing->fromArray($listingData, \BasePeer::TYPE_FIELDNAME);
+                $listing->setItem($item);
+                $listing->setListingDate($now);
+                $listing->setListingTime($now);
+
+                $listing->save();
+            }
+        }
+
+        if ($listings = $market->getListingsById($item->getDataId(), TradeMarket::LISTING_TYPE_BUY)) {
+            foreach ($listings as $listingData) {
+                $listing = new BuyListing();
                 $listing->fromArray($listingData, \BasePeer::TYPE_FIELDNAME);
                 $listing->setItem($item);
                 $listing->setListingDate($now);

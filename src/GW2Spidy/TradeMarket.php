@@ -2,6 +2,8 @@
 
 namespace GW2Spidy;
 
+use GW2Spidy\Util\CacheHandler;
+
 use GW2Spidy\DB\ItemSubType;
 
 use GW2Spidy\DB\ItemType;
@@ -14,7 +16,10 @@ class TradeMarket {
 
     protected static $instance;
 
+    protected $cache;
+
     public function __construct() {
+        $this->cache = CacheHandler::getInstance('TradeMarket');
         $this->doLogin();
     }
 
@@ -54,14 +59,23 @@ class TradeMarket {
         // for now we can query for 'all' and get both sell and buy in the return
         //  should it stop working like that we can just query for what we want
         $queryType = 'all';
+        $cacheKey  = "listings::{$id}";
 
-        $curl = CurlRequest::newInstance("https://tradingpost-live.ncplatform.net/ws/listings.json?id={$id}&type={$queryType}")
-             ->exec()
-             ;
 
-        $data = json_decode($curl->getResult(), true);
 
-        return isset($data['listings'][$type]) ? $data['listings'][$type] : null;
+        if (!($listings = $this->cache->get($cacheKey))) {
+            $curl = CurlRequest::newInstance("https://tradingpost-live.ncplatform.net/ws/listings.json?id={$id}&type={$queryType}")
+                 ->exec()
+                 ;
+
+            $data = json_decode($curl->getResult(), true);
+
+            $listings = isset($data['listings'][$type]) ? $data['listings'][$type] : 'null';
+
+            $this->cache->set($cacheKey, $listings, MEMCACHE_COMPRESSED, 10);
+        }
+
+        return $listings == 'null' ? array() : $listings;
     }
 
     public function getMarketData() {
