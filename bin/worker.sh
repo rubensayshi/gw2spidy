@@ -14,5 +14,5 @@ fi
 
 while [[ true ]]; do 
     echo "restart"; 
-    php ${ROOT}daemons/worker-queue.php &>> /var/log/gw2spidy/worker-queue.${NUMBER}.log; 
+    php ${ROOT}/daemons/worker-queue.php &>> /var/log/gw2spidy/worker-queue.${NUMBER}.log; 
 done
