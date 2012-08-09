@@ -37,6 +37,10 @@ abstract class RedisQueueManager {
         return ($queueItem instanceof RedisQueueItem) ? $queueItem : null;
     }
 
+    public function purge() {
+        $this->client->del($this->getQueueName());
+    }
+
     public function getLength() {
         return $this->client->llen($this->getQueueName());
     }

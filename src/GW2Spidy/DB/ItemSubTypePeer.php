@@ -34,7 +34,7 @@ class ItemSubTypePeer extends BaseItemSubTypePeer {
     public static function addInstanceToPool($obj, $key = null) {
         if (Propel::isInstancePoolingEnabled()) {
             if ($key === null) {
-                $key = (string) $obj->getDataId();
+                $key = (string) $obj->getId();
             } // if key === null
 
             if ($memPool = static::getMemPool()) {

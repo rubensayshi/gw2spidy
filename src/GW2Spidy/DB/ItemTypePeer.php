@@ -23,7 +23,7 @@ class ItemTypePeer extends BaseItemTypePeer {
      * @return MemcacheInstancePool
      */
     protected static function getMemPool() {
-        if (is_null(self::$memPool)) {
+        if (is_null(static::$memPool)) {
             static::$memPool = MemcacheInstancePool::getInstance(static::DATABASE_NAME . "::" . static::TABLE_NAME);
         }
 
@@ -33,7 +33,7 @@ class ItemTypePeer extends BaseItemTypePeer {
     public static function addInstanceToPool($obj, $key = null) {
         if (Propel::isInstancePoolingEnabled()) {
             if ($key === null) {
-                $key = (string) $obj->getDataId();
+                $key = (string) $obj->getId();
             } // if key === null
 
             if ($memPool = static::getMemPool()) {

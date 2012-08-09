@@ -24,11 +24,11 @@ class ItemPeer extends BaseItemPeer {
      * @return MemcacheInstancePool
      */
     protected static function getMemPool() {
-        if (is_null(self::$memPool)) {
-            self::$memPool = MemcacheInstancePool::getInstance(self::DATABASE_NAME . "::" . self::TABLE_NAME);
+        if (is_null(static::$memPool)) {
+            static::$memPool = MemcacheInstancePool::getInstance(static::DATABASE_NAME . "::" . static::TABLE_NAME);
         }
 
-        return self::$memPool;
+        return static::$memPool;
     }
 
     public static function addInstanceToPool($obj, $key = null) {
@@ -37,7 +37,7 @@ class ItemPeer extends BaseItemPeer {
                 $key = (string) $obj->getDataId();
             } // if key === null
 
-            if ($memPool = self::getMemPool()) {
+            if ($memPool = static::getMemPool()) {
                 $memPool->addInstanceToPool($obj, $key);
             }
 
@@ -58,7 +58,7 @@ class ItemPeer extends BaseItemPeer {
                 throw $e;
             }
 
-            if ($memPool = self::getMemPool()) {
+            if ($memPool = static::getMemPool()) {
                 $memPool->removeInstanceFromPool($key);
             }
 
@@ -73,7 +73,7 @@ class ItemPeer extends BaseItemPeer {
                 return ItemPeer::$instances[$key];
             }
 
-            if ($memPool = self::getMemPool()) {
+            if ($memPool = static::getMemPool()) {
                 return $memPool->getInstanceFromPool($key);
             }
         }
@@ -83,7 +83,7 @@ class ItemPeer extends BaseItemPeer {
 
     public static function clearInstancePool()
     {
-        if ($memPool = self::getMemPool()) {
+        if ($memPool = static::getMemPool()) {
             $memPool->clearInstancePool();
         }
 

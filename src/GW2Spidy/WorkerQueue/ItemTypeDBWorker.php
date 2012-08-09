@@ -24,9 +24,11 @@ class ItemTypeDBWorker implements Worker {
 
             $type = ItemTypeQuery::create()->findPK($mainTypeData['id']);
 
+            var_dump($type);
+
             if ($type) {
                 if ($type->getTitle() != $mainTypeData['name']) {
-                    throw new \Exception("Title for ID no longer matches! [{$mainTypeData['name']}] [{$mainTypeData['id']}]");
+                    throw new \Exception("Title for ID no longer matches! maintype [{$mainTypeData['name']}] [{$mainTypeData['id']}]");
                 }
             } else {
                 $type = new ItemType();
@@ -44,7 +46,7 @@ class ItemTypeDBWorker implements Worker {
 
                 if ($subtype) {
                     if ($subtype->getTitle() != $subTypeData['name']) {
-                        throw new \Exception("Title for ID no longer matches! [{$subTypeData['name']}] [{$subTypeData['id']}]");
+                        throw new \Exception("Title for ID no longer matches! subtype [{$subTypeData['name']}] [{$subTypeData['id']}]");
                     }
                     if (!$subtype->getMainType()->equals($type)) {
                         throw new \Exception("Maintype no longer matches! [{$subTypeData['name']}] [{$subTypeData['id']}]");

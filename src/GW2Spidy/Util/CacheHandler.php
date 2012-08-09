@@ -56,4 +56,7 @@ class CacheHandler extends Memcache implements MemcacheReplacement
     public function set($key, $var, $flag = null, $expire = null) {
         return parent::set($this->generateKey($key), $var, $flag, $expire);
     }
+    public function purge() {
+        parent::flush();
+    }
 }

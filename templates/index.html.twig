@@ -33,6 +33,8 @@ For discussion, questions, etc please goto <a href="http://www.guildwars2guru.co
 {% endblock %}
 
 {% block sidebar %}
-    <h3>Just an example</h3>
-    {% include "item.html.twig" with {'item': featured, 'href': '/item/' ~ featured.dataId, width: '100%', 'included': true} %}
+    {% if featured %}
+        <h3>Just an example</h3>
+        {% include "item.html.twig" with {'item': featured, 'href': '/item/' ~ featured.dataId, width: '100%', 'included': true} %}
+    {% endif %}
 {% endblock %}
