@@ -34,7 +34,7 @@ class ItemTypeDBWorker implements Worker {
                     $type->save();
 
                 } else {
-                    throw new \Exception("Title for ID no longer matches! maintype [{$p}] [json::{$mainTypeData['id']}::{$mainTypeData['name']}] vs [db::{$type->getId()}::{$item->getTitle()}]");
+                    throw new \Exception("Title for ID no longer matches! maintype [{$p}] [json::{$mainTypeData['id']}::{$mainTypeData['name']}] vs [db::{$type->getId()}::{$type->getTitle()}]");
                 }
             } else {
                 $type = new ItemType();
