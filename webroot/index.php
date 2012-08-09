@@ -1,5 +1,6 @@
 <?php
 
+use GW2Spidy\DB\BuyListingQuery;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -128,11 +129,39 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
 
     $chart   = array();
 
+    /*----------------
+     *  SELL LISTINGS
+     *----------------*/
     $dataset = array(
         'data'   => array(),
-        'label'  => $item->getName(),
+        'label'  => "Sell Listings",
     );
     $listings = SellListingQuery::create()
+                ->select(array('listingDate', 'listingTime'))
+                ->withColumn('MIN(unit_price)', 'min_unit_price')
+                ->groupBy('listingDate')
+                ->groupBy('listingTime')
+                ->filterByItemId($item->getDataId())
+                ->find();
+
+    foreach ($listings as $listingEntry) {
+        $date = new DateTime("{$listingEntry['listingDate']} {$listingEntry['listingTime']} UTC");
+
+        $listingEntry['min_unit_price'] = round($listingEntry['min_unit_price'], 2);
+
+        $dataset['data'][] = array($date->getTimestamp()*1000, $listingEntry['min_unit_price']);
+    }
+
+    $chart[] = $dataset;
+
+    /*---------------
+     *  BUY LISTINGS
+     *---------------*/
+    $dataset = array(
+        'data'   => array(),
+        'label'  => "Buy Listings",
+    );
+    $listings = BuyListingQuery::create()
                 ->select(array('listingDate', 'listingTime'))
                 ->withColumn('MIN(unit_price)', 'min_unit_price')
                 ->groupBy('listingDate')
