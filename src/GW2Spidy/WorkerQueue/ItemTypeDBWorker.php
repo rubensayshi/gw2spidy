@@ -27,6 +27,10 @@ class ItemTypeDBWorker implements Worker {
             var_dump($type);
 
             if ($type) {
+                if ($this->almostEqualCompare($mainTypeData['name'], $type->getTitle())) {
+                    $type->setTitle($mainTypeData['name']);
+                    $type->save();
+
                 if ($type->getTitle() != $mainTypeData['name']) {
                     throw new \Exception("Title for ID no longer matches! maintype [json::{$mainTypeData['id']}::{$mainTypeData['name']}] vs [db::{$type->getDataId()}::{$item->getTitle()}]");
                 }
@@ -45,11 +49,16 @@ class ItemTypeDBWorker implements Worker {
                 $subtype = ItemSubTypeQuery::create()->findPK(array($subTypeData['id'], $type->getId()));
 
                 if ($subtype) {
-                    if ($subtype->getTitle() != $subTypeData['name']) {
+                    if ($this->almostEqualCompare($mainTypeData['name'], $type->getTitle())) {
+                        if (!$subtype->getMainType()->equals($type)) {
+                            throw new \Exception("Maintype no longer matches! [{$subTypeData['name']}] [{$subTypeData['id']}]");
+                        }
+
+                        $subtype->setTitle($subTypeData['name']);
+                        $subtype->save();
+
+                    } else {
                         throw new \Exception("Title for ID no longer matches! subtype [json::{$subTypeData['id']}::{$subTypeData['name']}] vs [db::{$subtype->getDataId()}::{$subtype->getTitle()}]");
-                    }
-                    if (!$subtype->getMainType()->equals($type)) {
-                        throw new \Exception("Maintype no longer matches! [{$subTypeData['name']}] [{$subTypeData['id']}]");
                     }
                 } else {
                     $subtype = new ItemSubType();

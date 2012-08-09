@@ -32,7 +32,10 @@ class ItemDBWorker implements Worker {
                 $item = ItemQuery::create()->findPK($itemData['data_id']);
 
                 if ($item) {
-                    if ($item->getName() != $itemData['name']) {
+                    if ($this->almostEqualCompare($itemData['name'], $item->getName())) {
+                        $item->fromArray($itemData);
+                        $item->save();
+                    } else {
                         throw new \Exception("Title for ID no longer matches! [json::{$itemData['data_id']}::{$itemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}]");
                     }
                 } else {
