@@ -34,9 +34,18 @@ class ItemDBWorker implements Worker {
                 $item = ItemQuery::create()->findPK($itemData['data_id']);
 
                 if ($item) {
-                    if (Functions::almostEqualCompare($itemData['name'], $item->getName())) {
+                    if ($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) {
+                        if ($p != 100) {
+                            echo "\n\n ----------------------- \n\n";
+                            echo "\n\n  SEMI MATCH \n\n";
+                            echo "\n\n  JSON:  {$itemData['name']} \n\n";
+                            echo "\n\n  DB:    {$item->getName()} \n\n";
+                            echo "\n\n  p:     {$p} \n\n";
+                            echo "\n\n ----------------------- \n\n";
+                        }
                         $item->fromArray($itemData);
                         $item->save();
+
                     } else {
                         throw new \Exception("Title for ID no longer matches! [json::{$itemData['data_id']}::{$itemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}]");
                     }
