@@ -70,7 +70,8 @@ $.ajax("{{ "/chart/" ~ item.dataId }}", {
             },
             pan: {
                 interactive: true
-            }
+            },
+            selection: { mode: "x" }
         };
         var xaxis_default = null;
 
