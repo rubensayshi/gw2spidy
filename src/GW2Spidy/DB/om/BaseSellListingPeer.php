@@ -10,30 +10,30 @@ use \Propel;
 use \PropelException;
 use \PropelPDO;
 use GW2Spidy\DB\ItemPeer;
-use GW2Spidy\DB\Listing;
-use GW2Spidy\DB\ListingPeer;
-use GW2Spidy\DB\map\ListingTableMap;
+use GW2Spidy\DB\SellListing;
+use GW2Spidy\DB\SellListingPeer;
+use GW2Spidy\DB\map\SellListingTableMap;
 
 /**
- * Base static class for performing query and update operations on the 'listing' table.
+ * Base static class for performing query and update operations on the 'sell_listing' table.
  *
  * 
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseListingPeer {
+abstract class BaseSellListingPeer {
 
     /** the default database name for this class */
     const DATABASE_NAME = 'gw2spidy';
 
     /** the table name for this class */
-    const TABLE_NAME = 'listing';
+    const TABLE_NAME = 'sell_listing';
 
     /** the related Propel class for this table */
-    const OM_CLASS = 'GW2Spidy\\DB\\Listing';
+    const OM_CLASS = 'GW2Spidy\\DB\\SellListing';
 
     /** the related TableMap class for this table */
-    const TM_CLASS = 'ListingTableMap';
+    const TM_CLASS = 'SellListingTableMap';
 
     /** The total number of columns. */
     const NUM_COLUMNS = 7;
@@ -45,34 +45,34 @@ abstract class BaseListingPeer {
     const NUM_HYDRATE_COLUMNS = 7;
 
     /** the column name for the ID field */
-    const ID = 'listing.ID';
+    const ID = 'sell_listing.ID';
 
     /** the column name for the LISTING_DATE field */
-    const LISTING_DATE = 'listing.LISTING_DATE';
+    const LISTING_DATE = 'sell_listing.LISTING_DATE';
 
     /** the column name for the LISTING_TIME field */
-    const LISTING_TIME = 'listing.LISTING_TIME';
+    const LISTING_TIME = 'sell_listing.LISTING_TIME';
 
     /** the column name for the ITEM_ID field */
-    const ITEM_ID = 'listing.ITEM_ID';
+    const ITEM_ID = 'sell_listing.ITEM_ID';
 
     /** the column name for the LISTINGS field */
-    const LISTINGS = 'listing.LISTINGS';
+    const LISTINGS = 'sell_listing.LISTINGS';
 
     /** the column name for the UNIT_PRICE field */
-    const UNIT_PRICE = 'listing.UNIT_PRICE';
+    const UNIT_PRICE = 'sell_listing.UNIT_PRICE';
 
     /** the column name for the QUANTITY field */
-    const QUANTITY = 'listing.QUANTITY';
+    const QUANTITY = 'sell_listing.QUANTITY';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of Listing objects.
+     * An identiy map to hold any loaded instances of SellListing objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
-     * @var        array Listing[]
+     * @var        array SellListing[]
      */
     public static $instances = array();
 
@@ -81,12 +81,12 @@ abstract class BaseListingPeer {
      * holds an array of fieldnames
      *
      * first dimension keys are the type constants
-     * e.g. ListingPeer::$fieldNames[ListingPeer::TYPE_PHPNAME][0] = 'Id'
+     * e.g. SellListingPeer::$fieldNames[SellListingPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
         BasePeer::TYPE_PHPNAME => array ('Id', 'ListingDate', 'ListingTime', 'ItemId', 'Listings', 'UnitPrice', 'Quantity', ),
         BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'listingDate', 'listingTime', 'itemId', 'listings', 'unitPrice', 'quantity', ),
-        BasePeer::TYPE_COLNAME => array (ListingPeer::ID, ListingPeer::LISTING_DATE, ListingPeer::LISTING_TIME, ListingPeer::ITEM_ID, ListingPeer::LISTINGS, ListingPeer::UNIT_PRICE, ListingPeer::QUANTITY, ),
+        BasePeer::TYPE_COLNAME => array (SellListingPeer::ID, SellListingPeer::LISTING_DATE, SellListingPeer::LISTING_TIME, SellListingPeer::ITEM_ID, SellListingPeer::LISTINGS, SellListingPeer::UNIT_PRICE, SellListingPeer::QUANTITY, ),
         BasePeer::TYPE_RAW_COLNAME => array ('ID', 'LISTING_DATE', 'LISTING_TIME', 'ITEM_ID', 'LISTINGS', 'UNIT_PRICE', 'QUANTITY', ),
         BasePeer::TYPE_FIELDNAME => array ('id', 'listing_date', 'listing_time', 'item_id', 'listings', 'unit_price', 'quantity', ),
         BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
@@ -96,12 +96,12 @@ abstract class BaseListingPeer {
      * holds an array of keys for quick access to the fieldnames array
      *
      * first dimension keys are the type constants
-     * e.g. ListingPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
+     * e.g. SellListingPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
         BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'ListingDate' => 1, 'ListingTime' => 2, 'ItemId' => 3, 'Listings' => 4, 'UnitPrice' => 5, 'Quantity' => 6, ),
         BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'listingDate' => 1, 'listingTime' => 2, 'itemId' => 3, 'listings' => 4, 'unitPrice' => 5, 'quantity' => 6, ),
-        BasePeer::TYPE_COLNAME => array (ListingPeer::ID => 0, ListingPeer::LISTING_DATE => 1, ListingPeer::LISTING_TIME => 2, ListingPeer::ITEM_ID => 3, ListingPeer::LISTINGS => 4, ListingPeer::UNIT_PRICE => 5, ListingPeer::QUANTITY => 6, ),
+        BasePeer::TYPE_COLNAME => array (SellListingPeer::ID => 0, SellListingPeer::LISTING_DATE => 1, SellListingPeer::LISTING_TIME => 2, SellListingPeer::ITEM_ID => 3, SellListingPeer::LISTINGS => 4, SellListingPeer::UNIT_PRICE => 5, SellListingPeer::QUANTITY => 6, ),
         BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'LISTING_DATE' => 1, 'LISTING_TIME' => 2, 'ITEM_ID' => 3, 'LISTINGS' => 4, 'UNIT_PRICE' => 5, 'QUANTITY' => 6, ),
         BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'listing_date' => 1, 'listing_time' => 2, 'item_id' => 3, 'listings' => 4, 'unit_price' => 5, 'quantity' => 6, ),
         BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
@@ -119,10 +119,10 @@ abstract class BaseListingPeer {
      */
     public static function translateFieldName($name, $fromType, $toType)
     {
-        $toNames = ListingPeer::getFieldNames($toType);
-        $key = isset(ListingPeer::$fieldKeys[$fromType][$name]) ? ListingPeer::$fieldKeys[$fromType][$name] : null;
+        $toNames = SellListingPeer::getFieldNames($toType);
+        $key = isset(SellListingPeer::$fieldKeys[$fromType][$name]) ? SellListingPeer::$fieldKeys[$fromType][$name] : null;
         if ($key === null) {
-            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(ListingPeer::$fieldKeys[$fromType], true));
+            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(SellListingPeer::$fieldKeys[$fromType], true));
         }
 
         return $toNames[$key];
@@ -139,11 +139,11 @@ abstract class BaseListingPeer {
      */
     public static function getFieldNames($type = BasePeer::TYPE_PHPNAME)
     {
-        if (!array_key_exists($type, ListingPeer::$fieldNames)) {
+        if (!array_key_exists($type, SellListingPeer::$fieldNames)) {
             throw new PropelException('Method getFieldNames() expects the parameter $type to be one of the class constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME, BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. ' . $type . ' was given.');
         }
 
-        return ListingPeer::$fieldNames[$type];
+        return SellListingPeer::$fieldNames[$type];
     }
 
     /**
@@ -155,12 +155,12 @@ abstract class BaseListingPeer {
      *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
      * </code>
      * @param      string $alias The alias for the current table.
-     * @param      string $column The column name for current table. (i.e. ListingPeer::COLUMN_NAME).
+     * @param      string $column The column name for current table. (i.e. SellListingPeer::COLUMN_NAME).
      * @return string
      */
     public static function alias($alias, $column)
     {
-        return str_replace(ListingPeer::TABLE_NAME.'.', $alias.'.', $column);
+        return str_replace(SellListingPeer::TABLE_NAME.'.', $alias.'.', $column);
     }
 
     /**
@@ -178,13 +178,13 @@ abstract class BaseListingPeer {
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ListingPeer::ID);
-            $criteria->addSelectColumn(ListingPeer::LISTING_DATE);
-            $criteria->addSelectColumn(ListingPeer::LISTING_TIME);
-            $criteria->addSelectColumn(ListingPeer::ITEM_ID);
-            $criteria->addSelectColumn(ListingPeer::LISTINGS);
-            $criteria->addSelectColumn(ListingPeer::UNIT_PRICE);
-            $criteria->addSelectColumn(ListingPeer::QUANTITY);
+            $criteria->addSelectColumn(SellListingPeer::ID);
+            $criteria->addSelectColumn(SellListingPeer::LISTING_DATE);
+            $criteria->addSelectColumn(SellListingPeer::LISTING_TIME);
+            $criteria->addSelectColumn(SellListingPeer::ITEM_ID);
+            $criteria->addSelectColumn(SellListingPeer::LISTINGS);
+            $criteria->addSelectColumn(SellListingPeer::UNIT_PRICE);
+            $criteria->addSelectColumn(SellListingPeer::QUANTITY);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.LISTING_DATE');
@@ -212,21 +212,21 @@ abstract class BaseListingPeer {
         // We need to set the primary table name, since in the case that there are no WHERE columns
         // it will be impossible for the BasePeer::createSelectSql() method to determine which
         // tables go into the FROM clause.
-        $criteria->setPrimaryTableName(ListingPeer::TABLE_NAME);
+        $criteria->setPrimaryTableName(SellListingPeer::TABLE_NAME);
 
         if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
             $criteria->setDistinct();
         }
 
         if (!$criteria->hasSelectClause()) {
-            ListingPeer::addSelectColumns($criteria);
+            SellListingPeer::addSelectColumns($criteria);
         }
 
         $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-        $criteria->setDbName(ListingPeer::DATABASE_NAME); // Set the correct dbName
+        $criteria->setDbName(SellListingPeer::DATABASE_NAME); // Set the correct dbName
 
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
         // BasePeer returns a PDOStatement
         $stmt = BasePeer::doCount($criteria, $con);
@@ -245,7 +245,7 @@ abstract class BaseListingPeer {
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 Listing
+     * @return                 SellListing
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -253,7 +253,7 @@ abstract class BaseListingPeer {
     {
         $critcopy = clone $criteria;
         $critcopy->setLimit(1);
-        $objects = ListingPeer::doSelect($critcopy, $con);
+        $objects = SellListingPeer::doSelect($critcopy, $con);
         if ($objects) {
             return $objects[0];
         }
@@ -271,7 +271,7 @@ abstract class BaseListingPeer {
      */
     public static function doSelect(Criteria $criteria, PropelPDO $con = null)
     {
-        return ListingPeer::populateObjects(ListingPeer::doSelectStmt($criteria, $con));
+        return SellListingPeer::populateObjects(SellListingPeer::doSelectStmt($criteria, $con));
     }
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -289,16 +289,16 @@ abstract class BaseListingPeer {
     public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         if (!$criteria->hasSelectClause()) {
             $criteria = clone $criteria;
-            ListingPeer::addSelectColumns($criteria);
+            SellListingPeer::addSelectColumns($criteria);
         }
 
         // Set the correct dbName
-        $criteria->setDbName(ListingPeer::DATABASE_NAME);
+        $criteria->setDbName(SellListingPeer::DATABASE_NAME);
 
         // BasePeer returns a PDOStatement
         return BasePeer::doSelect($criteria, $con);
@@ -312,7 +312,7 @@ abstract class BaseListingPeer {
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      Listing $obj A Listing object.
+     * @param      SellListing $obj A SellListing object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -321,7 +321,7 @@ abstract class BaseListingPeer {
             if ($key === null) {
                 $key = (string) $obj->getId();
             } // if key === null
-            ListingPeer::$instances[$key] = $obj;
+            SellListingPeer::$instances[$key] = $obj;
         }
     }
 
@@ -333,7 +333,7 @@ abstract class BaseListingPeer {
      * methods in your stub classes -- you may need to explicitly remove objects
      * from the cache in order to prevent returning objects that no longer exist.
      *
-     * @param      mixed $value A Listing object or a primary key value.
+     * @param      mixed $value A SellListing object or a primary key value.
      *
      * @return void
      * @throws PropelException - if the value is invalid.
@@ -341,17 +341,17 @@ abstract class BaseListingPeer {
     public static function removeInstanceFromPool($value)
     {
         if (Propel::isInstancePoolingEnabled() && $value !== null) {
-            if (is_object($value) && $value instanceof Listing) {
+            if (is_object($value) && $value instanceof SellListing) {
                 $key = (string) $value->getId();
             } elseif (is_scalar($value)) {
                 // assume we've been passed a primary key
                 $key = (string) $value;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or Listing object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or SellListing object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
                 throw $e;
             }
 
-            unset(ListingPeer::$instances[$key]);
+            unset(SellListingPeer::$instances[$key]);
         }
     } // removeInstanceFromPool()
 
@@ -362,14 +362,14 @@ abstract class BaseListingPeer {
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   Listing Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return   SellListing Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
     {
         if (Propel::isInstancePoolingEnabled()) {
-            if (isset(ListingPeer::$instances[$key])) {
-                return ListingPeer::$instances[$key];
+            if (isset(SellListingPeer::$instances[$key])) {
+                return SellListingPeer::$instances[$key];
             }
         }
 
@@ -383,11 +383,11 @@ abstract class BaseListingPeer {
      */
     public static function clearInstancePool()
     {
-        ListingPeer::$instances = array();
+        SellListingPeer::$instances = array();
     }
     
     /**
-     * Method to invalidate the instance pool of all tables related to listing
+     * Method to invalidate the instance pool of all tables related to sell_listing
      * by a foreign key with ON DELETE CASCADE
      */
     public static function clearRelatedInstancePool()
@@ -441,11 +441,11 @@ abstract class BaseListingPeer {
         $results = array();
     
         // set the class once to avoid overhead in the loop
-        $cls = ListingPeer::getOMClass();
+        $cls = SellListingPeer::getOMClass();
         // populate the object(s)
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $key = ListingPeer::getPrimaryKeyHashFromRow($row, 0);
-            if (null !== ($obj = ListingPeer::getInstanceFromPool($key))) {
+            $key = SellListingPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj = SellListingPeer::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -454,7 +454,7 @@ abstract class BaseListingPeer {
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                ListingPeer::addInstanceToPool($obj, $key);
+                SellListingPeer::addInstanceToPool($obj, $key);
             } // if key exists
         }
         $stmt->closeCursor();
@@ -468,21 +468,21 @@ abstract class BaseListingPeer {
      * @param      int $startcol The 0-based offset for reading from the resultset row.
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
-     * @return array (Listing object, last column rank)
+     * @return array (SellListing object, last column rank)
      */
     public static function populateObject($row, $startcol = 0)
     {
-        $key = ListingPeer::getPrimaryKeyHashFromRow($row, $startcol);
-        if (null !== ($obj = ListingPeer::getInstanceFromPool($key))) {
+        $key = SellListingPeer::getPrimaryKeyHashFromRow($row, $startcol);
+        if (null !== ($obj = SellListingPeer::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $startcol, true); // rehydrate
-            $col = $startcol + ListingPeer::NUM_HYDRATE_COLUMNS;
+            $col = $startcol + SellListingPeer::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = ListingPeer::OM_CLASS;
+            $cls = SellListingPeer::OM_CLASS;
             $obj = new $cls();
             $col = $obj->hydrate($row, $startcol);
-            ListingPeer::addInstanceToPool($obj, $key);
+            SellListingPeer::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -506,26 +506,26 @@ abstract class BaseListingPeer {
         // We need to set the primary table name, since in the case that there are no WHERE columns
         // it will be impossible for the BasePeer::createSelectSql() method to determine which
         // tables go into the FROM clause.
-        $criteria->setPrimaryTableName(ListingPeer::TABLE_NAME);
+        $criteria->setPrimaryTableName(SellListingPeer::TABLE_NAME);
 
         if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
             $criteria->setDistinct();
         }
 
         if (!$criteria->hasSelectClause()) {
-            ListingPeer::addSelectColumns($criteria);
+            SellListingPeer::addSelectColumns($criteria);
         }
 
         $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 
         // Set the correct dbName
-        $criteria->setDbName(ListingPeer::DATABASE_NAME);
+        $criteria->setDbName(SellListingPeer::DATABASE_NAME);
 
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria->addJoin(ListingPeer::ITEM_ID, ItemPeer::DATA_ID, $join_behavior);
+        $criteria->addJoin(SellListingPeer::ITEM_ID, ItemPeer::DATA_ID, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
 
@@ -541,11 +541,11 @@ abstract class BaseListingPeer {
 
 
     /**
-     * Selects a collection of Listing objects pre-filled with their Item objects.
+     * Selects a collection of SellListing objects pre-filled with their Item objects.
      * @param      Criteria  $criteria
      * @param      PropelPDO $con
      * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-     * @return array           Array of Listing objects.
+     * @return array           Array of SellListing objects.
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -555,31 +555,31 @@ abstract class BaseListingPeer {
 
         // Set the correct dbName if it has not been overridden
         if ($criteria->getDbName() == Propel::getDefaultDB()) {
-            $criteria->setDbName(ListingPeer::DATABASE_NAME);
+            $criteria->setDbName(SellListingPeer::DATABASE_NAME);
         }
 
-        ListingPeer::addSelectColumns($criteria);
-        $startcol = ListingPeer::NUM_HYDRATE_COLUMNS;
+        SellListingPeer::addSelectColumns($criteria);
+        $startcol = SellListingPeer::NUM_HYDRATE_COLUMNS;
         ItemPeer::addSelectColumns($criteria);
 
-        $criteria->addJoin(ListingPeer::ITEM_ID, ItemPeer::DATA_ID, $join_behavior);
+        $criteria->addJoin(SellListingPeer::ITEM_ID, ItemPeer::DATA_ID, $join_behavior);
 
         $stmt = BasePeer::doSelect($criteria, $con);
         $results = array();
 
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $key1 = ListingPeer::getPrimaryKeyHashFromRow($row, 0);
-            if (null !== ($obj1 = ListingPeer::getInstanceFromPool($key1))) {
+            $key1 = SellListingPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = SellListingPeer::getInstanceFromPool($key1))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj1->hydrate($row, 0, true); // rehydrate
             } else {
 
-                $cls = ListingPeer::getOMClass();
+                $cls = SellListingPeer::getOMClass();
 
                 $obj1 = new $cls();
                 $obj1->hydrate($row);
-                ListingPeer::addInstanceToPool($obj1, $key1);
+                SellListingPeer::addInstanceToPool($obj1, $key1);
             } // if $obj1 already loaded
 
             $key2 = ItemPeer::getPrimaryKeyHashFromRow($row, $startcol);
@@ -594,8 +594,8 @@ abstract class BaseListingPeer {
                     ItemPeer::addInstanceToPool($obj2, $key2);
                 } // if obj2 already loaded
 
-                // Add the $obj1 (Listing) to $obj2 (Item)
-                $obj2->addListing($obj1);
+                // Add the $obj1 (SellListing) to $obj2 (Item)
+                $obj2->addSellListing($obj1);
 
             } // if joined row was not null
 
@@ -624,26 +624,26 @@ abstract class BaseListingPeer {
         // We need to set the primary table name, since in the case that there are no WHERE columns
         // it will be impossible for the BasePeer::createSelectSql() method to determine which
         // tables go into the FROM clause.
-        $criteria->setPrimaryTableName(ListingPeer::TABLE_NAME);
+        $criteria->setPrimaryTableName(SellListingPeer::TABLE_NAME);
 
         if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
             $criteria->setDistinct();
         }
 
         if (!$criteria->hasSelectClause()) {
-            ListingPeer::addSelectColumns($criteria);
+            SellListingPeer::addSelectColumns($criteria);
         }
 
         $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 
         // Set the correct dbName
-        $criteria->setDbName(ListingPeer::DATABASE_NAME);
+        $criteria->setDbName(SellListingPeer::DATABASE_NAME);
 
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria->addJoin(ListingPeer::ITEM_ID, ItemPeer::DATA_ID, $join_behavior);
+        $criteria->addJoin(SellListingPeer::ITEM_ID, ItemPeer::DATA_ID, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
 
@@ -658,12 +658,12 @@ abstract class BaseListingPeer {
     }
 
     /**
-     * Selects a collection of Listing objects pre-filled with all related objects.
+     * Selects a collection of SellListing objects pre-filled with all related objects.
      *
      * @param      Criteria  $criteria
      * @param      PropelPDO $con
      * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-     * @return array           Array of Listing objects.
+     * @return array           Array of SellListing objects.
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -673,32 +673,32 @@ abstract class BaseListingPeer {
 
         // Set the correct dbName if it has not been overridden
         if ($criteria->getDbName() == Propel::getDefaultDB()) {
-            $criteria->setDbName(ListingPeer::DATABASE_NAME);
+            $criteria->setDbName(SellListingPeer::DATABASE_NAME);
         }
 
-        ListingPeer::addSelectColumns($criteria);
-        $startcol2 = ListingPeer::NUM_HYDRATE_COLUMNS;
+        SellListingPeer::addSelectColumns($criteria);
+        $startcol2 = SellListingPeer::NUM_HYDRATE_COLUMNS;
 
         ItemPeer::addSelectColumns($criteria);
         $startcol3 = $startcol2 + ItemPeer::NUM_HYDRATE_COLUMNS;
 
-        $criteria->addJoin(ListingPeer::ITEM_ID, ItemPeer::DATA_ID, $join_behavior);
+        $criteria->addJoin(SellListingPeer::ITEM_ID, ItemPeer::DATA_ID, $join_behavior);
 
         $stmt = BasePeer::doSelect($criteria, $con);
         $results = array();
 
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $key1 = ListingPeer::getPrimaryKeyHashFromRow($row, 0);
-            if (null !== ($obj1 = ListingPeer::getInstanceFromPool($key1))) {
+            $key1 = SellListingPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = SellListingPeer::getInstanceFromPool($key1))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj1->hydrate($row, 0, true); // rehydrate
             } else {
-                $cls = ListingPeer::getOMClass();
+                $cls = SellListingPeer::getOMClass();
 
                 $obj1 = new $cls();
                 $obj1->hydrate($row);
-                ListingPeer::addInstanceToPool($obj1, $key1);
+                SellListingPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
             // Add objects for joined Item rows
@@ -715,8 +715,8 @@ abstract class BaseListingPeer {
                     ItemPeer::addInstanceToPool($obj2, $key2);
                 } // if obj2 loaded
 
-                // Add the $obj1 (Listing) to the collection in $obj2 (Item)
-                $obj2->addListing($obj1);
+                // Add the $obj1 (SellListing) to the collection in $obj2 (Item)
+                $obj2->addSellListing($obj1);
             } // if joined row not null
 
             $results[] = $obj1;
@@ -735,7 +735,7 @@ abstract class BaseListingPeer {
      */
     public static function getTableMap()
     {
-        return Propel::getDatabaseMap(ListingPeer::DATABASE_NAME)->getTable(ListingPeer::TABLE_NAME);
+        return Propel::getDatabaseMap(SellListingPeer::DATABASE_NAME)->getTable(SellListingPeer::TABLE_NAME);
     }
 
     /**
@@ -743,9 +743,9 @@ abstract class BaseListingPeer {
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getDatabaseMap(BaseListingPeer::DATABASE_NAME);
-      if (!$dbMap->hasTable(BaseListingPeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new ListingTableMap());
+      $dbMap = Propel::getDatabaseMap(BaseSellListingPeer::DATABASE_NAME);
+      if (!$dbMap->hasTable(BaseSellListingPeer::TABLE_NAME)) {
+        $dbMap->addTableObject(new SellListingTableMap());
       }
     }
 
@@ -757,13 +757,13 @@ abstract class BaseListingPeer {
      */
     public static function getOMClass()
     {
-        return ListingPeer::OM_CLASS;
+        return SellListingPeer::OM_CLASS;
     }
 
     /**
-     * Performs an INSERT on the database, given a Listing or Criteria object.
+     * Performs an INSERT on the database, given a SellListing or Criteria object.
      *
-     * @param      mixed $values Criteria or Listing object containing data that is used to create the INSERT statement.
+     * @param      mixed $values Criteria or SellListing object containing data that is used to create the INSERT statement.
      * @param      PropelPDO $con the PropelPDO connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -772,22 +772,22 @@ abstract class BaseListingPeer {
     public static function doInsert($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
         } else {
-            $criteria = $values->buildCriteria(); // build Criteria from Listing object
+            $criteria = $values->buildCriteria(); // build Criteria from SellListing object
         }
 
-        if ($criteria->containsKey(ListingPeer::ID) && $criteria->keyContainsValue(ListingPeer::ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ListingPeer::ID.')');
+        if ($criteria->containsKey(SellListingPeer::ID) && $criteria->keyContainsValue(SellListingPeer::ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.SellListingPeer::ID.')');
         }
 
 
         // Set the correct dbName
-        $criteria->setDbName(ListingPeer::DATABASE_NAME);
+        $criteria->setDbName(SellListingPeer::DATABASE_NAME);
 
         try {
             // use transaction because $criteria could contain info
@@ -804,9 +804,9 @@ abstract class BaseListingPeer {
     }
 
     /**
-     * Performs an UPDATE on the database, given a Listing or Criteria object.
+     * Performs an UPDATE on the database, given a SellListing or Criteria object.
      *
-     * @param      mixed $values Criteria or Listing object containing data that is used to create the UPDATE statement.
+     * @param      mixed $values Criteria or SellListing object containing data that is used to create the UPDATE statement.
      * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
      * @return int             The number of affected rows (if supported by underlying database driver).
      * @throws PropelException Any exceptions caught during processing will be
@@ -815,35 +815,35 @@ abstract class BaseListingPeer {
     public static function doUpdate($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
-        $selectCriteria = new Criteria(ListingPeer::DATABASE_NAME);
+        $selectCriteria = new Criteria(SellListingPeer::DATABASE_NAME);
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
 
-            $comparison = $criteria->getComparison(ListingPeer::ID);
-            $value = $criteria->remove(ListingPeer::ID);
+            $comparison = $criteria->getComparison(SellListingPeer::ID);
+            $value = $criteria->remove(SellListingPeer::ID);
             if ($value) {
-                $selectCriteria->add(ListingPeer::ID, $value, $comparison);
+                $selectCriteria->add(SellListingPeer::ID, $value, $comparison);
             } else {
-                $selectCriteria->setPrimaryTableName(ListingPeer::TABLE_NAME);
+                $selectCriteria->setPrimaryTableName(SellListingPeer::TABLE_NAME);
             }
 
-        } else { // $values is Listing object
+        } else { // $values is SellListing object
             $criteria = $values->buildCriteria(); // gets full criteria
             $selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
         }
 
         // set the correct dbName
-        $criteria->setDbName(ListingPeer::DATABASE_NAME);
+        $criteria->setDbName(SellListingPeer::DATABASE_NAME);
 
         return BasePeer::doUpdate($selectCriteria, $criteria, $con);
     }
 
     /**
-     * Deletes all rows from the listing table.
+     * Deletes all rows from the sell_listing table.
      *
      * @param      PropelPDO $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).
@@ -852,19 +852,19 @@ abstract class BaseListingPeer {
     public static function doDeleteAll(PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
         $affectedRows = 0; // initialize var to track total num of affected rows
         try {
             // use transaction because $criteria could contain info
             // for more than one table or we could emulating ON DELETE CASCADE, etc.
             $con->beginTransaction();
-            $affectedRows += BasePeer::doDeleteAll(ListingPeer::TABLE_NAME, $con, ListingPeer::DATABASE_NAME);
+            $affectedRows += BasePeer::doDeleteAll(SellListingPeer::TABLE_NAME, $con, SellListingPeer::DATABASE_NAME);
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            ListingPeer::clearInstancePool();
-            ListingPeer::clearRelatedInstancePool();
+            SellListingPeer::clearInstancePool();
+            SellListingPeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -875,9 +875,9 @@ abstract class BaseListingPeer {
     }
 
     /**
-     * Performs a DELETE on the database, given a Listing or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a SellListing or Criteria object OR a primary key value.
      *
-     * @param      mixed $values Criteria or Listing object or primary key or array of primary keys
+     * @param      mixed $values Criteria or SellListing object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param      PropelPDO $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -888,32 +888,32 @@ abstract class BaseListingPeer {
      public static function doDelete($values, PropelPDO $con = null)
      {
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
             // invalidate the cache for all objects of this type, since we have no
             // way of knowing (without running a query) what objects should be invalidated
             // from the cache based on this Criteria.
-            ListingPeer::clearInstancePool();
+            SellListingPeer::clearInstancePool();
             // rename for clarity
             $criteria = clone $values;
-        } elseif ($values instanceof Listing) { // it's a model object
+        } elseif ($values instanceof SellListing) { // it's a model object
             // invalidate the cache for this single object
-            ListingPeer::removeInstanceFromPool($values);
+            SellListingPeer::removeInstanceFromPool($values);
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(ListingPeer::DATABASE_NAME);
-            $criteria->add(ListingPeer::ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(SellListingPeer::DATABASE_NAME);
+            $criteria->add(SellListingPeer::ID, (array) $values, Criteria::IN);
             // invalidate the cache for this object(s)
             foreach ((array) $values as $singleval) {
-                ListingPeer::removeInstanceFromPool($singleval);
+                SellListingPeer::removeInstanceFromPool($singleval);
             }
         }
 
         // Set the correct dbName
-        $criteria->setDbName(ListingPeer::DATABASE_NAME);
+        $criteria->setDbName(SellListingPeer::DATABASE_NAME);
 
         $affectedRows = 0; // initialize var to track total num of affected rows
 
@@ -923,7 +923,7 @@ abstract class BaseListingPeer {
             $con->beginTransaction();
             
             $affectedRows += BasePeer::doDelete($criteria, $con);
-            ListingPeer::clearRelatedInstancePool();
+            SellListingPeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -934,13 +934,13 @@ abstract class BaseListingPeer {
     }
 
     /**
-     * Validates all modified columns of given Listing object.
+     * Validates all modified columns of given SellListing object.
      * If parameter $columns is either a single column name or an array of column names
      * than only those columns are validated.
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      Listing $obj The object to validate.
+     * @param      SellListing $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -950,8 +950,8 @@ abstract class BaseListingPeer {
         $columns = array();
 
         if ($cols) {
-            $dbMap = Propel::getDatabaseMap(ListingPeer::DATABASE_NAME);
-            $tableMap = $dbMap->getTable(ListingPeer::TABLE_NAME);
+            $dbMap = Propel::getDatabaseMap(SellListingPeer::DATABASE_NAME);
+            $tableMap = $dbMap->getTable(SellListingPeer::TABLE_NAME);
 
             if (! is_array($cols)) {
                 $cols = array($cols);
@@ -967,7 +967,7 @@ abstract class BaseListingPeer {
 
         }
 
-        return BasePeer::doValidate(ListingPeer::DATABASE_NAME, ListingPeer::TABLE_NAME, $columns);
+        return BasePeer::doValidate(SellListingPeer::DATABASE_NAME, SellListingPeer::TABLE_NAME, $columns);
     }
 
     /**
@@ -975,23 +975,23 @@ abstract class BaseListingPeer {
      *
      * @param      int $pk the primary key.
      * @param      PropelPDO $con the connection to use
-     * @return Listing
+     * @return SellListing
      */
     public static function retrieveByPK($pk, PropelPDO $con = null)
     {
 
-        if (null !== ($obj = ListingPeer::getInstanceFromPool((string) $pk))) {
+        if (null !== ($obj = SellListingPeer::getInstanceFromPool((string) $pk))) {
             return $obj;
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria = new Criteria(ListingPeer::DATABASE_NAME);
-        $criteria->add(ListingPeer::ID, $pk);
+        $criteria = new Criteria(SellListingPeer::DATABASE_NAME);
+        $criteria->add(SellListingPeer::ID, $pk);
 
-        $v = ListingPeer::doSelect($criteria, $con);
+        $v = SellListingPeer::doSelect($criteria, $con);
 
         return !empty($v) > 0 ? $v[0] : null;
     }
@@ -1001,31 +1001,31 @@ abstract class BaseListingPeer {
      *
      * @param      array $pks List of primary keys
      * @param      PropelPDO $con the connection to use
-     * @return Listing[]
+     * @return SellListing[]
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
     public static function retrieveByPKs($pks, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         $objs = null;
         if (empty($pks)) {
             $objs = array();
         } else {
-            $criteria = new Criteria(ListingPeer::DATABASE_NAME);
-            $criteria->add(ListingPeer::ID, $pks, Criteria::IN);
-            $objs = ListingPeer::doSelect($criteria, $con);
+            $criteria = new Criteria(SellListingPeer::DATABASE_NAME);
+            $criteria->add(SellListingPeer::ID, $pks, Criteria::IN);
+            $objs = SellListingPeer::doSelect($criteria, $con);
         }
 
         return $objs;
     }
 
-} // BaseListingPeer
+} // BaseSellListingPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseListingPeer::buildTableMap();
+BaseSellListingPeer::buildTableMap();
 

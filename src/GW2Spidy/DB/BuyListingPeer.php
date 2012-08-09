@@ -2,11 +2,11 @@
 
 namespace GW2Spidy\DB;
 
-use GW2Spidy\DB\om\BaseListingQuery;
+use GW2Spidy\DB\om\BaseBuyListingPeer;
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'listing' table.
+ * Skeleton subclass for performing query and update operations on the 'buy_listing' table.
  *
  * 
  *
@@ -16,6 +16,6 @@ use GW2Spidy\DB\om\BaseListingQuery;
  *
  * @package    propel.generator.gw2spidy
  */
-class ListingQuery extends BaseListingQuery {
+class BuyListingPeer extends BaseBuyListingPeer {
 
-} // ListingQuery
+} // BuyListingPeer

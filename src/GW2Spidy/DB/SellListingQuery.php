@@ -2,11 +2,11 @@
 
 namespace GW2Spidy\DB;
 
-use GW2Spidy\DB\om\BaseTinyIntAscQuery;
+use GW2Spidy\DB\om\BaseSellListingQuery;
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'tinyint_asc' table.
+ * Skeleton subclass for performing query and update operations on the 'sell_listing' table.
  *
  * 
  *
@@ -16,6 +16,6 @@ use GW2Spidy\DB\om\BaseTinyIntAscQuery;
  *
  * @package    propel.generator.gw2spidy
  */
-class TinyIntAscQuery extends BaseTinyIntAscQuery {
+class SellListingQuery extends BaseSellListingQuery {
 
-} // TinyIntAscQuery
+} // SellListingQuery

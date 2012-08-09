@@ -7,7 +7,7 @@ use \TableMap;
 
 
 /**
- * This class defines the structure of the 'listing' table.
+ * This class defines the structure of the 'sell_listing' table.
  *
  *
  *
@@ -18,13 +18,13 @@ use \TableMap;
  *
  * @package    propel.generator.gw2spidy.map
  */
-class ListingTableMap extends TableMap
+class SellListingTableMap extends TableMap
 {
 
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'gw2spidy.map.ListingTableMap';
+    const CLASS_NAME = 'gw2spidy.map.SellListingTableMap';
 
     /**
      * Initialize the table attributes, columns and validators
@@ -36,9 +36,9 @@ class ListingTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('listing');
-        $this->setPhpName('Listing');
-        $this->setClassname('GW2Spidy\\DB\\Listing');
+        $this->setName('sell_listing');
+        $this->setPhpName('SellListing');
+        $this->setClassname('GW2Spidy\\DB\\SellListing');
         $this->setPackage('gw2spidy');
         $this->setUseIdGenerator(true);
         // columns
@@ -60,4 +60,4 @@ class ListingTableMap extends TableMap
         $this->addRelation('Item', 'GW2Spidy\\DB\\Item', RelationMap::MANY_TO_ONE, array('item_id' => 'data_id', ), null, null);
     } // buildRelations()
 
-} // ListingTableMap
+} // SellListingTableMap

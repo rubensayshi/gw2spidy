@@ -2,11 +2,11 @@
 
 namespace GW2Spidy\DB;
 
-use GW2Spidy\DB\om\BaseTinyIntAsc;
+use GW2Spidy\DB\om\BaseBuyListing;
 
 
 /**
- * Skeleton subclass for representing a row from the 'tinyint_asc' table.
+ * Skeleton subclass for representing a row from the 'buy_listing' table.
  *
  * 
  *
@@ -16,6 +16,6 @@ use GW2Spidy\DB\om\BaseTinyIntAsc;
  *
  * @package    propel.generator.gw2spidy
  */
-class TinyIntAsc extends BaseTinyIntAsc {
+class BuyListing extends BaseBuyListing {
 
-} // TinyIntAsc
+} // BuyListing

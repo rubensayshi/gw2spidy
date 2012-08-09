@@ -5,7 +5,7 @@ namespace GW2Spidy\WorkerQueue;
 use GW2Spidy\Queue\WorkerQueueManager;
 use GW2Spidy\Queue\WorkerQueueItem;
 
-use GW2Spidy\DB\Listing;
+use GW2Spidy\DB\SellListing;
 
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemQuery;
@@ -28,7 +28,7 @@ class ItemListingsDBWorker implements Worker {
 
         if ($listings) {
             foreach ($listings as $listingData) {
-                $listing = new Listing();
+                $listing = new SellListing();
                 $listing->fromArray($listingData, \BasePeer::TYPE_FIELDNAME);
                 $listing->setItem($item);
                 $listing->setListingDate($now);

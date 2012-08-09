@@ -32,7 +32,7 @@
             <reference local="item_sub_type_id" foreign="id" />
         </foreign-key>
     </table>
-    <table name="listing" phpName="Listing">
+    <table name="sell_listing" phpName="SellListing">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
         <column name="listing_date" type="date" required="true" />
         <column name="listing_time" type="time" required="true" />
@@ -40,7 +40,7 @@
         <column name="listings" type="integer" required="true" />
         <column name="unit_price" type="integer" required="true" />
         <column name="quantity" type="integer" required="true" />
-        <foreign-key foreignTable="item" phpName="Item" refPhpName="Listing">
+        <foreign-key foreignTable="item" phpName="Item" refPhpName="SellListing">
             <reference local="item_id" foreign="data_id" />
         </foreign-key>  
         <index name="retrieve_by_date_time">
@@ -49,7 +49,21 @@
             <index-column name="listing_time" />
         </index>
     </table>
-    <table name="tinyint_asc" phpName="TinyIntAsc">
-        <column name="value" type="integer" required="true" primaryKey="true" phpName="Value" />
+    <table name="buy_listing" phpName="BuyListing">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="listing_date" type="date" required="true" />
+        <column name="listing_time" type="time" required="true" />
+        <column name="item_id" type="integer" required="true" />
+        <column name="listings" type="integer" required="true" />
+        <column name="unit_price" type="integer" required="true" />
+        <column name="quantity" type="integer" required="true" />
+        <foreign-key foreignTable="item" phpName="Item" refPhpName="BuyListing">
+            <reference local="item_id" foreign="data_id" />
+        </foreign-key>  
+        <index name="retrieve_by_date_time">
+            <index-column name="item_id" />
+            <index-column name="listing_date" />
+            <index-column name="listing_time" />
+        </index>
     </table>
 </database>

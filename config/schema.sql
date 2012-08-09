@@ -66,12 +66,12 @@ CREATE TABLE `item`
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
--- listing
+-- sell_listing
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `listing`;
+DROP TABLE IF EXISTS `sell_listing`;
 
-CREATE TABLE `listing`
+CREATE TABLE `sell_listing`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `listing_date` DATE NOT NULL,
@@ -82,21 +82,31 @@ CREATE TABLE `listing`
     `quantity` INTEGER NOT NULL,
     PRIMARY KEY (`id`),
     INDEX `retrieve_by_date_time` (`item_id`, `listing_date`, `listing_time`),
-    CONSTRAINT `listing_FK_1`
+    CONSTRAINT `sell_listing_FK_1`
         FOREIGN KEY (`item_id`)
         REFERENCES `item` (`data_id`)
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
--- tinyint_asc
+-- buy_listing
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `tinyint_asc`;
+DROP TABLE IF EXISTS `buy_listing`;
 
-CREATE TABLE `tinyint_asc`
+CREATE TABLE `buy_listing`
 (
-    `value` INTEGER NOT NULL,
-    PRIMARY KEY (`value`)
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `listing_date` DATE NOT NULL,
+    `listing_time` TIME NOT NULL,
+    `item_id` INTEGER NOT NULL,
+    `listings` INTEGER NOT NULL,
+    `unit_price` INTEGER NOT NULL,
+    `quantity` INTEGER NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `retrieve_by_date_time` (`item_id`, `listing_date`, `listing_time`),
+    CONSTRAINT `buy_listing_FK_1`
+        FOREIGN KEY (`item_id`)
+        REFERENCES `item` (`data_id`)
 ) ENGINE=MyISAM;
 
 # This restores the fkey checks, after having unset them earlier

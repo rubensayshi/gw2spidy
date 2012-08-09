@@ -8,7 +8,7 @@ use GW2Spidy\Application;
 
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemTypeQuery;
-use GW2Spidy\DB\ListingQuery;
+use GW2Spidy\DB\SellListingQuery;
 use GW2Spidy\DB\WorkerQueueItemQuery;
 
 use GW2Spidy\Queue\RequestSlotManager;
@@ -132,7 +132,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
         'data'   => array(),
         'label'  => $item->getName(),
     );
-    $listings = ListingQuery::create()
+    $listings = SellListingQuery::create()
                 ->select(array('listingDate', 'listingTime'))
                 ->withColumn('MIN(unit_price)', 'min_unit_price')
                 ->groupBy('listingDate')

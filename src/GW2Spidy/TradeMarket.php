@@ -9,6 +9,9 @@ use GW2Spidy\DB\ItemType;
 use GW2Spidy\Util\CurlRequest;
 
 class TradeMarket {
+    const LISTING_TYPE_SELL = 'sells';
+    const LISTING_TYPE_BUY  = 'buys';
+
     protected static $instance;
 
     public function __construct() {
@@ -47,7 +50,7 @@ class TradeMarket {
         return null;
     }
 
-    public function getListingsById($id, $type = "sells") {
+    public function getListingsById($id, $type = static::LISTING_TYPE_SELL) {
         $curl = CurlRequest::newInstance("https://tradingpost-live.ncplatform.net/ws/listings.json?id={$id}&type={$type}")
              ->exec()
              ;

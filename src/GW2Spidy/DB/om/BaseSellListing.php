@@ -18,30 +18,30 @@ use \PropelObjectCollection;
 use \PropelPDO;
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\DB\Listing;
-use GW2Spidy\DB\ListingPeer;
-use GW2Spidy\DB\ListingQuery;
+use GW2Spidy\DB\SellListing;
+use GW2Spidy\DB\SellListingPeer;
+use GW2Spidy\DB\SellListingQuery;
 
 /**
- * Base class that represents a row from the 'listing' table.
+ * Base class that represents a row from the 'sell_listing' table.
  *
  * 
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseListing extends BaseObject implements Persistent
+abstract class BaseSellListing extends BaseObject implements Persistent
 {
 
     /**
      * Peer class name
      */
-    const PEER = 'GW2Spidy\\DB\\ListingPeer';
+    const PEER = 'GW2Spidy\\DB\\SellListingPeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        ListingPeer
+     * @var        SellListingPeer
      */
     protected static $peer;
 
@@ -242,7 +242,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      * Set the value of [id] column.
      * 
      * @param      int $v new value
-     * @return   Listing The current object (for fluent API support)
+     * @return   SellListing The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -252,7 +252,7 @@ abstract class BaseListing extends BaseObject implements Persistent
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[] = ListingPeer::ID;
+            $this->modifiedColumns[] = SellListingPeer::ID;
         }
 
 
@@ -264,7 +264,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      * 
      * @param      mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as NULL.
-     * @return   Listing The current object (for fluent API support)
+     * @return   SellListing The current object (for fluent API support)
      */
     public function setListingDate($v)
     {
@@ -274,7 +274,7 @@ abstract class BaseListing extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->listing_date = $newDateAsString;
-                $this->modifiedColumns[] = ListingPeer::LISTING_DATE;
+                $this->modifiedColumns[] = SellListingPeer::LISTING_DATE;
             }
         } // if either are not null
 
@@ -287,7 +287,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      * 
      * @param      mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as NULL.
-     * @return   Listing The current object (for fluent API support)
+     * @return   SellListing The current object (for fluent API support)
      */
     public function setListingTime($v)
     {
@@ -297,7 +297,7 @@ abstract class BaseListing extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->listing_time = $newDateAsString;
-                $this->modifiedColumns[] = ListingPeer::LISTING_TIME;
+                $this->modifiedColumns[] = SellListingPeer::LISTING_TIME;
             }
         } // if either are not null
 
@@ -309,7 +309,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      * Set the value of [item_id] column.
      * 
      * @param      int $v new value
-     * @return   Listing The current object (for fluent API support)
+     * @return   SellListing The current object (for fluent API support)
      */
     public function setItemId($v)
     {
@@ -319,7 +319,7 @@ abstract class BaseListing extends BaseObject implements Persistent
 
         if ($this->item_id !== $v) {
             $this->item_id = $v;
-            $this->modifiedColumns[] = ListingPeer::ITEM_ID;
+            $this->modifiedColumns[] = SellListingPeer::ITEM_ID;
         }
 
         if ($this->aItem !== null && $this->aItem->getDataId() !== $v) {
@@ -334,7 +334,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      * Set the value of [listings] column.
      * 
      * @param      int $v new value
-     * @return   Listing The current object (for fluent API support)
+     * @return   SellListing The current object (for fluent API support)
      */
     public function setListings($v)
     {
@@ -344,7 +344,7 @@ abstract class BaseListing extends BaseObject implements Persistent
 
         if ($this->listings !== $v) {
             $this->listings = $v;
-            $this->modifiedColumns[] = ListingPeer::LISTINGS;
+            $this->modifiedColumns[] = SellListingPeer::LISTINGS;
         }
 
 
@@ -355,7 +355,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      * Set the value of [unit_price] column.
      * 
      * @param      int $v new value
-     * @return   Listing The current object (for fluent API support)
+     * @return   SellListing The current object (for fluent API support)
      */
     public function setUnitPrice($v)
     {
@@ -365,7 +365,7 @@ abstract class BaseListing extends BaseObject implements Persistent
 
         if ($this->unit_price !== $v) {
             $this->unit_price = $v;
-            $this->modifiedColumns[] = ListingPeer::UNIT_PRICE;
+            $this->modifiedColumns[] = SellListingPeer::UNIT_PRICE;
         }
 
 
@@ -376,7 +376,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      * Set the value of [quantity] column.
      * 
      * @param      int $v new value
-     * @return   Listing The current object (for fluent API support)
+     * @return   SellListing The current object (for fluent API support)
      */
     public function setQuantity($v)
     {
@@ -386,7 +386,7 @@ abstract class BaseListing extends BaseObject implements Persistent
 
         if ($this->quantity !== $v) {
             $this->quantity = $v;
-            $this->modifiedColumns[] = ListingPeer::QUANTITY;
+            $this->modifiedColumns[] = SellListingPeer::QUANTITY;
         }
 
 
@@ -440,10 +440,10 @@ abstract class BaseListing extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = ListingPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = SellListingPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating Listing object", $e);
+            throw new PropelException("Error populating SellListing object", $e);
         }
     }
 
@@ -489,13 +489,13 @@ abstract class BaseListing extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = ListingPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = SellListingPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
@@ -526,12 +526,12 @@ abstract class BaseListing extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = ListingQuery::create()
+            $deleteQuery = SellListingQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -569,7 +569,7 @@ abstract class BaseListing extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(ListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(SellListingPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -589,7 +589,7 @@ abstract class BaseListing extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                ListingPeer::addInstanceToPool($this);
+                SellListingPeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -662,36 +662,36 @@ abstract class BaseListing extends BaseObject implements Persistent
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[] = ListingPeer::ID;
+        $this->modifiedColumns[] = SellListingPeer::ID;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ListingPeer::ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . SellListingPeer::ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ListingPeer::ID)) {
+        if ($this->isColumnModified(SellListingPeer::ID)) {
             $modifiedColumns[':p' . $index++]  = '`ID`';
         }
-        if ($this->isColumnModified(ListingPeer::LISTING_DATE)) {
+        if ($this->isColumnModified(SellListingPeer::LISTING_DATE)) {
             $modifiedColumns[':p' . $index++]  = '`LISTING_DATE`';
         }
-        if ($this->isColumnModified(ListingPeer::LISTING_TIME)) {
+        if ($this->isColumnModified(SellListingPeer::LISTING_TIME)) {
             $modifiedColumns[':p' . $index++]  = '`LISTING_TIME`';
         }
-        if ($this->isColumnModified(ListingPeer::ITEM_ID)) {
+        if ($this->isColumnModified(SellListingPeer::ITEM_ID)) {
             $modifiedColumns[':p' . $index++]  = '`ITEM_ID`';
         }
-        if ($this->isColumnModified(ListingPeer::LISTINGS)) {
+        if ($this->isColumnModified(SellListingPeer::LISTINGS)) {
             $modifiedColumns[':p' . $index++]  = '`LISTINGS`';
         }
-        if ($this->isColumnModified(ListingPeer::UNIT_PRICE)) {
+        if ($this->isColumnModified(SellListingPeer::UNIT_PRICE)) {
             $modifiedColumns[':p' . $index++]  = '`UNIT_PRICE`';
         }
-        if ($this->isColumnModified(ListingPeer::QUANTITY)) {
+        if ($this->isColumnModified(SellListingPeer::QUANTITY)) {
             $modifiedColumns[':p' . $index++]  = '`QUANTITY`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `listing` (%s) VALUES (%s)',
+            'INSERT INTO `sell_listing` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -827,7 +827,7 @@ abstract class BaseListing extends BaseObject implements Persistent
             }
 
 
-            if (($retval = ListingPeer::doValidate($this, $columns)) !== true) {
+            if (($retval = SellListingPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
@@ -851,7 +851,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = ListingPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = SellListingPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -911,11 +911,11 @@ abstract class BaseListing extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['Listing'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['SellListing'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Listing'][$this->getPrimaryKey()] = true;
-        $keys = ListingPeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['SellListing'][$this->getPrimaryKey()] = true;
+        $keys = SellListingPeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getListingDate(),
@@ -947,7 +947,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = ListingPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = SellListingPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -1006,7 +1006,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = ListingPeer::getFieldNames($keyType);
+        $keys = SellListingPeer::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setListingDate($arr[$keys[1]]);
@@ -1024,15 +1024,15 @@ abstract class BaseListing extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(ListingPeer::DATABASE_NAME);
+        $criteria = new Criteria(SellListingPeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(ListingPeer::ID)) $criteria->add(ListingPeer::ID, $this->id);
-        if ($this->isColumnModified(ListingPeer::LISTING_DATE)) $criteria->add(ListingPeer::LISTING_DATE, $this->listing_date);
-        if ($this->isColumnModified(ListingPeer::LISTING_TIME)) $criteria->add(ListingPeer::LISTING_TIME, $this->listing_time);
-        if ($this->isColumnModified(ListingPeer::ITEM_ID)) $criteria->add(ListingPeer::ITEM_ID, $this->item_id);
-        if ($this->isColumnModified(ListingPeer::LISTINGS)) $criteria->add(ListingPeer::LISTINGS, $this->listings);
-        if ($this->isColumnModified(ListingPeer::UNIT_PRICE)) $criteria->add(ListingPeer::UNIT_PRICE, $this->unit_price);
-        if ($this->isColumnModified(ListingPeer::QUANTITY)) $criteria->add(ListingPeer::QUANTITY, $this->quantity);
+        if ($this->isColumnModified(SellListingPeer::ID)) $criteria->add(SellListingPeer::ID, $this->id);
+        if ($this->isColumnModified(SellListingPeer::LISTING_DATE)) $criteria->add(SellListingPeer::LISTING_DATE, $this->listing_date);
+        if ($this->isColumnModified(SellListingPeer::LISTING_TIME)) $criteria->add(SellListingPeer::LISTING_TIME, $this->listing_time);
+        if ($this->isColumnModified(SellListingPeer::ITEM_ID)) $criteria->add(SellListingPeer::ITEM_ID, $this->item_id);
+        if ($this->isColumnModified(SellListingPeer::LISTINGS)) $criteria->add(SellListingPeer::LISTINGS, $this->listings);
+        if ($this->isColumnModified(SellListingPeer::UNIT_PRICE)) $criteria->add(SellListingPeer::UNIT_PRICE, $this->unit_price);
+        if ($this->isColumnModified(SellListingPeer::QUANTITY)) $criteria->add(SellListingPeer::QUANTITY, $this->quantity);
 
         return $criteria;
     }
@@ -1047,8 +1047,8 @@ abstract class BaseListing extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(ListingPeer::DATABASE_NAME);
-        $criteria->add(ListingPeer::ID, $this->id);
+        $criteria = new Criteria(SellListingPeer::DATABASE_NAME);
+        $criteria->add(SellListingPeer::ID, $this->id);
 
         return $criteria;
     }
@@ -1089,7 +1089,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of Listing (or compatible) type.
+     * @param      object $copyObj An object of SellListing (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1129,7 +1129,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 Listing Clone of current object.
+     * @return                 SellListing Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1149,12 +1149,12 @@ abstract class BaseListing extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return   ListingPeer
+     * @return   SellListingPeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new ListingPeer();
+            self::$peer = new SellListingPeer();
         }
 
         return self::$peer;
@@ -1164,7 +1164,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      * Declares an association between this object and a Item object.
      *
      * @param                  Item $v
-     * @return                 Listing The current object (for fluent API support)
+     * @return                 SellListing The current object (for fluent API support)
      * @throws PropelException
      */
     public function setItem(Item $v = null)
@@ -1180,7 +1180,7 @@ abstract class BaseListing extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the Item object, it will not be re-added.
         if ($v !== null) {
-            $v->addListing($this);
+            $v->addSellListing($this);
         }
 
 
@@ -1204,7 +1204,7 @@ abstract class BaseListing extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aItem->addListings($this);
+                $this->aItem->addSellListings($this);
              */
         }
 
@@ -1255,7 +1255,7 @@ abstract class BaseListing extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(ListingPeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(SellListingPeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
@@ -1268,4 +1268,4 @@ abstract class BaseListing extends BaseObject implements Persistent
         return $this->alreadyInSave;
     }
 
-} // BaseListing
+} // BaseSellListing

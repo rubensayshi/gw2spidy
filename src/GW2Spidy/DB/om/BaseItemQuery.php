@@ -12,12 +12,13 @@ use \PropelCollection;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
+use GW2Spidy\DB\BuyListing;
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemPeer;
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemType;
-use GW2Spidy\DB\Listing;
+use GW2Spidy\DB\SellListing;
 
 /**
  * Base class that represents a query for the 'item' table.
@@ -62,9 +63,13 @@ use GW2Spidy\DB\Listing;
  * @method     ItemQuery rightJoinItemSubType($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ItemSubType relation
  * @method     ItemQuery innerJoinItemSubType($relationAlias = null) Adds a INNER JOIN clause to the query using the ItemSubType relation
  *
- * @method     ItemQuery leftJoinListing($relationAlias = null) Adds a LEFT JOIN clause to the query using the Listing relation
- * @method     ItemQuery rightJoinListing($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Listing relation
- * @method     ItemQuery innerJoinListing($relationAlias = null) Adds a INNER JOIN clause to the query using the Listing relation
+ * @method     ItemQuery leftJoinSellListing($relationAlias = null) Adds a LEFT JOIN clause to the query using the SellListing relation
+ * @method     ItemQuery rightJoinSellListing($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SellListing relation
+ * @method     ItemQuery innerJoinSellListing($relationAlias = null) Adds a INNER JOIN clause to the query using the SellListing relation
+ *
+ * @method     ItemQuery leftJoinBuyListing($relationAlias = null) Adds a LEFT JOIN clause to the query using the BuyListing relation
+ * @method     ItemQuery rightJoinBuyListing($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BuyListing relation
+ * @method     ItemQuery innerJoinBuyListing($relationAlias = null) Adds a INNER JOIN clause to the query using the BuyListing relation
  *
  * @method     Item findOne(PropelPDO $con = null) Return the first Item matching the query
  * @method     Item findOneOrCreate(PropelPDO $con = null) Return the first Item matching the query, or a new Item object populated from the query conditions when no match is found
@@ -812,41 +817,41 @@ abstract class BaseItemQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related Listing object
+     * Filter the query by a related SellListing object
      *
-     * @param   Listing|PropelObjectCollection $listing  the related object to use as filter
+     * @param   SellListing|PropelObjectCollection $sellListing  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return   ItemQuery The current query, for fluid interface
      * @throws   PropelException - if the provided filter is invalid.
      */
-    public function filterByListing($listing, $comparison = null)
+    public function filterBySellListing($sellListing, $comparison = null)
     {
-        if ($listing instanceof Listing) {
+        if ($sellListing instanceof SellListing) {
             return $this
-                ->addUsingAlias(ItemPeer::DATA_ID, $listing->getItemId(), $comparison);
-        } elseif ($listing instanceof PropelObjectCollection) {
+                ->addUsingAlias(ItemPeer::DATA_ID, $sellListing->getItemId(), $comparison);
+        } elseif ($sellListing instanceof PropelObjectCollection) {
             return $this
-                ->useListingQuery()
-                ->filterByPrimaryKeys($listing->getPrimaryKeys())
+                ->useSellListingQuery()
+                ->filterByPrimaryKeys($sellListing->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByListing() only accepts arguments of type Listing or PropelCollection');
+            throw new PropelException('filterBySellListing() only accepts arguments of type SellListing or PropelCollection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Listing relation
+     * Adds a JOIN clause to the query using the SellListing relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return ItemQuery The current query, for fluid interface
      */
-    public function joinListing($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinSellListing($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Listing');
+        $relationMap = $tableMap->getRelation('SellListing');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -861,14 +866,14 @@ abstract class BaseItemQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Listing');
+            $this->addJoinObject($join, 'SellListing');
         }
 
         return $this;
     }
 
     /**
-     * Use the Listing relation Listing object
+     * Use the SellListing relation SellListing object
      *
      * @see       useQuery()
      *
@@ -876,13 +881,87 @@ abstract class BaseItemQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \GW2Spidy\DB\ListingQuery A secondary query class using the current class as primary query
+     * @return   \GW2Spidy\DB\SellListingQuery A secondary query class using the current class as primary query
      */
-    public function useListingQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useSellListingQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinListing($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Listing', '\GW2Spidy\DB\ListingQuery');
+            ->joinSellListing($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'SellListing', '\GW2Spidy\DB\SellListingQuery');
+    }
+
+    /**
+     * Filter the query by a related BuyListing object
+     *
+     * @param   BuyListing|PropelObjectCollection $buyListing  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return   ItemQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
+     */
+    public function filterByBuyListing($buyListing, $comparison = null)
+    {
+        if ($buyListing instanceof BuyListing) {
+            return $this
+                ->addUsingAlias(ItemPeer::DATA_ID, $buyListing->getItemId(), $comparison);
+        } elseif ($buyListing instanceof PropelObjectCollection) {
+            return $this
+                ->useBuyListingQuery()
+                ->filterByPrimaryKeys($buyListing->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBuyListing() only accepts arguments of type BuyListing or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the BuyListing relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function joinBuyListing($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('BuyListing');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'BuyListing');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the BuyListing relation BuyListing object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \GW2Spidy\DB\BuyListingQuery A secondary query class using the current class as primary query
+     */
+    public function useBuyListingQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinBuyListing($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BuyListing', '\GW2Spidy\DB\BuyListingQuery');
     }
 
     /**
