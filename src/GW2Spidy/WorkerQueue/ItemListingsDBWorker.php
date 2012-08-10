@@ -49,8 +49,6 @@ class ItemListingsDBWorker implements Worker {
                 $listing->save();
             }
         }
-
-        return $listings;
     }
 
     public static function enqueueWorker($item) {

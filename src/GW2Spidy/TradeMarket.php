@@ -2,13 +2,14 @@
 
 namespace GW2Spidy;
 
+use \Exception;
+
 use GW2Spidy\Util\CacheHandler;
+use GW2Spidy\Util\CurlRequest;
 
 use GW2Spidy\DB\ItemSubType;
-
 use GW2Spidy\DB\ItemType;
 
-use GW2Spidy\Util\CurlRequest;
 
 class TradeMarket {
     const LISTING_TYPE_SELL = 'sells';
@@ -61,8 +62,6 @@ class TradeMarket {
         $queryType = 'all';
         $cacheKey  = "listings::{$id}";
 
-
-
         if (!($listings = $this->cache->get($cacheKey))) {
             $curl = CurlRequest::newInstance("https://tradingpost-live.ncplatform.net/ws/listings.json?id={$id}&type={$queryType}")
                  ->exec()
@@ -70,12 +69,16 @@ class TradeMarket {
 
             $data = json_decode($curl->getResult(), true);
 
-            $listings = isset($data['listings'][$type]) ? $data['listings'][$type] : 'null';
+            if (!isset($data['listings']) || !isset($data['listings'][$type])) {
+                throw new Exception("Failed to retrieve proper listingsdata from the request result");
+            }
+
+            $listings = $data['listings'][$type];
 
             $this->cache->set($cacheKey, $listings, MEMCACHE_COMPRESSED, 10);
         }
 
-        return $listings == 'null' ? array() : $listings;
+        return $listings;
     }
 
     public function getMarketData() {
@@ -89,7 +92,7 @@ class TradeMarket {
             $json = json_decode($matches[1], true);
             return $json['data'];
         } else {
-            throw new \Exception("Failed to extract GW2.market JSON from HTML");
+            throw new Exception("Failed to extract GW2.market JSON from HTML");
         }
     }
 
