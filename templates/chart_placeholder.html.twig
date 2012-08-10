@@ -117,6 +117,9 @@ var initchart_selectzoom = function(chartdata, callback) {
     var placeholder = $("#placeholder");
     var plot;
     var options     = {
+        grid: {
+            hoverable: true,
+        },
         tooltip:  true,
         tooltipOpts: {
             content:    "%s | %x | %y",
