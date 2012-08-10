@@ -13,15 +13,19 @@ class CurlRequest {
     protected $cookiejar;
 
     protected $result;
+    protected $info;
+    protected $responseHeaders;
+    protected $responseBody;
+    protected $responseCookies;
 
     protected static $defaultOptions = array(
-        CURLOPT_RETURNTRANSFER => true,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_FAILONERROR    => false,
         CURLOPT_TIMEOUT        => 10,
         CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_HEADER         => true,
     );
     protected static $defaultHeaders = array(
         "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -38,6 +42,10 @@ class CurlRequest {
         $this->headers = $headers + self::$defaultHeaders;
     }
 
+    /**
+     *
+     * @return \GW2Spidy\Util\CurlRequest
+     */
     public static function newInstance($url, $options = array(), $headers = array()) {
         return new self($url, $options, $headers);
     }
@@ -50,6 +58,43 @@ class CurlRequest {
         return $this->result;
     }
 
+    public function getInfo($key = null) {
+        if (is_null($this->info)) {
+            $this->exec();
+        }
+
+        if (is_null($key)) {
+            return $this->info;
+        } else {
+            return isset($this->info[$key]) ? $this->info[$key] : null;
+        }
+    }
+
+    public function getResponseHeaders($key = null) {
+        if (is_null($this->responseHeaders)) {
+            $this->exec();
+        }
+
+
+        if (is_null($key)) {
+            return $this->responseHeaders;
+        } else {
+            return isset($this->responseHeaders[$key]) ? $this->responseHeaders[$key] : null;
+        }
+    }
+
+    public function getResponseBody() {
+        if (is_null($this->responseBody)) {
+            $this->exec();
+        }
+
+        return $this->responseBody;
+    }
+
+    /**
+     * @throws Exception
+     * @return \GW2Spidy\Util\CurlRequest
+     */
     public function exec() {
         if (!is_null($this->result)) {
             throw new Exception("Can't reuse CurlRequest");
@@ -66,16 +111,56 @@ class CurlRequest {
         }
         $options[CURLOPT_COOKIEJAR]  = CookieJar::getInstance()->getCookieJar();
         $options[CURLOPT_COOKIEFILE] = CookieJar::getInstance()->getCookieJar();
+        $options[CURLOPT_HTTPHEADER] = array_merge($this->headers, isset($options[CURLOPT_HTTPHEADER]) ? $options[CURLOPT_HTTPHEADER] : array());
 
         curl_setopt_array($ch, $options);
 
-        $headers = $this->headers;
-
         $this->result = curl_exec($ch);
+        $this->info   = curl_getinfo($ch);
+
         curl_close($ch);
 
         if (!$this->result) {
             throw new Exception("CurlRequest failed");
+        }
+
+        $this->responseHeaders = array();
+        $this->responseCookies = array();
+
+        // if we've requested headers we can parse them now
+        if ($options[CURLOPT_HEADER]) {
+            // retrieve header string based on reponse info
+            $responseHeader     = trim(substr($this->result, 0, $this->info['header_size']));
+            // retrieve body string based on reponse info
+            $this->responseBody = substr($this->result, $this->info['header_size']);
+
+            // if we have multiple headers we need to get the last one
+            if (strpos($responseHeader, "\r\n\r\n") !== FALSE) {
+                $responseHeader = end(explode("\r\n\r\n", $responseHeader));
+            }
+
+            // bleh windows line endings
+            $responseHeader = str_replace("\r\n", "\n", $responseHeader);
+
+            // explode and parse the headers
+            foreach (explode("\n", $responseHeader) as $line) {
+                $line = explode(':', $line, 2);
+
+                if (count($line) != 2) {
+                    continue;
+                }
+
+                list($k, $v) = $line;
+
+                // cookies \o/ nomnomnom
+                if (strtolower($k) == 'set-cookie') {
+                    $this->responseCookies[] = trim($v);
+                } else {
+                    $this->responseHeaders[$k] = trim($v);
+                }
+            }
+        } else {
+            $this->responseBody = $this->result;
         }
 
         return $this;
@@ -91,6 +176,10 @@ class CurlRequest {
         return $this;
     }
 
+    /**
+     *
+     * @return \GW2Spidy\Util\CurlRequest
+     */
     public function setOption($key, $value) {
         $this->options[$key] = $value;
 

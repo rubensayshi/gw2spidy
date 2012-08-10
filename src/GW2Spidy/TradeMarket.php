@@ -38,6 +38,10 @@ class TradeMarket {
             ->setOption(CURLOPT_POSTFIELDS, http_build_query(array('email' => LOGIN_EMAIL, 'password' => LOGIN_PASSWORD)))
             ->exec()
             ;
+
+        if($curl->getInfo('http_code') >= 400) {
+            throw new Exception("Login request failed with HTTP code {$curl->getInfo('http_code')}!");
+        }
     }
 
     public function getItemByExactName($name) {
@@ -45,7 +49,7 @@ class TradeMarket {
              ->exec()
              ;
 
-        $data = json_decode($curl->getResult(), true);
+        $data = json_decode($curl->getResponseBody(), true);
 
         foreach ($data['results'] as $item) {
             if ($item['name'] == $name) {
@@ -67,7 +71,7 @@ class TradeMarket {
                  ->exec()
                  ;
 
-            $data = json_decode($curl->getResult(), true);
+            $data = json_decode($curl->getResponseBody(), true);
 
             if (!isset($data['listings']) || !isset($data['listings'][$type])) {
                 throw new Exception("Failed to retrieve proper listingsdata from the request result");
@@ -86,7 +90,7 @@ class TradeMarket {
              ->exec()
              ;
 
-        $result = $curl->getResult();
+        $result = $curl->getResponseBody();
 
         if (preg_match("/<script>[\n ]+GW2\.market = (\{.*?\})[\n ]+<\/script>/ms", $result, $matches)) {
             $json = json_decode($matches[1], true);
@@ -114,7 +118,7 @@ class TradeMarket {
              ->exec()
              ;
 
-        $result = $curl->getResult();
+        $result = $curl->getResponseBody();
         $json   = json_decode($result, true);
 
         if (isset($json['results']) && $json['results']) {
