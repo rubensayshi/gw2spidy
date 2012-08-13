@@ -1,14 +1,14 @@
 <div id="placeholder" style="width: {% if width is defined %}width{% else %}100%{% endif %}; height: 400px;"></div>
-<div id="normal_zoom_mode">
+<div id="nav_zoom_mode" style="display: none;">
     <p>You can zoom into the chart by dragging, double clicking or using your scrollwheel. <br />
     </p>
-    <p>You can switch to expertimental zooming mode; <button class="btn">clicky!</button>
+    <p>You can switch to select based zoom mode; <button class="btn">clicky!</button>
     </p>
 </div>
-<div id="experimental_zoom_mode" style="display: none;">
+<div id="select_zoom_mode">
     <p> ou can zoom into the chart by dragging a selection of the area you want to zoom into. <br />
     </p>
-    <p>You can switch to normal zooming mode; <button class="btn">clicky!</button>
+    <p>You can switch to navigation based zoom mode; <button class="btn">clicky!</button>
     </p>
 </div>
 
@@ -39,7 +39,7 @@ var formatGW2Money = function(copper) {
     }
 };
 
-var initchart_normal = function(chartdata, callback) {
+var initchart_navzoom = function(chartdata, callback) {
     var chartdata   = $.parseJSON(chartdata);
     var placeholder = $("#placeholder");
     var plot;
@@ -186,7 +186,7 @@ var initchart_selectzoom = function(chartdata, callback) {
     }
 };
 
-var initchart = initchart_normal;
+var initchart = initchart_selectzoom;
 
 var fetchchart = function(callback) {
     $.ajax("{{ "/chart/" ~ item.dataId }}", {
@@ -196,22 +196,22 @@ var fetchchart = function(callback) {
     });
 }
 
-$("#normal_zoom_mode button").click(function() {
-    $("#normal_zoom_mode").hide();
-    $("#experimental_zoom_mode").show();
+$("#nav_zoom_mode button").click(function() {
+    $("#nav_zoom_mode").hide();
+    $("#select_zoom_mode").show();
 
     initchart = initchart_selectzoom;
     fetchchart(function() {
-        alert('switched to experimental zoom mode!');
+        alert('switched to select based zoom mode!');
     });
 });
-$("#experimental_zoom_mode button").click(function() {
-    $("#normal_zoom_mode").show();
-    $("#experimental_zoom_mode").hide();
+$("#select_zoom_mode button").click(function() {
+    $("#nav_zoom_mode").show();
+    $("#select_zoom_mode").hide();
 
-    initchart = initchart_normal;
+    initchart = initchart_navzoom;
     fetchchart(function() {
-        alert('switched to normal zoom mode!');
+        alert('switched to navigation based zoom mode!');
     });
 });
 
