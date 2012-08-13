@@ -39,39 +39,46 @@ var formatGW2Money = function(copper) {
     }
 };
 
+var base_options = {
+    grid: {
+        hoverable: true,
+    },
+    tooltip:  true,
+    tooltipOpts: {
+        content:    "%s | %x | %y",
+        stringFormat: {
+            yFormat: formatGW2Money
+        },
+        dateFormat: "%Y-%m-%d %H:%S"
+    },
+    series: {
+        lines:  { show: true },
+        points: { show: true }
+    },
+    xaxis: {
+        mode:            "time",
+        timeformat:      "%d-%b",
+        twelveHourClock: false,
+        minTickSize:     [1, "day"]
+    },
+    yaxis: {
+        minTickSize: 1,
+        tickFormatter: formatGW2Money
+    }
+};
+
 var initchart_navzoom = function(chartdata, callback) {
     var chartdata   = $.parseJSON(chartdata);
     var placeholder = $("#placeholder");
     var plot;
-    var options     = {
-        grid: {
-            hoverable: true,
-        },
-        tooltip:  true,
-        tooltipOpts: {
-            content:    "%s | %x | %y",
-            stringFormat: {
-                yFormat: formatGW2Money
-            },
-            dateFormat: "%Y-%m-%d %H:%S"
-        },
-        series: {
-            lines:  { show: true },
-            points: { show: true }
-        },
+    var options     = $.extend(true, {}, base_options, {
         xaxis: {
-            mode:            "time",
-            timeformat:      "%d-%b",
-            twelveHourClock: false,
             zoomRange:       null,
-            panRange:        null,
-            minTickSize:     [1, "day"]
+            panRange:        null
         },
         yaxis: {
             zoomRange:   false,
-            panRange:    false,
-            minTickSize: 1,
-            tickFormatter: formatGW2Money
+            panRange:    false
         },
         zoom: {
             interactive: true
@@ -79,7 +86,7 @@ var initchart_navzoom = function(chartdata, callback) {
         pan: {
             interactive: true
         }
-    };
+    });
     var xaxis_default = null;
 
     placeholder.bind('plotzoom', function() {
@@ -116,34 +123,9 @@ var initchart_selectzoom = function(chartdata, callback) {
     var chartdata   = $.parseJSON(chartdata);
     var placeholder = $("#placeholder");
     var plot;
-    var options     = {
-        grid: {
-            hoverable: true,
-        },
-        tooltip:  true,
-        tooltipOpts: {
-            content:    "%s | %x | %y",
-            stringFormat: {
-                yFormat: formatGW2Money
-            },
-            dateFormat: "%Y-%m-%d %H:%S"
-        },
-        series: {
-            lines:  { show: true },
-            points: { show: true }
-        },
-        xaxis: {
-            mode:            "time",
-            timeformat:      "%d-%b",
-            twelveHourClock: false,
-            minTickSize:     [1, "day"]
-        },
-        yaxis: {
-            minTickSize: 1,
-            tickFormatter: formatGW2Money
-        },
+    var options     = $.extend(true, {}, base_options, {
         selection: { mode: "x" }
-    };
+    });
     var xaxis_default = null;
 
     placeholder.unbind();
