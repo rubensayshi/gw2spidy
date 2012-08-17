@@ -162,6 +162,8 @@ class CurlRequest {
     }
 
     protected function extractHeaders($responseHeader, $cookiesonly = false) {
+        $responseHeader = str_replace("\r\n", "\n", $responseHeader);
+
         // explode and parse the headers
         foreach (explode("\n", $responseHeader) as $line) {
             $line = explode(':', $line, 2);
@@ -173,11 +175,14 @@ class CurlRequest {
             list($k, $v) = $line;
 
             // cookies \o/ nomnomnom
-            if (strtolower($k) == 'set-cookie') {
+            if (strtolower(trim($k)) == 'set-cookie') {
                 $cookiesplit = explode("=", $v);
 
-                if (count($cookiesplit) != 2) {
+                if (count($cookiesplit) < 2) {
                     continue;
+                } else if (count($cookiesplit) > 2) {
+                    // this is dirty as @&#%@ but let's roll with this for now
+                    $cookiesplit = array($cookiesplit[0], reset(explode(" ", $cookiesplit[1])));
                 }
 
                 $this->responseCookies[trim($cookiesplit[0])] = trim($cookiesplit[1]);
