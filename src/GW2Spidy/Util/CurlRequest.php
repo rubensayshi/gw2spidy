@@ -185,6 +185,10 @@ class CurlRequest {
                     $cookiesplit = array($cookiesplit[0], reset(explode(" ", $cookiesplit[1])));
                 }
 
+                if (substr($cookiesplit[1], -1, 1) == ";") {
+                    $cookiesplit[1] = substr($cookiesplit[1], 0, -1);
+                }
+
                 $this->responseCookies[trim($cookiesplit[0])] = trim($cookiesplit[1]);
             } else if (!$cookiesonly) {
                 $this->responseHeaders[trim($k)] = trim($v);
