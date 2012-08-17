@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\WorkerQueue;
 
+use GW2Spidy\DB\SellListing;
+
 use GW2Spidy\Util\Functions;
 
 use GW2Spidy\Queue\WorkerQueueManager;
@@ -27,6 +29,7 @@ class ItemDBWorker implements Worker {
     }
 
     protected function buildItemDB($type, $subtype, $offset) {
+        $now    = new \DateTime();
         $items  = TradeMarket::getInstance()->getItemList($type, $subtype, $offset);
 
         if ($items) {
@@ -49,6 +52,13 @@ class ItemDBWorker implements Worker {
 
                     $item->save();
                 }
+
+                $sellListing = new SellListing();
+                $sellListing->setItem($item);
+                $sellListing->setListingDate($now);
+                $sellListing->setListingDate($now);
+                $sellListing->setQuantity(1);
+                $sellListing->setUnitPrice($itemData['min_sale_unit_price']);
             }
         }
 
