@@ -83,6 +83,19 @@ class CurlRequest {
         }
     }
 
+    public function getResponseCookies($key = null) {
+        if (is_null($this->responseCookies)) {
+            $this->exec();
+        }
+
+
+        if (is_null($key)) {
+            return $this->responseCookies;
+        } else {
+            return isset($this->responseCookies[$key]) ? $this->responseCookies[$key] : null;
+        }
+    }
+
     public function getResponseBody() {
         if (is_null($this->responseBody)) {
             $this->exec();
@@ -130,40 +143,48 @@ class CurlRequest {
         // if we've requested headers we can parse them now
         if ($options[CURLOPT_HEADER]) {
             // retrieve header string based on reponse info
-            $responseHeader     = trim(substr($this->result, 0, $this->info['header_size']));
+            $responseHeaders    = trim(substr($this->result, 0, $this->info['header_size']));
             // retrieve body string based on reponse info
             $this->responseBody = substr($this->result, $this->info['header_size']);
 
-            // if we have multiple headers we need to get the last one
-            if (strpos($responseHeader, "\r\n\r\n") !== FALSE) {
-                $responseHeader = end(explode("\r\n\r\n", $responseHeader));
+            $responseHeaders = explode("\r\n\r\n", $responseHeaders);
+
+            foreach ($responseHeaders as $responseHeader) {
+                $this->extractHeaders($responseHeader, true);
             }
 
-            // bleh windows line endings
-            $responseHeader = str_replace("\r\n", "\n", $responseHeader);
-
-            // explode and parse the headers
-            foreach (explode("\n", $responseHeader) as $line) {
-                $line = explode(':', $line, 2);
-
-                if (count($line) != 2) {
-                    continue;
-                }
-
-                list($k, $v) = $line;
-
-                // cookies \o/ nomnomnom
-                if (strtolower($k) == 'set-cookie') {
-                    $this->responseCookies[] = trim($v);
-                } else {
-                    $this->responseHeaders[$k] = trim($v);
-                }
-            }
+            $this->extractHeaders(end($responseHeaders));
         } else {
             $this->responseBody = $this->result;
         }
 
         return $this;
+    }
+
+    protected function extractHeaders($responseHeader, $cookiesonly = false) {
+        // explode and parse the headers
+        foreach (explode("\n", $responseHeader) as $line) {
+            $line = explode(':', $line, 2);
+
+            if (count($line) != 2) {
+                continue;
+            }
+
+            list($k, $v) = $line;
+
+            // cookies \o/ nomnomnom
+            if (strtolower($k) == 'set-cookie') {
+                $cookiesplit = explode("=", $v);
+
+                if (count($cookiesplit) != 2) {
+                    continue;
+                }
+
+                $this->responseCookies[trim($cookiesplit[0])] = trim($cookiesplit[1]);
+            } else if (!$cookiesonly) {
+                $this->responseHeaders[trim($k)] = trim($v);
+            }
+        }
     }
 
     public function setOptions($options, $overwrite = false) {

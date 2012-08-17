@@ -39,6 +39,16 @@ class TradeMarket {
             ->exec()
             ;
 
+        if ($sid = $curl->getResponseCookies('s')) {
+            $loginURL = "/tradingpost-live.ncplatform.net/authenticate?account_name=Guild Wars 2";
+            $loginURL .= "&session_key={$sid}";
+            $curl = CurlRequest::newInstance($loginURL)
+                        ->exec();
+        } else {
+            throw new Exception("Login request failed, no SID.");
+        }
+
+
         if($curl->getInfo('http_code') >= 400) {
             throw new Exception("Login request failed with HTTP code {$curl->getInfo('http_code')}!");
         }
