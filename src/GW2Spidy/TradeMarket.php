@@ -40,8 +40,10 @@ class TradeMarket {
             ;
 
         if ($sid = $curl->getResponseCookies('s')) {
-            $loginURL = "/tradingpost-live.ncplatform.net/authenticate?account_name=Guild Wars 2";
+            $loginURL = "https://tradingpost-live.ncplatform.net/authenticate";
+            $loginURL .= "?account_name=". urlencode("Guild Wars 2");
             $loginURL .= "&session_key={$sid}";
+
             $curl = CurlRequest::newInstance($loginURL)
                         ->exec();
         } else {

@@ -28,7 +28,7 @@ class CookieJar {
         return $this->cookiejar;
     }
 
-    protected function cleanupCookieJar() {
+    public function cleanupCookieJar() {
         unlink($this->getCookieJar());
     }
 }
