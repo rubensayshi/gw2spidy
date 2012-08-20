@@ -57,7 +57,7 @@ class ItemDBWorker implements Worker {
                     $sellListing = new SellListing();
                     $sellListing->setItem($item);
                     $sellListing->setListingDate($now);
-                    $sellListing->setListingDate($now);
+                    $sellListing->setListingTime($now);
                     $sellListing->setQuantity(1);
                     $sellListing->setUnitPrice($itemData['min_sale_unit_price']);
                     $sellListing->setListings(1);
