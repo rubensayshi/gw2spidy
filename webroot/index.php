@@ -133,38 +133,19 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     /*----------------
      *  SELL LISTINGS
      *----------------*/
-    $dataset = array(
+    $chart[] = array(
         'data'   => SellListingQuery::getChartDatasetDataForItem($item),
         'label'  => "Sell Listings",
     );
-
-    $chart[] = $dataset;
 
     /*---------------
      *  BUY LISTINGS
      *---------------*/
     /* buy listings are disabled for now, we can't get the data anyway!
-    $dataset = array(
-        'data'   => array(),
+    $chart[] = array(
+        'data'   => BuyListingQuery::getChartDatasetDataForItem($item),
         'label'  => "Buy Listings",
     );
-    $listings = BuyListingQuery::create()
-                ->select(array('listingDate', 'listingTime'))
-                ->withColumn('MIN(unit_price)', 'min_unit_price')
-                ->groupBy('listingDate')
-                ->groupBy('listingTime')
-                ->filterByItemId($item->getDataId())
-                ->find();
-
-    foreach ($listings as $listingEntry) {
-        $date = new DateTime("{$listingEntry['listingDate']} {$listingEntry['listingTime']} UTC");
-
-        $listingEntry['min_unit_price'] = round($listingEntry['min_unit_price'], 2);
-
-        $dataset['data'][] = array($date->getTimestamp()*1000, $listingEntry['min_unit_price']);
-    }
-
-    $chart[] = $dataset;
     //*/
 
     $wrap    = false;
