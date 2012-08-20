@@ -20,7 +20,7 @@ require dirname(__FILE__) . '/../autoload.php';
 
 $app = new Application();
 $app['debug'] = false;
-$app->debugSQL();
+false && $app->debugSQL();
 
 $toInt = function($val) {
     return (int) $val;
