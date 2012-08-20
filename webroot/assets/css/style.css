@@ -8,25 +8,52 @@ body {
             background-size: cover;
 }
  
-.item {
+div.item {
     clear: both;
 }
 
-.item .image {
+div.item .image {
     float: left;
 }
 
-.item .stats {
+div.item .stats {
     float: left;
     margin-left: 5px;
 }
 
-.item .stats .name {
+div.item .stats .name {
     font-weight: bold;
 }
 
-.item .stats .rarity.common {
+div.item .stats .rarity.common {
     color: gray;
+}
+
+.item-list-table .image {
+    margin-right: 10px;
+}
+
+.item-list-table tr, .item-list-table td {
+    height: 32px;
+    line-height: 32px;
+}
+
+.item-list-table .restriction-level {
+    min-width: 50px;
+    width: 5%;
+    text-align: center;
+}
+
+.item-list-table .rarity {
+    min-width: 75px;
+    width: 10%;
+    text-align: center;
+}
+
+.item-list-table .type {
+    min-width: 140px;
+    width: 20%;
+    text-align: center;
 }
 
 .navbar .nav > li > a {

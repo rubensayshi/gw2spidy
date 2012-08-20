@@ -1,12 +1,6 @@
 {% extends "content_sidebar.html.twig" %}
 
 {% block content %}
-<ul class="nav nav-pills nav-stacked">
-    {% for item in items %}
-        {% include "item_snippet.html.twig" with {'item': item, 'tag': 'li', 'href': '/item/' ~ item.dataId} %}
-    {% endfor %}
-</ul>
-
 <div class="pagination">
     <ul>
         <li class="{% if page <= 1 %}disabled{% endif %}"><a href="{{ baseurl ~ "/" ~ (page-1) }}">Prev</a></li>
@@ -18,5 +12,34 @@
         <li class="{% if page >= lastpage %}disabled{% endif %}"><a href="{{ baseurl ~ "/" ~ (page+1) }}">Next</a></li>
     </ul>
 </div>
+
+<table class="item-list-table table table-striped table-condensed">
+    <thead>
+        <th class="name">Name</th>
+        <th class="restriction-level">Level</th>
+        <th class="rarity">Rarity</th>
+        <th class="type">Type</th>
+    </thead>
+    {% for item in items %}
+        <tr class="item">
+            <td>
+                <a href="/item/{{ item.dataId }}" class="name">
+                    <img class="image" src="{{ item.img }}" /> {{ item.name }}
+                </a>
+            </td>
+            <td class="restriction-level">{% if item.restrictionLevel %}{{ item.restrictionLevel }}{% endif %}</td>
+            <td class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</td>
+            <td class="type">
+                {% if item.itemType %}
+                    <span class="item-type">{{ item.itemType.title }}</span>
+                {% endif %}
+                {% if item.itemSubType %}
+                    {% if item.itemType %} // {% endif %}
+                    <span class="item-sub-type">{{ item.itemSubType.title }}</span>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
 
 {% endblock %}

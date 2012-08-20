@@ -66,7 +66,7 @@ $app->get("/types", function() use($app) {
  * ----------------------
  */
 $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use($app) {
-    $itemsperpage = 10;
+    $itemsperpage = 50;
     $baseurl      = "/type/{$type}/{$subtype}";
     $q            = ItemQuery::create();
 
