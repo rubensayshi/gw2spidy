@@ -2,6 +2,7 @@
 
 namespace GW2Spidy\DB;
 
+use GW2Spidy\Util\ApplicationCache;
 use GW2Spidy\DB\om\BaseItem;
 
 
@@ -39,10 +40,17 @@ class Item extends BaseItem {
      */
     public function getItemSubType(PropelPDO $con = null) {
         if ($this->aItemSubType === null && ($this->item_sub_type_id !== null)) {
-            $this->aItemSubType = ItemSubTypeQuery::create()
-            ->filterByItem($this)
-            ->filterByMainTypeId($this->getItemTypeId())
-            ->findOne($con);
+            $cacheKey            = __CLASS__ . "::" . __METHOD__ . "::" . $this->getDataId();
+            $this->aItemSubType  = ApplicationCache::getInstance()->get($cacheKey);
+
+            if (!$this->aItemSubType) {
+                $this->aItemSubType = ItemSubTypeQuery::create()
+                    ->filterByItem($this)
+                    ->filterByMainTypeId($this->getItemTypeId())
+                    ->findOne($con);
+
+                ApplicationCache::getInstance()->set($cacheKey, $this->aItemSubType, MEMCACHE_COMPRESSED, 86400);
+            }
         }
 
         return $this->aItemSubType;
