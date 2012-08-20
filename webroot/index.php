@@ -19,7 +19,8 @@ require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
 
 $app = new Application();
-$app['debug'] = true;
+$app['debug'] = false;
+$app->debugSQL();
 
 $toInt = function($val) {
     return (int) $val;
