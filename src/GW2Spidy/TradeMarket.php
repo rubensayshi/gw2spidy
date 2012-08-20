@@ -33,14 +33,14 @@ class TradeMarket {
     }
 
     public function doLogin() {
-        $curl = CurlRequest::newInstance(AUTH_URL)
+        $curl = CurlRequest::newInstance(AUTH_URL . "/login")
             ->setOption(CURLOPT_POST, true)
             ->setOption(CURLOPT_POSTFIELDS, http_build_query(array('email' => LOGIN_EMAIL, 'password' => LOGIN_PASSWORD)))
             ->exec()
             ;
 
         if ($sid = $curl->getResponseCookies('s')) {
-            $loginURL = "https://tradingpost-live.ncplatform.net/authenticate";
+            $loginURL = TRADINGPOST_URL . "/authenticate";
             $loginURL .= "?account_name=". urlencode("Guild Wars 2");
             $loginURL .= "&session_key={$sid}";
 
@@ -57,7 +57,7 @@ class TradeMarket {
     }
 
     public function getItemByExactName($name) {
-        $curl = CurlRequest::newInstance("https://tradingpost-live.ncplatform.net/ws/search.json?text=".urlencode($name)."&levelmin=0&levelmax=80")
+        $curl = CurlRequest::newInstance(TRADINGPOST_URL . " /ws/search.json?text=".urlencode($name)."&levelmin=0&levelmax=80")
              ->exec()
              ;
 
@@ -79,7 +79,7 @@ class TradeMarket {
         $cacheKey  = "listings::{$id}";
 
         if (!($listings = $this->cache->get($cacheKey))) {
-            $curl = CurlRequest::newInstance("https://tradingpost-live.ncplatform.net/ws/listings.json?id={$id}&type={$queryType}")
+            $curl = CurlRequest::newInstance(TRADINGPOST_URL . "/ws/listings.json?id={$id}&type={$queryType}")
                  ->exec()
                  ;
 
@@ -98,7 +98,7 @@ class TradeMarket {
     }
 
     public function getMarketData() {
-        $curl = CurlRequest::newInstance("https://tradingpost-live.ncplatform.net/")
+        $curl = CurlRequest::newInstance(TRADINGPOST_URL)
              ->exec()
              ;
 
@@ -117,7 +117,7 @@ class TradeMarket {
         $typeId    = ($type instanceof ItemType)       ? $type->getId()    : $type;
         $subTypeId = ($subType instanceof ItemSubType) ? $subType->getId() : $subType;
 
-        $url = "https://tradingpost-live.ncplatform.net/ws/search.json?text=&levelmin=0&levelmax=80&offset={$offset}";
+        $url = TRADINGPOST_URL . "/ws/search.json?text=&levelmin=0&levelmax=80&offset={$offset}";
 
         if ($typeId !== null) {
             $url = "{$url}&type={$typeId}";

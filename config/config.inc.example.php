@@ -7,7 +7,17 @@
 define('LOGIN_EMAIL',    'test@example.com');
 define('LOGIN_PASSWORD', 'p@ssw0rd');
 
-define('AUTH_URL', 'https://account.guildwars2.com/login?redirect_uri=http://tradingpost-live.ncplatform.net/authenticate?source=%2F&game_code=gw2');
+// base URL for most things we do
+define('TRADINGPOST_URL', 'https://tradingpost-live.ncplatform.net');
+// base URL for the login process
+define('AUTH_URL', 'https://account.guildwars2.com');
 
-// define and set to true if you don't want to use memcache
+// devmode, when on you get errors on your screen and twigcache will refresh when you edit files
+// enable unless you're running in production!
+define('DEV_MODE', true);
+
+// sql dump mode, propel logs to configured log file when on
+// define('SQL_LOG_MODE', true);
+
+// when defined and TRUE we won't use memcache
 // define('MEMCACHED_DISABLED', true);

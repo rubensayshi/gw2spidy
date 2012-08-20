@@ -10,13 +10,38 @@ class Application extends \Silex\Application {
     protected $homeActive = false;
     protected $displayTypes = null;
 
+    protected static $instance;
+
+    /**
+     * @return Application
+     */
+    public static function getInstance() {
+        if (is_null(static::$instance)) {
+            static::$instance = new static(true);
+        }
+
+        return static::$instance;
+    }
+
     public function __construct() {
-        $this->time    = microtime(true);
+        $this->time = microtime(true);
 
         parent::__construct();
     }
 
-    public function debugSQL() {
+    public function isDevMode() {
+        return defined('DEV_MODE') && DEV_MODE;
+    }
+
+    public function isSQLLogMode() {
+        return defined('SQL_LOG_MODE') && SQL_LOG_MODE;
+    }
+
+    public function isMemcachedEnabled() {
+        return !defined('MEMCACHED_DISABLED') || !MEMCACHED_DISABLED;
+    }
+
+    public function enableSQLLogging() {
         $con = \Propel::getConnection();
 
         $con->setLogLevel(\Propel::LOG_DEBUG);

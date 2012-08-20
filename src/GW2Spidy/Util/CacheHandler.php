@@ -2,8 +2,16 @@
 
 namespace GW2Spidy\Util;
 
+use GW2Spidy\Application;
+
 use \Memcache;
 
+/**
+ *
+ * @TODO memcache will emit "PHP Warning:  MemcachePool::get(): No servers added to memcache connection"
+ *  when there are no connections (if we've disabled memcache), it's half decent workaround for now ... but would be better to check for it ...
+ *
+ */
 class CacheHandler extends Memcache implements MemcacheReplacement
 {
     static protected $instances = array();
@@ -17,9 +25,7 @@ class CacheHandler extends Memcache implements MemcacheReplacement
         if (!isset(static::$instances[$key])) {
             static::$instances[$key] = new static($key);
 
-            // don't connect if MEMCACHED_DISABLED is defined and true
-            // unconnected memcache instance will not throw errors when we call the methods but it won't store anything either ;)
-            if (!(defined('MEMCACHED_DISABLED') && MEMCACHED_DISABLED)) {
+            if (Application::getInstance()->isMemcachedEnabled()) {
                 static::$instances[$key]->connect('localhost');
             }
         }
