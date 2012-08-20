@@ -19,6 +19,7 @@ use GW2Spidy\DB\om\BaseItem;
  */
 class Item extends BaseItem {
     const RARITY_COMMON = 1;
+    const FALSE_POSITIVE = 'FALSE_POSITIVE';
 
     public function getRarityName() {
         switch ($this->getRarity()) {
@@ -43,13 +44,15 @@ class Item extends BaseItem {
             $cacheKey            = __CLASS__ . "::" . __METHOD__ . "::" . $this->getDataId();
             $this->aItemSubType  = ApplicationCache::getInstance()->get($cacheKey);
 
-            if (!$this->aItemSubType) {
+            if ($this->aItemSubType == static::FALSE_POSITIVE) {
+                $this->aItemSubType = null;
+            } else if (!$this->aItemSubType) {
                 $this->aItemSubType = ItemSubTypeQuery::create()
                     ->filterByItem($this)
                     ->filterByMainTypeId($this->getItemTypeId())
                     ->findOne($con);
 
-                ApplicationCache::getInstance()->set($cacheKey, $this->aItemSubType, MEMCACHE_COMPRESSED, 86400);
+                ApplicationCache::getInstance()->set($cacheKey, $this->aItemSubType ?: static::FALSE_POSITIVE, MEMCACHE_COMPRESSED, 86400);
             }
         }
 
