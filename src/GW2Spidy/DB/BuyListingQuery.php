@@ -3,6 +3,7 @@
 namespace GW2Spidy\DB;
 
 use \DateTime;
+use \DateTimeZone;
 use GW2Spidy\Util\ApplicationCache;
 use GW2Spidy\DB\om\BaseBuyListingQuery;
 
@@ -35,7 +36,8 @@ class BuyListingQuery extends BaseBuyListingQuery {
                             ->find();
 
             foreach ($listings as $listingEntry) {
-                $date = new DateTime("{$listingEntry['listingDate']} {$listingEntry['listingTime']} UTC");
+                $date = new DateTime("{$listingEntry['listingDate']} {$listingEntry['listingTime']}");
+                $date->setTimezone(new DateTimeZone('UTC'));
 
                 $listingEntry['min_unit_price'] = round($listingEntry['min_unit_price'], 2);
 
