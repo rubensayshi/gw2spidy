@@ -158,6 +158,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     /*---------------
      *  BUY LISTINGS
      *---------------*/
+    /* buy listings are disabled for now, we can't get the data anyway!
     $dataset = array(
         'data'   => array(),
         'label'  => "Buy Listings",
@@ -179,6 +180,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     }
 
     $chart[] = $dataset;
+    //*/
 
     $wrap    = false;
     $content = json_encode($chart);
