@@ -90,17 +90,11 @@ RequestSlots Setup
 ------------------
 Run `tools/setup-request-slots.php` to create the initial request slots, you can also run this during development to reinitiate the slots so you can instantly use them again if they are all on cooldown.
 
-TinyInt Setup
--------------
-To get the top10 listings grouped by ItemID and listing time/date you need to do some tricky stuff in the query,
-for this we need a table with a range from 1 to 255, the `tools/setup-tinyint.php` sets this up.
-For more info read: http://code.openark.org/blog/mysql/sql-selecting-top-n-records-per-group
-
 First Spider Run
 ----------------
 The first time you'll have to run `daemons/fill-queue-daily.php` to enqueue a job which will fetch all the item (sub)types.
 Then run `daemons/worker-queue.php` to execute that job.
-After that is done, run  `daemons/fill-queue-daily.php` again, this will enqueue a job for each (sub)type to start fetch item information.
+After that is done, run  `daemons/fill-queue-listings.php` again, this will enqueue a job for each (sub)type to start fetch item information.
 Then run `daemons/worker-queue.php` again until it's done (needs to fetch about 600~650 pages of items).
 
 The Worker Queue
@@ -108,13 +102,16 @@ The Worker Queue
 When you run `daemons/worker-queue.php` the script will do 50 loops to either fetch an item from the queue to execute or if none it will sleep.
 It will also sleep if there are no slots available.
 
-I personally run 4 of these in parallel using `while [ true ]; do php daemons/worker-queue.php >> /var/log/gw2spidy/worker.1.log; echo "restart"; done;` 
+Previously I used to run 4 of these in parallel using `while [ true ]; do php daemons/worker-queue.php >> /var/log/gw2spidy/worker.1.log; echo "restart"; done;` 
 Where I replace the .1 with which number of the 4 it is so I got 4 logs to tail.
-4 processes is enough to handle all item listings every hour and with a VPS with 2 cores and it barely uses any load (thanks to redis!).
 
-Fill Queue Hourly
+I now added some bash scripts in the `bin` folder to `bin/start-workers.sh 4` and `bin/stop-workers.sh` to manage them.
+You have to `mkdir -p /var/run/gw2spidy/` first though since I manage the processIDs there.
+
+Fill Queue Listings
 -----------------
-The `daemon/fill-queue-hourly.php` script enqueues a job for every item in the database to fetch the listings.
+The `daemon/fill-queue-listings.php` atm does the same as the fill queue daily since we can no longer fetch listings directly. 
+We just do it more frequent then daily xD
 
 Fill Queue Daily
 -----------------
