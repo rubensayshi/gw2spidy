@@ -92,6 +92,12 @@
          *  the 2nd value for each entry can be an altered opacity
          */
         $(window).ready(function() {
+            // IE8 and older won't support RGBA so the background makes a mess ...
+            if ($.browser.msie && $.browser.version <= 8) {
+                return;
+            }
+
+
             var images = [
                 // some black and white wallpapers
                 ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GW2_GhostsOfAscalonWallpaper-1920x1200.jpg", 0.4],
