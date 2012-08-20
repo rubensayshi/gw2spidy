@@ -2,6 +2,7 @@
 
 namespace GW2Spidy\DB;
 
+use GW2Spidy\Util\ApplicationCache;
 use GW2Spidy\DB\om\BaseItemType;
 
 
@@ -18,6 +19,19 @@ use GW2Spidy\DB\om\BaseItemType;
  */
 class ItemType extends BaseItemType {
     protected $displaySubTypes = null;
+
+    public function getSubTypes() {
+        $cacheKey = __CLASS__ . "::" . __METHOD__ . "::" . $this->getId();
+        $subtypes = ApplicationCache::getInstance()->get($cacheKey);
+
+        if (!$subtypes) {
+            $subtypes = parent::getSubTypes();
+
+            ApplicationCache::getInstance()->set($cacheKey, $subtypes, MEMCACHE_COMPRESSED, 86400);
+        }
+
+        return $subtypes;
+    }
 
     public function getDisplaySubTypes() {
         if (is_null($this->displaySubTypes)) {
