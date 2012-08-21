@@ -6,7 +6,7 @@
     </p>
 </div>
 <div id="select_zoom_mode">
-    <p> ou can zoom into the chart by dragging a selection of the area you want to zoom into. <br />
+    <p>You can zoom into the chart by dragging a selection of the area you want to zoom into. <br />
     </p>
     <p>You can switch to navigation based zoom mode; <button class="btn">clicky!</button>
     </p>
@@ -197,5 +197,7 @@ $("#select_zoom_mode button").click(function() {
     });
 });
 
-fetchchart();
+$(window).load(function() {
+    fetchchart();
+});
 </script>
