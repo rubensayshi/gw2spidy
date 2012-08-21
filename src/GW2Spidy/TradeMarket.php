@@ -18,10 +18,15 @@ class TradeMarket {
     protected static $instance;
 
     protected $cache;
+    protected $loggedIn = false;
 
     public function __construct() {
-        $this->cache = CacheHandler::getInstance('TradeMarket');
-        $this->doLogin();
+        $this->cache    = CacheHandler::getInstance('TradeMarket');
+        $this->loggedIn = $this->doLogin();
+    }
+
+    public function __destruct() {
+        $this->doLogout();
     }
 
     public static function getInstance() {
@@ -34,10 +39,10 @@ class TradeMarket {
 
     public function doLogin() {
         $curl = CurlRequest::newInstance(AUTH_URL . "/login")
-            ->setOption(CURLOPT_POST, true)
-            ->setOption(CURLOPT_POSTFIELDS, http_build_query(array('email' => LOGIN_EMAIL, 'password' => LOGIN_PASSWORD)))
-            ->exec()
-            ;
+                    ->setOption(CURLOPT_POST, true)
+                    ->setOption(CURLOPT_POSTFIELDS, http_build_query(array('email' => LOGIN_EMAIL, 'password' => LOGIN_PASSWORD)))
+                    ->exec()
+                    ;
 
         if ($sid = $curl->getResponseCookies('s')) {
             $loginURL = TRADINGPOST_URL . "/authenticate";
@@ -53,6 +58,16 @@ class TradeMarket {
 
         if($curl->getInfo('http_code') >= 400) {
             throw new Exception("Login request failed with HTTP code {$curl->getInfo('http_code')}!");
+        }
+
+        return true;
+    }
+
+    public function doLogout() {
+        if ($this->loggedIn) {
+            $curl = CurlRequest::newInstance(AUTH_URL . "/logout")
+                        ->exec()
+                        ;
         }
     }
 
