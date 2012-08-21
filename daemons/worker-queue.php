@@ -13,7 +13,7 @@ $UUID    = getmypid() . "::" . time();
 $workers = array();
 $con     = Propel::getConnection();
 $run     = 0;
-$max     = in_array('--debug', $argv) ? 1 : 50;
+$max     = in_array('--debug', $argv) ? 1 : 100;
 
 $slotManager  = RequestSlotManager::getInstance();
 $queueManager = WorkerQueueManager::getInstance();
