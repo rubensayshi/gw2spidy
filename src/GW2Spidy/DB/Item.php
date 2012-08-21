@@ -18,18 +18,28 @@ use GW2Spidy\DB\om\BaseItem;
  * @package    propel.generator.gw2spidy
  */
 class Item extends BaseItem {
-    const RARITY_COMMON = 1;
+    const RARITY_COMMON     = 1;
+    const RARITY_FINE       = 2;
+    const RARITY_MASTERWORK = 3;
+    const RARITY_RARE       = 4;
+    const RARITY_EXOTIC     = 5;
+    const RARITY_LEGENDARY  = 6;
     const FALSE_POSITIVE = 'FALSE_POSITIVE';
 
     public function getRarityName() {
         switch ($this->getRarity()) {
-            case self::RARITY_COMMON:    return "Common";
-            default:                     return "Rarity [{$this->getRarity()}]";
+            case self::RARITY_COMMON:     return "Common";
+            case self::RARITY_FINE:       return "Fine";
+            case self::RARITY_MASTERWORK: return "Masterwork";
+            case self::RARITY_RARE:       return "Rare";
+            case self::RARITY_EXOTIC:     return "Exotic";
+            case self::RARITY_LEGENDARY:  return "Legendary";
+            default:                      return $this->getRarityName() ?: "Rarity [{$this->getRarity()}]";
         }
     }
 
     public function getRarityCSSClass() {
-        return strtolower(str_replace(" ", "-", $this->getRarityName()));
+        return strtolower("rarity-" . str_replace(" ", "-", $this->getRarityName()));
     }
 
     /**

@@ -6,7 +6,7 @@
         <img src="{{ item.img }}" />
     </div>
     <div class="stats">
-        <div class="name">{{ item.name }}</div>
+        <div class="name {{ item.rarityCssClass }}">{{ item.name }}</div>
         {% if item.itemType %}
             <div class="item-type">{{ item.itemType.title }}</div>
         {% endif %}

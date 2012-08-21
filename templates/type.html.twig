@@ -23,7 +23,7 @@
     {% for item in items %}
         <tr class="item">
             <td>
-                <a href="/item/{{ item.dataId }}" class="name">
+                <a href="/item/{{ item.dataId }}" class="name {{ item.rarityCssClass }}">
                     <img class="image" src="{{ item.img }}" /> {{ item.name }}
                 </a>
             </td>

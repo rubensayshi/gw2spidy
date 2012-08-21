@@ -25,8 +25,23 @@ div.item .stats .name {
     font-weight: bold;
 }
 
-div.item .stats .rarity.common {
-    color: gray;
+.rarity-common {
+    color: #4C4C4C !important;
+}
+.rarity-masterwork {
+    color: #2DC50E !important;
+}
+.rarity-fine {
+    color: #4F9DFE !important;
+}
+.rarity-exotic {
+    color: #FDA500 !important;
+}
+.rarity-rare {
+    color: #CC6600 !important;
+}
+.rarity-legendary {
+    color: #DD2222 !important;
 }
 
 .item-list-table .image {
