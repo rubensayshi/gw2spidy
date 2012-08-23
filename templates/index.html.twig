@@ -29,7 +29,7 @@ For discussion, questions, etc please goto <a href="http://www.guildwars2guru.co
 </p>
 
 <h3>Shut up, I just want to see the graphs!</h3>
-<p>Go to the <a href="/types">browse page</a> or use the <a href="/search">search</a> (both also located in the top bar) and enjoy ;)</p>
+<p>Go to the <a href="{{ path('types') }}">browse page</a> or use the <a href="{{ path('searchform') }}">search</a> (both also located in the top bar) and enjoy ;)</p>
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
@@ -46,6 +46,6 @@ For discussion, questions, etc please goto <a href="http://www.guildwars2guru.co
 {% block sidebar %}
     {% if featured %}
         <h3>Just an example</h3>
-        {% include "item.html.twig" with {'item': featured, 'href': '/item/' ~ featured.dataId, width: '100%', 'included': true} %}
+        {% include "item.html.twig" with {'item': featured, 'href': path('item', {dataId: featured.dataId}), width: '100%', 'included': true} %}
     {% endif %}
 {% endblock %}

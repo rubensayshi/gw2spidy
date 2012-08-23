@@ -171,7 +171,7 @@ var initchart_selectzoom = function(chartdata, callback) {
 var initchart = initchart_selectzoom;
 
 var fetchchart = function(callback) {
-    $.ajax("{{ "/chart/" ~ item.dataId }}", {
+    $.ajax("{{ path('chart', {dataId: item.dataId}) }}", {
         success: function(chartdata) {
             initchart(chartdata, callback);
         }

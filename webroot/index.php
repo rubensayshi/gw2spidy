@@ -50,6 +50,7 @@ $toInt = function($val) {
     return (int) $val;
 };
 
+$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path'    => dirname(__FILE__) . '/../templates',
     'twig.options' => array(
@@ -64,12 +65,13 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
  */
 $app->get("/", function() use($app) {
     $app->setHomeActive();
-    $featured = ItemQuery::create()->findPk(1140);
+    $featured = ItemQuery::create()->findPk(19697);
 
     return $app['twig']->render('index.html.twig', array(
         'featured' => $featured,
     ));
-});
+})
+->bind('homepage');
 
 /**
  * ----------------------
@@ -82,7 +84,8 @@ $app->get("/types", function() use($app) {
     return $app['twig']->render('types.html.twig', array(
         'types' => $types,
     ));
-});
+})
+->bind('types');
 
 /**
  * ----------------------
@@ -90,9 +93,9 @@ $app->get("/types", function() use($app) {
  * ----------------------
  */
 $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use($app) {
-    $itemsperpage = 50;
     $baseurl      = "/type/{$type}/{$subtype}";
     $q            = ItemQuery::create();
+    $page         = $page > 0 ? $page : 1;
 
     if (!is_null($type)) {
         $q->filterByItemTypeId($type);
@@ -101,10 +104,16 @@ $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use(
         $q->filterByItemSubTypeId($subtype);
     }
 
-    $count    = $q->count();
-    $lastpage = ceil($count / $itemsperpage);
-    if ($page > $lastpage) {
-        $page = $lastpage;
+    $count = $q->count();
+
+    if ($count > 0) {
+        $lastpage = ceil($count / $itemsperpage);
+        if ($page > $lastpage) {
+            $page = $lastpage;
+        }
+    } else {
+        $page     = 1;
+        $lastpage = 1;
     }
 
     $items = $q->offset($itemsperpage * ($page-1))
@@ -113,6 +122,8 @@ $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use(
                     ->find();
 
     return $app['twig']->render('type.html.twig', array(
+        'type'     => $type,
+        'subtype'  => $subtype,
         'page'     => $page,
         'lastpage' => $lastpage,
         'items'    => $items,
@@ -121,13 +132,14 @@ $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use(
 })
 ->assert('type',     '\d+')
 ->assert('subtype',  '\d+')
-->assert('page',     '\d+')
+->assert('page',     '-?\d+')
 ->convert('type',    $toInt)
 ->convert('subtype', $toInt)
 ->convert('page',    $toInt)
 ->value('type',      null)
 ->value('subtype',   null)
-->value('page',      1);
+->value('page',      1)
+->bind('type');
 
 /**
  * ----------------------
@@ -142,7 +154,8 @@ $app->get("/item/{dataId}", function($dataId) use ($app) {
     ));
 })
 ->assert('dataId',  '\d+')
-->convert('dataId', $toInt);
+->convert('dataId', $toInt)
+->bind('item');
 
 /**
  * ----------------------
@@ -176,7 +189,8 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     return $content;
 })
 ->assert('dataId',  '\d+')
-->convert('dataId', $toInt);
+->convert('dataId', $toInt)
+->bind('chart');
 
 /**
  * ----------------------
@@ -194,7 +208,8 @@ $app->get("/status", function() use($app) {
     return $app['twig']->render('status.html.twig', array(
         'dump' => $content,
     ));
-});
+})
+->bind('status');
 
 /**
  * ----------------------
@@ -204,7 +219,8 @@ $app->get("/status", function() use($app) {
 $app->post("/search", function (Request $request) use ($app) {
     $search = $request->get('search');
     return $app->handle(Request::create("/search/{$search}", 'GET'), HttpKernelInterface::SUB_REQUEST);
-});
+})
+->bind('searchpost');
 
 /**
  * ----------------------
@@ -232,18 +248,21 @@ $app->get("/search/{search}/{page}", function($search, $page) use($app) {
                     ->limit($itemsperpage)
                     ->find();
 
-    return $app['twig']->render('type.html.twig', array(
+    return $app['twig']->render('searchresult.html.twig', array(
+        'search'   => $search,
         'page'     => $page,
         'lastpage' => $lastpage,
         'items'    => $items,
         'baseurl'  => $baseurl,
     ));
 })
+->assert('search',   '\s*')
 ->assert('page',     '\d+')
 ->convert('page',    $toInt)
 ->convert('search',  function($search) { return urldecode($search); })
 ->value('search',    null)
-->value('page',      1);
+->value('page',      1)
+->bind('search');
 
 /**
  * ----------------------
@@ -252,11 +271,12 @@ $app->get("/search/{search}/{page}", function($search, $page) use($app) {
  */
 $app->get("/searchform", function() use($app) {
     return $app['twig']->render('search.html.twig', array());
-});
+})
+->bind('searchform');
 
 /**
  * ----------------------
- *  route /searchform
+ *  route /csv
  * ----------------------
  */
 $app->get("/csv/{secret}", function($secret) use($app) {
@@ -272,7 +292,8 @@ $app->get("/csv/{secret}", function($secret) use($app) {
     foreach (ItemQuery::create()->find() as $item) {
         echo implode(",", $item->toArray()) . "\n";
     }
-});
+})
+->bind('csv');
 
 $app->run();
 

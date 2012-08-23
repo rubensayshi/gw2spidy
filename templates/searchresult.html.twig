@@ -3,13 +3,13 @@
 {% block content %}
 <div class="pagination">
     <ul>
-        <li class="{% if page <= 1 %}disabled{% endif %}"><a href="{{ path('type', {type: type, subtype: subtype, page: (page-1)}) }}">Prev</a></li>
+        <li class="{% if page <= 1 %}disabled{% endif %}"><a href="{{ path('search', {search: search, page: (page-1)}) }}">Prev</a></li>
         {% for i in range(1, lastpage) %}
             <li class="{% if i == page %}active{% endif %}">
-                <a href="{{ path('type', {type: type, subtype: subtype, page: i}) }}">{{ i }}</a>
+                <a href="{{ path('search', {search: search, page: i}) }}">{{ i }}</a>
             </li>
         {% endfor %}
-        <li class="{% if page >= lastpage %}disabled{% endif %}"><a href="{{ path('type', {type: type, subtype: subtype, page: (page+1)}) }}">Next</a></li>
+        <li class="{% if page >= lastpage %}disabled{% endif %}"><a href="{{ path('search', {search: search, page: (page+1)}) }}">Next</a></li>
     </ul>
 </div>
 

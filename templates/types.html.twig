@@ -4,12 +4,12 @@
 {% for type in types %}
     {% if type.title %}
     <div class="well">
-        <a href="/type/{{ type.id }}"><h4>{{ type.title }}</h4></a>
+        <a href="{{ path('type', {type: type.id}) }}"><h4>{{ type.title }}</h4></a>
         <ul class="nav nav-pills nav-stacked">
             {% for subtype in type.subtypes %}
                 {% if subtype.title %}
                 <li>
-                    <a href="/type/{{ type.id }}/{{ subtype.id }}">{{ subtype.title }}</a>
+                    <a href="{{ path('type', {type: type.id, subtype: subtype.id}) }}">{{ subtype.title }}</a>
                 </li>
                 {% endif %}
             {% endfor %}
