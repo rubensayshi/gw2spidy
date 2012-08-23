@@ -163,12 +163,10 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     /*---------------
      *  BUY LISTINGS
      *---------------*/
-    /* buy listings are disabled for now, we can't get the data anyway!
     $chart[] = array(
         'data'   => BuyListingQuery::getChartDatasetDataForItem($item),
         'label'  => "Buy Listings",
     );
-    //*/
 
     $wrap    = false;
     $content = json_encode($chart);
