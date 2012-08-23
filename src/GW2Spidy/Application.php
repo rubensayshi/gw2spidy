@@ -29,6 +29,10 @@ class Application extends \Silex\Application {
         parent::__construct();
     }
 
+    public function getItemHistory() {
+        return ItemHistory::getInstance();
+    }
+
     public function isDevMode() {
         return defined('DEV_MODE') && DEV_MODE;
     }

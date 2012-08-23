@@ -1,5 +1,8 @@
-body {
+html {
     overflow-y: scroll;
+}
+
+body {
     background: no-repeat center center fixed;
     
     -webkit-background-size: cover;
@@ -7,21 +10,29 @@ body {
          -o-background-size: cover;
             background-size: cover;
 }
+
+.well {
+    background-color: rgba(245, 245, 245, 0.5);
+}
+
+.sidebar h3 {
+    border-bottom: 1px solid grey;
+}
  
-div.item {
+.item {
     clear: both;
 }
 
-div.item .image {
+.item .image {
     float: left;
 }
 
-div.item .stats {
+.item .stats {
     float: left;
     margin-left: 5px;
 }
 
-div.item .stats .name {
+.item .stats .name {
     font-weight: bold;
 }
 

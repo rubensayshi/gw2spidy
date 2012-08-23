@@ -96,6 +96,7 @@
         <div class="row-fluid content-row">
             {% block content_body %}{% endblock %}
         </div>
+        <div class="footer-spacer"></div>
         <div class="row-fluid footer-row navbar">
             <div class="navbar-inner">
                 <div>
@@ -124,7 +125,7 @@
 
             var images = [
                 // some black and white wallpapers
-                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GW2_GhostsOfAscalonWallpaper-1920x1200.jpg", 0.4],
+                ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GW2_GhostsOfAscalonWallpaper-1920x1200.jpg", 0.1],
                 ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GuildWars2-12-1920x1200.jpg", null],
                 ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GuildWars2-10-1920x1200.jpg", null],
                 ["https://d2vn94glaxzkz3.cloudfront.net/wp-content/uploads/wallpapers/GuildWars2-04-1920x1200.jpg", null],
@@ -144,7 +145,7 @@
             var random = Math.floor(Math.random() * images.length);
 
             image   = images[random][0];
-            opacity = images[random][1] || 0.8;
+            opacity = images[random][1] || 0.4;
 
             $(document.body).css('background-image', "url(" + image + ")");
             $('.container-fluid').each(function(k, o) { o.style.backgroundColor = "rgba(255, 255, 255, " + opacity + ")"; });

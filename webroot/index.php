@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\ItemHistory;
+
 use GW2Spidy\DB\ItemPeer;
 
 use GW2Spidy\DB\BuyListingQuery;
@@ -19,6 +21,8 @@ use GW2Spidy\Queue\WorkerQueueManager;
 
 require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
+
+@session_start();
 
 $app = Application::getInstance();
 $app->isSQLLogMode() && $app->enableSQLLogging();
@@ -148,6 +152,12 @@ $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use(
  */
 $app->get("/item/{dataId}", function($dataId) use ($app) {
     $item = ItemQuery::create()->findPK($dataId);
+
+    if (!$item) {
+        return $app->redirect('/');
+    }
+
+    ItemHistory::getInstance()->addItem($item);
 
     return $app['twig']->render('item.html.twig', array(
         'item'        => $item,
