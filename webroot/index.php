@@ -260,7 +260,7 @@ $app->get("/searchform", function() use($app) {
  * ----------------------
  */
 $app->get("/csv/{secret}", function($secret) use($app) {
-    if (!(isset($GLOBALS['csv_secrets']) && !in_array($secret, $GLOBALS['csv_secrets'])) && !$app['debug']) {
+    if (!(isset($GLOBALS['csv_secrets']) && in_array($secret, $GLOBALS['csv_secrets'])) && !$app['debug']) {
         return $app->redirect("/");
     }
 
