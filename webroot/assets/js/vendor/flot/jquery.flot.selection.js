@@ -71,7 +71,8 @@ The plugin allso adds the following methods to the plot object:
         var selection = {
                 first: { x: -1, y: -1}, second: { x: -1, y: -1},
                 show: false,
-                active: false
+                active: false,
+                touch: false
             };
 
         // FIXME: The drag handling implemented here should be
@@ -88,13 +89,21 @@ The plugin allso adds the following methods to the plot object:
                 updateSelection(e);
                 
                 plot.getPlaceholder().trigger("plotselecting", [ getSelection() ]);
+                // prevent the default action
+                // Should this only be if selection.touch is true? -psilord
+                if (selection.touch == true) {
+                    e.preventDefault();
+                }
             }
         }
 
         function onMouseDown(e) {
-            if (e.which != 1)  // only accept left-click
+            if (e.type == 'touchstart' && e.originalEvent.touches.length == 1) { // only accept single touch
+                selection.touch = true;
+            } else if (e.which != 1 || e.originalEvent.touches && e.originalEvent.touches.length > 1) { // only accept left-click
                 return;
-            
+            }
+
             // cancel out any text selections
             document.body.focus();
 
@@ -116,7 +125,7 @@ The plugin allso adds the following methods to the plot object:
             // able to whack the same handler again
             mouseUpHandler = function (e) { onMouseUp(e); };
             
-            $(document).one("mouseup", mouseUpHandler);
+            $(document).one(selection.touch ? "touchend" : "mouseup", mouseUpHandler);
         }
 
         function onMouseUp(e) {
@@ -140,6 +149,7 @@ The plugin allso adds the following methods to the plot object:
                 plot.getPlaceholder().trigger("plotselecting", [ null ]);
             }
 
+            selection.touch = false;
             return false;
         }
 
@@ -175,8 +185,10 @@ The plugin allso adds the following methods to the plot object:
             var o = plot.getOptions();
             var offset = plot.getPlaceholder().offset();
             var plotOffset = plot.getPlotOffset();
-            pos.x = clamp(0, e.pageX - offset.left - plotOffset.left, plot.width());
-            pos.y = clamp(0, e.pageY - offset.top - plotOffset.top, plot.height());
+
+            var coordHolder = selection.touch ? e.originalEvent.changedTouches[0] : e;
+            pos.x = clamp(0, coordHolder.pageX - offset.left - plotOffset.left, plot.width());
+            pos.y = clamp(0, coordHolder.pageY - offset.top - plotOffset.top, plot.height());
 
             if (o.selection.mode == "y")
                 pos.x = pos == selection.first ? 0 : plot.width();
@@ -288,6 +300,13 @@ The plugin allso adds the following methods to the plot object:
             if (o.selection.mode != null) {
                 eventHolder.mousemove(onMouseMove);
                 eventHolder.mousedown(onMouseDown);
+                eventHolder.bind('touchstart', function(e) {
+                    // Using a touch device, disable mouse events to prevent 
+                    // event handlers being called twice
+                    eventHolder.unbind('mousedown', onMouseDown);
+                    onMouseDown(e);
+                    });
+                    eventHolder.bind('touchmove', onMouseMove);
             }
         });
 
