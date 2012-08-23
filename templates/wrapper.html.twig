@@ -145,7 +145,7 @@
             var random = Math.floor(Math.random() * images.length);
 
             image   = images[random][0];
-            opacity = images[random][1] || 0.4;
+            opacity = images[random][1] || 0.2;
 
             $(document.body).css('background-image', "url(" + image + ")");
             $('.container-fluid').each(function(k, o) { o.style.backgroundColor = "rgba(255, 255, 255, " + opacity + ")"; });

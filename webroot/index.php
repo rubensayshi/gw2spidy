@@ -69,7 +69,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
  */
 $app->get("/", function() use($app) {
     $app->setHomeActive();
-    $featured = ItemQuery::create()->findPk(19697);
+    $featured = ItemQuery::create()->findPk($app->isDevMode() ? 19697 : 1140);
 
     return $app['twig']->render('index.html.twig', array(
         'featured' => $featured,
@@ -97,6 +97,7 @@ $app->get("/types", function() use($app) {
  * ----------------------
  */
 $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use($app) {
+    $itemsperpage = 50;
     $baseurl      = "/type/{$type}/{$subtype}";
     $q            = ItemQuery::create();
     $page         = $page > 0 ? $page : 1;

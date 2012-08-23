@@ -12,7 +12,20 @@ body {
 }
 
 .well {
-    background-color: rgba(245, 245, 245, 0.5);
+    background-color: rgba(245, 245, 245, 0.8);
+}
+
+.item-history-list li {
+    background-color: rgba(238, 238, 238, 0.6);
+}
+
+.table-striped tbody tr:nth-child(even) td,
+.table-striped tbody tr:nth-child(even) th {
+    background-color: rgba(249, 249, 249, 0.6);
+}
+.table-striped tbody tr:hover:nth-child(even) td,
+.table-striped tbody tr:hover:nth-child(even) th {
+    background-color: #f5f5f5;
 }
 
 .sidebar h3 {
