@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\WorkerQueue;
 
+use GW2Spidy\DB\BuyListing;
+
 use GW2Spidy\DB\SellListing;
 
 use GW2Spidy\Util\Functions;
@@ -58,11 +60,23 @@ class ItemDBWorker implements Worker {
                     $sellListing->setItem($item);
                     $sellListing->setListingDate($now);
                     $sellListing->setListingTime($now);
-                    $sellListing->setQuantity(1);
+                    $sellListing->setQuantity($itemData['sale_availability'] ?: 1);
                     $sellListing->setUnitPrice($itemData['min_sale_unit_price']);
                     $sellListing->setListings(1);
 
                     $sellListing->save();
+                }
+
+                if ($itemData['max_offer_unit_price'] > 0) {
+                    $buyListing = new BuyListing();
+                    $buyListing->setItem($item);
+                    $buyListing->setListingDate($now);
+                    $buyListing->setListingTime($now);
+                    $buyListing->setQuantity($itemData['offer_availability'] ?: 1);
+                    $buyListing->setUnitPrice($itemData['max_offer_unit_price']);
+                    $buyListing->setListings(1);
+
+                    $buyListing->save();
                 }
             }
         }
