@@ -1,5 +1,6 @@
 <?php
 
+use GW2Spidy\Twig\VersionedAssetsRoutingExtension;
 use GW2Spidy\ItemHistory;
 
 use GW2Spidy\DB\ItemPeer;
@@ -61,6 +62,8 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
         'cache' => dirname(__FILE__) . '/../tmp/twig-cache',
     ),
 ));
+
+$app['twig']->addExtension(new VersionedAssetsRoutingExtension());
 
 /**
  * ----------------------
