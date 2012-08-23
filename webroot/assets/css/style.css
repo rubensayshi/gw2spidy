@@ -184,7 +184,7 @@ body {
  * [END] some CSS for 2nd level dropdown
    ---------------- */ 
 
-@media (max-width: 767px) {
+@media (max-width: 850px) {
     .sidebar {
         display: none !important;
     }
