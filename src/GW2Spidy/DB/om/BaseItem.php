@@ -127,6 +127,18 @@ abstract class BaseItem extends BaseObject implements Persistent
     protected $item_sub_type_id;
 
     /**
+     * The value for the max_offer_unit_price field.
+     * @var        int
+     */
+    protected $max_offer_unit_price;
+
+    /**
+     * The value for the min_sale_unit_price field.
+     * @var        int
+     */
+    protected $min_sale_unit_price;
+
+    /**
      * @var        ItemType
      */
     protected $aItemType;
@@ -304,6 +316,28 @@ abstract class BaseItem extends BaseObject implements Persistent
     {
 
         return $this->item_sub_type_id;
+    }
+
+    /**
+     * Get the [max_offer_unit_price] column value.
+     * 
+     * @return   int
+     */
+    public function getMaxOfferUnitPrice()
+    {
+
+        return $this->max_offer_unit_price;
+    }
+
+    /**
+     * Get the [min_sale_unit_price] column value.
+     * 
+     * @return   int
+     */
+    public function getMinSaleUnitPrice()
+    {
+
+        return $this->min_sale_unit_price;
     }
 
     /**
@@ -567,6 +601,48 @@ abstract class BaseItem extends BaseObject implements Persistent
     } // setItemSubTypeId()
 
     /**
+     * Set the value of [max_offer_unit_price] column.
+     * 
+     * @param      int $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setMaxOfferUnitPrice($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->max_offer_unit_price !== $v) {
+            $this->max_offer_unit_price = $v;
+            $this->modifiedColumns[] = ItemPeer::MAX_OFFER_UNIT_PRICE;
+        }
+
+
+        return $this;
+    } // setMaxOfferUnitPrice()
+
+    /**
+     * Set the value of [min_sale_unit_price] column.
+     * 
+     * @param      int $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setMinSaleUnitPrice($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->min_sale_unit_price !== $v) {
+            $this->min_sale_unit_price = $v;
+            $this->modifiedColumns[] = ItemPeer::MIN_SALE_UNIT_PRICE;
+        }
+
+
+        return $this;
+    } // setMinSaleUnitPrice()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -610,6 +686,8 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->rarity_word = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
             $this->item_type_id = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
             $this->item_sub_type_id = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
+            $this->max_offer_unit_price = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
+            $this->min_sale_unit_price = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -618,7 +696,7 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 12; // 12 = ItemPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 14; // 14 = ItemPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Item object", $e);
@@ -927,6 +1005,12 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::ITEM_SUB_TYPE_ID)) {
             $modifiedColumns[':p' . $index++]  = '`ITEM_SUB_TYPE_ID`';
         }
+        if ($this->isColumnModified(ItemPeer::MAX_OFFER_UNIT_PRICE)) {
+            $modifiedColumns[':p' . $index++]  = '`MAX_OFFER_UNIT_PRICE`';
+        }
+        if ($this->isColumnModified(ItemPeer::MIN_SALE_UNIT_PRICE)) {
+            $modifiedColumns[':p' . $index++]  = '`MIN_SALE_UNIT_PRICE`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `item` (%s) VALUES (%s)',
@@ -973,6 +1057,12 @@ abstract class BaseItem extends BaseObject implements Persistent
                         break;
                     case '`ITEM_SUB_TYPE_ID`':
 						$stmt->bindValue($identifier, $this->item_sub_type_id, PDO::PARAM_INT);
+                        break;
+                    case '`MAX_OFFER_UNIT_PRICE`':
+						$stmt->bindValue($identifier, $this->max_offer_unit_price, PDO::PARAM_INT);
+                        break;
+                    case '`MIN_SALE_UNIT_PRICE`':
+						$stmt->bindValue($identifier, $this->min_sale_unit_price, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -1171,6 +1261,12 @@ abstract class BaseItem extends BaseObject implements Persistent
             case 11:
                 return $this->getItemSubTypeId();
                 break;
+            case 12:
+                return $this->getMaxOfferUnitPrice();
+                break;
+            case 13:
+                return $this->getMinSaleUnitPrice();
+                break;
             default:
                 return null;
                 break;
@@ -1212,6 +1308,8 @@ abstract class BaseItem extends BaseObject implements Persistent
             $keys[9] => $this->getRarityWord(),
             $keys[10] => $this->getItemTypeId(),
             $keys[11] => $this->getItemSubTypeId(),
+            $keys[12] => $this->getMaxOfferUnitPrice(),
+            $keys[13] => $this->getMinSaleUnitPrice(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aItemType) {
@@ -1296,6 +1394,12 @@ abstract class BaseItem extends BaseObject implements Persistent
             case 11:
                 $this->setItemSubTypeId($value);
                 break;
+            case 12:
+                $this->setMaxOfferUnitPrice($value);
+                break;
+            case 13:
+                $this->setMinSaleUnitPrice($value);
+                break;
         } // switch()
     }
 
@@ -1332,6 +1436,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         if (array_key_exists($keys[9], $arr)) $this->setRarityWord($arr[$keys[9]]);
         if (array_key_exists($keys[10], $arr)) $this->setItemTypeId($arr[$keys[10]]);
         if (array_key_exists($keys[11], $arr)) $this->setItemSubTypeId($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setMaxOfferUnitPrice($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setMinSaleUnitPrice($arr[$keys[13]]);
     }
 
     /**
@@ -1355,6 +1461,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::RARITY_WORD)) $criteria->add(ItemPeer::RARITY_WORD, $this->rarity_word);
         if ($this->isColumnModified(ItemPeer::ITEM_TYPE_ID)) $criteria->add(ItemPeer::ITEM_TYPE_ID, $this->item_type_id);
         if ($this->isColumnModified(ItemPeer::ITEM_SUB_TYPE_ID)) $criteria->add(ItemPeer::ITEM_SUB_TYPE_ID, $this->item_sub_type_id);
+        if ($this->isColumnModified(ItemPeer::MAX_OFFER_UNIT_PRICE)) $criteria->add(ItemPeer::MAX_OFFER_UNIT_PRICE, $this->max_offer_unit_price);
+        if ($this->isColumnModified(ItemPeer::MIN_SALE_UNIT_PRICE)) $criteria->add(ItemPeer::MIN_SALE_UNIT_PRICE, $this->min_sale_unit_price);
 
         return $criteria;
     }
@@ -1429,6 +1537,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         $copyObj->setRarityWord($this->getRarityWord());
         $copyObj->setItemTypeId($this->getItemTypeId());
         $copyObj->setItemSubTypeId($this->getItemSubTypeId());
+        $copyObj->setMaxOfferUnitPrice($this->getMaxOfferUnitPrice());
+        $copyObj->setMinSaleUnitPrice($this->getMinSaleUnitPrice());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -2053,6 +2163,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         $this->rarity_word = null;
         $this->item_type_id = null;
         $this->item_sub_type_id = null;
+        $this->max_offer_unit_price = null;
+        $this->min_sale_unit_price = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();

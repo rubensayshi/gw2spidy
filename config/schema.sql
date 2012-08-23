@@ -54,6 +54,8 @@ CREATE TABLE `item`
     `rarity_word` VARCHAR(255) NOT NULL,
     `item_type_id` INTEGER NOT NULL,
     `item_sub_type_id` INTEGER NOT NULL,
+    `max_offer_unit_price` INTEGER NOT NULL,
+    `min_sale_unit_price` INTEGER NOT NULL,
     PRIMARY KEY (`data_id`),
     INDEX `item_FI_1` (`item_type_id`),
     INDEX `item_FI_2` (`item_sub_type_id`),

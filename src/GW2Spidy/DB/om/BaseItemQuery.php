@@ -37,6 +37,8 @@ use GW2Spidy\DB\SellListing;
  * @method     ItemQuery orderByRarityWord($order = Criteria::ASC) Order by the rarity_word column
  * @method     ItemQuery orderByItemTypeId($order = Criteria::ASC) Order by the item_type_id column
  * @method     ItemQuery orderByItemSubTypeId($order = Criteria::ASC) Order by the item_sub_type_id column
+ * @method     ItemQuery orderByMaxOfferUnitPrice($order = Criteria::ASC) Order by the max_offer_unit_price column
+ * @method     ItemQuery orderByMinSaleUnitPrice($order = Criteria::ASC) Order by the min_sale_unit_price column
  *
  * @method     ItemQuery groupByDataId() Group by the data_id column
  * @method     ItemQuery groupByTypeId() Group by the type_id column
@@ -50,6 +52,8 @@ use GW2Spidy\DB\SellListing;
  * @method     ItemQuery groupByRarityWord() Group by the rarity_word column
  * @method     ItemQuery groupByItemTypeId() Group by the item_type_id column
  * @method     ItemQuery groupByItemSubTypeId() Group by the item_sub_type_id column
+ * @method     ItemQuery groupByMaxOfferUnitPrice() Group by the max_offer_unit_price column
+ * @method     ItemQuery groupByMinSaleUnitPrice() Group by the min_sale_unit_price column
  *
  * @method     ItemQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ItemQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -86,6 +90,8 @@ use GW2Spidy\DB\SellListing;
  * @method     Item findOneByRarityWord(string $rarity_word) Return the first Item filtered by the rarity_word column
  * @method     Item findOneByItemTypeId(int $item_type_id) Return the first Item filtered by the item_type_id column
  * @method     Item findOneByItemSubTypeId(int $item_sub_type_id) Return the first Item filtered by the item_sub_type_id column
+ * @method     Item findOneByMaxOfferUnitPrice(int $max_offer_unit_price) Return the first Item filtered by the max_offer_unit_price column
+ * @method     Item findOneByMinSaleUnitPrice(int $min_sale_unit_price) Return the first Item filtered by the min_sale_unit_price column
  *
  * @method     array findByDataId(int $data_id) Return Item objects filtered by the data_id column
  * @method     array findByTypeId(int $type_id) Return Item objects filtered by the type_id column
@@ -99,6 +105,8 @@ use GW2Spidy\DB\SellListing;
  * @method     array findByRarityWord(string $rarity_word) Return Item objects filtered by the rarity_word column
  * @method     array findByItemTypeId(int $item_type_id) Return Item objects filtered by the item_type_id column
  * @method     array findByItemSubTypeId(int $item_sub_type_id) Return Item objects filtered by the item_sub_type_id column
+ * @method     array findByMaxOfferUnitPrice(int $max_offer_unit_price) Return Item objects filtered by the max_offer_unit_price column
+ * @method     array findByMinSaleUnitPrice(int $min_sale_unit_price) Return Item objects filtered by the min_sale_unit_price column
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -189,7 +197,7 @@ abstract class BaseItemQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID` FROM `item` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID`, `MAX_OFFER_UNIT_PRICE`, `MIN_SALE_UNIT_PRICE` FROM `item` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -662,6 +670,88 @@ abstract class BaseItemQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ItemPeer::ITEM_SUB_TYPE_ID, $itemSubTypeId, $comparison);
+    }
+
+    /**
+     * Filter the query on the max_offer_unit_price column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByMaxOfferUnitPrice(1234); // WHERE max_offer_unit_price = 1234
+     * $query->filterByMaxOfferUnitPrice(array(12, 34)); // WHERE max_offer_unit_price IN (12, 34)
+     * $query->filterByMaxOfferUnitPrice(array('min' => 12)); // WHERE max_offer_unit_price > 12
+     * </code>
+     *
+     * @param     mixed $maxOfferUnitPrice The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByMaxOfferUnitPrice($maxOfferUnitPrice = null, $comparison = null)
+    {
+        if (is_array($maxOfferUnitPrice)) {
+            $useMinMax = false;
+            if (isset($maxOfferUnitPrice['min'])) {
+                $this->addUsingAlias(ItemPeer::MAX_OFFER_UNIT_PRICE, $maxOfferUnitPrice['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($maxOfferUnitPrice['max'])) {
+                $this->addUsingAlias(ItemPeer::MAX_OFFER_UNIT_PRICE, $maxOfferUnitPrice['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::MAX_OFFER_UNIT_PRICE, $maxOfferUnitPrice, $comparison);
+    }
+
+    /**
+     * Filter the query on the min_sale_unit_price column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByMinSaleUnitPrice(1234); // WHERE min_sale_unit_price = 1234
+     * $query->filterByMinSaleUnitPrice(array(12, 34)); // WHERE min_sale_unit_price IN (12, 34)
+     * $query->filterByMinSaleUnitPrice(array('min' => 12)); // WHERE min_sale_unit_price > 12
+     * </code>
+     *
+     * @param     mixed $minSaleUnitPrice The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByMinSaleUnitPrice($minSaleUnitPrice = null, $comparison = null)
+    {
+        if (is_array($minSaleUnitPrice)) {
+            $useMinMax = false;
+            if (isset($minSaleUnitPrice['min'])) {
+                $this->addUsingAlias(ItemPeer::MIN_SALE_UNIT_PRICE, $minSaleUnitPrice['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($minSaleUnitPrice['max'])) {
+                $this->addUsingAlias(ItemPeer::MIN_SALE_UNIT_PRICE, $minSaleUnitPrice['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::MIN_SALE_UNIT_PRICE, $minSaleUnitPrice, $comparison);
     }
 
     /**
