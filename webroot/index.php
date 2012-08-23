@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\DB\ItemPeer;
+
 use GW2Spidy\DB\BuyListingQuery;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -250,6 +252,26 @@ $app->get("/search/{search}/{page}", function($search, $page) use($app) {
  */
 $app->get("/searchform", function() use($app) {
     return $app['twig']->render('search.html.twig', array());
+});
+
+/**
+ * ----------------------
+ *  route /searchform
+ * ----------------------
+ */
+$app->get("/csv/{secret}", function($secret) use($app) {
+    if (!(isset($GLOBALS['csv_secrets']) && !in_array($secret, $GLOBALS['csv_secrets'])) && !$app['debug']) {
+        return $app->redirect("/");
+    }
+
+    header('Content-type: text/csv');
+    header('Content-disposition: attachment;filename=item_data_' . date('Ymd-His') . '.csv');
+
+    echo implode(",", ItemPeer::getFieldNames(BasePeer::TYPE_FIELDNAME)) . "\n";
+
+    foreach (ItemQuery::create()->find() as $item) {
+        echo implode(",", $item->toArray()) . "\n";
+    }
 });
 
 $app->run();

@@ -21,3 +21,8 @@ define('DEV_MODE', true);
 
 // when defined and TRUE we won't use memcache
 // define('MEMCACHED_DISABLED', true);
+
+// used to restrict access to csvs without much hassle (nor security :P)
+$GLOBALS['csv_secrets'] = array(
+    "c8f80801a691b82df99bb9880c602143", // md5(drakie)
+);
