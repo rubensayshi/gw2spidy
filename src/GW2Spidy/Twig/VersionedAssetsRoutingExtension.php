@@ -19,7 +19,7 @@ class VersionedAssetsRoutingExtension extends \Twig_Extension {
 
     public function getAssetPath($name, $parameters = array()) {
         if ($version = $this->getVersionString()) {
-            return str_replace("/assets", "/assets/{$this->getVersionString()}/", $name);
+            return str_replace("/assets/", "/assets/v{$this->getVersionString()}/", $name);
         } else {
             return $name;
         }
