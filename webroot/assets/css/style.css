@@ -183,3 +183,13 @@ body {
 /* ----------------
  * [END] some CSS for 2nd level dropdown
    ---------------- */ 
+
+@media (max-width: 767px) {
+    .sidebar {
+        display: none !important;
+    }
+    
+    .main-content {
+        width: 100% !important;
+    }
+}
