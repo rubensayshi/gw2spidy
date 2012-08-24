@@ -39,8 +39,6 @@ abstract class RedisPriorityQueueManager extends RedisQueueManager {
             if ($results[0] >= 1) {
                 $queueItem = unserialize($queueItem);
 
-                var_dump($queueItem);
-
                 return ($queueItem instanceof RedisPriorityQueueItem) ? $queueItem : null;
             }
 

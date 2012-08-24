@@ -26,8 +26,6 @@ class ItemTypeDBWorker implements Worker {
 
             $type = ItemTypeQuery::create()->findPK($mainTypeData['id']);
 
-            var_dump($type);
-
             if ($type) {
                 if (($p = Functions::almostEqualCompare($mainTypeData['name'], $type->getTitle())) > 50) {
                     $type->setTitle($mainTypeData['name']);
