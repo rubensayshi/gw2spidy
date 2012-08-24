@@ -1,24 +1,20 @@
 <?php
 
-use GW2Spidy\DB\BuyListingPeer;
-
-use GW2Spidy\DB\SellListingPeer;
-
-use GW2Spidy\ItemHistory;
-
-use GW2Spidy\DB\ItemPeer;
-
-use GW2Spidy\DB\BuyListingQuery;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-
-use Symfony\Component\HttpFoundation\Request;
-
-use GW2Spidy\Application;
-
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\DB\SellListingQuery;
 use GW2Spidy\DB\WorkerQueueItemQuery;
+use GW2Spidy\DB\ItemPeer;
+use GW2Spidy\DB\BuyListingPeer;
+use GW2Spidy\DB\SellListingPeer;
+use GW2Spidy\DB\BuyListingQuery;
+
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpFoundation\Request;
+
+use GW2Spidy\Application;
+use GW2Spidy\Twig\VersionedAssetsRoutingExtension;
+use GW2Spidy\ItemHistory;
 
 use GW2Spidy\Queue\RequestSlotManager;
 use GW2Spidy\Queue\WorkerQueueManager;
@@ -65,6 +61,8 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
         'cache' => dirname(__FILE__) . '/../tmp/twig-cache',
     ),
 ));
+
+$app['twig']->addExtension(new VersionedAssetsRoutingExtension());
 
 /**
  * ----------------------

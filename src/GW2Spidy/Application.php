@@ -29,6 +29,10 @@ class Application extends \Silex\Application {
         parent::__construct();
     }
 
+    public function getVersionString() {
+        return defined('VERSION_STRING') ? VERSION_STRING : null;
+    }
+
     public function getItemHistory() {
         return ItemHistory::getInstance();
     }
