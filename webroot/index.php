@@ -1,5 +1,9 @@
 <?php
 
+use GW2Spidy\DB\BuyListingPeer;
+
+use GW2Spidy\DB\SellListingPeer;
+
 use GW2Spidy\ItemHistory;
 
 use GW2Spidy\DB\ItemPeer;
@@ -155,7 +159,7 @@ $app->get("/item/{dataId}", function($dataId) use ($app) {
     $item = ItemQuery::create()->findPK($dataId);
 
     if (!$item) {
-        return $app->redirect('/');
+        return $app->abort(404, "Page does not exist.");
     }
 
     ItemHistory::getInstance()->addItem($item);
@@ -175,6 +179,10 @@ $app->get("/item/{dataId}", function($dataId) use ($app) {
  */
 $app->get("/chart/{dataId}", function($dataId) use ($app) {
     $item = ItemQuery::create()->findPK($dataId);
+
+    if (!$item) {
+        return $app->abort(404, "Page does not exist.");
+    }
 
     $chart = array();
 
@@ -287,24 +295,102 @@ $app->get("/searchform", function() use($app) {
 
 /**
  * ----------------------
- *  route /csv
+ *  route /api
  * ----------------------
  */
-$app->get("/csv/{secret}", function($secret) use($app) {
-    if (!(isset($GLOBALS['csv_secrets']) && in_array($secret, $GLOBALS['csv_secrets'])) && !$app['debug']) {
+$app->get("/api/{format}/{secret}", function($format, $secret) use($app) {
+    if (!(isset($GLOBALS['api_secrets']) && in_array($secret, $GLOBALS['api_secrets'])) && !$app['debug']) {
         return $app->redirect("/");
     }
 
-    header('Content-type: text/csv');
-    header('Content-disposition: attachment;filename=item_data_' . date('Ymd-His') . '.csv');
+    $items = ItemQuery::create()->find();
 
-    echo implode(",", ItemPeer::getFieldNames(BasePeer::TYPE_FIELDNAME)) . "\n";
+    if ($format == 'csv') {
+        header('Content-type: text/csv');
+        header('Content-disposition: attachment; filename=item_data_' . date('Ymd-His') . '.csv');
 
-    foreach (ItemQuery::create()->find() as $item) {
-        echo implode(",", $item->toArray()) . "\n";
+        ob_start();
+
+        echo implode(",", ItemPeer::getFieldNames(BasePeer::TYPE_FIELDNAME)) . "\n";
+
+        foreach ($items as $item) {
+            echo implode(",", $item->toArray(BasePeer::TYPE_FIELDNAME)) . "\n";
+        }
+
+        return ob_get_clean();
+    } else if ($format == 'json') {
+        header('Content-type: application/json');
+        header('Content-disposition: attachment; filename=item_data_' . date('Ymd-His') . '.json');
+
+        $json = array();
+
+        foreach ($items as $item) {
+            $json[$item->getDataId()] = $item->toArray(BasePeer::TYPE_FIELDNAME);
+        }
+
+        return json_encode($json);
     }
 })
-->bind('csv');
+->assert('format', 'csv|json')
+->bind('api');
+
+/**
+ * ----------------------
+ *  route /api/item
+ * ----------------------
+ */
+$app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $type, $format, $secret) use($app) {
+    if (!(isset($GLOBALS['api_secrets']) && in_array($secret, $GLOBALS['api_secrets'])) && !$app['debug']) {
+        return $app->redirect("/");
+    }
+
+    $item = ItemQuery::create()->findPK($dataId);
+
+    if (!$item) {
+        return $app->abort(404, "Page does not exist.");
+    }
+
+    $fields   = array();
+    $listings = array();
+    if ($type == 'sell') {
+        $fields   = SellListingPeer::getFieldNames(BasePeer::TYPE_FIELDNAME);
+        $listings = SellListingQuery::create()->findByItemId($item->getDataId());
+    } else {
+        $fields   = BuyListingPeer::getFieldNames(BasePeer::TYPE_FIELDNAME);
+        $listings = BuyListingQuery::create()->findByItemId($item->getDataId());
+    }
+
+    if ($format == 'csv') {
+        header('Content-type: text/csv');
+        header('Content-disposition: attachment; filename=listings_data_' . $item->getDataId() . '_' . $type . '_' . date('Ymd-His') . '.csv');
+
+        ob_start();
+
+        echo implode(",", $fields) . "\n";
+
+        foreach ($listings as $listing) {
+            echo implode(",", $listing->toArray(BasePeer::TYPE_FIELDNAME)) . "\n";
+        }
+
+        return ob_get_clean();
+    } else if ($format == 'json') {
+        header('Content-type: application/json');
+        header('Content-disposition: attachment; filename=listings_data_' . $item->getDataId() . '_' . $type . '_' . date('Ymd-His') . '.json');
+
+        $json = array();
+
+        foreach ($listings as $listing) {
+            $json[$listing->getId()] = $listing->toArray(BasePeer::TYPE_FIELDNAME);
+        }
+
+        return json_encode($json);
+    }
+})
+->assert('dataId',  '\d+')
+->assert('format', 'csv|json')
+->assert('type',   'sell|buy')
+->convert('dataId', $toInt)
+->bind('api_item');
 
 $app->run();
 
