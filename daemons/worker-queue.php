@@ -20,7 +20,13 @@ $queueManager = WorkerQueueManager::getInstance();
 
 // login here so our benchmarking per item ain't offset by it
 print "login ... \n";
-TradeMarket::getInstance()->doLogin();
+try {
+    TradeMarket::getInstance()->doLogin();
+} catch (Exception $e) {
+    echo "login failed ... sleeping [360] and restarting \n";
+    sleep(360);
+    exit(1);
+}
 
 /*
  * $run up to $max in 1 process, then exit so process gets revived
