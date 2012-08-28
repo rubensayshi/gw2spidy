@@ -71,7 +71,7 @@ $app['twig']->addExtension(new VersionedAssetsRoutingExtension());
  */
 $app->get("/", function() use($app) {
     $app->setHomeActive();
-    $featured = ItemQuery::create()->findPk($app->isDevMode() ? 19697 : 1140);
+    $featured = ItemQuery::create()->findPk(19697); // copper ore
 
     return $app['twig']->render('index.html.twig', array(
         'featured' => $featured,
