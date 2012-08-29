@@ -23,8 +23,8 @@ print "login ... \n";
 try {
     TradeMarket::getInstance()->ensureLogin();
 } catch (Exception $e) {
-    echo "login failed ... sleeping [360] and restarting \n";
-    sleep(1);
+    echo "login failed ... sleeping [60] and restarting \n";
+    sleep(60);
     exit(1);
 }
 
