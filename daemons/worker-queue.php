@@ -21,11 +21,10 @@ $queueManager = WorkerQueueManager::getInstance();
 // login here so our benchmarking per item ain't offset by it
 print "login ... \n";
 try {
-    TradeMarket::getInstance()->doLogin();
+    TradeMarket::getInstance()->ensureLogin();
 } catch (Exception $e) {
     echo "login failed ... sleeping [360] and restarting \n";
-    TradeMarket::getInstance()->doLogout();
-    sleep(360);
+    sleep(1);
     exit(1);
 }
 

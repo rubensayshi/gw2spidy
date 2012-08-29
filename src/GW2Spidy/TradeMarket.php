@@ -22,7 +22,6 @@ class TradeMarket {
 
     public function __construct() {
         $this->cache    = CacheHandler::getInstance('TradeMarket');
-        $this->loggedIn = $this->doLogin();
     }
 
     public function __destruct() {
@@ -35,6 +34,12 @@ class TradeMarket {
         }
 
         return self::$instance;
+    }
+
+    public function ensureLogin() {
+        if (!$this->loggedIn) {
+            $this->loggedIn = $this->doLogin();
+        }
     }
 
     public function doLogin() {
@@ -74,6 +79,8 @@ class TradeMarket {
     }
 
     public function getItemByExactName($name) {
+        $this->ensureLogin();
+
         $curl = CurlRequest::newInstance(TRADINGPOST_URL . " /ws/search.json?text=".urlencode($name)."&levelmin=0&levelmax=80")
              ->exec()
              ;
@@ -90,6 +97,8 @@ class TradeMarket {
     }
 
     public function getListingsById($id, $type = self::LISTING_TYPE_SELL) {
+        $this->ensureLogin();
+
         // for now we can query for 'all' and get both sell and buy in the return
         //  should it stop working like that we can just query for what we want
         $queryType = 'all';
@@ -115,6 +124,8 @@ class TradeMarket {
     }
 
     public function getMarketData() {
+        $this->ensureLogin();
+
         $curl = CurlRequest::newInstance(TRADINGPOST_URL)
              ->exec()
              ;
@@ -130,6 +141,7 @@ class TradeMarket {
     }
 
     public function getItemList($type=null, $subType=null, $offset=0) {
+        $this->ensureLogin();
 
         $typeId    = ($type instanceof ItemType)       ? $type->getId()    : $type;
         $subTypeId = ($subType instanceof ItemSubType) ? $subType->getId() : $subType;
