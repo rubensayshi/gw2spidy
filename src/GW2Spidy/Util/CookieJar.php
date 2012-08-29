@@ -3,7 +3,7 @@
 namespace GW2Spidy\Util;
 
 class CookieJar {
-    protected $cookiejar;
+    protected $cookiejar = null;
 
     protected static $instance;
 
@@ -11,6 +11,9 @@ class CookieJar {
         $this->cleanupCookieJar();
     }
 
+    /**
+     * @return CookieJar
+     */
     public static function getInstance() {
         if (is_null(static::$instance)) {
             static::$instance = new static();
@@ -30,6 +33,7 @@ class CookieJar {
 
     public function cleanupCookieJar() {
         unlink($this->getCookieJar());
+        $this->cookiejar = null;
     }
 }
 
