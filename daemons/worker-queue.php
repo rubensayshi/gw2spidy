@@ -24,6 +24,7 @@ try {
     TradeMarket::getInstance()->doLogin();
 } catch (Exception $e) {
     echo "login failed ... sleeping [360] and restarting \n";
+    TradeMarket::getInstance()->doLogout();
     sleep(360);
     exit(1);
 }
