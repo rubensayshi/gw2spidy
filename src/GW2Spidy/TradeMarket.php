@@ -64,10 +64,12 @@ class TradeMarket {
     }
 
     public function doLogout() {
-        if ($this->loggedIn) {
+        try {
             $curl = CurlRequest::newInstance(AUTH_URL . "/logout")
                         ->exec()
                         ;
+        } catch (Exception $e) {
+            // no1 cares
         }
     }
 
