@@ -234,8 +234,7 @@ $app->get("/status", function() use($app) {
  * ----------------------
  */
 $app->post("/search", function (Request $request) use ($app) {
-    $search = $request->get('search');
-    return $app->handle(Request::create("/search/{$search}", 'GET'), HttpKernelInterface::SUB_REQUEST);
+    return $app->redirect($app['url_generator']->generate('search', array('search' => $request->get('search'))));
 })
 ->bind('searchpost');
 
@@ -273,8 +272,8 @@ $app->get("/search/{search}/{page}", function($search, $page) use($app) {
         'baseurl'  => $baseurl,
     ));
 })
-->assert('search',   '\s*')
-->assert('page',     '\d+')
+->assert('search',   '[^/]*')
+->assert('page',     '-?\d+')
 ->convert('page',    $toInt)
 ->convert('search',  function($search) { return urldecode($search); })
 ->value('search',    null)
