@@ -82,6 +82,17 @@ body {
     width: 5%;
     text-align: center;
 }
+.item-list-table .min_sale_unit_price, 
+.item-list-table .max_offer_unit_price {
+    min-width: 100px;
+    width: 10%;
+    text-align: center;
+}
+.item-list-table .restriction-level {
+    min-width: 50px;
+    width: 5%;
+    text-align: center;
+}
 
 .item-list-table .rarity {
     min-width: 75px;

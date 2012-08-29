@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\Twig\GW2MoneyExtension;
+
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\DB\SellListingQuery;
@@ -63,6 +65,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 ));
 
 $app['twig']->addExtension(new VersionedAssetsRoutingExtension());
+$app['twig']->addExtension(new GW2MoneyExtension());
 
 /**
  * ----------------------

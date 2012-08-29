@@ -19,6 +19,8 @@
         <th class="restriction-level">Level</th>
         <th class="rarity">Rarity</th>
         <th class="type">Type</th>
+        <th class="min_sale_unit_price">Min Sale Offer</th>
+        <th class="max_offer_unit_price">Max Buy Offer</th>
     </thead>
     {% for item in items %}
         <tr class="item">
@@ -38,6 +40,8 @@
                     <span class="item-sub-type">{{ item.itemSubType.title }}</span>
                 {% endif %}
             </td>
+            <td class="min_sale_unit_price">{{ item.getMinSaleUnitPrice | gw2money }}</td>
+            <td class="max_offer_unit_price">{{ item.getMaxOfferUnitPrice | gw2money }}</td>
         </tr>
     {% endfor %}
 </table>
