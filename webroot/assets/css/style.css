@@ -206,6 +206,7 @@ body {
 }
 
 .dkr-icon {
+    display: inline-block;
     background-image: url('../img/dkr.png');
     height: 39px;
     width: 49px;
@@ -214,6 +215,7 @@ body {
 }
 
 .twitter-icon {
+    display: inline-block;
     margin-top: 5px; 
     margin-right: 10px;
     background-image: url('../img/twitter-icon-gray.png');
