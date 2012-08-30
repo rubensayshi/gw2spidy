@@ -204,3 +204,25 @@ body {
         width: 100% !important;
     }
 }
+
+.dkr-icon {
+    background-image: url('../img/dkr.png');
+    height: 39px;
+    width: 49px;
+    text-indent: -1999px;
+    overflow: hidden;
+}
+
+.twitter-icon {
+    margin-top: 5px; 
+    margin-right: 10px;
+    background-image: url('../img/twitter-icon-gray.png');
+    height: 30px;
+    width: 36px;
+    text-indent: -1999px;
+    overflow: hidden;
+}
+
+.twitter-icon:hover {
+    background-image: url('../img/twitter-icon.png');
+}
