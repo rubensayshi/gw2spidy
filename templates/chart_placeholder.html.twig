@@ -150,13 +150,12 @@ var initchart = function(chartdata, callback) {
             mod_sec = Math.ceil(timespan_hr * 20);
         }
 
-        if (mod_sec > 86400) {
+        if (mod_sec > 70000) { // > 70000sec = round on 1 day
             mod_sec = Math.round(mod_sec / 86400) * 86400;
-        } else if (mod_sec > 3600) {
+        } else if (mod_sec > 1500) { // > 1500sec = round on 1 hour
             mod_sec = Math.round(mod_sec / 3600) * 3600;
         }
 
-        mod_sec = 3600;
         mod = mod_sec * 1000;
 
         plot = $.plot(placeholder, smoothdata(mod), renderoptions);
