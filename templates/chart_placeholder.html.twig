@@ -1,16 +1,9 @@
+<div>
+    <p>You can zoom in by selecting a part of the chart (drag a selection). <br />
+       When zoomed in the chart will show a more detailed view, up to 15 minutes intervals!
+    </p>
+</div>
 <div id="placeholder" style="width: {% if width is defined %}width{% else %}100%{% endif %}; height: 400px;"></div>
-<div id="nav_zoom_mode" style="display: none;">
-    <p>You can zoom into the chart by dragging, double clicking or using your scrollwheel. <br />
-    </p>
-    <p>You can switch to select based zoom mode; <button class="btn">clicky!</button>
-    </p>
-</div>
-<div id="select_zoom_mode">
-    <p>You can zoom into the chart by dragging a selection of the area you want to zoom into. <br />
-    </p>
-    <p>You can switch to navigation based zoom mode; <button class="btn">clicky!</button>
-    </p>
-</div>
 
 <script type="text/javascript">
 var formatGW2Money = function(copper) {
@@ -53,7 +46,7 @@ var base_options = {
     },
     series: {
         lines:  { show: true },
-        points: { show: true }
+        points: { show: true, radius: 3 }
     },
     xaxis: {
         mode:            "time",
@@ -67,60 +60,9 @@ var base_options = {
     }
 };
 
-var initchart_navzoom = function(chartdata, callback) {
-    var chartdata   = $.parseJSON(chartdata);
-    var placeholder = $("#placeholder");
-    var plot;
-    var options     = $.extend(true, {}, base_options, {
-        xaxis: {
-            zoomRange:       null,
-            panRange:        null
-        },
-        yaxis: {
-            zoomRange:   false,
-            panRange:    false
-        },
-        zoom: {
-            interactive: true
-        },
-        pan: {
-            interactive: true
-        }
-    });
-    var xaxis_default = null;
+var initchart = function(chartdata, callback) {
+    var rawdata = $.parseJSON(chartdata);
 
-    placeholder.bind('plotzoom', function() {
-        plot.pan({left: 0, top: 0});
-    });
-
-    var render = function(extraoptions) {
-        var extraoptions  = extraoptions || {};
-        var renderoptions = {};
-        var first = chartdata[0]['data'][0][0];
-
-        renderoptions.xaxis = {};
-        // renderoptions.xaxis.zoomRange = [first, null];
-        renderoptions.xaxis.panRange  = [first, null];
-
-        plot = $.plot(placeholder, chartdata, $.extend(true, {}, options, renderoptions, extraoptions));
-
-        // add zoom out button
-        $('<div class="btn" style="right:20px; bottom:23px; position:absolute;">zoom out</div>').appendTo(placeholder).click(function (e) {
-            e.preventDefault();
-            plot.zoomOut();
-        });
-
-    }
-
-    render();
-
-    if (typeof(callback) == 'function') {
-        callback();
-    }
-};
-
-var initchart_selectzoom = function(chartdata, callback) {
-    var chartdata   = $.parseJSON(chartdata);
     var placeholder = $("#placeholder");
     var plot;
     var options     = $.extend(true, {}, base_options, {
@@ -132,31 +74,99 @@ var initchart_selectzoom = function(chartdata, callback) {
     placeholder.bind("plotselected", function (event, ranges) {
         if (xaxis_default === null) {
             xaxis_default = {
-                from: plot.getAxes().xaxis.datamin,
-                to:   plot.getAxes().xaxis.datamax
+                min: plot.getAxes().xaxis.datamin,
+                max: plot.getAxes().xaxis.datamax
             };
         }
 
         render({ xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to } });
     });
 
+    var smoothdata = function(mod) {
+        var tmpdata = [];
+        var chartdata = [];
+
+        $.each(rawdata, function(i, dataset) {
+            tmpdata[i] = $.extend(true, {}, dataset);
+            tmpdata[i].data = {};
+            $.each(dataset.data, function(ii, entry) {
+                var timestamp = entry[0],
+                    rounded = Math.round(timestamp / mod) * mod;
+                tmpdata[i].data[rounded] = tmpdata[i].data[rounded] || {};
+                tmpdata[i].data[rounded][timestamp] = entry[1];
+            });
+        });
+
+        $.each(tmpdata, function(i, dataset) {
+            chartdata[i] = $.extend(true, {}, dataset);
+            chartdata[i].data = [];
+            $.each(dataset.data, function(timestamp, values) {
+                var value = 0, valuets = Infinity;
+                $.each(values, function(vtimestamp, v) {
+                    var tsdiff = (timestamp - vtimestamp);
+                    if (tsdiff < 0) tsdiff *= -1;
+
+                    if (tsdiff < valuets) {
+                        valuets = tsdiff;
+                        value   = v;
+                    }
+                });
+
+                chartdata[i].data.push([parseInt(timestamp), value]);
+            });
+        });
+
+        return chartdata;
+    };
+
     var render = function(extraoptions) {
         var extraoptions  = extraoptions || {};
-        var renderoptions = {};
-        var first = chartdata[0]['data'][0][0];
+        var renderoptions = $.extend(true, {}, options, renderoptions, extraoptions);
 
-        renderoptions.xaxis = {};
-        // renderoptions.xaxis.zoomRange = [first, null];
-        renderoptions.xaxis.panRange  = [first, null];
+        var min = Infinity, max = -Infinity;
+        if (renderoptions.xaxis !== null && typeof(renderoptions.xaxis.min) !== 'undefined' && typeof(renderoptions.xaxis.max) !== 'undefined') {
+            min = renderoptions.xaxis.min;
+            max = renderoptions.xaxis.max;
+        } else if (typeof(plot) !== 'undefined') {
+            min = plot.getAxes().xaxis.min;
+            max = plot.getAxes().xaxis.max;
+        } else {
+            $.each(rawdata, function(i, dataset) {
+                $.each(dataset.data, function(ii, entry) {
+                    var timestamp = entry[0];
 
-        plot = $.plot(placeholder, chartdata, $.extend(true, {}, options, renderoptions, extraoptions));
+                    min = min > timestamp ? timestamp : min;
+                    max = max < timestamp ? timestamp : max;
+                });
+            });
+        }
+
+        var timespan_sec = (max - min) / 1000, timespan_hr = timespan_sec / 3600;
+        var mod_sec = null, mod = null;
+
+        if (timespan_hr <= 24) {
+            mod_sec = 1;
+        } else {
+            mod_sec = Math.ceil(timespan_hr * 20);
+        }
+
+        if (mod_sec > 86400) {
+            mod_sec = Math.round(mod_sec / 86400) * 86400;
+        } else if (mod_sec > 3600) {
+            mod_sec = Math.round(mod_sec / 3600) * 3600;
+        }
+
+        mod_sec = 3600;
+        mod = mod_sec * 1000;
+
+        plot = $.plot(placeholder, smoothdata(mod), renderoptions);
 
         // add zoom out button
         $('<div class="btn" style="right:20px; bottom:23px; position:absolute;">zoom out</div>').appendTo(placeholder).click(function (e) {
             e.preventDefault();
 
             plot.clearSelection();
-            render({ xaxis: { min: xaxis_default.from, max: xaxis_default.to } });
+            render({ xaxis: { min: xaxis_default.min, max: xaxis_default.max } });
         });
 
     }
@@ -168,8 +178,6 @@ var initchart_selectzoom = function(chartdata, callback) {
     }
 };
 
-var initchart = initchart_selectzoom;
-
 var fetchchart = function(callback) {
     $.ajax("{{ path('chart', {dataId: item.dataId}) }}", {
         success: function(chartdata) {
@@ -177,25 +185,6 @@ var fetchchart = function(callback) {
         }
     });
 }
-
-$("#nav_zoom_mode button").click(function() {
-    $("#nav_zoom_mode").hide();
-    $("#select_zoom_mode").show();
-
-    initchart = initchart_selectzoom;
-    fetchchart(function() {
-        alert('switched to select based zoom mode!');
-    });
-});
-$("#select_zoom_mode button").click(function() {
-    $("#nav_zoom_mode").show();
-    $("#select_zoom_mode").hide();
-
-    initchart = initchart_navzoom;
-    fetchchart(function() {
-        alert('switched to navigation based zoom mode!');
-    });
-});
 
 $(window).load(function() {
     fetchchart();

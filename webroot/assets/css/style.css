@@ -28,9 +28,11 @@ body {
     background-color: #f5f5f5;
 }
 
-.sidebar h3 {
+.sidebar h3,
+.graph_container h4 {
     border-bottom: 1px solid grey;
 }
+
  
 .item {
     clear: both;
