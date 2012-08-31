@@ -4,7 +4,7 @@ html {
 
 body {
     background: no-repeat center center fixed;
-    
+
     -webkit-background-size: cover;
        -moz-background-size: cover;
          -o-background-size: cover;
@@ -33,7 +33,7 @@ body {
     border-bottom: 1px solid grey;
 }
 
- 
+
 .item {
     clear: both;
 }
@@ -84,7 +84,7 @@ body {
     width: 5%;
     text-align: center;
 }
-.item-list-table .min_sale_unit_price, 
+.item-list-table .min_sale_unit_price,
 .item-list-table .max_offer_unit_price {
     min-width: 100px;
     width: 10%;
@@ -116,7 +116,7 @@ body {
 
 /* ----------------
  * [START] some magic for sticky footer
-   ---------------- */ 
+   ---------------- */
  html, body { height: 100% }
 .container-fluid {
     min-height: 100%;
@@ -157,11 +157,11 @@ body {
 }
 /* ----------------
  * [END] some magic for sticky footer
-   ---------------- */ 
- 
+   ---------------- */
+
 /* ----------------
  * [START] some CSS for 2nd level dropdown
-   ---------------- */ 
+   ---------------- */
 .dropdown-menu .sub-menu {
     left: 100%;
     position: absolute;
@@ -195,13 +195,13 @@ body {
 }
 /* ----------------
  * [END] some CSS for 2nd level dropdown
-   ---------------- */ 
+   ---------------- */
 
 @media (max-width: 850px) {
     .sidebar {
         display: none !important;
     }
-    
+
     .main-content {
         width: 100% !important;
     }
@@ -218,7 +218,7 @@ body {
 
 .twitter-icon {
     display: inline-block;
-    margin-top: 5px; 
+    margin-top: 5px;
     margin-right: 10px;
     background-image: url('../img/twitter-icon-gray.png');
     height: 30px;
@@ -230,3 +230,50 @@ body {
 .twitter-icon:hover {
     background-image: url('../img/twitter-icon.png');
 }
+
+
+/* ----------------
+ * [START] tweet plugin style
+   ---------------- */
+.tweet_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
+}
+
+.tweet_list li {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.5em;
+    list-style-type: none;
+
+    border-bottom: 1px solid grey;
+}
+
+.tweet_list li a {
+    color: #0C717A;
+}
+
+.tweet_list .tweet_join {
+    display: none;
+}
+
+.tweet_list .tweet_text {
+    margin-left: 5px;
+}
+
+.tweet_list .tweet_even {
+    background: rgba(206, 206, 206, 0.3);
+}
+
+.tweet_list .tweet_avatar {
+    padding-right: .5em; float: left;
+}
+
+.tweet_list .tweet_avatar img {
+    vertical-align: middle;
+}
+/* ----------------
+ * [END] tweet plugin style
+   ---------------- */

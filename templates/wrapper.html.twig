@@ -11,6 +11,8 @@
     <script language="javascript" type="text/javascript" src="/assets/js/vendor/flot/jquery.flot.selection.min.js"></script>
     <script language="javascript" type="text/javascript" src="/assets/js/vendor/flot/jquery.flot.tooltip.min.js"></script>
 
+    <script language="javascript" type="text/javascript" src="/assets/js/vendor/seaofclouds/tweet/jquery.tweet.js"></script>
+
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-transition.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-alert.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
@@ -83,12 +85,13 @@
         </div>
         <div class="row-fluid content-row">
             <div class="well">
-                <h3 style="border-bottom: 1px solid #ccc; margin-bottom: 5px;">BETA</h3>
+                <h3 style="border-bottom: 1px solid #ccc; margin-bottom: 5px;">Notices</h3>
                 <div class="alert alert-error">
-                    In this beta version I've changed how the graphs work! <br />
-                    When zoomed out I'm hiding a lot of the dots on the lines (rounding up to hours), when you start zooming in I'll show more details (more dots). <br />
-                    Please let me know what you think how it feels and if the zoom functionality is clear enough for you! <br />
-                    You can post feedback on the <a href="http://www.guildwars2guru.com/topic/45667-guildwars2spidy-graphs-of-the-trade-market/">Guild Wars 2 Guru Forum</a> or you can <a href="mailto:gw2spidy@rubensayshi.com">mail me</a>.
+                    <strong>Important!</strong> ArenaNet is testing the tradinpost by letting small parts of the players access it. <br />
+                    While my account is part of that small amount I can atm gather some data! <br />
+                    <br />
+                    I'm atm gathering data every 15minutes, but that's a bit chaotic in the graphs if you don't zoom in ... <br />
+                    Trying to come up with a solution ;)
                 </div>
             </div>
         </div>
@@ -142,6 +145,25 @@
             $(document.body).css('background-image', "url(" + image + ")");
             $('.container-fluid').each(function(k, o) { o.style.backgroundColor = "rgba(255, 255, 255, " + opacity + ")"; });
     });
+    </script>
+
+    <script type='text/javascript'>
+        $(function() {
+            if ($("#tweet")) {
+                $("#tweet").tweet({
+                    join_text: "auto",
+                    username: "gw2spidy",
+                    avatar_size: 32,
+                    count: 3,
+                    auto_join_text_default: " we said, ",
+                    auto_join_text_ed: " we ",
+                    auto_join_text_ing: " we were ",
+                    auto_join_text_reply: " we replied ",
+                    auto_join_text_url: " we said, ",
+                    loading_text: "loading tweets..."
+                });
+            }
+        });
     </script>
 
     <script type="text/javascript">
