@@ -60,6 +60,10 @@ class Application extends \Silex\Application {
         return microtime(true) - $this->time;
     }
 
+    public function getMemUsage() {
+        return (memory_get_peak_usage(true) / 1024  / 1024) . " MB";
+    }
+
     public function setHomeActive($bool = true) {
         $this->homeActive = $bool;
 
