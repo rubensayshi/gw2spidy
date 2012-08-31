@@ -134,6 +134,8 @@ var initchart_navzoom = function(chartdata, callback) {
 var ZOOMMODE_NAV    = 'zoommode_nav',
     ZOOMMODE_SELECT = 'zoommode_select',
     zoommode        = ZOOMMODE_SELECT;
+_gaq.push(['_trackEvent', 'ZOOMMODE', 'DEFAULT::' + zoommode]);
+
 var initchart = function(chartdata, callback) {
     var rawdata = $.parseJSON(chartdata);
 
@@ -297,6 +299,7 @@ $("#nav_zoom_mode button").click(function() {
     $("#select_zoom_mode").show();
 
     zoommode = ZOOMMODE_SELECT;
+    _gaq.push(['_trackEvent', 'ZOOMMODE', ZOOMMODE_NAV]);
     fetchchart(function() {
         alert('switched to select based zoom mode!');
     });
@@ -306,6 +309,7 @@ $("#select_zoom_mode button").click(function() {
     $("#select_zoom_mode").hide();
 
     zoommode = ZOOMMODE_NAV;
+    _gaq.push(['_trackEvent', 'ZOOMMODE', ZOOMMODE_NAV]);
     fetchchart(function() {
         alert('switched to navigation based zoom mode!');
     });
