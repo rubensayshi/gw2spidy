@@ -155,11 +155,8 @@
                     username: "gw2spidy",
                     avatar_size: 32,
                     count: 3,
-                    auto_join_text_default: " we said, ",
-                    auto_join_text_ed: " we ",
-                    auto_join_text_ing: " we were ",
-                    auto_join_text_reply: " we replied ",
-                    auto_join_text_url: " we said, ",
+                    fetch: 20,
+                    filter: function(t){ return ! /^@\w+/.test(t.tweet_raw_text); },
                     loading_text: "loading tweets..."
                 });
             }
