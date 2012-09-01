@@ -14,6 +14,10 @@ use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\TradeMarket;
 
 class ItemTypeDBWorker implements Worker {
+    public function getRetries() {
+        return 2;
+    }
+
     public function work(WorkerQueueItem $item) {
         $market = TradeMarket::getInstance();
 

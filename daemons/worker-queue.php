@@ -70,28 +70,43 @@ while ($run < $max) {
     // mark our slot as held
     $slot->hold();
 
-    /*
-     * process the item
-     *  wrapped in trycatch to catch and log exceptions
-     *  get a worker (reuse old instances) and let it work the item
-     */
-    try {
-        $workerName = $queueItem->getWorker();
+    $workerName = $queueItem->getWorker();
 
-        if (!isset($workers[$workerName])) {
-            $workers[$workerName] = new $workerName;
+    if (!isset($workers[$workerName])) {
+        $workers[$workerName] = new $workerName;
+    }
+
+    $try    = 1;
+    $retries = $workers[$workerName]->getRetries();
+
+    while (true) {
+            /*
+             * process the item
+             *  wrapped in trycatch to catch and log exceptions
+             *  get a worker (reuse old instances) and let it work the item
+             */
+            try {
+                ob_start();
+                $workers[$workerName]->work($queueItem);
+
+                ob_get_clean();
+                break;
+            } catch (Exception $e) {
+                $log = ob_get_clean();
+                echo " !! worker process threw exception !! \n\n\n --------------- \n\n\n {$log} \n\n\n --------------- \n\n\n {$e} ";
+
+                if ($try <= $retries) {
+                    echo "error, retrying, sleeping [5] ... \n";
+                    sleep(5);
+                    $try++;
+                    continue;
+                } else {
+                    echo "error, sleeping [60] ... \n";
+                    sleep(60);
+                    break;
+                }
+            }
         }
-
-        ob_start();
-        $workers[$workerName]->work($queueItem);
-
-        ob_get_clean();
-    } catch (Exception $e) {
-        $log = ob_get_clean();
-        echo " !! worker process threw exception !! \n\n\n --------------- \n\n\n {$log} \n\n\n --------------- \n\n\n {$e} ";
-
-        echo "error, sleeping [60] ... \n";
-        sleep(60);
     }
 
     echo "done [".(microtime(true) - $begin)."] \n";

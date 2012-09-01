@@ -16,6 +16,10 @@ use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemSubType;
 
 class ItemListingsDBWorker implements Worker {
+    public function getRetries() {
+        return 1;
+    }
+
     public function work(WorkerQueueItem $item) {
         $item = $item->getData();
 
