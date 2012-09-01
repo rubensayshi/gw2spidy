@@ -303,6 +303,8 @@ $app->get("/api/{format}/{secret}", function($format, $secret) use($app) {
         return $app->redirect("/");
     }
 
+    ini_set('memory_limit', '512M');
+
     $items = ItemQuery::create()->find();
 
     if ($format == 'csv') {
