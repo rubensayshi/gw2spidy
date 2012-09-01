@@ -80,31 +80,30 @@ while ($run < $max) {
     $retries = $workers[$workerName]->getRetries();
 
     while (true) {
-            /*
-             * process the item
-             *  wrapped in trycatch to catch and log exceptions
-             *  get a worker (reuse old instances) and let it work the item
-             */
-            try {
-                ob_start();
-                $workers[$workerName]->work($queueItem);
+        /*
+         * process the item
+         *  wrapped in trycatch to catch and log exceptions
+         *  get a worker (reuse old instances) and let it work the item
+         */
+        try {
+            ob_start();
+            $workers[$workerName]->work($queueItem);
 
-                ob_get_clean();
+            ob_get_clean();
+            break;
+        } catch (Exception $e) {
+            $log = ob_get_clean();
+            echo " !! worker process threw exception !! \n\n\n --------------- \n\n\n {$log} \n\n\n --------------- \n\n\n {$e} ";
+
+            if ($try <= $retries) {
+                echo "error, retrying, sleeping [5] ... \n";
+                sleep(5);
+                $try++;
+                continue;
+            } else {
+                echo "error, sleeping [60] ... \n";
+                sleep(60);
                 break;
-            } catch (Exception $e) {
-                $log = ob_get_clean();
-                echo " !! worker process threw exception !! \n\n\n --------------- \n\n\n {$log} \n\n\n --------------- \n\n\n {$e} ";
-
-                if ($try <= $retries) {
-                    echo "error, retrying, sleeping [5] ... \n";
-                    sleep(5);
-                    $try++;
-                    continue;
-                } else {
-                    echo "error, sleeping [60] ... \n";
-                    sleep(60);
-                    break;
-                }
             }
         }
     }
