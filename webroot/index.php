@@ -370,7 +370,15 @@ $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $
         echo implode(",", $fields) . "\n";
 
         foreach ($listings as $listing) {
-            echo implode(",", $listing->toArray(BasePeer::TYPE_FIELDNAME)) . "\n";
+        	$data = $listing->toArray(BasePeer::TYPE_FIELDNAME);
+
+            $date = new DateTime("{$listing->getListingDate()} {$listing->getListingTime()}");
+            $date->setTimezone(new DateTimeZone('UTC'));
+
+            $data[$listing->getId()]['listing_date'] = $date->format("Y-m-d");
+            $data[$listing->getId()]['listing_time'] = $date->format("H:i:s");
+        }
+            echo implode(",", $data) . "\n";
         }
 
         return ob_get_clean();
@@ -382,6 +390,12 @@ $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $
 
         foreach ($listings as $listing) {
             $json[$listing->getId()] = $listing->toArray(BasePeer::TYPE_FIELDNAME);
+
+            $date = new DateTime("{$listing->getListingDate()} {$listing->getListingTime()}");
+            $date->setTimezone(new DateTimeZone('UTC'));
+
+            $json[$listing->getId()]['listing_date'] = $date->format("Y-m-d");
+            $json[$listing->getId()]['listing_time'] = $date->format("H:i:s");
         }
 
         return json_encode($json);
