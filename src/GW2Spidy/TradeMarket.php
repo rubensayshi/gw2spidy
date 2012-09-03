@@ -159,6 +159,8 @@ class TradeMarket {
              ->exec()
              ;
 
+        var_dump($curl->getInfo());
+
         $result = $curl->getResponseBody();
         $json   = json_decode($result, true);
 
