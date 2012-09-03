@@ -251,7 +251,7 @@ $app->get("/search/{search}/{page}", function($search, $page) use($app) {
         return $app->handle(Request::create("/searchform", 'GET'), HttpKernelInterface::SUB_REQUEST);
     }
 
-    $itemsperpage = 10;
+    $itemsperpage = 25;
     $baseurl      = "/search/{$search}";
     $q = ItemQuery::create()
             ->filterByName("%{$search}%");

@@ -1,6 +1,6 @@
 {% extends "content_sidebar.html.twig" %}
 
-{% block content %}
+{% macro pager(type, subtype, page, lastpage) %}
 <div class="pagination">
     <ul>
         <li class="{% if page <= 1 %}disabled{% endif %}"><a href="{{ path('type', {type: type, subtype: subtype, page: (page-1)}) }}">Prev</a></li>
@@ -12,6 +12,10 @@
         <li class="{% if page >= lastpage %}disabled{% endif %}"><a href="{{ path('type', {type: type, subtype: subtype, page: (page+1)}) }}">Next</a></li>
     </ul>
 </div>
+{% endmacro %}
+
+{% block content %}
+{{ _self.pager(type, subtype, page, lastpage) }}
 
 <table class="item-list-table table table-striped table-condensed">
     <thead>
@@ -45,5 +49,7 @@
         </tr>
     {% endfor %}
 </table>
+
+{{ _self.pager(type, subtype, page, lastpage) }}
 
 {% endblock %}
