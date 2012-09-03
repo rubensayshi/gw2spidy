@@ -3,6 +3,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
+
+    <script type="text/javascript"> var _gaq = _gaq || []; </script>
+
     <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="http://people.iola.dk/olau/flot/excanvas.min.js"></script><![endif]-->
     <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script language="javascript" type="text/javascript" src="/assets/js/vendor/flot/jquery.flot.min.js"></script>
@@ -10,6 +13,8 @@
     <script language="javascript" type="text/javascript" src="/assets/js/vendor/flot/jquery.flot.navigate.min.js"></script>
     <script language="javascript" type="text/javascript" src="/assets/js/vendor/flot/jquery.flot.selection.min.js"></script>
     <script language="javascript" type="text/javascript" src="/assets/js/vendor/flot/jquery.flot.tooltip.min.js"></script>
+
+    <script language="javascript" type="text/javascript" src="/assets/js/vendor/seaofclouds/tweet/jquery.tweet.js"></script>
 
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-transition.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-alert.js"></script>
@@ -143,6 +148,22 @@
             $(document.body).css('background-image', "url(" + image + ")");
             $('.container-fluid').each(function(k, o) { o.style.backgroundColor = "rgba(255, 255, 255, " + opacity + ")"; });
     });
+    </script>
+
+    <script type='text/javascript'>
+        $(function() {
+            if ($("#tweet")) {
+                $("#tweet").tweet({
+                    join_text: "",
+                    username: "gw2spidy",
+                    avatar_size: 32,
+                    count: 3,
+                    fetch: 20,
+                    filter: function(t){ return ! /^@\w+/.test(t.tweet_raw_text); },
+                    loading_text: "loading tweets..."
+                });
+            }
+        });
     </script>
 
     <script type="text/javascript">
