@@ -15,7 +15,7 @@ use GW2Spidy\TradeMarket;
 
 class ItemTypeDBWorker implements Worker {
     public function getRetries() {
-        return 2;
+        return 1;
     }
 
     public function work(WorkerQueueItem $item) {

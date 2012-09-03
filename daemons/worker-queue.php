@@ -57,10 +57,8 @@ while ($run < $max) {
         // return the slot
         $slot->release();
 
-        if (!$debug) {
-            print "no items, sleeping [60] ... \n";
-            sleep(60);
-        }
+        print "no items, sleeping [60] ... \n";
+        sleep(60);
 
         $run++;
         continue;
@@ -77,7 +75,7 @@ while ($run < $max) {
         $workers[$workerName] = new $workerName;
     }
 
-    $try    = 1;
+    $try = 1;
     $retries = $workers[$workerName]->getRetries();
 
     while (true) {

@@ -20,7 +20,7 @@ use GW2Spidy\DB\ItemSubType;
 
 class ItemDBWorker implements Worker {
     public function getRetries() {
-        return 2;
+        return 1;
     }
 
     public function work(WorkerQueueItem $item) {
