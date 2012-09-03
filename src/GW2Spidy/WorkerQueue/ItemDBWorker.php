@@ -47,7 +47,7 @@ class ItemDBWorker implements Worker {
                 var_dump($itemData['name'], (string)$item, $itemData['min_sale_unit_price']) . "\n\n";
                 if ($item) {
                     if (($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) > 50) {
-                        $item->fromArray($itemData);
+                        $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
                         $item->save();
 
                     } else {
