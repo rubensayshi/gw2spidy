@@ -13,7 +13,8 @@ $UUID    = getmypid() . "::" . time();
 $workers = array();
 $con     = Propel::getConnection();
 $run     = 0;
-$max     = in_array('--debug', $argv) ? 1 : 100;
+$max     = 100;
+$debug   = in_array('--debug', $argv);
 
 $slotManager  = RequestSlotManager::getInstance();
 $queueManager = WorkerQueueManager::getInstance();
@@ -56,7 +57,7 @@ while ($run < $max) {
         // return the slot
         $slot->release();
 
-        if (!in_array('--debug', $argv)) {
+        if (!$debug) {
             print "no items, sleeping [60] ... \n";
             sleep(60);
         }
@@ -89,7 +90,7 @@ while ($run < $max) {
             ob_start();
             $workers[$workerName]->work($queueItem);
 
-            ob_get_clean();
+            echo ($debug) ? ob_get_clean() : ob_clean();
             break;
         } catch (Exception $e) {
             $log = ob_get_clean();

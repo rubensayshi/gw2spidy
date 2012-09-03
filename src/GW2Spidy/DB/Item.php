@@ -69,4 +69,8 @@ class Item extends BaseItem {
         return $this->aItemSubType;
     }
 
+    public function __toString() {
+        return $this->getName();
+    }
+
 } // Item

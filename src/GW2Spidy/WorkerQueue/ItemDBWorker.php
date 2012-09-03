@@ -38,10 +38,13 @@ class ItemDBWorker implements Worker {
         $now    = new \DateTime();
         $items  = TradeMarket::getInstance()->getItemList($type, $subtype, $offset);
 
+        var_dump((string)$type, (string)$subtype, $offset, count($items)) . "\n\n";
+
         if ($items) {
             foreach ($items as $itemData) {
                 $item = ItemQuery::create()->findPK($itemData['data_id']);
 
+                var_dump($itemData['name'], (string)$item, $itemData['min_sale_unit_price']) . "\n\n";
                 if ($item) {
                     if (($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) > 50) {
                         $item->fromArray($itemData);
