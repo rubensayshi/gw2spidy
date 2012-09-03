@@ -60,7 +60,6 @@ class TradeMarket {
             throw new Exception("Login request failed, no SID.");
         }
 
-
         if($curl->getInfo('http_code') >= 400) {
             throw new Exception("Login request failed with HTTP code {$curl->getInfo('http_code')}!");
         }
@@ -159,7 +158,9 @@ class TradeMarket {
              ->exec()
              ;
 
-        var_dump($curl->getInfo());
+        if($curl->getInfo('http_code') >= 400) {
+            throw new Exception("getItemList request failed with HTTP code {$curl->getInfo('http_code')}!");
+        }
 
         $result = $curl->getResponseBody();
         $json   = json_decode($result, true);
