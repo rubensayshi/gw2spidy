@@ -12,7 +12,10 @@
         <button class="btn" style="float: right;">switch to (default) selection zoom mode</button>
     </div>
 </div>
-<div id="placeholder" style="width: {% if width is defined %}width{% else %}100%{% endif %}; height: 400px;"></div>
+<div id="chart_wrapper">
+    <div id="placeholder" style="width: {% if width is defined %}width{% else %}100%{% endif %}; height: 400px;"></div>
+    <div id="legend" title="click to move it if't in the way"></div>
+</div>
 
 <script type="text/javascript">
 /**
@@ -79,6 +82,9 @@ var base_options = {
     yaxis: {
         minTickSize: 1,
         tickFormatter: formatGW2Money
+    },
+    legend: {
+        container: $("#legend")
     }
 };
 
@@ -151,6 +157,11 @@ var initchart = function(chartdata, callback) {
             plot.resize();
             render();
         }
+    });
+
+    $("#legend").unbind();
+    $("#legend").bind('click', function() {
+        $(this).toggleClass('alt');
     });
 
     if (zoommode == ZOOMMODE_SELECT) {

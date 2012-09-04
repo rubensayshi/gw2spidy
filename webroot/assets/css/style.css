@@ -33,6 +33,31 @@ body {
     border-bottom: 1px solid grey;
 }
 
+#chart_wrapper {
+    position: relative;
+}
+
+#chart_wrapper #legend {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    margin-left: -40px; 
+    min-width: 80px;
+    text-align: center;
+    
+    background-color: rgba(249, 249, 249, 0.6);
+    padding: 3px 10px;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+            
+    cursor: pointer;
+}
+
+#chart_wrapper #legend.alt {
+    top: auto;
+    bottom: 20px;
+}
 
 .item {
     clear: both;
