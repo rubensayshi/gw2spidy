@@ -36,9 +36,10 @@ class ItemDBWorker implements Worker {
 
     protected function buildItemDB($type, $subtype, $offset) {
         $now    = new \DateTime();
+        var_dump((string)$type, (string)$subtype, $offset) . "\n\n";
         $items  = TradeMarket::getInstance()->getItemList($type, $subtype, $offset);
 
-        var_dump((string)$type, (string)$subtype, $offset, $items) . "\n\n";
+        var_dump($items) . "\n\n";
 
         if ($items) {
             foreach ($items as $itemData) {
