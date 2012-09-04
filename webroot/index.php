@@ -377,7 +377,7 @@ $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $
 
             $data[$listing->getId()]['listing_date'] = $date->format("Y-m-d");
             $data[$listing->getId()]['listing_time'] = $date->format("H:i:s");
-        }
+
             echo implode(",", $data) . "\n";
         }
 
