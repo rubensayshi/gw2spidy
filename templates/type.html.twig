@@ -1,55 +1,74 @@
 {% extends "content_sidebar.html.twig" %}
 
-{% macro pager(type, subtype, page, lastpage) %}
-<div class="pagination">
-    <ul>
-        <li class="{% if page <= 1 %}disabled{% endif %}"><a href="{{ path('type', {type: type, subtype: subtype, page: (page-1)}) }}">Prev</a></li>
-        {% for i in range(1, lastpage) %}
-            <li class="{% if i == page %}active{% endif %}">
-                <a href="{{ path('type', {type: type, subtype: subtype, page: i}) }}">{{ i }}</a>
-            </li>
-        {% endfor %}
-        <li class="{% if page >= lastpage %}disabled{% endif %}"><a href="{{ path('type', {type: type, subtype: subtype, page: (page+1)}) }}">Next</a></li>
-    </ul>
-</div>
+{# ---------------
+    pager is repeated multiple times
+   --------------- #}
+{% macro pager(type, subtype, page, lastpage, sort, sort_order) %}
+    <div class="pagination">
+        <ul>
+            <li class="{% if page <= 1 %}disabled{% endif %}"><a href="{{ path('type', {type: type, subtype: subtype, page: (page-1), ('sort_' ~ sort): sort_order}) }}">Prev</a></li>
+            {% for i in range(1, lastpage) %}
+                <li class="{% if i == page %}active{% endif %}">
+                    <a href="{{ path('type', {type: type, subtype: subtype, page: i, ('sort_' ~ sort): sort_order}) }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+            <li class="{% if page >= lastpage %}disabled{% endif %}"><a href="{{ path('type', {type: type, subtype: subtype, page: (page+1), ('sort_' ~ sort): sort_order}) }}">Next</a></li>
+        </ul>
+    </div>
+{% endmacro %}
+
+{# ---------------
+    table header (with sorting link) is repeated multiple times
+   --------------- #}
+{% macro th_sortable(title, key, type, subtype, current_sort, current_sort_order) %}
+    {# set the inverted order if we're already sorting by this key #}
+    {% set sort_order = current_sort == key ? (current_sort_order == 'desc' ? 'asc' : 'desc') : 'asc' %}
+
+    <th class="{{ key }}">
+        <a href="{{ path('type', {type: type, subtype: subtype, ('sort_' ~ key): sort_order}) }}">
+            {{ title }}
+            {% if current_sort == key %}
+                <i class="icon-arrow-{{ (current_sort_order == 'desc' ? 'down' : 'up') }}"></i>
+            {% endif %}
+        </a>
+    </th>
 {% endmacro %}
 
 {% block content %}
-{{ _self.pager(type, subtype, page, lastpage) }}
+    {{ _self.pager(type, subtype, page, lastpage, current_sort, current_sort_order) }}
 
-<table class="item-list-table table table-striped table-condensed">
-    <thead>
-        <th class="name">Name</th>
-        <th class="restriction-level">Level</th>
-        <th class="rarity">Rarity</th>
-        <th class="type">Type</th>
-        <th class="min_sale_unit_price">Min Sale Offer</th>
-        <th class="max_offer_unit_price">Max Buy Offer</th>
-    </thead>
-    {% for item in items %}
-        <tr class="item">
-            <td>
-                <a href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
-                    <img class="image" src="{{ item.img }}" /> {{ item.name }}
-                </a>
-            </td>
-            <td class="restriction-level">{% if item.restrictionLevel %}{{ item.restrictionLevel }}{% endif %}</td>
-            <td class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</td>
-            <td class="type">
-                {% if item.itemType %}
-                    <span class="item-type">{{ item.itemType.title }}</span>
-                {% endif %}
-                {% if item.itemSubType %}
-                    {% if item.itemType %} // {% endif %}
-                    <span class="item-sub-type">{{ item.itemSubType.title }}</span>
-                {% endif %}
-            </td>
-            <td class="min_sale_unit_price">{{ item.getMinSaleUnitPrice | gw2money }}</td>
-            <td class="max_offer_unit_price">{{ item.getMaxOfferUnitPrice | gw2money }}</td>
-        </tr>
-    {% endfor %}
-</table>
+    <table class="item-list-table table table-striped table-condensed">
+        <thead>
+            {{ _self.th_sortable('Name', 'name', type, subtype, current_sort, current_sort_order) }}
+            {{ _self.th_sortable('Level', 'restriction_level', type, subtype, current_sort, current_sort_order) }}
+            {{ _self.th_sortable('Rarity', 'rarity', type, subtype, current_sort, current_sort_order) }}
+            <th class="type">Type</th>
+            {{ _self.th_sortable('Min Sale Offer', 'min_sale_unit_price', type, subtype, current_sort, current_sort_order) }}
+            {{ _self.th_sortable('Max Buy Offer', 'max_offer_unit_price', type, subtype, current_sort, current_sort_order) }}
+        </thead>
+        {% for item in items %}
+            <tr class="item">
+                <td>
+                    <a href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
+                        <img class="image" src="{{ item.img }}" /> {{ item.name }}
+                    </a>
+                </td>
+                <td class="restriction-level">{% if item.restrictionLevel %}{{ item.restrictionLevel }}{% endif %}</td>
+                <td class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</td>
+                <td class="type">
+                    {% if item.itemType %}
+                        <span class="item-type">{{ item.itemType.title }}</span>
+                    {% endif %}
+                    {% if item.itemSubType %}
+                        {% if item.itemType %} // {% endif %}
+                        <span class="item-sub-type">{{ item.itemSubType.title }}</span>
+                    {% endif %}
+                </td>
+                <td class="min_sale_unit_price">{{ item.getMinSaleUnitPrice | gw2money }}</td>
+                <td class="max_offer_unit_price">{{ item.getMaxOfferUnitPrice | gw2money }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
-{{ _self.pager(type, subtype, page, lastpage) }}
-
+    {{ _self.pager(type, subtype, page, lastpage, current_sort, current_sort_order) }}
 {% endblock %}

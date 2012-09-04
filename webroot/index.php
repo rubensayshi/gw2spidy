@@ -101,11 +101,23 @@ $app->get("/types", function() use($app) {
  *  route /type
  * ----------------------
  */
-$app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use($app) {
+$app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $subtype, $page) use($app) {
     $itemsperpage = 50;
     $baseurl      = "/type/{$type}/{$subtype}";
     $q            = ItemQuery::create();
     $page         = $page > 0 ? $page : 1;
+
+    $sortByOptions = array('name', 'rarity', 'restriction_level', 'min_sale_unit_price', 'max_offer_unit_price');
+
+    foreach ($sortByOptions as $sortByOption) {
+        if ($request->get("sort_{$sortByOption}", null)) {
+            $sortOrder = $request->get("sort_{$sortByOption}", 'asc');
+            $sortBy    = $sortByOption;
+        }
+    }
+
+    $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'name';
+    $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'asc';
 
     if (!is_null($type)) {
         $q->filterByItemTypeId($type);
@@ -126,10 +138,16 @@ $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use(
         $lastpage = 1;
     }
 
-    $items = $q->offset($itemsperpage * ($page-1))
-                    ->orderBy("Name", "ASC")
-                    ->limit($itemsperpage)
-                    ->find();
+    $q->offset($itemsperpage * ($page-1))
+      ->limit($itemsperpage);
+
+    if ($sortOrder == 'asc') {
+        $q->addAscendingOrderByColumn($sortBy);
+    } else if ($sortOrder == 'desc') {
+        $q->addDescendingOrderByColumn($sortBy);
+    }
+
+    $items = $q->find();
 
     return $app['twig']->render('type.html.twig', array(
         'type'     => $type,
@@ -138,6 +156,9 @@ $app->get("/type/{type}/{subtype}/{page}", function($type, $subtype, $page) use(
         'lastpage' => $lastpage,
         'items'    => $items,
         'baseurl'  => $baseurl,
+
+        'current_sort'       => $sortBy,
+        'current_sort_order' => $sortOrder,
     ));
 })
 ->assert('type',     '\d+')

@@ -99,24 +99,29 @@ body {
     margin-right: 10px;
 }
 
+.item-list-table th a i[class^="icon-"] {
+    position: relative;
+    top: 2px;
+}
+
 .item-list-table tr, .item-list-table td {
     height: 32px;
     line-height: 32px;
 }
 
-.item-list-table .restriction-level {
-    min-width: 50px;
+.item-list-table .restriction_level {
+    min-width: 55px;
     width: 5%;
     text-align: center;
 }
 .item-list-table .min_sale_unit_price,
 .item-list-table .max_offer_unit_price {
-    min-width: 100px;
+    min-width: 110px;
     width: 10%;
     text-align: center;
 }
-.item-list-table .restriction-level {
-    min-width: 50px;
+.item-list-table .restriction_level {
+    min-width: 70px;
     width: 5%;
     text-align: center;
 }
