@@ -86,15 +86,18 @@
                 </div>
             </div>
         </div>
-        <div class="row-fluid content-row">
-            <div class="well">
-                <h3 style="border-bottom: 1px solid #ccc; margin-bottom: 5px;">Notices</h3>
-                <div class="alert alert-success">
-                    It seems the tradingpost is finally up for everyone and has been stable for a couple of hours now ... <br />
-                    Let's hope it stays stable and we can enjoy some proper graphs ^_^
+        {# fairly stupid IF block around the notice area so I can easily enable/disable it manually :-) #}
+        {% if (false) %}
+            <div class="row-fluid content-row">
+                <div class="well">
+                    <h3 style="border-bottom: 1px solid #ccc; margin-bottom: 5px;">Notices</h3>
+                    <div class="alert alert-success">
+                        It seems the tradingpost is finally up for everyone and has been stable for a couple of hours now ... <br />
+                        Let's hope it stays stable and we can enjoy some proper graphs ^_^
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
         <div class="row-fluid content-row">
             {% block content_body %}{% endblock %}
         </div>
