@@ -145,6 +145,14 @@ var initchart = function(chartdata, callback) {
 
     placeholder.unbind();
 
+    $(window).unbind('resize');
+    $(window).bind('resize', function() {
+        if (plot) {
+            plot.resize();
+            render();
+        }
+    });
+
     if (zoommode == ZOOMMODE_SELECT) {
         var options = $.extend(true, {}, base_options, {
             selection: { mode: "x" }
