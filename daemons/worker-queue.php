@@ -88,7 +88,12 @@ while ($run < $max) {
             ob_start();
             $workers[$workerName]->work($queueItem);
 
-            echo ($debug) ? ob_get_clean() : ob_clean();
+            if ($debug) {
+                echo ob_get_clean();
+            } else {
+                ob_get_clean();
+            }
+
             break;
         } catch (Exception $e) {
             $log = ob_get_clean();
