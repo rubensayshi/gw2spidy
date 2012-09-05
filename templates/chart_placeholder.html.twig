@@ -75,9 +75,10 @@ var base_options = {
     },
     xaxis: {
         mode:            "time",
-        timeformat:      "%d-%b",
+        timeformat:      "%H:%M %d-%b",
+        timezone:        "browser",
         twelveHourClock: false,
-        minTickSize:     [1, "day"]
+        minTickSize:     [1, "hour"]
     },
     yaxis: {
         minTickSize: 1,
