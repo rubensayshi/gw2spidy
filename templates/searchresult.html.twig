@@ -1,54 +1,5 @@
 {% extends "content_sidebar.html.twig" %}
 
-{% macro pager(search, page, lastpage) %}
-<div class="pagination">
-    <ul>
-        <li class="{% if page <= 1 %}disabled{% endif %}"><a href="{{ path('search', {search: search, page: (page-1)}) }}">Prev</a></li>
-        {% for i in range(1, lastpage) %}
-            <li class="{% if i == page %}active{% endif %}">
-                <a href="{{ path('search', {search: search, page: i}) }}">{{ i }}</a>
-            </li>
-        {% endfor %}
-        <li class="{% if page >= lastpage %}disabled{% endif %}"><a href="{{ path('search', {search: search, page: (page+1)}) }}">Next</a></li>
-    </ul>
-</div>
-{% endmacro %}
-
 {% block content %}
-{{ _self.pager(search, page, lastpage) }}
-
-<table class="item-list-table table table-striped table-condensed">
-    <thead>
-        <th class="name">Name</th>
-        <th class="restriction-level">Level</th>
-        <th class="rarity">Rarity</th>
-        <th class="type">Type</th>
-        <th class="min_sale_unit_price">Min Sale Offer</th>
-        <th class="max_offer_unit_price">Max Buy Offer</th>
-    </thead>
-    {% for item in items %}
-        <tr class="item">
-            <td>
-                <a href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
-                    <img class="image" src="{{ item.img }}" /> {{ item.name }}
-                </a>
-            </td>
-            <td class="restriction-level">{% if item.restrictionLevel %}{{ item.restrictionLevel }}{% endif %}</td>
-            <td class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</td>
-            <td class="type">
-                {% if item.itemType %}
-                    <span class="item-type">{{ item.itemType.title }}</span>
-                {% endif %}
-                {% if item.itemSubType %}
-                    {% if item.itemType %} // {% endif %}
-                    <span class="item-sub-type">{{ item.itemSubType.title }}</span>
-                {% endif %}
-            </td>
-            <td class="min_sale_unit_price">{{ item.getMinSaleUnitPrice | gw2money }}</td>
-            <td class="max_offer_unit_price">{{ item.getMaxOfferUnitPrice | gw2money }}</td>
-        </tr>
-    {% endfor %}
-</table>
-{{ _self.pager(search, page, lastpage) }}
-
+    {% include "item_list.html.twig" %}
 {% endblock %}
