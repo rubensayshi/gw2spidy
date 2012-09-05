@@ -39,6 +39,8 @@ use GW2Spidy\DB\SellListing;
  * @method     ItemQuery orderByItemSubTypeId($order = Criteria::ASC) Order by the item_sub_type_id column
  * @method     ItemQuery orderByMaxOfferUnitPrice($order = Criteria::ASC) Order by the max_offer_unit_price column
  * @method     ItemQuery orderByMinSaleUnitPrice($order = Criteria::ASC) Order by the min_sale_unit_price column
+ * @method     ItemQuery orderByOfferAvailability($order = Criteria::ASC) Order by the offer_availability column
+ * @method     ItemQuery orderBySaleAvailability($order = Criteria::ASC) Order by the sale_availability column
  *
  * @method     ItemQuery groupByDataId() Group by the data_id column
  * @method     ItemQuery groupByTypeId() Group by the type_id column
@@ -54,6 +56,8 @@ use GW2Spidy\DB\SellListing;
  * @method     ItemQuery groupByItemSubTypeId() Group by the item_sub_type_id column
  * @method     ItemQuery groupByMaxOfferUnitPrice() Group by the max_offer_unit_price column
  * @method     ItemQuery groupByMinSaleUnitPrice() Group by the min_sale_unit_price column
+ * @method     ItemQuery groupByOfferAvailability() Group by the offer_availability column
+ * @method     ItemQuery groupBySaleAvailability() Group by the sale_availability column
  *
  * @method     ItemQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ItemQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -92,6 +96,8 @@ use GW2Spidy\DB\SellListing;
  * @method     Item findOneByItemSubTypeId(int $item_sub_type_id) Return the first Item filtered by the item_sub_type_id column
  * @method     Item findOneByMaxOfferUnitPrice(int $max_offer_unit_price) Return the first Item filtered by the max_offer_unit_price column
  * @method     Item findOneByMinSaleUnitPrice(int $min_sale_unit_price) Return the first Item filtered by the min_sale_unit_price column
+ * @method     Item findOneByOfferAvailability(int $offer_availability) Return the first Item filtered by the offer_availability column
+ * @method     Item findOneBySaleAvailability(int $sale_availability) Return the first Item filtered by the sale_availability column
  *
  * @method     array findByDataId(int $data_id) Return Item objects filtered by the data_id column
  * @method     array findByTypeId(int $type_id) Return Item objects filtered by the type_id column
@@ -107,6 +113,8 @@ use GW2Spidy\DB\SellListing;
  * @method     array findByItemSubTypeId(int $item_sub_type_id) Return Item objects filtered by the item_sub_type_id column
  * @method     array findByMaxOfferUnitPrice(int $max_offer_unit_price) Return Item objects filtered by the max_offer_unit_price column
  * @method     array findByMinSaleUnitPrice(int $min_sale_unit_price) Return Item objects filtered by the min_sale_unit_price column
+ * @method     array findByOfferAvailability(int $offer_availability) Return Item objects filtered by the offer_availability column
+ * @method     array findBySaleAvailability(int $sale_availability) Return Item objects filtered by the sale_availability column
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -197,7 +205,7 @@ abstract class BaseItemQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID`, `MAX_OFFER_UNIT_PRICE`, `MIN_SALE_UNIT_PRICE` FROM `item` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID`, `MAX_OFFER_UNIT_PRICE`, `MIN_SALE_UNIT_PRICE`, `OFFER_AVAILABILITY`, `SALE_AVAILABILITY` FROM `item` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -752,6 +760,88 @@ abstract class BaseItemQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ItemPeer::MIN_SALE_UNIT_PRICE, $minSaleUnitPrice, $comparison);
+    }
+
+    /**
+     * Filter the query on the offer_availability column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByOfferAvailability(1234); // WHERE offer_availability = 1234
+     * $query->filterByOfferAvailability(array(12, 34)); // WHERE offer_availability IN (12, 34)
+     * $query->filterByOfferAvailability(array('min' => 12)); // WHERE offer_availability > 12
+     * </code>
+     *
+     * @param     mixed $offerAvailability The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByOfferAvailability($offerAvailability = null, $comparison = null)
+    {
+        if (is_array($offerAvailability)) {
+            $useMinMax = false;
+            if (isset($offerAvailability['min'])) {
+                $this->addUsingAlias(ItemPeer::OFFER_AVAILABILITY, $offerAvailability['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($offerAvailability['max'])) {
+                $this->addUsingAlias(ItemPeer::OFFER_AVAILABILITY, $offerAvailability['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::OFFER_AVAILABILITY, $offerAvailability, $comparison);
+    }
+
+    /**
+     * Filter the query on the sale_availability column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterBySaleAvailability(1234); // WHERE sale_availability = 1234
+     * $query->filterBySaleAvailability(array(12, 34)); // WHERE sale_availability IN (12, 34)
+     * $query->filterBySaleAvailability(array('min' => 12)); // WHERE sale_availability > 12
+     * </code>
+     *
+     * @param     mixed $saleAvailability The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterBySaleAvailability($saleAvailability = null, $comparison = null)
+    {
+        if (is_array($saleAvailability)) {
+            $useMinMax = false;
+            if (isset($saleAvailability['min'])) {
+                $this->addUsingAlias(ItemPeer::SALE_AVAILABILITY, $saleAvailability['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($saleAvailability['max'])) {
+                $this->addUsingAlias(ItemPeer::SALE_AVAILABILITY, $saleAvailability['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::SALE_AVAILABILITY, $saleAvailability, $comparison);
     }
 
     /**

@@ -39,13 +39,13 @@ abstract class BaseItemPeer {
     const TM_CLASS = 'ItemTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 14;
+    const NUM_COLUMNS = 16;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 14;
+    const NUM_HYDRATE_COLUMNS = 16;
 
     /** the column name for the DATA_ID field */
     const DATA_ID = 'item.DATA_ID';
@@ -89,6 +89,12 @@ abstract class BaseItemPeer {
     /** the column name for the MIN_SALE_UNIT_PRICE field */
     const MIN_SALE_UNIT_PRICE = 'item.MIN_SALE_UNIT_PRICE';
 
+    /** the column name for the OFFER_AVAILABILITY field */
+    const OFFER_AVAILABILITY = 'item.OFFER_AVAILABILITY';
+
+    /** the column name for the SALE_AVAILABILITY field */
+    const SALE_AVAILABILITY = 'item.SALE_AVAILABILITY';
+
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
@@ -108,12 +114,12 @@ abstract class BaseItemPeer {
      * e.g. ItemPeer::$fieldNames[ItemPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('DataId', 'TypeId', 'Name', 'GemStoreDescription', 'GemStoreBlurb', 'RestrictionLevel', 'Rarity', 'VendorSellPrice', 'Img', 'RarityWord', 'ItemTypeId', 'ItemSubTypeId', 'MaxOfferUnitPrice', 'MinSaleUnitPrice', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId', 'typeId', 'name', 'gemStoreDescription', 'gemStoreBlurb', 'restrictionLevel', 'rarity', 'vendorSellPrice', 'img', 'rarityWord', 'itemTypeId', 'itemSubTypeId', 'maxOfferUnitPrice', 'minSaleUnitPrice', ),
-        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID, ItemPeer::TYPE_ID, ItemPeer::NAME, ItemPeer::GEM_STORE_DESCRIPTION, ItemPeer::GEM_STORE_BLURB, ItemPeer::RESTRICTION_LEVEL, ItemPeer::RARITY, ItemPeer::VENDOR_SELL_PRICE, ItemPeer::IMG, ItemPeer::RARITY_WORD, ItemPeer::ITEM_TYPE_ID, ItemPeer::ITEM_SUB_TYPE_ID, ItemPeer::MAX_OFFER_UNIT_PRICE, ItemPeer::MIN_SALE_UNIT_PRICE, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID', 'TYPE_ID', 'NAME', 'GEM_STORE_DESCRIPTION', 'GEM_STORE_BLURB', 'RESTRICTION_LEVEL', 'RARITY', 'VENDOR_SELL_PRICE', 'IMG', 'RARITY_WORD', 'ITEM_TYPE_ID', 'ITEM_SUB_TYPE_ID', 'MAX_OFFER_UNIT_PRICE', 'MIN_SALE_UNIT_PRICE', ),
-        BasePeer::TYPE_FIELDNAME => array ('data_id', 'type_id', 'name', 'gem_store_description', 'gem_store_blurb', 'restriction_level', 'rarity', 'vendor_sell_price', 'img', 'rarity_word', 'item_type_id', 'item_sub_type_id', 'max_offer_unit_price', 'min_sale_unit_price', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
+        BasePeer::TYPE_PHPNAME => array ('DataId', 'TypeId', 'Name', 'GemStoreDescription', 'GemStoreBlurb', 'RestrictionLevel', 'Rarity', 'VendorSellPrice', 'Img', 'RarityWord', 'ItemTypeId', 'ItemSubTypeId', 'MaxOfferUnitPrice', 'MinSaleUnitPrice', 'OfferAvailability', 'SaleAvailability', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId', 'typeId', 'name', 'gemStoreDescription', 'gemStoreBlurb', 'restrictionLevel', 'rarity', 'vendorSellPrice', 'img', 'rarityWord', 'itemTypeId', 'itemSubTypeId', 'maxOfferUnitPrice', 'minSaleUnitPrice', 'offerAvailability', 'saleAvailability', ),
+        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID, ItemPeer::TYPE_ID, ItemPeer::NAME, ItemPeer::GEM_STORE_DESCRIPTION, ItemPeer::GEM_STORE_BLURB, ItemPeer::RESTRICTION_LEVEL, ItemPeer::RARITY, ItemPeer::VENDOR_SELL_PRICE, ItemPeer::IMG, ItemPeer::RARITY_WORD, ItemPeer::ITEM_TYPE_ID, ItemPeer::ITEM_SUB_TYPE_ID, ItemPeer::MAX_OFFER_UNIT_PRICE, ItemPeer::MIN_SALE_UNIT_PRICE, ItemPeer::OFFER_AVAILABILITY, ItemPeer::SALE_AVAILABILITY, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID', 'TYPE_ID', 'NAME', 'GEM_STORE_DESCRIPTION', 'GEM_STORE_BLURB', 'RESTRICTION_LEVEL', 'RARITY', 'VENDOR_SELL_PRICE', 'IMG', 'RARITY_WORD', 'ITEM_TYPE_ID', 'ITEM_SUB_TYPE_ID', 'MAX_OFFER_UNIT_PRICE', 'MIN_SALE_UNIT_PRICE', 'OFFER_AVAILABILITY', 'SALE_AVAILABILITY', ),
+        BasePeer::TYPE_FIELDNAME => array ('data_id', 'type_id', 'name', 'gem_store_description', 'gem_store_blurb', 'restriction_level', 'rarity', 'vendor_sell_price', 'img', 'rarity_word', 'item_type_id', 'item_sub_type_id', 'max_offer_unit_price', 'min_sale_unit_price', 'offer_availability', 'sale_availability', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
     /**
@@ -123,12 +129,12 @@ abstract class BaseItemPeer {
      * e.g. ItemPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('DataId' => 0, 'TypeId' => 1, 'Name' => 2, 'GemStoreDescription' => 3, 'GemStoreBlurb' => 4, 'RestrictionLevel' => 5, 'Rarity' => 6, 'VendorSellPrice' => 7, 'Img' => 8, 'RarityWord' => 9, 'ItemTypeId' => 10, 'ItemSubTypeId' => 11, 'MaxOfferUnitPrice' => 12, 'MinSaleUnitPrice' => 13, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId' => 0, 'typeId' => 1, 'name' => 2, 'gemStoreDescription' => 3, 'gemStoreBlurb' => 4, 'restrictionLevel' => 5, 'rarity' => 6, 'vendorSellPrice' => 7, 'img' => 8, 'rarityWord' => 9, 'itemTypeId' => 10, 'itemSubTypeId' => 11, 'maxOfferUnitPrice' => 12, 'minSaleUnitPrice' => 13, ),
-        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID => 0, ItemPeer::TYPE_ID => 1, ItemPeer::NAME => 2, ItemPeer::GEM_STORE_DESCRIPTION => 3, ItemPeer::GEM_STORE_BLURB => 4, ItemPeer::RESTRICTION_LEVEL => 5, ItemPeer::RARITY => 6, ItemPeer::VENDOR_SELL_PRICE => 7, ItemPeer::IMG => 8, ItemPeer::RARITY_WORD => 9, ItemPeer::ITEM_TYPE_ID => 10, ItemPeer::ITEM_SUB_TYPE_ID => 11, ItemPeer::MAX_OFFER_UNIT_PRICE => 12, ItemPeer::MIN_SALE_UNIT_PRICE => 13, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID' => 0, 'TYPE_ID' => 1, 'NAME' => 2, 'GEM_STORE_DESCRIPTION' => 3, 'GEM_STORE_BLURB' => 4, 'RESTRICTION_LEVEL' => 5, 'RARITY' => 6, 'VENDOR_SELL_PRICE' => 7, 'IMG' => 8, 'RARITY_WORD' => 9, 'ITEM_TYPE_ID' => 10, 'ITEM_SUB_TYPE_ID' => 11, 'MAX_OFFER_UNIT_PRICE' => 12, 'MIN_SALE_UNIT_PRICE' => 13, ),
-        BasePeer::TYPE_FIELDNAME => array ('data_id' => 0, 'type_id' => 1, 'name' => 2, 'gem_store_description' => 3, 'gem_store_blurb' => 4, 'restriction_level' => 5, 'rarity' => 6, 'vendor_sell_price' => 7, 'img' => 8, 'rarity_word' => 9, 'item_type_id' => 10, 'item_sub_type_id' => 11, 'max_offer_unit_price' => 12, 'min_sale_unit_price' => 13, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
+        BasePeer::TYPE_PHPNAME => array ('DataId' => 0, 'TypeId' => 1, 'Name' => 2, 'GemStoreDescription' => 3, 'GemStoreBlurb' => 4, 'RestrictionLevel' => 5, 'Rarity' => 6, 'VendorSellPrice' => 7, 'Img' => 8, 'RarityWord' => 9, 'ItemTypeId' => 10, 'ItemSubTypeId' => 11, 'MaxOfferUnitPrice' => 12, 'MinSaleUnitPrice' => 13, 'OfferAvailability' => 14, 'SaleAvailability' => 15, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId' => 0, 'typeId' => 1, 'name' => 2, 'gemStoreDescription' => 3, 'gemStoreBlurb' => 4, 'restrictionLevel' => 5, 'rarity' => 6, 'vendorSellPrice' => 7, 'img' => 8, 'rarityWord' => 9, 'itemTypeId' => 10, 'itemSubTypeId' => 11, 'maxOfferUnitPrice' => 12, 'minSaleUnitPrice' => 13, 'offerAvailability' => 14, 'saleAvailability' => 15, ),
+        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID => 0, ItemPeer::TYPE_ID => 1, ItemPeer::NAME => 2, ItemPeer::GEM_STORE_DESCRIPTION => 3, ItemPeer::GEM_STORE_BLURB => 4, ItemPeer::RESTRICTION_LEVEL => 5, ItemPeer::RARITY => 6, ItemPeer::VENDOR_SELL_PRICE => 7, ItemPeer::IMG => 8, ItemPeer::RARITY_WORD => 9, ItemPeer::ITEM_TYPE_ID => 10, ItemPeer::ITEM_SUB_TYPE_ID => 11, ItemPeer::MAX_OFFER_UNIT_PRICE => 12, ItemPeer::MIN_SALE_UNIT_PRICE => 13, ItemPeer::OFFER_AVAILABILITY => 14, ItemPeer::SALE_AVAILABILITY => 15, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID' => 0, 'TYPE_ID' => 1, 'NAME' => 2, 'GEM_STORE_DESCRIPTION' => 3, 'GEM_STORE_BLURB' => 4, 'RESTRICTION_LEVEL' => 5, 'RARITY' => 6, 'VENDOR_SELL_PRICE' => 7, 'IMG' => 8, 'RARITY_WORD' => 9, 'ITEM_TYPE_ID' => 10, 'ITEM_SUB_TYPE_ID' => 11, 'MAX_OFFER_UNIT_PRICE' => 12, 'MIN_SALE_UNIT_PRICE' => 13, 'OFFER_AVAILABILITY' => 14, 'SALE_AVAILABILITY' => 15, ),
+        BasePeer::TYPE_FIELDNAME => array ('data_id' => 0, 'type_id' => 1, 'name' => 2, 'gem_store_description' => 3, 'gem_store_blurb' => 4, 'restriction_level' => 5, 'rarity' => 6, 'vendor_sell_price' => 7, 'img' => 8, 'rarity_word' => 9, 'item_type_id' => 10, 'item_sub_type_id' => 11, 'max_offer_unit_price' => 12, 'min_sale_unit_price' => 13, 'offer_availability' => 14, 'sale_availability' => 15, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
     /**
@@ -216,6 +222,8 @@ abstract class BaseItemPeer {
             $criteria->addSelectColumn(ItemPeer::ITEM_SUB_TYPE_ID);
             $criteria->addSelectColumn(ItemPeer::MAX_OFFER_UNIT_PRICE);
             $criteria->addSelectColumn(ItemPeer::MIN_SALE_UNIT_PRICE);
+            $criteria->addSelectColumn(ItemPeer::OFFER_AVAILABILITY);
+            $criteria->addSelectColumn(ItemPeer::SALE_AVAILABILITY);
         } else {
             $criteria->addSelectColumn($alias . '.DATA_ID');
             $criteria->addSelectColumn($alias . '.TYPE_ID');
@@ -231,6 +239,8 @@ abstract class BaseItemPeer {
             $criteria->addSelectColumn($alias . '.ITEM_SUB_TYPE_ID');
             $criteria->addSelectColumn($alias . '.MAX_OFFER_UNIT_PRICE');
             $criteria->addSelectColumn($alias . '.MIN_SALE_UNIT_PRICE');
+            $criteria->addSelectColumn($alias . '.OFFER_AVAILABILITY');
+            $criteria->addSelectColumn($alias . '.SALE_AVAILABILITY');
         }
     }
 

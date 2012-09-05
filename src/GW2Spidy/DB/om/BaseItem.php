@@ -139,6 +139,18 @@ abstract class BaseItem extends BaseObject implements Persistent
     protected $min_sale_unit_price;
 
     /**
+     * The value for the offer_availability field.
+     * @var        int
+     */
+    protected $offer_availability;
+
+    /**
+     * The value for the sale_availability field.
+     * @var        int
+     */
+    protected $sale_availability;
+
+    /**
      * @var        ItemType
      */
     protected $aItemType;
@@ -338,6 +350,28 @@ abstract class BaseItem extends BaseObject implements Persistent
     {
 
         return $this->min_sale_unit_price;
+    }
+
+    /**
+     * Get the [offer_availability] column value.
+     * 
+     * @return   int
+     */
+    public function getOfferAvailability()
+    {
+
+        return $this->offer_availability;
+    }
+
+    /**
+     * Get the [sale_availability] column value.
+     * 
+     * @return   int
+     */
+    public function getSaleAvailability()
+    {
+
+        return $this->sale_availability;
     }
 
     /**
@@ -643,6 +677,48 @@ abstract class BaseItem extends BaseObject implements Persistent
     } // setMinSaleUnitPrice()
 
     /**
+     * Set the value of [offer_availability] column.
+     * 
+     * @param      int $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setOfferAvailability($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->offer_availability !== $v) {
+            $this->offer_availability = $v;
+            $this->modifiedColumns[] = ItemPeer::OFFER_AVAILABILITY;
+        }
+
+
+        return $this;
+    } // setOfferAvailability()
+
+    /**
+     * Set the value of [sale_availability] column.
+     * 
+     * @param      int $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setSaleAvailability($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->sale_availability !== $v) {
+            $this->sale_availability = $v;
+            $this->modifiedColumns[] = ItemPeer::SALE_AVAILABILITY;
+        }
+
+
+        return $this;
+    } // setSaleAvailability()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -688,6 +764,8 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->item_sub_type_id = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
             $this->max_offer_unit_price = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
             $this->min_sale_unit_price = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+            $this->offer_availability = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+            $this->sale_availability = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -696,7 +774,7 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 14; // 14 = ItemPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 16; // 16 = ItemPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Item object", $e);
@@ -1011,6 +1089,12 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::MIN_SALE_UNIT_PRICE)) {
             $modifiedColumns[':p' . $index++]  = '`MIN_SALE_UNIT_PRICE`';
         }
+        if ($this->isColumnModified(ItemPeer::OFFER_AVAILABILITY)) {
+            $modifiedColumns[':p' . $index++]  = '`OFFER_AVAILABILITY`';
+        }
+        if ($this->isColumnModified(ItemPeer::SALE_AVAILABILITY)) {
+            $modifiedColumns[':p' . $index++]  = '`SALE_AVAILABILITY`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `item` (%s) VALUES (%s)',
@@ -1063,6 +1147,12 @@ abstract class BaseItem extends BaseObject implements Persistent
                         break;
                     case '`MIN_SALE_UNIT_PRICE`':
 						$stmt->bindValue($identifier, $this->min_sale_unit_price, PDO::PARAM_INT);
+                        break;
+                    case '`OFFER_AVAILABILITY`':
+						$stmt->bindValue($identifier, $this->offer_availability, PDO::PARAM_INT);
+                        break;
+                    case '`SALE_AVAILABILITY`':
+						$stmt->bindValue($identifier, $this->sale_availability, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -1267,6 +1357,12 @@ abstract class BaseItem extends BaseObject implements Persistent
             case 13:
                 return $this->getMinSaleUnitPrice();
                 break;
+            case 14:
+                return $this->getOfferAvailability();
+                break;
+            case 15:
+                return $this->getSaleAvailability();
+                break;
             default:
                 return null;
                 break;
@@ -1310,6 +1406,8 @@ abstract class BaseItem extends BaseObject implements Persistent
             $keys[11] => $this->getItemSubTypeId(),
             $keys[12] => $this->getMaxOfferUnitPrice(),
             $keys[13] => $this->getMinSaleUnitPrice(),
+            $keys[14] => $this->getOfferAvailability(),
+            $keys[15] => $this->getSaleAvailability(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aItemType) {
@@ -1400,6 +1498,12 @@ abstract class BaseItem extends BaseObject implements Persistent
             case 13:
                 $this->setMinSaleUnitPrice($value);
                 break;
+            case 14:
+                $this->setOfferAvailability($value);
+                break;
+            case 15:
+                $this->setSaleAvailability($value);
+                break;
         } // switch()
     }
 
@@ -1438,6 +1542,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         if (array_key_exists($keys[11], $arr)) $this->setItemSubTypeId($arr[$keys[11]]);
         if (array_key_exists($keys[12], $arr)) $this->setMaxOfferUnitPrice($arr[$keys[12]]);
         if (array_key_exists($keys[13], $arr)) $this->setMinSaleUnitPrice($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setOfferAvailability($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setSaleAvailability($arr[$keys[15]]);
     }
 
     /**
@@ -1463,6 +1569,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::ITEM_SUB_TYPE_ID)) $criteria->add(ItemPeer::ITEM_SUB_TYPE_ID, $this->item_sub_type_id);
         if ($this->isColumnModified(ItemPeer::MAX_OFFER_UNIT_PRICE)) $criteria->add(ItemPeer::MAX_OFFER_UNIT_PRICE, $this->max_offer_unit_price);
         if ($this->isColumnModified(ItemPeer::MIN_SALE_UNIT_PRICE)) $criteria->add(ItemPeer::MIN_SALE_UNIT_PRICE, $this->min_sale_unit_price);
+        if ($this->isColumnModified(ItemPeer::OFFER_AVAILABILITY)) $criteria->add(ItemPeer::OFFER_AVAILABILITY, $this->offer_availability);
+        if ($this->isColumnModified(ItemPeer::SALE_AVAILABILITY)) $criteria->add(ItemPeer::SALE_AVAILABILITY, $this->sale_availability);
 
         return $criteria;
     }
@@ -1539,6 +1647,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         $copyObj->setItemSubTypeId($this->getItemSubTypeId());
         $copyObj->setMaxOfferUnitPrice($this->getMaxOfferUnitPrice());
         $copyObj->setMinSaleUnitPrice($this->getMinSaleUnitPrice());
+        $copyObj->setOfferAvailability($this->getOfferAvailability());
+        $copyObj->setSaleAvailability($this->getSaleAvailability());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -2165,6 +2275,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         $this->item_sub_type_id = null;
         $this->max_offer_unit_price = null;
         $this->min_sale_unit_price = null;
+        $this->offer_availability = null;
+        $this->sale_availability = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();
