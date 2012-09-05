@@ -27,6 +27,8 @@ class ItemListRoutingExtension extends \Twig_Extension {
             $name = 'type';
             $parameters['type']    = $context['type'];
             $parameters['subtype'] = $context['subtype'];
+        } else {
+            var_dump($context); die();
         }
 
         $sortBy    = null;
