@@ -294,8 +294,9 @@ var initchart = function(chartdata, callback) {
         plot = $.plot(placeholder, smoothdata(mod), renderoptions);
 
         // add zoom out button
-        $('<div class="btn" style="right:20px; bottom:23px; position:absolute;">zoom out</div>').appendTo(placeholder).click(function (e) {
+        $('<div class="btn btn-inverse" style="float: right;"><i class="icon-search icon-white"></i> zoom out</div>').prependTo($("#legend")).click(function (e) {
             e.preventDefault();
+            e.stopPropagation();
 
             if (zoommode == ZOOMMODE_NAV) {
                 plot.zoomOut();

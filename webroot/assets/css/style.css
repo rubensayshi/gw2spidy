@@ -41,8 +41,8 @@ body {
     position: absolute;
     top: 8px;
     left: 50%;
-    margin-left: -40px; 
-    min-width: 80px;
+    margin-left: -100px; 
+    min-width: 200px;
     text-align: center;
     
     background-color: rgba(249, 249, 249, 0.6);
@@ -52,6 +52,10 @@ body {
             border-radius: 5px;
             
     cursor: pointer;
+}
+
+#chart_wrapper #legend .btn {
+    margin-top: 5px;    
 }
 
 #chart_wrapper #legend.alt {
