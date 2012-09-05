@@ -20,15 +20,15 @@ class ItemListRoutingExtension extends \Twig_Extension {
     }
 
     public function getPath($context, $parameters = array()) {
-        if (isset($context['search']) && $context['search']) {
+        if (isset($context['search'])) {
             $name = 'search';
-            $parameters['search']  = $context['search'];
-        } else if (isset($context['type']) && $context['type']) {
+            $parameters['search'] = $context['search'];
+        } else if (isset($context['type'])) {
             $name = 'type';
             $parameters['type']    = $context['type'];
             $parameters['subtype'] = $context['subtype'];
         } else {
-            error_log(var_export($context, true));
+            throw new \Exception("invalid context " . var_export(array_keys($context), true));
         }
 
         $sortBy    = null;
