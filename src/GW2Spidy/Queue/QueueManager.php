@@ -15,13 +15,7 @@ class QueueManager {
 
     public function buildItemDB($full = true) {
         foreach (ItemTypeQuery::create()->find() as $type) {
-            if ($type->getSubTypes()->count()) {
-                foreach ($type->getSubTypes() as $subtype) {
-                    ItemDBWorker::enqueueWorker($type, $subtype, $full);
-                }
-            } else {
-                ItemDBWorker::enqueueWorker($type, null, $full);
-            }
+            ItemDBWorker::enqueueWorker($type, null, $full);
         }
     }
 
