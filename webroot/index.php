@@ -277,7 +277,7 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
         return $app->handle(Request::create("/searchform", 'GET'), HttpKernelInterface::SUB_REQUEST);
     }
 
-    $itemsperpage = 10;
+    $itemsperpage = 25;
     $q            = ItemQuery::create();
     $page         = $page > 0 ? $page : 1;
 
