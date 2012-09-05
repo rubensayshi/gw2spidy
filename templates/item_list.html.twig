@@ -51,7 +51,7 @@
                         <img class="image" src="{{ item.img }}" /> {{ item.name }}
                     </a>
                 </td>
-                <td class="restriction-level">{% if item.restrictionLevel %}{{ item.restrictionLevel }}{% endif %}</td>
+                <td class="restriction_level">{% if item.restrictionLevel %}{{ item.restrictionLevel }}{% endif %}</td>
                 <td class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</td>
                 <td class="type">
                     {% if item.itemType %}
