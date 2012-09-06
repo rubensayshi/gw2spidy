@@ -15,6 +15,7 @@ use \Memcache;
 class CacheHandler extends Memcache implements MemcacheReplacement
 {
     static protected $instances = array();
+    protected $enabled = true;
     protected $baseKey = null;
 
     /**
@@ -27,6 +28,8 @@ class CacheHandler extends Memcache implements MemcacheReplacement
 
             if (Application::getInstance()->isMemcachedEnabled()) {
                 static::$instances[$key]->connect('localhost');
+            } else {
+                static::$instances[$key]->setEnabled(false);
             }
         }
 
@@ -41,28 +44,68 @@ class CacheHandler extends Memcache implements MemcacheReplacement
         return "{$this->baseKey}::{$key}";
     }
 
+    public function getEnabled() {
+        return $this->enabled;
+    }
+
+    public function setEnabled($enabled) {
+        $this->enabled = $enabled;
+    }
+
     public function add($key, $var, $flag = null, $expire = null) {
+        if (!$this->getEnabled()) {
+            return null;
+        }
+
         return parent::add($this->generateKey($key), $var, $flag, $expire);
     }
     public function decrement($key, $value = 1) {
+        if (!$this->getEnabled()) {
+            return null;
+        }
+
         return parent::decrement($this->generateKey($key), $value);
     }
     public function delete($key, $timeout = 0) {
+        if (!$this->getEnabled()) {
+            return null;
+        }
+
         return parent::delete($this->generateKey($key), $timeout);
     }
     public function get($key, &$flags = null) {
+        if (!$this->getEnabled()) {
+            return null;
+        }
+
         return parent::get($this->generateKey($key), $flags);
     }
     public function increment($key, $value = 1) {
+        if (!$this->getEnabled()) {
+            return null;
+        }
+
         return parent::increment($this->generateKey($key), $value);
     }
     public function replace($key, $var, $flag = null, $expire = null) {
+        if (!$this->getEnabled()) {
+            return null;
+        }
+
         return parent::replace($this->generateKey($key), $var, $flag, $expire);
     }
     public function set($key, $var, $flag = null, $expire = null) {
+        if (!$this->getEnabled()) {
+            return null;
+        }
+
         return parent::set($this->generateKey($key), $var, $flag, $expire);
     }
     public function purge() {
+        if (!$this->getEnabled()) {
+            return null;
+        }
+
         parent::flush();
     }
 }
