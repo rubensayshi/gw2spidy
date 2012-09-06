@@ -32,28 +32,6 @@ $app = Application::getInstance();
 $app->isSQLLogMode() && $app->enableSQLLogging();
 $app->isDevMode()    && $app['debug'] = true;
 
-/*
- * temporary check so other people who are rebasing don't get screwed over because I changed the config ;)
- */
-if (!defined('TRADINGPOST_URL')) {
-    echo <<<EOD
-<h1>DEBUG</h1>
-<hr />
-Hey friendly person forking my project ;) <br />
-<br />
-I changed the config.inc.php file a bit, you should copy the config.inc.example.php and fill in your preferences again. <br />
-Sorry for that, but I felt it would be better to put only the 2 base URLs there so if needed it's easy to switch them around. <br />
-<br />
-I also added the DEV_MODE and SQL_LOG_MODE, you should enable DEV_MODE at least unless you're running the code in production. <br />
-<br />
-Greetz, <br />
-<br />
-Ruben // Drakie
-EOD;
-
-die();
-}
-
 $toInt = function($val) {
     return (int) $val;
 };
