@@ -48,6 +48,52 @@ $app['twig']->addExtension(new VersionedAssetsRoutingExtension());
 $app['twig']->addExtension(new GW2MoneyExtension());
 $app['twig']->addExtension(new ItemListRoutingExtension($app['url_generator']));
 
+function item_list(Application $app, Request $request, ItemQuery $q, $page, $itemsperpage, array $tplVars = array()) {
+    $sortByOptions = array('name', 'rarity', 'restriction_level', 'min_sale_unit_price', 'max_offer_unit_price');
+
+    foreach ($sortByOptions as $sortByOption) {
+        if ($request->get("sort_{$sortByOption}", null)) {
+            $sortOrder = $request->get("sort_{$sortByOption}", 'asc');
+            $sortBy    = $sortByOption;
+        }
+    }
+
+    $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'name';
+    $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'asc';
+
+    $count = $q->count();
+
+    if ($count > 0) {
+        $lastpage = ceil($count / $itemsperpage);
+        if ($page > $lastpage) {
+            $page = $lastpage;
+        }
+    } else {
+        $page     = 1;
+        $lastpage = 1;
+    }
+
+    $q->offset($itemsperpage * ($page-1))
+    ->limit($itemsperpage);
+
+    if ($sortOrder == 'asc') {
+        $q->addAscendingOrderByColumn($sortBy);
+    } else if ($sortOrder == 'desc') {
+        $q->addDescendingOrderByColumn($sortBy);
+    }
+
+    $items = $q->find();
+
+    return $app['twig']->render('item_list.html.twig', $tplVars + array(
+            'page'     => $page,
+            'lastpage' => $lastpage,
+            'items'    => $items,
+
+            'current_sort'       => $sortBy,
+            'current_sort_order' => $sortOrder,
+    ));
+};
+
 /**
  * ----------------------
  *  route /
@@ -83,22 +129,9 @@ $app->get("/types", function() use($app) {
  * ----------------------
  */
 $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $subtype, $page) use($app) {
-    $itemsperpage = 50;
-    $baseurl      = "/type/{$type}/{$subtype}";
-    $q            = ItemQuery::create();
-    $page         = $page > 0 ? $page : 1;
+    $page = $page > 0 ? $page : 1;
 
-    $sortByOptions = array('name', 'rarity', 'restriction_level', 'min_sale_unit_price', 'max_offer_unit_price');
-
-    foreach ($sortByOptions as $sortByOption) {
-        if ($request->get("sort_{$sortByOption}", null)) {
-            $sortOrder = $request->get("sort_{$sortByOption}", 'asc');
-            $sortBy    = $sortByOption;
-        }
-    }
-
-    $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'name';
-    $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'asc';
+    $q = ItemQuery::create();
 
     if (!is_null($type)) {
         $q->filterByItemTypeId($type);
@@ -107,40 +140,7 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
         $q->filterByItemSubTypeId($subtype);
     }
 
-    $count = $q->count();
-
-    if ($count > 0) {
-        $lastpage = ceil($count / $itemsperpage);
-        if ($page > $lastpage) {
-            $page = $lastpage;
-        }
-    } else {
-        $page     = 1;
-        $lastpage = 1;
-    }
-
-    $q->offset($itemsperpage * ($page-1))
-      ->limit($itemsperpage);
-
-    if ($sortOrder == 'asc') {
-        $q->addAscendingOrderByColumn($sortBy);
-    } else if ($sortOrder == 'desc') {
-        $q->addDescendingOrderByColumn($sortBy);
-    }
-
-    $items = $q->find();
-
-    return $app['twig']->render('type.html.twig', array(
-        'type'     => $type,
-        'subtype'  => $subtype,
-        'page'     => $page,
-        'lastpage' => $lastpage,
-        'items'    => $items,
-        'baseurl'  => $baseurl,
-
-        'current_sort'       => $sortBy,
-        'current_sort_order' => $sortOrder,
-    ));
+    return item_list($app, $request, $q, $page, 50, array('type' => $type, 'subtype' => $subtype));
 })
 ->assert('type',     '\d+')
 ->assert('subtype',  '\d+')
@@ -250,61 +250,17 @@ $app->post("/search", function (Request $request) use ($app) {
  *
  * almost exact repeat of /type so the code should be combined at some point ...
  */
-$app->get("/search/{search}/{page}", function(Request $request, $search, $page) use($app) {
+$app->get("/search/{search}/{page}", function(Request $request, $search, $page) use($app, $item_list) {
     if (!$search) {
         return $app->handle(Request::create("/searchform", 'GET'), HttpKernelInterface::SUB_REQUEST);
     }
 
-    $itemsperpage = 25;
-    $q            = ItemQuery::create();
-    $page         = $page > 0 ? $page : 1;
+    $page = $page > 0 ? $page : 1;
 
-    $sortByOptions = array('name', 'rarity', 'restriction_level', 'min_sale_unit_price', 'max_offer_unit_price');
-
-    foreach ($sortByOptions as $sortByOption) {
-        if ($request->get("sort_{$sortByOption}", null)) {
-            $sortOrder = $request->get("sort_{$sortByOption}", 'asc');
-            $sortBy    = $sortByOption;
-        }
-    }
-
-    $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'name';
-    $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'asc';
-
+    $q = ItemQuery::create();
     $q->filterByName("%{$search}%");
 
-    $count = $q->count();
-
-    if ($count > 0) {
-        $lastpage = ceil($count / $itemsperpage);
-        if ($page > $lastpage) {
-            $page = $lastpage;
-        }
-    } else {
-        $page     = 1;
-        $lastpage = 1;
-    }
-
-    $q->offset($itemsperpage * ($page-1))
-    ->limit($itemsperpage);
-
-    if ($sortOrder == 'asc') {
-        $q->addAscendingOrderByColumn($sortBy);
-    } else if ($sortOrder == 'desc') {
-        $q->addDescendingOrderByColumn($sortBy);
-    }
-
-    $items = $q->find();
-
-    return $app['twig']->render('searchresult.html.twig', array(
-        'search'   => $search,
-        'page'     => $page,
-        'lastpage' => $lastpage,
-        'items'    => $items,
-
-        'current_sort'       => $sortBy,
-        'current_sort_order' => $sortOrder,
-    ));
+    return item_list($app, $request, $q, $page, 25, array('search' => $search));
 })
 ->assert('search',   '[^/]*')
 ->assert('page',     '-?\d+')
