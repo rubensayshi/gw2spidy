@@ -28,16 +28,13 @@ $queueManager = WorkerQueueManager::getInstance();
  * login here, this allows us to exit right away on failure
  */
 print "login ... \n";
-//try {
+try {
     GW2LoginManager::getInstance()->ensureLogin();
-    var_dump(GW2LoginManager::getInstance()->getSessionID());
-    TradingPostSpider::getInstance()->ensureLogin();
-    var_dump(GW2LoginManager::getInstance()->getSessionID());
-//} catch (Exception $e) {
+} catch (Exception $e) {
     echo "login failed ... sleeping [60] and restarting \n";
     sleep(60);
     exit(1);
-//}
+}
 
 /*
  * $run up to $max in 1 process, then exit so process gets revived
