@@ -5,6 +5,8 @@
  *  this file contains all routing and the 'controllers' using lambda functions
  */
 
+use GW2Spidy\DB\GemExchangeQuery;
+
 use GW2Spidy\Twig\ItemListRoutingExtension;
 
 use GW2Spidy\Twig\GW2MoneyExtension;
@@ -129,7 +131,7 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
  * ----------------------
  */
 $app->get("/", function() use($app) {
-    // workaround for now to set active menu item, all others are 'browse' as active
+    // workaround for now to set active menu item
     $app->setHomeActive();
 
     // get copper ore as featured item
@@ -140,6 +142,41 @@ $app->get("/", function() use($app) {
     ));
 })
 ->bind('homepage');
+
+/**
+ * ----------------------
+ *  route /gem
+ * ----------------------
+ */
+$app->get("/gem", function() use($app) {
+    // workaround for now to set active menu item
+    $app->setGemActive();
+
+    return $app['twig']->render('gem.html.twig', array());
+})
+->bind('gem');
+
+/**
+ * ----------------------
+ *  route /gem
+ * ----------------------
+ */
+$app->get("/gem_chart", function() use($app) {
+    $chart = array();
+
+    /*----------------
+     *  SELL LISTINGS
+     *----------------*/
+    $chart[] = array(
+        'data'   => GemExchangeQuery::getChartDatasetData(),
+        'label'  => "Exchange Rate",
+    );
+
+    $content = json_encode($chart);
+
+    return $content;
+})
+->bind('gem_chart');
 
 /**
  * ----------------------

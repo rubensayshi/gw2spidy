@@ -1,0 +1,339 @@
+{% extends "content_sidebar.html.twig" %}
+
+{% block content %}
+<div id="chart_wrapper">
+    <div id="placeholder" style="width: {% if width is defined %}width{% else %}100%{% endif %}; height: 400px;"></div>
+</div>
+
+<script type="text/javascript">
+/**
+ * format money as in GW2 (1g 1s 1c)
+ * input should be integer amount of copper,
+ * 1 silver = 100 copper
+ * 1 gold   = 100 silver = 10000 copper
+ *
+ * to get 1g 1s 1c the input should be 100101
+ */
+var formatGW2Money = function(copper) {
+    var string = "";
+
+    var gold = Math.floor(copper / 10000);
+    if (gold) {
+        copper = copper % (gold * 10000);
+        string += gold + "g ";
+    }
+
+    var silver = Math.floor(copper / 100);
+    if (silver) {
+        copper = copper % (silver * 100);
+        if (silver) string += silver + "s ";
+    }
+
+    copper = Math.floor(copper);
+
+    if (copper) string += copper + "c ";
+
+    if (!string) {
+        return copper + "c";
+    } else {
+        return string;
+    }
+};
+
+/*
+ * Below is a bunch of code to render the chart and switch between zoommodes
+ * Should cleanup the code and move it to it's own file and more like 1 module ...
+ */
+
+var base_options = {
+    grid: {
+        hoverable: true,
+    },
+    tooltip:  true,
+    tooltipOpts: {
+        content:    "%s | %x | %y",
+        stringFormat: {
+            yFormat: formatGW2Money
+        },
+        dateFormat: "%Y-%m-%d %H:%M"
+    },
+    series: {
+        lines:  { show: true },
+        points: { show: true, radius: 3 }
+    },
+    xaxis: {
+        mode:            "time",
+        timeformat:      "%H:%M %d-%b",
+        timezone:        "browser",
+        twelveHourClock: false,
+        minTickSize:     [1, "hour"]
+    },
+    yaxis: {
+        minTickSize: 1,
+        tickFormatter: formatGW2Money
+    },
+    legend: {
+        container: $("#legend")
+    }
+};
+
+var initchart_navzoom = function(chartdata, callback) {
+    var chartdata = $.parseJSON(chartdata);
+    var placeholder = $("#placeholder");
+    var plot;
+    var options = $.extend(true, {}, base_options, {
+        xaxis: {
+            zoomRange: null,
+            panRange: null
+        },
+        yaxis: {
+            zoomRange: false,
+            panRange: false
+        },
+        zoom: {
+            interactive: true
+        },
+        pan: {
+            interactive: true
+        }
+    });
+    var xaxis_default = null;
+
+    placeholder.bind('plotzoom', function() {
+        plot.pan({left: 0, top: 0});
+    });
+
+    var render = function(extraoptions) {
+        var extraoptions = extraoptions || {};
+        var renderoptions = {};
+        var first = chartdata[0]['data'][0][0];
+
+
+        plot = $.plot(placeholder, chartdata, $.extend(true, {}, options, renderoptions, extraoptions));
+
+        // add zoom out button
+        $('<div class="btn" style="right:20px; bottom:23px; position:absolute;">zoom out</div>').appendTo(placeholder).click(function (e) {
+            e.preventDefault();
+            plot.zoomOut();
+        });
+
+    }
+
+    render();
+
+    if (typeof(callback) == 'function') {
+        callback();
+    }
+};
+
+var ZOOMMODE_NAV    = 'zoommode_nav',
+    ZOOMMODE_SELECT = 'zoommode_select',
+    zoommode        = ZOOMMODE_SELECT;
+_gaq.push(['_trackEvent', 'ZOOMMODE', 'DEFAULT::' + zoommode]);
+
+var initchart = function(chartdata, callback) {
+    var rawdata = $.parseJSON(chartdata);
+
+    var placeholder = $("#placeholder");
+    var plot;
+    var xaxis_default = null;
+
+    placeholder.unbind();
+
+    $(window).unbind('resize');
+    $(window).bind('resize', function() {
+        if (plot) {
+            plot.resize();
+            render();
+        }
+    });
+
+    $("#legend").unbind();
+    $("#legend").bind('click', function() {
+        $(this).toggleClass('alt');
+    });
+
+    if (zoommode == ZOOMMODE_SELECT) {
+        var options = $.extend(true, {}, base_options, {
+            selection: { mode: "x" }
+        });
+
+        placeholder.bind("plotselected", function (event, ranges) {
+            if (xaxis_default === null) {
+                xaxis_default = {
+                    min: plot.getAxes().xaxis.datamin,
+                    max: plot.getAxes().xaxis.datamax
+                };
+            }
+
+            render({ xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to } });
+        });
+    } else if (zoommode == ZOOMMODE_NAV) {
+        var options = $.extend(true, {}, base_options, {
+            xaxis: {
+                zoomRange: null,
+                panRange: null
+            },
+            yaxis: {
+                zoomRange: false,
+                panRange: false
+            },
+            zoom: {
+                interactive: true
+            },
+            pan: {
+                interactive: true
+            }
+        });
+
+
+        placeholder.bind('plotzoom', function() {
+            plot.pan({left: 0, top: 0});
+
+            console.log(plot.getAxes().xaxis.min);
+
+            render({ xaxis: { min: plot.getAxes().xaxis.min, max: plot.getAxes().xaxis.max } });
+        });
+    }
+
+    var smoothdata = function(mod) {
+        var tmpdata = [];
+        var chartdata = [];
+
+        $.each(rawdata, function(i, dataset) {
+            tmpdata[i] = $.extend(true, {}, dataset);
+            tmpdata[i].data = {};
+            $.each(dataset.data, function(ii, entry) {
+                var timestamp = entry[0],
+                    rounded = Math.round(timestamp / mod) * mod;
+                tmpdata[i].data[rounded] = tmpdata[i].data[rounded] || {};
+                tmpdata[i].data[rounded][timestamp] = entry[1];
+            });
+        });
+
+        $.each(tmpdata, function(i, dataset) {
+            chartdata[i] = $.extend(true, {}, dataset);
+            chartdata[i].data = [];
+            $.each(dataset.data, function(timestamp, values) {
+                var value = 0, valuets = Infinity;
+                $.each(values, function(vtimestamp, v) {
+                    var tsdiff = (timestamp - vtimestamp);
+                    if (tsdiff < 0) tsdiff *= -1;
+
+                    if (tsdiff < valuets) {
+                        valuets = tsdiff;
+                        value   = v;
+                    }
+                });
+
+                chartdata[i].data.push([parseInt(timestamp), value]);
+            });
+        });
+
+        return chartdata;
+    };
+
+    var render = function(extraoptions) {
+        var extraoptions  = extraoptions || {};
+        var renderoptions = $.extend(true, {}, options, renderoptions, extraoptions);
+
+        var datamin = Infinity, datamax = -Infinity;
+        $.each(rawdata, function(i, dataset) {
+            $.each(dataset.data, function(ii, entry) {
+                var timestamp = entry[0];
+
+                datamin = datamin > timestamp ? timestamp : datamin;
+                datamax = datamax < timestamp ? timestamp : datamax;
+            });
+        });
+
+        var min = Infinity, max = -Infinity;
+        if (renderoptions.xaxis !== null && typeof(renderoptions.xaxis.min) !== 'undefined' && typeof(renderoptions.xaxis.max) !== 'undefined') {
+            min = renderoptions.xaxis.min;
+            max = renderoptions.xaxis.max;
+        } else if (typeof(plot) !== 'undefined') {
+            min = plot.getAxes().xaxis.min;
+            max = plot.getAxes().xaxis.max;
+        } else {
+            min = datamin;
+            max = datamax;
+        }
+
+        renderoptions.xaxis = renderoptions.xaxis || {};
+        renderoptions.xaxis.panRange = [datamin, datamax];
+
+        var timespan_sec = (max - min) / 1000, timespan_hr = timespan_sec / 3600;
+        var mod_sec = null, mod = null;
+
+        if (timespan_hr <= 24) {
+            mod_sec = 1;
+        } else {
+            mod_sec = Math.ceil(timespan_hr * 20);
+        }
+
+        if (mod_sec > 70000) { // > 70000sec = round on 1 day
+            mod_sec = Math.round(mod_sec / 86400) * 86400;
+        } else if (mod_sec > 1500) { // > 1500sec = round on 1 hour
+            mod_sec = Math.round(mod_sec / 3600) * 3600;
+        }
+
+        mod = mod_sec * 1000;
+
+        plot = $.plot(placeholder, smoothdata(mod), renderoptions);
+
+        // add zoom out button
+        $('<div class="btn btn-inverse" style="float: right;"><i class="icon-search icon-white"></i> zoom out</div>').prependTo($("#legend")).click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (zoommode == ZOOMMODE_NAV) {
+                plot.zoomOut();
+            } else if (zoommode == ZOOMMODE_SELECT) {
+                plot.clearSelection();
+                render({ xaxis: { min: xaxis_default.min, max: xaxis_default.max } });
+            }
+        });
+
+    }
+
+    render();
+
+    if (typeof(callback) == 'function') {
+        callback();
+    }
+};
+
+$("#nav_zoom_mode button").click(function() {
+    $("#nav_zoom_mode").hide();
+    $("#select_zoom_mode").show();
+
+    zoommode = ZOOMMODE_SELECT;
+    _gaq.push(['_trackEvent', 'ZOOMMODE', ZOOMMODE_NAV]);
+    fetchchart(function() {
+        alert('switched to select based zoom mode!');
+    });
+});
+$("#select_zoom_mode button").click(function() {
+    $("#nav_zoom_mode").show();
+    $("#select_zoom_mode").hide();
+
+    zoommode = ZOOMMODE_NAV;
+    _gaq.push(['_trackEvent', 'ZOOMMODE', ZOOMMODE_NAV]);
+    fetchchart(function() {
+        alert('switched to navigation based zoom mode!');
+    });
+});
+
+var fetchchart = function(callback) {
+    $.ajax("{{ path('gem_chart') }}", {
+        success: function(chartdata) {
+            initchart(chartdata, callback);
+        }
+    });
+}
+
+$(window).load(function() {
+    fetchchart();
+});
+</script>
+{% endblock %}

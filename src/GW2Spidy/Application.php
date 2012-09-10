@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 class Application extends \Silex\Application {
     protected $time;
     protected $homeActive = false;
+    protected $gemActive = false;
     protected $displayTypes = null;
 
     protected static $instance;
@@ -74,8 +75,18 @@ class Application extends \Silex\Application {
         return $this->homeActive;
     }
 
+    public function setGemActive($bool = true) {
+        $this->gemActive = $bool;
+
+        return $this;
+    }
+
+    public function isGemActive() {
+        return $this->gemActive;
+    }
+
     public function isBrowseActive() {
-        return !$this->isHomeActive();
+        return !$this->isHomeActive() && !$this->isGemActive();
     }
 
     public function getDisplayTypes() {
