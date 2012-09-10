@@ -2,12 +2,12 @@
 
 namespace GW2Spidy\Util\RedisSlots;
 
+use GW2Spidy\Util\Singleton;
+
 use Predis\Client;
 
-abstract class RedisSlotManager {
+abstract class RedisSlotManager extends Singleton {
     protected $client;
-
-    protected static $instance;
 
     protected function __construct() {
         $this->client = new Client();
@@ -16,17 +16,6 @@ abstract class RedisSlotManager {
     abstract protected function getSlotsQueueName();
     abstract protected function getSlots();
     abstract protected function getTimeout();
-
-    /**
-     * @return RedisSlotManager
-     */
-    public static function getInstance() {
-        if (is_null(static::$instance)) {
-            static::$instance = new static();
-        }
-
-        return static::$instance;
-    }
 
     /**
      * generate an MD5 hash based on processID, time and the provided $i

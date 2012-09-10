@@ -17,7 +17,7 @@ class Application extends \Silex\Application {
      */
     public static function getInstance() {
         if (is_null(static::$instance)) {
-            static::$instance = new static(true);
+            static::$instance = new static();
         }
 
         return static::$instance;

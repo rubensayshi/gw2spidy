@@ -32,13 +32,14 @@ $queueManager = WorkerQueueManager::getInstance();
 print "login ... \n";
 try {
     $begin = microtime(true);
-
     GW2LoginManager::getInstance()->ensureLogin();
     echo "login ok [".(microtime(true) - $begin)."] \n";
 
+    $begin = microtime(true);
     GemExchangeSpider::getInstance()->ensureLogin();
     echo "gemexchange auth ok [".(microtime(true) - $begin)."] \n";
 
+    $begin = microtime(true);
     TradingPostSpider::getInstance()->ensureLogin();
     echo "tradingpost auth ok [".(microtime(true) - $begin)."] \n";
 

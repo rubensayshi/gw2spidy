@@ -2,26 +2,15 @@
 
 namespace GW2Spidy\Util\RedisQueue;
 
+use GW2Spidy\Util\Singleton;
+
 use Predis\Client;
 
-abstract class RedisQueueManager {
+abstract class RedisQueueManager extends Singleton {
     protected $client;
-
-    protected static $instance;
 
     protected function __construct() {
         $this->client = new Client();
-    }
-
-    /**
-     * @return RedisQueueManager
-     */
-    public static function getInstance() {
-        if (is_null(static::$instance)) {
-            static::$instance = new static();
-        }
-
-        return static::$instance;
     }
 
     abstract protected function getQueueName();

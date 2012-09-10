@@ -2,28 +2,18 @@
 
 namespace GW2Spidy;
 
+use GW2Spidy\Util\Singleton;
+
 use GW2Spidy\Util\CurlRequest;
 use \Exception;
 
-class GW2LoginManager {
-    protected static $instance;
+class GW2LoginManager extends Singleton {
     protected $loggedIn;
     protected $sid;
 
     public function __construct() {}
     public function __destruct() {
         $this->doLogout();
-    }
-
-    /**
-     * @return GW2LoginManager
-     */
-    public static function getInstance() {
-        if (is_null(static::$instance)) {
-            static::$instance = new static();
-        }
-
-        return static::$instance;
     }
 
     public function ensureLogin() {

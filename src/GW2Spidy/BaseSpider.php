@@ -2,6 +2,8 @@
 
 namespace GW2Spidy;
 
+use GW2Spidy\Util\Singleton;
+
 use \Exception;
 
 use GW2Spidy\Util\CacheHandler;
@@ -10,22 +12,10 @@ use GW2Spidy\Util\CurlRequest;
 use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemType;
 
-abstract class BaseSpider {
-    protected static $instance;
+abstract class BaseSpider extends Singleton {
     protected $loggedIn;
 
     abstract protected function getLoginToUrl();
-
-    public static function getInstance() {
-        var_dump(get_called_class());
-        var_dump(is_null(static::$instance));
-
-        if (is_null(static::$instance)) {
-            static::$instance = new static();
-        }
-
-        return static::$instance;
-    }
 
     public function ensureLogin() {
         if (!$this->loggedIn) {

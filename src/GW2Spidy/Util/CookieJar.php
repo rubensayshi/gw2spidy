@@ -2,24 +2,11 @@
 
 namespace GW2Spidy\Util;
 
-class CookieJar {
-    protected $cookiejar = null;
-
-    protected static $instance;
+class CookieJar extends Singleton {
+    protected $cookiejar;
 
     public function __destruct() {
         $this->cleanupCookieJar();
-    }
-
-    /**
-     * @return CookieJar
-     */
-    public static function getInstance() {
-        if (is_null(static::$instance)) {
-            static::$instance = new static();
-        }
-
-        return static::$instance;
     }
 
     public function getCookieJar() {
