@@ -36,11 +36,13 @@ try {
     GW2LoginManager::getInstance()->ensureLogin();
     echo "login ok [".(microtime(true) - $begin)."] \n";
 
+    GemExchangeSpider::getInstance()->ensureLogin();
+    echo "gemexchange auth ok [".(microtime(true) - $begin)."] \n";
+
     TradingPostSpider::getInstance()->ensureLogin();
     echo "tradingpost auth ok [".(microtime(true) - $begin)."] \n";
 
-    GemExchangeSpider::getInstance()->ensureLogin();
-    echo "gemexchange auth ok [".(microtime(true) - $begin)."] \n";
+    die('ok');
 
 } catch (Exception $e) {
     echo "login failed ... sleeping [60] and restarting \n";
