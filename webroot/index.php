@@ -283,7 +283,7 @@ $app->post("/search", function (Request $request) use ($app) {
  *  route /search GET
  * ----------------------
  */
-$app->get("/search/{search}/{page}", function(Request $request, $search, $page) use($app, $item_list) {
+$app->get("/search/{search}/{page}", function(Request $request, $search, $page) use($app) {
     if (!$search) {
         return $app->handle(Request::create("/searchform", 'GET'), HttpKernelInterface::SUB_REQUEST);
     }
