@@ -17,6 +17,9 @@ abstract class BaseSpider {
     abstract protected function getLoginToUrl();
 
     public static function getInstance() {
+        var_dump(get_called_class());
+        var_dump(is_null(static::$instance));
+
         if (is_null(static::$instance)) {
             static::$instance = new static();
         }
