@@ -32,8 +32,8 @@ $queueManager = WorkerQueueManager::getInstance();
 print "login ... \n";
 try {
     $begin = microtime(true);
-    GW2LoginManager::getInstance()->ensureLogin();
-    echo "login ok [".(microtime(true) - $begin)."] \n";
+    $sid = GW2LoginManager::getInstance()->getSessionID();
+    echo "login ok [".(microtime(true) - $begin)."] -> [{$sid}] \n";
 
     $begin = microtime(true);
     GemExchangeSpider::getInstance()->ensureLogin();
