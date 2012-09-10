@@ -29,6 +29,10 @@ If you want to run this on a windows machine, for development purposes, then I s
 
 ### PHP 5.3
 You'll need PHP5.3 or higher for the namespace support etc.
+You'll need the following extensions installed:
+ * php5-curl
+ * php5-mysql
+ * php5-memcache 
 
 ### MySQL / Propel
 I think 4.x will suffice, though I run 5.x.
@@ -38,12 +42,15 @@ On the PHP side of things I'm using PropelORM, thanks to that you could probally
 The project will work fine with both Apache or Nginx (I actually run apache on my dev machine and nginx in production), you can find example configs in the `docs` folder of this project.
 If you want to run the code that spiders through the trade market then you'll need command line access, if you just want to run the frontend code (and get a database dump from me) then you can live without ;)
 
+On a clean install you might need to enable apache rewrite with the command: `a2enmod rewrite` 
+
 ### Memcache
 Using memcache daemon and PHP Memcache lib to easily cache some stuff in memory (item and type data).
 However, everything will work fine without memcache, if you have memcache installed but don't want the project to use it then define MEMCACHED_DISABLED in your config.inc.php and set it to true.
 You DO need the php5-memcache library, but it won't use memcache for anything ;)
 
 *Note* that you need `php5-memcache` not `php5-memcached`
+*Note* that you need to have the memcache extension, even if you don't want to use it!
 
 ### Redis
 The spidering code uses a custom brew queue and some custom brew system to make sure we don't do more then x amount of requests.
