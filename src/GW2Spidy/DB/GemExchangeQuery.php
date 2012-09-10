@@ -25,7 +25,7 @@ class GemExchangeQuery extends BaseGemExchangeQuery {
         $cacheKey = __CLASS__ . "::" . __METHOD__;
         $data     = ApplicationCache::getInstance()->get($cacheKey);
 
-        if (true || !$data) {
+        if (!$data) {
             $data = array();
 
             $rates = static::create()
