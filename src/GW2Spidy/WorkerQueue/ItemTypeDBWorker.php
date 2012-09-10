@@ -11,7 +11,7 @@ use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemSubTypeQuery;
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemTypeQuery;
-use GW2Spidy\TradeMarket;
+use GW2Spidy\TradingPostSpider;
 
 class ItemTypeDBWorker implements Worker {
     public function getRetries() {
@@ -19,7 +19,7 @@ class ItemTypeDBWorker implements Worker {
     }
 
     public function work(WorkerQueueItem $item) {
-        $market = TradeMarket::getInstance();
+        $market = TradingPostSpider::getInstance();
 
         $marketData = $market->getMarketData();
 

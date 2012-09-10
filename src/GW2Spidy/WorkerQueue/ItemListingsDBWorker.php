@@ -10,7 +10,7 @@ use GW2Spidy\DB\SellListing;
 
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\TradeMarket;
+use GW2Spidy\TradingPostSpider;
 
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemSubType;
@@ -28,9 +28,9 @@ class ItemListingsDBWorker implements Worker {
 
     public function buildListingsDB(Item $item) {
         $now      = new \DateTime();
-        $market   = TradeMarket::getInstance();
+        $market   = TradingPostSpider::getInstance();
 
-        if ($listings = $market->getListingsById($item->getDataId(), TradeMarket::LISTING_TYPE_SELL)) {
+        if ($listings = $market->getListingsById($item->getDataId(), TradingPostSpider::LISTING_TYPE_SELL)) {
             foreach ($listings as $listingData) {
                 $listing = new SellListing();
                 $listing->fromArray($listingData, \BasePeer::TYPE_FIELDNAME);
@@ -42,7 +42,7 @@ class ItemListingsDBWorker implements Worker {
             }
         }
 
-        if ($listings = $market->getListingsById($item->getDataId(), TradeMarket::LISTING_TYPE_BUY)) {
+        if ($listings = $market->getListingsById($item->getDataId(), TradingPostSpider::LISTING_TYPE_BUY)) {
             foreach ($listings as $listingData) {
                 $listing = new BuyListing();
                 $listing->fromArray($listingData, \BasePeer::TYPE_FIELDNAME);

@@ -13,7 +13,7 @@ use GW2Spidy\Queue\WorkerQueueItem;
 
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\TradeMarket;
+use GW2Spidy\TradingPostSpider;
 
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemSubType;
@@ -37,7 +37,7 @@ class ItemDBWorker implements Worker {
     protected function buildItemDB($type, $subtype, $offset) {
         $now    = new \DateTime();
         var_dump((string)$type, (string)$subtype, $offset) . "\n\n";
-        $items  = TradeMarket::getInstance()->getItemList($type, $subtype, $offset);
+        $items  = TradingPostSpider::getInstance()->getItemList($type, $subtype, $offset);
 
         var_dump($items) . "\n\n";
 

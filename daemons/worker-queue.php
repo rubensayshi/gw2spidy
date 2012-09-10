@@ -4,7 +4,7 @@
  * process queue items
  */
 
-use GW2Spidy\TradeMarket;
+use GW2Spidy\TradingPostSpider;
 
 use GW2Spidy\Queue\RequestSlotManager;
 use GW2Spidy\Queue\WorkerQueueManager;
@@ -27,7 +27,7 @@ $queueManager = WorkerQueueManager::getInstance();
  */
 print "login ... \n";
 try {
-    TradeMarket::getInstance()->ensureLogin();
+    TradingPostSpider::getInstance()->ensureLogin();
 } catch (Exception $e) {
     echo "login failed ... sleeping [60] and restarting \n";
     sleep(60);
