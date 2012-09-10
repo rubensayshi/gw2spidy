@@ -4,6 +4,8 @@
  * process queue items
  */
 
+use GW2Spidy\GemExchangeSpider;
+
 use GW2Spidy\GW2LoginManager;
 
 use GW2Spidy\TradingPostSpider;
@@ -29,7 +31,17 @@ $queueManager = WorkerQueueManager::getInstance();
  */
 print "login ... \n";
 try {
+    $begin = microtime(true);
+
     GW2LoginManager::getInstance()->ensureLogin();
+    echo "login ok [".(microtime(true) - $begin)."] \n";
+
+    TradingPostSpider::getInstance()->ensureLogin();
+    echo "tradingpost auth ok [".(microtime(true) - $begin)."] \n";
+
+    GemExchangeSpider::getInstance()->ensureLogin();
+    echo "gemexchange auth ok [".(microtime(true) - $begin)."] \n";
+
 } catch (Exception $e) {
     echo "login failed ... sleeping [60] and restarting \n";
     sleep(60);

@@ -36,7 +36,6 @@ class GW2LoginManager {
         $curl = CurlRequest::newInstance(AUTH_URL . "/login")
                     ->setOption(CURLOPT_POST, true)
                     ->setOption(CURLOPT_POSTFIELDS, http_build_query(array('email' => LOGIN_EMAIL, 'password' => LOGIN_PASSWORD)))
-                    ->setVerbose()
                     ->exec()
                     ;
 
