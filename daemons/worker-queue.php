@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * process queue items
+ */
 
 use GW2Spidy\TradeMarket;
 
@@ -19,7 +22,9 @@ $debug   = in_array('--debug', $argv);
 $slotManager  = RequestSlotManager::getInstance();
 $queueManager = WorkerQueueManager::getInstance();
 
-// login here so our benchmarking per item ain't offset by it
+/*
+ * login here, this allows us to exit right away on failure
+ */
 print "login ... \n";
 try {
     TradeMarket::getInstance()->ensureLogin();

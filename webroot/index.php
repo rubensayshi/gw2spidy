@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * using Silex micro framework
+ *  this file contains all routing and the 'controllers' using lambda functions
+ */
+
 use GW2Spidy\Twig\ItemListRoutingExtension;
 
 use GW2Spidy\Twig\GW2MoneyExtension;
@@ -28,14 +33,14 @@ require dirname(__FILE__) . '/../autoload.php';
 
 @session_start();
 
+// initiate the application, check config to enable debug / sql logging when needed
 $app = Application::getInstance();
 $app->isSQLLogMode() && $app->enableSQLLogging();
 $app->isDevMode()    && $app['debug'] = true;
 
-$toInt = function($val) {
-    return (int) $val;
-};
-
+/*
+ * register providers
+ */
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path'    => dirname(__FILE__) . '/../templates',
@@ -44,10 +49,34 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     ),
 ));
 
+/*
+ * register custom extensions
+ */
 $app['twig']->addExtension(new VersionedAssetsRoutingExtension());
 $app['twig']->addExtension(new GW2MoneyExtension());
 $app['twig']->addExtension(new ItemListRoutingExtension($app['url_generator']));
 
+/**
+ * lambda used to convert URL arguments
+ *
+ * @param  mixed     $val
+ * @return int
+ */
+$toInt = function($val) {
+    return (int) $val;
+};
+
+
+/**
+ * generic function used for /search and /type
+ *
+ * @param  Application   $app
+ * @param  Request       $request
+ * @param  ItemQuery     $q
+ * @param  int           $page
+ * @param  int           $itemsperpage
+ * @param  array         $tplVars
+ */
 function item_list(Application $app, Request $request, ItemQuery $q, $page, $itemsperpage, array $tplVars = array()) {
     $sortByOptions = array('name', 'rarity', 'restriction_level', 'min_sale_unit_price', 'max_offer_unit_price');
 
@@ -100,8 +129,11 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
  * ----------------------
  */
 $app->get("/", function() use($app) {
+    // workaround for now to set active menu item, all others are 'browse' as active
     $app->setHomeActive();
-    $featured = ItemQuery::create()->findPk(19697); // copper ore
+
+    // get copper ore as featured item
+    $featured = ItemQuery::create()->findPk(19697);
 
     return $app['twig']->render('index.html.twig', array(
         'featured' => $featured,
@@ -140,6 +172,7 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
         $q->filterByItemSubTypeId($subtype);
     }
 
+    // use generic function to render
     return item_list($app, $request, $q, $page, 50, array('type' => $type, 'subtype' => $subtype));
 })
 ->assert('type',     '\d+')
@@ -165,6 +198,7 @@ $app->get("/item/{dataId}", function($dataId) use ($app) {
         return $app->abort(404, "Page does not exist.");
     }
 
+    // add item to the history stored in session
     ItemHistory::getInstance()->addItem($item);
 
     return $app['twig']->render('item.html.twig', array(
@@ -239,6 +273,7 @@ $app->get("/status", function() use($app) {
  * ----------------------
  */
 $app->post("/search", function (Request $request) use ($app) {
+    // redirect to the GET with the search in the URL
     return $app->redirect($app['url_generator']->generate('search', array('search' => $request->get('search'))));
 })
 ->bind('searchpost');
@@ -247,8 +282,6 @@ $app->post("/search", function (Request $request) use ($app) {
  * ----------------------
  *  route /search GET
  * ----------------------
- *
- * almost exact repeat of /type so the code should be combined at some point ...
  */
 $app->get("/search/{search}/{page}", function(Request $request, $search, $page) use($app, $item_list) {
     if (!$search) {
@@ -260,6 +293,7 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
     $q = ItemQuery::create();
     $q->filterByName("%{$search}%");
 
+    // use generic function to render
     return item_list($app, $request, $q, $page, 25, array('search' => $search));
 })
 ->assert('search',   '[^/]*')
@@ -286,6 +320,7 @@ $app->get("/searchform", function() use($app) {
  * ----------------------
  */
 $app->get("/api/{format}/{secret}", function($format, $secret) use($app) {
+    // check if the secret is in the configured allowed api_secrets
     if (!(isset($GLOBALS['api_secrets']) && in_array($secret, $GLOBALS['api_secrets'])) && !$app['debug']) {
         return $app->redirect("/");
     }
@@ -328,6 +363,7 @@ $app->get("/api/{format}/{secret}", function($format, $secret) use($app) {
  * ----------------------
  */
 $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $type, $format, $secret) use($app) {
+    // check if the secret is in the configured allowed api_secrets
     if (!(isset($GLOBALS['api_secrets']) && in_array($secret, $GLOBALS['api_secrets'])) && !$app['debug']) {
         return $app->redirect("/");
     }
@@ -394,6 +430,7 @@ $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $
 ->convert('dataId', $toInt)
 ->bind('api_item');
 
+// bootstrap the app
 $app->run();
 
 ?>
