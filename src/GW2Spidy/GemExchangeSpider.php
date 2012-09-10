@@ -17,10 +17,6 @@ class GemExchangeSpider extends BaseSpider {
                     ->exec()
                     ;
 
-        if ($curl->getInfo('http_code') >= 400) {
-            throw new Exception("Failed to retrieve gemexchange trends");
-        }
-
         $data = json_decode($curl->getResponseBody(), true);
 
         return $data;

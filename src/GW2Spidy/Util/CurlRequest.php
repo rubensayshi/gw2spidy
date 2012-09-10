@@ -133,8 +133,8 @@ class CurlRequest {
 
         curl_close($ch);
 
-        if (!$this->result) {
-            throw new Exception("CurlRequest failed");
+        if ($this->getInfo('http_code') >= 400) {
+            throw new Exception("CurlRequest failed [[ {$this->getInfo('http_code')} ]] [[ {$this->url} ]]");
         }
 
         $this->responseHeaders = array();

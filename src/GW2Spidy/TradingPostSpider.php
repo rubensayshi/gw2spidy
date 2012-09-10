@@ -100,10 +100,6 @@ class TradingPostSpider extends BaseSpider {
              ->exec()
              ;
 
-        if($curl->getInfo('http_code') >= 400) {
-            throw new Exception("getItemList request failed with HTTP code {$curl->getInfo('http_code')}!");
-        }
-
         $result = $curl->getResponseBody();
         $json   = json_decode($result, true);
 

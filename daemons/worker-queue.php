@@ -4,6 +4,8 @@
  * process queue items
  */
 
+use GW2Spidy\GW2LoginManager;
+
 use GW2Spidy\TradingPostSpider;
 
 use GW2Spidy\Queue\RequestSlotManager;
@@ -26,13 +28,16 @@ $queueManager = WorkerQueueManager::getInstance();
  * login here, this allows us to exit right away on failure
  */
 print "login ... \n";
-try {
+//try {
+    GW2LoginManager::getInstance()->ensureLogin();
+    var_dump(GW2LoginManager::getInstance()->getSessionID());
     TradingPostSpider::getInstance()->ensureLogin();
-} catch (Exception $e) {
+    var_dump(GW2LoginManager::getInstance()->getSessionID());
+//} catch (Exception $e) {
     echo "login failed ... sleeping [60] and restarting \n";
     sleep(60);
     exit(1);
-}
+//}
 
 /*
  * $run up to $max in 1 process, then exit so process gets revived

@@ -12,16 +12,7 @@ use GW2Spidy\DB\ItemType;
 
 abstract class BaseSpider {
     protected static $instance;
-    protected $cache;
     protected $loggedIn;
-
-    public function __construct() {
-        $this->cache = CacheHandler::getInstance('Spider');
-    }
-
-    public function __destruct() {
-        $this->doLogout();
-    }
 
     abstract protected function getLoginToUrl();
 
@@ -40,13 +31,7 @@ abstract class BaseSpider {
     }
 
     public function doLogin() {
-        $curl = CurlRequest::newInstance(AUTH_URL . "/login")
-                    ->setOption(CURLOPT_POST, true)
-                    ->setOption(CURLOPT_POSTFIELDS, http_build_query(array('email' => LOGIN_EMAIL, 'password' => LOGIN_PASSWORD)))
-                    ->exec()
-                    ;
-
-        if ($sid = $curl->getResponseCookies('s')) {
+        if ($sid = GW2LoginManager::getInstance()->getSessionID()) {
             $loginURL = $this->getLoginToUrl() . "/authenticate";
             $loginURL .= "?account_name=". urlencode("Guild Wars 2");
             $loginURL .= "&session_key={$sid}";
@@ -57,21 +42,7 @@ abstract class BaseSpider {
             throw new Exception("Login request failed, no SID.");
         }
 
-        if($curl->getInfo('http_code') >= 400) {
-            throw new Exception("Login request failed with HTTP code {$curl->getInfo('http_code')}!");
-        }
-
         return true;
-    }
-
-    public function doLogout() {
-        try {
-            $curl = CurlRequest::newInstance(AUTH_URL . "/logout")
-                        ->exec()
-                        ;
-        } catch (Exception $e) {
-            // no1 cares
-        }
     }
 }
 
