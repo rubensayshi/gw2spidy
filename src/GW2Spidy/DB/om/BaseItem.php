@@ -140,12 +140,14 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * The value for the offer_availability field.
+     * Note: this column has a database default value of: 0
      * @var        int
      */
     protected $offer_availability;
 
     /**
      * The value for the sale_availability field.
+     * Note: this column has a database default value of: 0
      * @var        int
      */
     protected $sale_availability;
@@ -197,6 +199,28 @@ abstract class BaseItem extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $buyListingsScheduledForDeletion = null;
+
+    /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see        __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->offer_availability = 0;
+        $this->sale_availability = 0;
+    }
+
+    /**
+     * Initializes internal state of BaseItem object.
+     * @see        applyDefaults()
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->applyDefaultValues();
+    }
 
     /**
      * Get the [data_id] column value.
@@ -728,6 +752,14 @@ abstract class BaseItem extends BaseObject implements Persistent
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->offer_availability !== 0) {
+                return false;
+            }
+
+            if ($this->sale_availability !== 0) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -2280,6 +2312,7 @@ abstract class BaseItem extends BaseObject implements Persistent
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);

@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\Queue;
 
+use GW2Spidy\WorkerQueue\GemExchangeDBWorker;
+
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\WorkerQueue\ItemTypeDBWorker;
@@ -23,6 +25,10 @@ class QueueManager {
         foreach (ItemQuery::create()->find() as $item) {
             ItemListingsDBWorker::enqueueWorker($item);
         }
+    }
+
+    public function buildGemExchangeDB() {
+        GemExchangeDBWorker::enqueueWorker();
     }
 }
 

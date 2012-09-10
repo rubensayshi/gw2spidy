@@ -56,8 +56,8 @@ CREATE TABLE `item`
     `item_sub_type_id` INTEGER NOT NULL,
     `max_offer_unit_price` INTEGER NOT NULL,
     `min_sale_unit_price` INTEGER NOT NULL,
-    `offer_availability` INTEGER NOT NULL,
-    `sale_availability` INTEGER NOT NULL,
+    `offer_availability` INTEGER DEFAULT 0 NOT NULL,
+    `sale_availability` INTEGER DEFAULT 0 NOT NULL,
     PRIMARY KEY (`data_id`),
     INDEX `item_FI_1` (`item_type_id`),
     INDEX `item_FI_2` (`item_sub_type_id`),
@@ -111,6 +111,20 @@ CREATE TABLE `buy_listing`
     CONSTRAINT `buy_listing_FK_1`
         FOREIGN KEY (`item_id`)
         REFERENCES `item` (`data_id`)
+) ENGINE=MyISAM;
+
+-- ---------------------------------------------------------------------
+-- gem_exchange
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `gem_exchange`;
+
+CREATE TABLE `gem_exchange`
+(
+    `exchange_date` DATE NOT NULL,
+    `exchange_time` TIME NOT NULL,
+    `average` INTEGER NOT NULL,
+    PRIMARY KEY (`exchange_date`,`exchange_time`)
 ) ENGINE=MyISAM;
 
 # This restores the fkey checks, after having unset them earlier

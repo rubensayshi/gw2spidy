@@ -17,6 +17,11 @@ Everyone is very much welcome to contribute, 99% chance you're reading this on g
 If you need any help with setup of the project or using git(hub) then just contact me and I'll be glad to help you!
 If you want a dump of the database, since that's a lot easier to work with, then just contact me ;)
 
+Date/time data
+==============
+As usual I didn't really think about timezones when I started this project, but now that multiple people forked the project and that I'm exporting data to some people 
+it suddently matters ... so I'll refactor the code soon to ensure all date/time data is stored as UTC ... atm all data is stored in the server's timezone, in my case Europe/Amsterdam!
+
 Project setup
 =============
 I'll provide you with some short setup instructions to make your life easier if you want to run the code for yourself or contribute.

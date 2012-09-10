@@ -9,6 +9,8 @@ define('LOGIN_PASSWORD', 'p@ssw0rd');
 
 // base URL for most things we do
 define('TRADINGPOST_URL', 'https://tradingpost-live.ncplatform.net');
+// base URL for most things we do
+define('GEMEXCHANGE_URL', 'https://exchange-live.ncplatform.net');
 // base URL for the login process
 define('AUTH_URL', 'https://account.guildwars2.com');
 
