@@ -42,9 +42,6 @@ try {
     $begin = microtime(true);
     TradingPostSpider::getInstance()->ensureLogin();
     echo "tradingpost auth ok [".(microtime(true) - $begin)."] \n";
-
-    die('ok');
-
 } catch (Exception $e) {
     echo "login failed ... sleeping [60] and restarting \n";
     sleep(60);
