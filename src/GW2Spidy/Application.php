@@ -30,6 +30,10 @@ class Application extends \Silex\Application {
         parent::__construct();
     }
 
+    public function getAdminSecret() {
+        return defined('ADMIN_SECRET') ? ADMIN_SECRET : null;
+    }
+
     public function getVersionString() {
         return defined('VERSION_STRING') ? VERSION_STRING : null;
     }

@@ -38,7 +38,7 @@ class GW2SessionManager extends Singleton {
         return $this->getNewSession();
     }
 
-    protected function checkSessionAlive(GW2Session $gw2session) {
+    public function checkSessionAlive(GW2Session $gw2session) {
         $curl = CurlRequest::newInstance(TRADINGPOST_URL)
                     ->setCookie("s={$gw2session->getSessionKey()}")
                     ->setThrowOnError(false)

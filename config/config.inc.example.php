@@ -28,3 +28,6 @@ define('DEV_MODE', true);
 $GLOBALS['csv_secrets'] = array(
     "c8f80801a691b82df99bb9880c602143", // md5(drakie)
 );
+
+// used to grant access to add session keys
+define('ADMIN_SECRET', "s3cr3t");

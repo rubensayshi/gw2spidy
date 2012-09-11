@@ -23,6 +23,11 @@ $run     = 0;
 $max     = 100;
 $debug   = in_array('--debug', $argv);
 
+if ($debug || (defined('SQL_LOG_MODE') && SQL_LOG_MODE)) {
+    $con->setLogLevel(\Propel::LOG_DEBUG);
+    $con->useDebug(true);
+}
+
 $slotManager  = RequestSlotManager::getInstance();
 $queueManager = WorkerQueueManager::getInstance();
 

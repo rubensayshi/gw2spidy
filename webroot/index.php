@@ -5,10 +5,13 @@
  *  this file contains all routing and the 'controllers' using lambda functions
  */
 
+use GW2Spidy\GW2SessionManager;
+
+use \DateTime;
+
+use GW2Spidy\DB\GW2Session;
 use GW2Spidy\DB\GoldToGemRateQuery;
-
 use GW2Spidy\DB\GemToGoldRateQuery;
-
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\DB\SellListingQuery;
@@ -502,6 +505,65 @@ $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $
 ->assert('type',   'sell|buy')
 ->convert('dataId', $toInt)
 ->bind('api_item');
+
+/**
+ * ----------------------
+ *  route /admin/session
+ * ----------------------
+ */
+$app->get("/admin/session", function(Request $request) use($app) {
+    // workaround for now to set active menu item
+    $app->setHomeActive();
+
+    return $app['twig']->render('admin_session.html.twig', array(
+        'flash'    => $request->get('flash'),
+    ));
+})
+->bind('admin_session');
+
+/**
+ * ----------------------
+ *  route /admin/session POST
+ * ----------------------
+ */
+$app->post("/admin/session", function(Request $request) use($app) {
+    $secret = $request->get('admin_secret');
+    if (!$secret || !defined('ADMIN_SECRET') || $secret !== ADMIN_SECRET) {
+
+    }
+
+    $session_key  = $request->get('session_key');
+    $game_session = (boolean)$request->get('game_session');
+
+    $gw2session = new GW2Session();
+    $gw2session->setSessionKey($session_key);
+    $gw2session->setGameSession($game_session);
+    $gw2session->setCreated(new DateTime());
+
+    try {
+        try {
+            $ok = GW2SessionManager::getInstance()->checkSessionAlive($gw2session);
+        } catch (Exception $e) {
+            $gw2session->save();
+            return $app->redirect($app['url_generator']->generate('admin_session', array('flash' => "tpdown")));
+        }
+
+        if ($ok) {
+            $gw2session->save();
+            return $app->redirect($app['url_generator']->generate('admin_session', array('flash' => "ok")));
+        } else {
+            return $app->redirect($app['url_generator']->generate('admin_session', array('flash' => "dead")));
+        }
+    } catch (PropelException $e) {
+        if (strstr($e->getMessage(), "Duplicate")) {
+            return $app->redirect($app['url_generator']->generate('admin_session', array('flash' => "duplicate")));
+        } else {
+            throw $e;
+        }
+    }
+})
+->bind('admin_session_post');
+
 
 // bootstrap the app
 $app->run();
