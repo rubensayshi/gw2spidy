@@ -81,7 +81,6 @@ class TradeMarket {
         $this->ensureLogin();
 
         $curl = CurlRequest::newInstance(TRADINGPOST_URL . "/ws/search.json?ids=".urlencode($id))
-        ->setVerbose()
              ->exec()
              ;
 
