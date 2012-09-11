@@ -11,6 +11,12 @@ $(function() {
                 renderTo : 'container'
             },
             rangeSelector : {
+                buttons: [
+                    {type: 'day',  count: 1,  text: '1d'},
+                    {type: 'day',  count: 3,  text: '3d'},
+                    {type: 'week', count: 1,  text: '1w'},
+                    {type: 'all',             text: 'all'},
+                ],
                 selected : 1
             },
             title : {
