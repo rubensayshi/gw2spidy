@@ -2,11 +2,11 @@
 
 namespace GW2Spidy\DB;
 
-use GW2Spidy\DB\om\BaseBuyGemRate;
+use GW2Spidy\DB\om\BaseGoldToGemRatePeer;
 
 
 /**
- * Skeleton subclass for representing a row from the 'buy_gem_rate' table.
+ * Skeleton subclass for performing query and update operations on the 'gold_to_gem_rate' table.
  *
  * 
  *
@@ -16,6 +16,6 @@ use GW2Spidy\DB\om\BaseBuyGemRate;
  *
  * @package    propel.generator.gw2spidy
  */
-class BuyGemRate extends BaseBuyGemRate {
+class GoldToGemRatePeer extends BaseGoldToGemRatePeer {
 
-} // BuyGemRate
+} // GoldToGemRatePeer

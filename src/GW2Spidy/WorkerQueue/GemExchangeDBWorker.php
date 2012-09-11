@@ -14,8 +14,8 @@ use GW2Spidy\Queue\WorkerQueueItem;
 class GemExchangeDBWorker implements Worker {
     protected function getTypes() {
         return array(
-            GemExchangeSpider::GEM_RATE_TYPE_RECIEVE_GEMS  => '\\GW2Spidy\\DB\\BuyGemRate',
-            GemExchangeSpider::GEM_RATE_TYPE_RECIEVE_COINS => '\\GW2Spidy\\DB\\SellGemRate'
+            GemExchangeSpider::GEM_RATE_TYPE_RECIEVE_GEMS  => '\\GW2Spidy\\DB\\GoldToGemRate',
+            GemExchangeSpider::GEM_RATE_TYPE_RECIEVE_COINS => '\\GW2Spidy\\DB\\GemToGoldRate'
         );
     }
 

@@ -6,11 +6,12 @@ use \DateTime;
 use \DateTimeZone;
 
 use GW2Spidy\Util\ApplicationCache;
-use GW2Spidy\DB\om\BaseBuyGemRateQuery;
+
+use GW2Spidy\DB\om\BaseGoldToGemRateQuery;
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'buy_gem_rate' table.
+ * Skeleton subclass for performing query and update operations on the 'gold_to_gem_rate' table.
  *
  *
  *
@@ -20,7 +21,7 @@ use GW2Spidy\DB\om\BaseBuyGemRateQuery;
  *
  * @package    propel.generator.gw2spidy
  */
-class BuyGemRateQuery extends BaseBuyGemRateQuery {
+class GoldToGemRateQuery extends BaseGoldToGemRateQuery {
     public static function getChartDatasetData() {
         $cacheKey = __CLASS__ . "::" . __METHOD__;
         $data     = ApplicationCache::getInstance()->get($cacheKey);
@@ -46,4 +47,4 @@ class BuyGemRateQuery extends BaseBuyGemRateQuery {
 
         return $data;
     }
-} // BuyGemRateQuery
+} // GoldToGemRateQuery

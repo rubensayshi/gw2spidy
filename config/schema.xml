@@ -70,11 +70,11 @@
             <index-column name="listing_time" />
         </index>
     </table>
-    <table name="buy_gem_rate" phpName="BuyGemRate">
+    <table name="gold_to_gem_rate" phpName="GoldToGemRate">
         <column name="rate_datetime" type="timestamp" required="true" primaryKey="true" />
         <column name="average" type="integer" required="true" />
     </table>
-    <table name="sell_gem_rate" phpName="SellGemRate">
+    <table name="gem_to_gold_rate" phpName="GemToGoldRate">
         <column name="rate_datetime" type="timestamp" required="true" primaryKey="true" />
         <column name="average" type="integer" required="true" />
     </table>

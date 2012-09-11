@@ -23,8 +23,9 @@ class TradingPostSpider extends BaseSpider {
         $this->ensureLogin();
 
         $curl = CurlRequest::newInstance(TRADINGPOST_URL . " /ws/search.json?text=".urlencode($name)."&levelmin=0&levelmax=80")
-             ->exec()
-             ;
+                     ->setHeader("X-Requested-With: XMLHttpRequest")
+                     ->exec()
+                     ;
 
         $data = json_decode($curl->getResponseBody(), true);
 
@@ -47,8 +48,9 @@ class TradingPostSpider extends BaseSpider {
 
         if (!($listings = $this->cache->get($cacheKey))) {
             $curl = CurlRequest::newInstance(TRADINGPOST_URL . "/ws/listings.json?id={$id}&type={$queryType}")
-                 ->exec()
-                 ;
+                         ->setHeader("X-Requested-With: XMLHttpRequest")
+                         ->exec()
+                         ;
 
             $data = json_decode($curl->getResponseBody(), true);
 

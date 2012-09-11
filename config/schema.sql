@@ -114,12 +114,12 @@ CREATE TABLE `buy_listing`
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
--- buy_gem_rate
+-- gold_to_gem_rate
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `buy_gem_rate`;
+DROP TABLE IF EXISTS `gold_to_gem_rate`;
 
-CREATE TABLE `buy_gem_rate`
+CREATE TABLE `gold_to_gem_rate`
 (
     `rate_datetime` DATETIME NOT NULL,
     `average` INTEGER NOT NULL,
@@ -127,12 +127,12 @@ CREATE TABLE `buy_gem_rate`
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
--- sell_gem_rate
+-- gem_to_gold_rate
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `sell_gem_rate`;
+DROP TABLE IF EXISTS `gem_to_gold_rate`;
 
-CREATE TABLE `sell_gem_rate`
+CREATE TABLE `gem_to_gold_rate`
 (
     `rate_datetime` DATETIME NOT NULL,
     `average` INTEGER NOT NULL,

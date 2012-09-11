@@ -11,65 +11,65 @@ use \Propel;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
-use GW2Spidy\DB\SellGemRate;
-use GW2Spidy\DB\SellGemRatePeer;
-use GW2Spidy\DB\SellGemRateQuery;
+use GW2Spidy\DB\GemToGoldRate;
+use GW2Spidy\DB\GemToGoldRatePeer;
+use GW2Spidy\DB\GemToGoldRateQuery;
 
 /**
- * Base class that represents a query for the 'sell_gem_rate' table.
+ * Base class that represents a query for the 'gem_to_gold_rate' table.
  *
  * 
  *
- * @method     SellGemRateQuery orderByRateDatetime($order = Criteria::ASC) Order by the rate_datetime column
- * @method     SellGemRateQuery orderByAverage($order = Criteria::ASC) Order by the average column
+ * @method     GemToGoldRateQuery orderByRateDatetime($order = Criteria::ASC) Order by the rate_datetime column
+ * @method     GemToGoldRateQuery orderByAverage($order = Criteria::ASC) Order by the average column
  *
- * @method     SellGemRateQuery groupByRateDatetime() Group by the rate_datetime column
- * @method     SellGemRateQuery groupByAverage() Group by the average column
+ * @method     GemToGoldRateQuery groupByRateDatetime() Group by the rate_datetime column
+ * @method     GemToGoldRateQuery groupByAverage() Group by the average column
  *
- * @method     SellGemRateQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     SellGemRateQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     SellGemRateQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     GemToGoldRateQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     GemToGoldRateQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     GemToGoldRateQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     SellGemRate findOne(PropelPDO $con = null) Return the first SellGemRate matching the query
- * @method     SellGemRate findOneOrCreate(PropelPDO $con = null) Return the first SellGemRate matching the query, or a new SellGemRate object populated from the query conditions when no match is found
+ * @method     GemToGoldRate findOne(PropelPDO $con = null) Return the first GemToGoldRate matching the query
+ * @method     GemToGoldRate findOneOrCreate(PropelPDO $con = null) Return the first GemToGoldRate matching the query, or a new GemToGoldRate object populated from the query conditions when no match is found
  *
- * @method     SellGemRate findOneByRateDatetime(string $rate_datetime) Return the first SellGemRate filtered by the rate_datetime column
- * @method     SellGemRate findOneByAverage(int $average) Return the first SellGemRate filtered by the average column
+ * @method     GemToGoldRate findOneByRateDatetime(string $rate_datetime) Return the first GemToGoldRate filtered by the rate_datetime column
+ * @method     GemToGoldRate findOneByAverage(int $average) Return the first GemToGoldRate filtered by the average column
  *
- * @method     array findByRateDatetime(string $rate_datetime) Return SellGemRate objects filtered by the rate_datetime column
- * @method     array findByAverage(int $average) Return SellGemRate objects filtered by the average column
+ * @method     array findByRateDatetime(string $rate_datetime) Return GemToGoldRate objects filtered by the rate_datetime column
+ * @method     array findByAverage(int $average) Return GemToGoldRate objects filtered by the average column
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseSellGemRateQuery extends ModelCriteria
+abstract class BaseGemToGoldRateQuery extends ModelCriteria
 {
     
     /**
-     * Initializes internal state of BaseSellGemRateQuery object.
+     * Initializes internal state of BaseGemToGoldRateQuery object.
      *
      * @param     string $dbName The dabase name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'gw2spidy', $modelName = 'GW2Spidy\\DB\\SellGemRate', $modelAlias = null)
+    public function __construct($dbName = 'gw2spidy', $modelName = 'GW2Spidy\\DB\\GemToGoldRate', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new SellGemRateQuery object.
+     * Returns a new GemToGoldRateQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param     SellGemRateQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param     GemToGoldRateQuery|Criteria $criteria Optional Criteria to build the query from
      *
-     * @return SellGemRateQuery
+     * @return GemToGoldRateQuery
      */
     public static function create($modelAlias = null, $criteria = null)
     {
-        if ($criteria instanceof SellGemRateQuery) {
+        if ($criteria instanceof GemToGoldRateQuery) {
             return $criteria;
         }
-        $query = new SellGemRateQuery();
+        $query = new GemToGoldRateQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -92,19 +92,19 @@ abstract class BaseSellGemRateQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query 
      * @param     PropelPDO $con an optional connection object
      *
-     * @return   SellGemRate|SellGemRate[]|mixed the result, formatted by the current formatter
+     * @return   GemToGoldRate|GemToGoldRate[]|mixed the result, formatted by the current formatter
      */
     public function findPk($key, $con = null)
     {
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = SellGemRatePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
+        if ((null !== ($obj = GemToGoldRatePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is alredy in the instance pool
             return $obj;
         }
         if ($con === null) {
-            $con = Propel::getConnection(SellGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(GemToGoldRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
@@ -123,12 +123,12 @@ abstract class BaseSellGemRateQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return   SellGemRate A model object, or null if the key is not found
+     * @return   GemToGoldRate A model object, or null if the key is not found
      * @throws   PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `RATE_DATETIME`, `AVERAGE` FROM `sell_gem_rate` WHERE `RATE_DATETIME` = :p0';
+        $sql = 'SELECT `RATE_DATETIME`, `AVERAGE` FROM `gem_to_gold_rate` WHERE `RATE_DATETIME` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_STR);
@@ -139,9 +139,9 @@ abstract class BaseSellGemRateQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $obj = new SellGemRate();
+            $obj = new GemToGoldRate();
             $obj->hydrate($row);
-            SellGemRatePeer::addInstanceToPool($obj, (string) $key);
+            GemToGoldRatePeer::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 
@@ -154,7 +154,7 @@ abstract class BaseSellGemRateQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return SellGemRate|SellGemRate[]|mixed the result, formatted by the current formatter
+     * @return GemToGoldRate|GemToGoldRate[]|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, $con)
     {
@@ -175,7 +175,7 @@ abstract class BaseSellGemRateQuery extends ModelCriteria
      * @param     array $keys Primary keys to use for the query
      * @param     PropelPDO $con an optional connection object
      *
-     * @return PropelObjectCollection|SellGemRate[]|mixed the list of results, formatted by the current formatter
+     * @return PropelObjectCollection|GemToGoldRate[]|mixed the list of results, formatted by the current formatter
      */
     public function findPks($keys, $con = null)
     {
@@ -196,12 +196,12 @@ abstract class BaseSellGemRateQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return SellGemRateQuery The current query, for fluid interface
+     * @return GemToGoldRateQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(SellGemRatePeer::RATE_DATETIME, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(GemToGoldRatePeer::RATE_DATETIME, $key, Criteria::EQUAL);
     }
 
     /**
@@ -209,12 +209,12 @@ abstract class BaseSellGemRateQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return SellGemRateQuery The current query, for fluid interface
+     * @return GemToGoldRateQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(SellGemRatePeer::RATE_DATETIME, $keys, Criteria::IN);
+        return $this->addUsingAlias(GemToGoldRatePeer::RATE_DATETIME, $keys, Criteria::IN);
     }
 
     /**
@@ -235,18 +235,18 @@ abstract class BaseSellGemRateQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return SellGemRateQuery The current query, for fluid interface
+     * @return GemToGoldRateQuery The current query, for fluid interface
      */
     public function filterByRateDatetime($rateDatetime = null, $comparison = null)
     {
         if (is_array($rateDatetime)) {
             $useMinMax = false;
             if (isset($rateDatetime['min'])) {
-                $this->addUsingAlias(SellGemRatePeer::RATE_DATETIME, $rateDatetime['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(GemToGoldRatePeer::RATE_DATETIME, $rateDatetime['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($rateDatetime['max'])) {
-                $this->addUsingAlias(SellGemRatePeer::RATE_DATETIME, $rateDatetime['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(GemToGoldRatePeer::RATE_DATETIME, $rateDatetime['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -257,7 +257,7 @@ abstract class BaseSellGemRateQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SellGemRatePeer::RATE_DATETIME, $rateDatetime, $comparison);
+        return $this->addUsingAlias(GemToGoldRatePeer::RATE_DATETIME, $rateDatetime, $comparison);
     }
 
     /**
@@ -276,18 +276,18 @@ abstract class BaseSellGemRateQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return SellGemRateQuery The current query, for fluid interface
+     * @return GemToGoldRateQuery The current query, for fluid interface
      */
     public function filterByAverage($average = null, $comparison = null)
     {
         if (is_array($average)) {
             $useMinMax = false;
             if (isset($average['min'])) {
-                $this->addUsingAlias(SellGemRatePeer::AVERAGE, $average['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(GemToGoldRatePeer::AVERAGE, $average['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($average['max'])) {
-                $this->addUsingAlias(SellGemRatePeer::AVERAGE, $average['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(GemToGoldRatePeer::AVERAGE, $average['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -298,23 +298,23 @@ abstract class BaseSellGemRateQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SellGemRatePeer::AVERAGE, $average, $comparison);
+        return $this->addUsingAlias(GemToGoldRatePeer::AVERAGE, $average, $comparison);
     }
 
     /**
      * Exclude object from result
      *
-     * @param   SellGemRate $sellGemRate Object to remove from the list of results
+     * @param   GemToGoldRate $gemToGoldRate Object to remove from the list of results
      *
-     * @return SellGemRateQuery The current query, for fluid interface
+     * @return GemToGoldRateQuery The current query, for fluid interface
      */
-    public function prune($sellGemRate = null)
+    public function prune($gemToGoldRate = null)
     {
-        if ($sellGemRate) {
-            $this->addUsingAlias(SellGemRatePeer::RATE_DATETIME, $sellGemRate->getRateDatetime(), Criteria::NOT_EQUAL);
+        if ($gemToGoldRate) {
+            $this->addUsingAlias(GemToGoldRatePeer::RATE_DATETIME, $gemToGoldRate->getRateDatetime(), Criteria::NOT_EQUAL);
         }
 
         return $this;
     }
 
-} // BaseSellGemRateQuery
+} // BaseGemToGoldRateQuery

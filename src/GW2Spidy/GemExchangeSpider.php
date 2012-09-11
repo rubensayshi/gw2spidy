@@ -17,6 +17,7 @@ class GemExchangeSpider extends BaseSpider {
         $this->ensureLogin();
 
         $curl = CurlRequest::newInstance(GEMEXCHANGE_URL . "/ws/trends.json?type={$type}")
+                    ->setHeader("X-Requested-With: XMLHttpRequest")
                     ->exec()
                     ;
 

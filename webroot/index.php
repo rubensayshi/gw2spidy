@@ -5,9 +5,9 @@
  *  this file contains all routing and the 'controllers' using lambda functions
  */
 
-use GW2Spidy\DB\BuyGemRateQuery;
+use GW2Spidy\DB\GoldToGemRateQuery;
 
-use GW2Spidy\DB\SellGemRateQuery;
+use GW2Spidy\DB\GemToGoldRateQuery;
 
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemTypeQuery;
@@ -154,13 +154,13 @@ $app->get("/gem", function() use($app) {
     $app->setGemActive();
 
 
-    $lastSell = SellGemRateQuery::create()
+    $lastSell = GemToGoldRateQuery::create()
                 ->addDescendingOrderByColumn("rate_datetime")
                 ->offset(-1)
                 ->limit(1)
                 ->findOne();
 
-    $lastBuy = BuyGemRateQuery::create()
+    $lastBuy = GoldToGemRateQuery::create()
                 ->addDescendingOrderByColumn("rate_datetime")
                 ->offset(-1)
                 ->limit(1)
@@ -196,7 +196,7 @@ $app->get("/gem_chart", function() use($app) {
      *  BUY GEMS WITH GOLD
     *----------------------*/
     $chart[] = array(
-        'data'   => SellGemRateQuery::getChartDatasetData(),
+        'data'   => GoldToGemRateQuery::getChartDatasetData(),
         'label'  => "Gold to Gems",
     );
 
@@ -204,7 +204,7 @@ $app->get("/gem_chart", function() use($app) {
      *  SELL GEMS FOR GOLD
     *----------------------*/
     $chart[] = array(
-        'data'   => BuyGemRateQuery::getChartDatasetData(),
+        'data'   => GemToGoldRateQuery::getChartDatasetData(),
         'label'  => "Gems to Gold",
     );
 

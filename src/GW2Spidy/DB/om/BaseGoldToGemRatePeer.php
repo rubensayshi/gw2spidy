@@ -9,30 +9,30 @@ use \PDOStatement;
 use \Propel;
 use \PropelException;
 use \PropelPDO;
-use GW2Spidy\DB\SellGemRate;
-use GW2Spidy\DB\SellGemRatePeer;
-use GW2Spidy\DB\map\SellGemRateTableMap;
+use GW2Spidy\DB\GoldToGemRate;
+use GW2Spidy\DB\GoldToGemRatePeer;
+use GW2Spidy\DB\map\GoldToGemRateTableMap;
 
 /**
- * Base static class for performing query and update operations on the 'sell_gem_rate' table.
+ * Base static class for performing query and update operations on the 'gold_to_gem_rate' table.
  *
  * 
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseSellGemRatePeer {
+abstract class BaseGoldToGemRatePeer {
 
     /** the default database name for this class */
     const DATABASE_NAME = 'gw2spidy';
 
     /** the table name for this class */
-    const TABLE_NAME = 'sell_gem_rate';
+    const TABLE_NAME = 'gold_to_gem_rate';
 
     /** the related Propel class for this table */
-    const OM_CLASS = 'GW2Spidy\\DB\\SellGemRate';
+    const OM_CLASS = 'GW2Spidy\\DB\\GoldToGemRate';
 
     /** the related TableMap class for this table */
-    const TM_CLASS = 'SellGemRateTableMap';
+    const TM_CLASS = 'GoldToGemRateTableMap';
 
     /** The total number of columns. */
     const NUM_COLUMNS = 2;
@@ -44,19 +44,19 @@ abstract class BaseSellGemRatePeer {
     const NUM_HYDRATE_COLUMNS = 2;
 
     /** the column name for the RATE_DATETIME field */
-    const RATE_DATETIME = 'sell_gem_rate.RATE_DATETIME';
+    const RATE_DATETIME = 'gold_to_gem_rate.RATE_DATETIME';
 
     /** the column name for the AVERAGE field */
-    const AVERAGE = 'sell_gem_rate.AVERAGE';
+    const AVERAGE = 'gold_to_gem_rate.AVERAGE';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of SellGemRate objects.
+     * An identiy map to hold any loaded instances of GoldToGemRate objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
-     * @var        array SellGemRate[]
+     * @var        array GoldToGemRate[]
      */
     public static $instances = array();
 
@@ -65,12 +65,12 @@ abstract class BaseSellGemRatePeer {
      * holds an array of fieldnames
      *
      * first dimension keys are the type constants
-     * e.g. SellGemRatePeer::$fieldNames[SellGemRatePeer::TYPE_PHPNAME][0] = 'Id'
+     * e.g. GoldToGemRatePeer::$fieldNames[GoldToGemRatePeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
         BasePeer::TYPE_PHPNAME => array ('RateDatetime', 'Average', ),
         BasePeer::TYPE_STUDLYPHPNAME => array ('rateDatetime', 'average', ),
-        BasePeer::TYPE_COLNAME => array (SellGemRatePeer::RATE_DATETIME, SellGemRatePeer::AVERAGE, ),
+        BasePeer::TYPE_COLNAME => array (GoldToGemRatePeer::RATE_DATETIME, GoldToGemRatePeer::AVERAGE, ),
         BasePeer::TYPE_RAW_COLNAME => array ('RATE_DATETIME', 'AVERAGE', ),
         BasePeer::TYPE_FIELDNAME => array ('rate_datetime', 'average', ),
         BasePeer::TYPE_NUM => array (0, 1, )
@@ -80,12 +80,12 @@ abstract class BaseSellGemRatePeer {
      * holds an array of keys for quick access to the fieldnames array
      *
      * first dimension keys are the type constants
-     * e.g. SellGemRatePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
+     * e.g. GoldToGemRatePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
         BasePeer::TYPE_PHPNAME => array ('RateDatetime' => 0, 'Average' => 1, ),
         BasePeer::TYPE_STUDLYPHPNAME => array ('rateDatetime' => 0, 'average' => 1, ),
-        BasePeer::TYPE_COLNAME => array (SellGemRatePeer::RATE_DATETIME => 0, SellGemRatePeer::AVERAGE => 1, ),
+        BasePeer::TYPE_COLNAME => array (GoldToGemRatePeer::RATE_DATETIME => 0, GoldToGemRatePeer::AVERAGE => 1, ),
         BasePeer::TYPE_RAW_COLNAME => array ('RATE_DATETIME' => 0, 'AVERAGE' => 1, ),
         BasePeer::TYPE_FIELDNAME => array ('rate_datetime' => 0, 'average' => 1, ),
         BasePeer::TYPE_NUM => array (0, 1, )
@@ -103,10 +103,10 @@ abstract class BaseSellGemRatePeer {
      */
     public static function translateFieldName($name, $fromType, $toType)
     {
-        $toNames = SellGemRatePeer::getFieldNames($toType);
-        $key = isset(SellGemRatePeer::$fieldKeys[$fromType][$name]) ? SellGemRatePeer::$fieldKeys[$fromType][$name] : null;
+        $toNames = GoldToGemRatePeer::getFieldNames($toType);
+        $key = isset(GoldToGemRatePeer::$fieldKeys[$fromType][$name]) ? GoldToGemRatePeer::$fieldKeys[$fromType][$name] : null;
         if ($key === null) {
-            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(SellGemRatePeer::$fieldKeys[$fromType], true));
+            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(GoldToGemRatePeer::$fieldKeys[$fromType], true));
         }
 
         return $toNames[$key];
@@ -123,11 +123,11 @@ abstract class BaseSellGemRatePeer {
      */
     public static function getFieldNames($type = BasePeer::TYPE_PHPNAME)
     {
-        if (!array_key_exists($type, SellGemRatePeer::$fieldNames)) {
+        if (!array_key_exists($type, GoldToGemRatePeer::$fieldNames)) {
             throw new PropelException('Method getFieldNames() expects the parameter $type to be one of the class constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME, BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. ' . $type . ' was given.');
         }
 
-        return SellGemRatePeer::$fieldNames[$type];
+        return GoldToGemRatePeer::$fieldNames[$type];
     }
 
     /**
@@ -139,12 +139,12 @@ abstract class BaseSellGemRatePeer {
      *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
      * </code>
      * @param      string $alias The alias for the current table.
-     * @param      string $column The column name for current table. (i.e. SellGemRatePeer::COLUMN_NAME).
+     * @param      string $column The column name for current table. (i.e. GoldToGemRatePeer::COLUMN_NAME).
      * @return string
      */
     public static function alias($alias, $column)
     {
-        return str_replace(SellGemRatePeer::TABLE_NAME.'.', $alias.'.', $column);
+        return str_replace(GoldToGemRatePeer::TABLE_NAME.'.', $alias.'.', $column);
     }
 
     /**
@@ -162,8 +162,8 @@ abstract class BaseSellGemRatePeer {
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(SellGemRatePeer::RATE_DATETIME);
-            $criteria->addSelectColumn(SellGemRatePeer::AVERAGE);
+            $criteria->addSelectColumn(GoldToGemRatePeer::RATE_DATETIME);
+            $criteria->addSelectColumn(GoldToGemRatePeer::AVERAGE);
         } else {
             $criteria->addSelectColumn($alias . '.RATE_DATETIME');
             $criteria->addSelectColumn($alias . '.AVERAGE');
@@ -186,21 +186,21 @@ abstract class BaseSellGemRatePeer {
         // We need to set the primary table name, since in the case that there are no WHERE columns
         // it will be impossible for the BasePeer::createSelectSql() method to determine which
         // tables go into the FROM clause.
-        $criteria->setPrimaryTableName(SellGemRatePeer::TABLE_NAME);
+        $criteria->setPrimaryTableName(GoldToGemRatePeer::TABLE_NAME);
 
         if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
             $criteria->setDistinct();
         }
 
         if (!$criteria->hasSelectClause()) {
-            SellGemRatePeer::addSelectColumns($criteria);
+            GoldToGemRatePeer::addSelectColumns($criteria);
         }
 
         $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-        $criteria->setDbName(SellGemRatePeer::DATABASE_NAME); // Set the correct dbName
+        $criteria->setDbName(GoldToGemRatePeer::DATABASE_NAME); // Set the correct dbName
 
         if ($con === null) {
-            $con = Propel::getConnection(SellGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
         // BasePeer returns a PDOStatement
         $stmt = BasePeer::doCount($criteria, $con);
@@ -219,7 +219,7 @@ abstract class BaseSellGemRatePeer {
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 SellGemRate
+     * @return                 GoldToGemRate
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -227,7 +227,7 @@ abstract class BaseSellGemRatePeer {
     {
         $critcopy = clone $criteria;
         $critcopy->setLimit(1);
-        $objects = SellGemRatePeer::doSelect($critcopy, $con);
+        $objects = GoldToGemRatePeer::doSelect($critcopy, $con);
         if ($objects) {
             return $objects[0];
         }
@@ -245,7 +245,7 @@ abstract class BaseSellGemRatePeer {
      */
     public static function doSelect(Criteria $criteria, PropelPDO $con = null)
     {
-        return SellGemRatePeer::populateObjects(SellGemRatePeer::doSelectStmt($criteria, $con));
+        return GoldToGemRatePeer::populateObjects(GoldToGemRatePeer::doSelectStmt($criteria, $con));
     }
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -263,16 +263,16 @@ abstract class BaseSellGemRatePeer {
     public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(SellGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         if (!$criteria->hasSelectClause()) {
             $criteria = clone $criteria;
-            SellGemRatePeer::addSelectColumns($criteria);
+            GoldToGemRatePeer::addSelectColumns($criteria);
         }
 
         // Set the correct dbName
-        $criteria->setDbName(SellGemRatePeer::DATABASE_NAME);
+        $criteria->setDbName(GoldToGemRatePeer::DATABASE_NAME);
 
         // BasePeer returns a PDOStatement
         return BasePeer::doSelect($criteria, $con);
@@ -286,7 +286,7 @@ abstract class BaseSellGemRatePeer {
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      SellGemRate $obj A SellGemRate object.
+     * @param      GoldToGemRate $obj A GoldToGemRate object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -295,7 +295,7 @@ abstract class BaseSellGemRatePeer {
             if ($key === null) {
                 $key = (string) $obj->getRateDatetime();
             } // if key === null
-            SellGemRatePeer::$instances[$key] = $obj;
+            GoldToGemRatePeer::$instances[$key] = $obj;
         }
     }
 
@@ -307,7 +307,7 @@ abstract class BaseSellGemRatePeer {
      * methods in your stub classes -- you may need to explicitly remove objects
      * from the cache in order to prevent returning objects that no longer exist.
      *
-     * @param      mixed $value A SellGemRate object or a primary key value.
+     * @param      mixed $value A GoldToGemRate object or a primary key value.
      *
      * @return void
      * @throws PropelException - if the value is invalid.
@@ -315,17 +315,17 @@ abstract class BaseSellGemRatePeer {
     public static function removeInstanceFromPool($value)
     {
         if (Propel::isInstancePoolingEnabled() && $value !== null) {
-            if (is_object($value) && $value instanceof SellGemRate) {
+            if (is_object($value) && $value instanceof GoldToGemRate) {
                 $key = (string) $value->getRateDatetime();
             } elseif (is_scalar($value)) {
                 // assume we've been passed a primary key
                 $key = (string) $value;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or SellGemRate object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or GoldToGemRate object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
                 throw $e;
             }
 
-            unset(SellGemRatePeer::$instances[$key]);
+            unset(GoldToGemRatePeer::$instances[$key]);
         }
     } // removeInstanceFromPool()
 
@@ -336,14 +336,14 @@ abstract class BaseSellGemRatePeer {
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   SellGemRate Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return   GoldToGemRate Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
     {
         if (Propel::isInstancePoolingEnabled()) {
-            if (isset(SellGemRatePeer::$instances[$key])) {
-                return SellGemRatePeer::$instances[$key];
+            if (isset(GoldToGemRatePeer::$instances[$key])) {
+                return GoldToGemRatePeer::$instances[$key];
             }
         }
 
@@ -357,11 +357,11 @@ abstract class BaseSellGemRatePeer {
      */
     public static function clearInstancePool()
     {
-        SellGemRatePeer::$instances = array();
+        GoldToGemRatePeer::$instances = array();
     }
     
     /**
-     * Method to invalidate the instance pool of all tables related to sell_gem_rate
+     * Method to invalidate the instance pool of all tables related to gold_to_gem_rate
      * by a foreign key with ON DELETE CASCADE
      */
     public static function clearRelatedInstancePool()
@@ -415,11 +415,11 @@ abstract class BaseSellGemRatePeer {
         $results = array();
     
         // set the class once to avoid overhead in the loop
-        $cls = SellGemRatePeer::getOMClass();
+        $cls = GoldToGemRatePeer::getOMClass();
         // populate the object(s)
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $key = SellGemRatePeer::getPrimaryKeyHashFromRow($row, 0);
-            if (null !== ($obj = SellGemRatePeer::getInstanceFromPool($key))) {
+            $key = GoldToGemRatePeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj = GoldToGemRatePeer::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -428,7 +428,7 @@ abstract class BaseSellGemRatePeer {
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                SellGemRatePeer::addInstanceToPool($obj, $key);
+                GoldToGemRatePeer::addInstanceToPool($obj, $key);
             } // if key exists
         }
         $stmt->closeCursor();
@@ -442,21 +442,21 @@ abstract class BaseSellGemRatePeer {
      * @param      int $startcol The 0-based offset for reading from the resultset row.
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
-     * @return array (SellGemRate object, last column rank)
+     * @return array (GoldToGemRate object, last column rank)
      */
     public static function populateObject($row, $startcol = 0)
     {
-        $key = SellGemRatePeer::getPrimaryKeyHashFromRow($row, $startcol);
-        if (null !== ($obj = SellGemRatePeer::getInstanceFromPool($key))) {
+        $key = GoldToGemRatePeer::getPrimaryKeyHashFromRow($row, $startcol);
+        if (null !== ($obj = GoldToGemRatePeer::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $startcol, true); // rehydrate
-            $col = $startcol + SellGemRatePeer::NUM_HYDRATE_COLUMNS;
+            $col = $startcol + GoldToGemRatePeer::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = SellGemRatePeer::OM_CLASS;
+            $cls = GoldToGemRatePeer::OM_CLASS;
             $obj = new $cls();
             $col = $obj->hydrate($row, $startcol);
-            SellGemRatePeer::addInstanceToPool($obj, $key);
+            GoldToGemRatePeer::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -471,7 +471,7 @@ abstract class BaseSellGemRatePeer {
      */
     public static function getTableMap()
     {
-        return Propel::getDatabaseMap(SellGemRatePeer::DATABASE_NAME)->getTable(SellGemRatePeer::TABLE_NAME);
+        return Propel::getDatabaseMap(GoldToGemRatePeer::DATABASE_NAME)->getTable(GoldToGemRatePeer::TABLE_NAME);
     }
 
     /**
@@ -479,9 +479,9 @@ abstract class BaseSellGemRatePeer {
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getDatabaseMap(BaseSellGemRatePeer::DATABASE_NAME);
-      if (!$dbMap->hasTable(BaseSellGemRatePeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new SellGemRateTableMap());
+      $dbMap = Propel::getDatabaseMap(BaseGoldToGemRatePeer::DATABASE_NAME);
+      if (!$dbMap->hasTable(BaseGoldToGemRatePeer::TABLE_NAME)) {
+        $dbMap->addTableObject(new GoldToGemRateTableMap());
       }
     }
 
@@ -493,13 +493,13 @@ abstract class BaseSellGemRatePeer {
      */
     public static function getOMClass()
     {
-        return SellGemRatePeer::OM_CLASS;
+        return GoldToGemRatePeer::OM_CLASS;
     }
 
     /**
-     * Performs an INSERT on the database, given a SellGemRate or Criteria object.
+     * Performs an INSERT on the database, given a GoldToGemRate or Criteria object.
      *
-     * @param      mixed $values Criteria or SellGemRate object containing data that is used to create the INSERT statement.
+     * @param      mixed $values Criteria or GoldToGemRate object containing data that is used to create the INSERT statement.
      * @param      PropelPDO $con the PropelPDO connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -508,18 +508,18 @@ abstract class BaseSellGemRatePeer {
     public static function doInsert($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(SellGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
         } else {
-            $criteria = $values->buildCriteria(); // build Criteria from SellGemRate object
+            $criteria = $values->buildCriteria(); // build Criteria from GoldToGemRate object
         }
 
 
         // Set the correct dbName
-        $criteria->setDbName(SellGemRatePeer::DATABASE_NAME);
+        $criteria->setDbName(GoldToGemRatePeer::DATABASE_NAME);
 
         try {
             // use transaction because $criteria could contain info
@@ -536,9 +536,9 @@ abstract class BaseSellGemRatePeer {
     }
 
     /**
-     * Performs an UPDATE on the database, given a SellGemRate or Criteria object.
+     * Performs an UPDATE on the database, given a GoldToGemRate or Criteria object.
      *
-     * @param      mixed $values Criteria or SellGemRate object containing data that is used to create the UPDATE statement.
+     * @param      mixed $values Criteria or GoldToGemRate object containing data that is used to create the UPDATE statement.
      * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
      * @return int             The number of affected rows (if supported by underlying database driver).
      * @throws PropelException Any exceptions caught during processing will be
@@ -547,35 +547,35 @@ abstract class BaseSellGemRatePeer {
     public static function doUpdate($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(SellGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
-        $selectCriteria = new Criteria(SellGemRatePeer::DATABASE_NAME);
+        $selectCriteria = new Criteria(GoldToGemRatePeer::DATABASE_NAME);
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
 
-            $comparison = $criteria->getComparison(SellGemRatePeer::RATE_DATETIME);
-            $value = $criteria->remove(SellGemRatePeer::RATE_DATETIME);
+            $comparison = $criteria->getComparison(GoldToGemRatePeer::RATE_DATETIME);
+            $value = $criteria->remove(GoldToGemRatePeer::RATE_DATETIME);
             if ($value) {
-                $selectCriteria->add(SellGemRatePeer::RATE_DATETIME, $value, $comparison);
+                $selectCriteria->add(GoldToGemRatePeer::RATE_DATETIME, $value, $comparison);
             } else {
-                $selectCriteria->setPrimaryTableName(SellGemRatePeer::TABLE_NAME);
+                $selectCriteria->setPrimaryTableName(GoldToGemRatePeer::TABLE_NAME);
             }
 
-        } else { // $values is SellGemRate object
+        } else { // $values is GoldToGemRate object
             $criteria = $values->buildCriteria(); // gets full criteria
             $selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
         }
 
         // set the correct dbName
-        $criteria->setDbName(SellGemRatePeer::DATABASE_NAME);
+        $criteria->setDbName(GoldToGemRatePeer::DATABASE_NAME);
 
         return BasePeer::doUpdate($selectCriteria, $criteria, $con);
     }
 
     /**
-     * Deletes all rows from the sell_gem_rate table.
+     * Deletes all rows from the gold_to_gem_rate table.
      *
      * @param      PropelPDO $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).
@@ -584,19 +584,19 @@ abstract class BaseSellGemRatePeer {
     public static function doDeleteAll(PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(SellGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
         $affectedRows = 0; // initialize var to track total num of affected rows
         try {
             // use transaction because $criteria could contain info
             // for more than one table or we could emulating ON DELETE CASCADE, etc.
             $con->beginTransaction();
-            $affectedRows += BasePeer::doDeleteAll(SellGemRatePeer::TABLE_NAME, $con, SellGemRatePeer::DATABASE_NAME);
+            $affectedRows += BasePeer::doDeleteAll(GoldToGemRatePeer::TABLE_NAME, $con, GoldToGemRatePeer::DATABASE_NAME);
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            SellGemRatePeer::clearInstancePool();
-            SellGemRatePeer::clearRelatedInstancePool();
+            GoldToGemRatePeer::clearInstancePool();
+            GoldToGemRatePeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -607,9 +607,9 @@ abstract class BaseSellGemRatePeer {
     }
 
     /**
-     * Performs a DELETE on the database, given a SellGemRate or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a GoldToGemRate or Criteria object OR a primary key value.
      *
-     * @param      mixed $values Criteria or SellGemRate object or primary key or array of primary keys
+     * @param      mixed $values Criteria or GoldToGemRate object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param      PropelPDO $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -620,32 +620,32 @@ abstract class BaseSellGemRatePeer {
      public static function doDelete($values, PropelPDO $con = null)
      {
         if ($con === null) {
-            $con = Propel::getConnection(SellGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
             // invalidate the cache for all objects of this type, since we have no
             // way of knowing (without running a query) what objects should be invalidated
             // from the cache based on this Criteria.
-            SellGemRatePeer::clearInstancePool();
+            GoldToGemRatePeer::clearInstancePool();
             // rename for clarity
             $criteria = clone $values;
-        } elseif ($values instanceof SellGemRate) { // it's a model object
+        } elseif ($values instanceof GoldToGemRate) { // it's a model object
             // invalidate the cache for this single object
-            SellGemRatePeer::removeInstanceFromPool($values);
+            GoldToGemRatePeer::removeInstanceFromPool($values);
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(SellGemRatePeer::DATABASE_NAME);
-            $criteria->add(SellGemRatePeer::RATE_DATETIME, (array) $values, Criteria::IN);
+            $criteria = new Criteria(GoldToGemRatePeer::DATABASE_NAME);
+            $criteria->add(GoldToGemRatePeer::RATE_DATETIME, (array) $values, Criteria::IN);
             // invalidate the cache for this object(s)
             foreach ((array) $values as $singleval) {
-                SellGemRatePeer::removeInstanceFromPool($singleval);
+                GoldToGemRatePeer::removeInstanceFromPool($singleval);
             }
         }
 
         // Set the correct dbName
-        $criteria->setDbName(SellGemRatePeer::DATABASE_NAME);
+        $criteria->setDbName(GoldToGemRatePeer::DATABASE_NAME);
 
         $affectedRows = 0; // initialize var to track total num of affected rows
 
@@ -655,7 +655,7 @@ abstract class BaseSellGemRatePeer {
             $con->beginTransaction();
             
             $affectedRows += BasePeer::doDelete($criteria, $con);
-            SellGemRatePeer::clearRelatedInstancePool();
+            GoldToGemRatePeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -666,13 +666,13 @@ abstract class BaseSellGemRatePeer {
     }
 
     /**
-     * Validates all modified columns of given SellGemRate object.
+     * Validates all modified columns of given GoldToGemRate object.
      * If parameter $columns is either a single column name or an array of column names
      * than only those columns are validated.
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      SellGemRate $obj The object to validate.
+     * @param      GoldToGemRate $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -682,8 +682,8 @@ abstract class BaseSellGemRatePeer {
         $columns = array();
 
         if ($cols) {
-            $dbMap = Propel::getDatabaseMap(SellGemRatePeer::DATABASE_NAME);
-            $tableMap = $dbMap->getTable(SellGemRatePeer::TABLE_NAME);
+            $dbMap = Propel::getDatabaseMap(GoldToGemRatePeer::DATABASE_NAME);
+            $tableMap = $dbMap->getTable(GoldToGemRatePeer::TABLE_NAME);
 
             if (! is_array($cols)) {
                 $cols = array($cols);
@@ -699,7 +699,7 @@ abstract class BaseSellGemRatePeer {
 
         }
 
-        return BasePeer::doValidate(SellGemRatePeer::DATABASE_NAME, SellGemRatePeer::TABLE_NAME, $columns);
+        return BasePeer::doValidate(GoldToGemRatePeer::DATABASE_NAME, GoldToGemRatePeer::TABLE_NAME, $columns);
     }
 
     /**
@@ -707,23 +707,23 @@ abstract class BaseSellGemRatePeer {
      *
      * @param      string $pk the primary key.
      * @param      PropelPDO $con the connection to use
-     * @return SellGemRate
+     * @return GoldToGemRate
      */
     public static function retrieveByPK($pk, PropelPDO $con = null)
     {
 
-        if (null !== ($obj = SellGemRatePeer::getInstanceFromPool((string) $pk))) {
+        if (null !== ($obj = GoldToGemRatePeer::getInstanceFromPool((string) $pk))) {
             return $obj;
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(SellGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria = new Criteria(SellGemRatePeer::DATABASE_NAME);
-        $criteria->add(SellGemRatePeer::RATE_DATETIME, $pk);
+        $criteria = new Criteria(GoldToGemRatePeer::DATABASE_NAME);
+        $criteria->add(GoldToGemRatePeer::RATE_DATETIME, $pk);
 
-        $v = SellGemRatePeer::doSelect($criteria, $con);
+        $v = GoldToGemRatePeer::doSelect($criteria, $con);
 
         return !empty($v) > 0 ? $v[0] : null;
     }
@@ -733,31 +733,31 @@ abstract class BaseSellGemRatePeer {
      *
      * @param      array $pks List of primary keys
      * @param      PropelPDO $con the connection to use
-     * @return SellGemRate[]
+     * @return GoldToGemRate[]
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
     public static function retrieveByPKs($pks, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(SellGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         $objs = null;
         if (empty($pks)) {
             $objs = array();
         } else {
-            $criteria = new Criteria(SellGemRatePeer::DATABASE_NAME);
-            $criteria->add(SellGemRatePeer::RATE_DATETIME, $pks, Criteria::IN);
-            $objs = SellGemRatePeer::doSelect($criteria, $con);
+            $criteria = new Criteria(GoldToGemRatePeer::DATABASE_NAME);
+            $criteria->add(GoldToGemRatePeer::RATE_DATETIME, $pks, Criteria::IN);
+            $objs = GoldToGemRatePeer::doSelect($criteria, $con);
         }
 
         return $objs;
     }
 
-} // BaseSellGemRatePeer
+} // BaseGoldToGemRatePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseSellGemRatePeer::buildTableMap();
+BaseGoldToGemRatePeer::buildTableMap();
 

@@ -16,30 +16,30 @@ use \PropelDateTime;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
-use GW2Spidy\DB\BuyGemRate;
-use GW2Spidy\DB\BuyGemRatePeer;
-use GW2Spidy\DB\BuyGemRateQuery;
+use GW2Spidy\DB\GoldToGemRate;
+use GW2Spidy\DB\GoldToGemRatePeer;
+use GW2Spidy\DB\GoldToGemRateQuery;
 
 /**
- * Base class that represents a row from the 'buy_gem_rate' table.
+ * Base class that represents a row from the 'gold_to_gem_rate' table.
  *
  * 
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseBuyGemRate extends BaseObject implements Persistent
+abstract class BaseGoldToGemRate extends BaseObject implements Persistent
 {
 
     /**
      * Peer class name
      */
-    const PEER = 'GW2Spidy\\DB\\BuyGemRatePeer';
+    const PEER = 'GW2Spidy\\DB\\GoldToGemRatePeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        BuyGemRatePeer
+     * @var        GoldToGemRatePeer
      */
     protected static $peer;
 
@@ -129,7 +129,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      * 
      * @param      mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as NULL.
-     * @return   BuyGemRate The current object (for fluent API support)
+     * @return   GoldToGemRate The current object (for fluent API support)
      */
     public function setRateDatetime($v)
     {
@@ -139,7 +139,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->rate_datetime = $newDateAsString;
-                $this->modifiedColumns[] = BuyGemRatePeer::RATE_DATETIME;
+                $this->modifiedColumns[] = GoldToGemRatePeer::RATE_DATETIME;
             }
         } // if either are not null
 
@@ -151,7 +151,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      * Set the value of [average] column.
      * 
      * @param      int $v new value
-     * @return   BuyGemRate The current object (for fluent API support)
+     * @return   GoldToGemRate The current object (for fluent API support)
      */
     public function setAverage($v)
     {
@@ -161,7 +161,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
 
         if ($this->average !== $v) {
             $this->average = $v;
-            $this->modifiedColumns[] = BuyGemRatePeer::AVERAGE;
+            $this->modifiedColumns[] = GoldToGemRatePeer::AVERAGE;
         }
 
 
@@ -210,10 +210,10 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = BuyGemRatePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 2; // 2 = GoldToGemRatePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating BuyGemRate object", $e);
+            throw new PropelException("Error populating GoldToGemRate object", $e);
         }
     }
 
@@ -256,13 +256,13 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(BuyGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = BuyGemRatePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = GoldToGemRatePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
@@ -292,12 +292,12 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(BuyGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = BuyGemRateQuery::create()
+            $deleteQuery = GoldToGemRateQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -335,7 +335,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(BuyGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -355,7 +355,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                BuyGemRatePeer::addInstanceToPool($this);
+                GoldToGemRatePeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -418,15 +418,15 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(BuyGemRatePeer::RATE_DATETIME)) {
+        if ($this->isColumnModified(GoldToGemRatePeer::RATE_DATETIME)) {
             $modifiedColumns[':p' . $index++]  = '`RATE_DATETIME`';
         }
-        if ($this->isColumnModified(BuyGemRatePeer::AVERAGE)) {
+        if ($this->isColumnModified(GoldToGemRatePeer::AVERAGE)) {
             $modifiedColumns[':p' . $index++]  = '`AVERAGE`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `buy_gem_rate` (%s) VALUES (%s)',
+            'INSERT INTO `gold_to_gem_rate` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -528,7 +528,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
             $failureMap = array();
 
 
-            if (($retval = BuyGemRatePeer::doValidate($this, $columns)) !== true) {
+            if (($retval = GoldToGemRatePeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
@@ -552,7 +552,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = BuyGemRatePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = GoldToGemRatePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -596,11 +596,11 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
-        if (isset($alreadyDumpedObjects['BuyGemRate'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['GoldToGemRate'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['BuyGemRate'][$this->getPrimaryKey()] = true;
-        $keys = BuyGemRatePeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['GoldToGemRate'][$this->getPrimaryKey()] = true;
+        $keys = GoldToGemRatePeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getRateDatetime(),
             $keys[1] => $this->getAverage(),
@@ -622,7 +622,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = BuyGemRatePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = GoldToGemRatePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -666,7 +666,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = BuyGemRatePeer::getFieldNames($keyType);
+        $keys = GoldToGemRatePeer::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setRateDatetime($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setAverage($arr[$keys[1]]);
@@ -679,10 +679,10 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(BuyGemRatePeer::DATABASE_NAME);
+        $criteria = new Criteria(GoldToGemRatePeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(BuyGemRatePeer::RATE_DATETIME)) $criteria->add(BuyGemRatePeer::RATE_DATETIME, $this->rate_datetime);
-        if ($this->isColumnModified(BuyGemRatePeer::AVERAGE)) $criteria->add(BuyGemRatePeer::AVERAGE, $this->average);
+        if ($this->isColumnModified(GoldToGemRatePeer::RATE_DATETIME)) $criteria->add(GoldToGemRatePeer::RATE_DATETIME, $this->rate_datetime);
+        if ($this->isColumnModified(GoldToGemRatePeer::AVERAGE)) $criteria->add(GoldToGemRatePeer::AVERAGE, $this->average);
 
         return $criteria;
     }
@@ -697,8 +697,8 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(BuyGemRatePeer::DATABASE_NAME);
-        $criteria->add(BuyGemRatePeer::RATE_DATETIME, $this->rate_datetime);
+        $criteria = new Criteria(GoldToGemRatePeer::DATABASE_NAME);
+        $criteria->add(GoldToGemRatePeer::RATE_DATETIME, $this->rate_datetime);
 
         return $criteria;
     }
@@ -739,7 +739,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of BuyGemRate (or compatible) type.
+     * @param      object $copyObj An object of GoldToGemRate (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -762,7 +762,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 BuyGemRate Clone of current object.
+     * @return                 GoldToGemRate Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -782,12 +782,12 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return   BuyGemRatePeer
+     * @return   GoldToGemRatePeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new BuyGemRatePeer();
+            self::$peer = new GoldToGemRatePeer();
         }
 
         return self::$peer;
@@ -831,7 +831,7 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(BuyGemRatePeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(GoldToGemRatePeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
@@ -844,4 +844,4 @@ abstract class BaseBuyGemRate extends BaseObject implements Persistent
         return $this->alreadyInSave;
     }
 
-} // BaseBuyGemRate
+} // BaseGoldToGemRate

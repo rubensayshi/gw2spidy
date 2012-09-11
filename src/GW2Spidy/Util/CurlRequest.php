@@ -227,7 +227,7 @@ class CurlRequest {
     }
 
     public function setHeader($header) {
-        $this->options[] = $header;
+        $this->headers[] = $header;
 
         return $this;
     }

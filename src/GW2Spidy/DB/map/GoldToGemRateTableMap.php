@@ -7,7 +7,7 @@ use \TableMap;
 
 
 /**
- * This class defines the structure of the 'buy_gem_rate' table.
+ * This class defines the structure of the 'gold_to_gem_rate' table.
  *
  *
  *
@@ -18,13 +18,13 @@ use \TableMap;
  *
  * @package    propel.generator.gw2spidy.map
  */
-class BuyGemRateTableMap extends TableMap
+class GoldToGemRateTableMap extends TableMap
 {
 
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'gw2spidy.map.BuyGemRateTableMap';
+    const CLASS_NAME = 'gw2spidy.map.GoldToGemRateTableMap';
 
     /**
      * Initialize the table attributes, columns and validators
@@ -36,9 +36,9 @@ class BuyGemRateTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('buy_gem_rate');
-        $this->setPhpName('BuyGemRate');
-        $this->setClassname('GW2Spidy\\DB\\BuyGemRate');
+        $this->setName('gold_to_gem_rate');
+        $this->setPhpName('GoldToGemRate');
+        $this->setClassname('GW2Spidy\\DB\\GoldToGemRate');
         $this->setPackage('gw2spidy');
         $this->setUseIdGenerator(false);
         // columns
@@ -54,4 +54,4 @@ class BuyGemRateTableMap extends TableMap
     {
     } // buildRelations()
 
-} // BuyGemRateTableMap
+} // GoldToGemRateTableMap
