@@ -38,6 +38,7 @@ class GemExchangeDBWorker implements Worker {
                 ->count() > 0)) {
 
             $goldtogem = new GoldToGemRate();
+            $goldtogem->setRateDatetime($date);
             $goldtogem->setRate($rates['gold_to_gem'] * 100); // convert to copper
             $goldtogem->setVolume($volume['gems']);
             $goldtogem->save();
@@ -48,6 +49,7 @@ class GemExchangeDBWorker implements Worker {
                         ->count() > 0)) {
 
             $goldtogem = new GemToGoldRate();
+            $goldtogem->setRateDatetime($date);
             $goldtogem->setRate($rates['gold_to_gem'] * 100); // convert to copper
             $goldtogem->setVolume($volume['gems']);
             $goldtogem->save();
