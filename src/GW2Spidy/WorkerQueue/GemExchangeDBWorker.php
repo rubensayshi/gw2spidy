@@ -42,15 +42,13 @@ class GemExchangeDBWorker implements Worker {
             $date->setTimezone(new DateTimeZone(date_default_timezone_get()));
 
             $exists = GemExchangeQuery::create()
-            ->filterByExchangeDate($date)
-            ->filterByExchangeTime($date)
-            ->count() > 0;
+                        ->filterByExchangeDatetime($date)
+                        ->count() > 0;
 
             if (!$exists) {
                 $new = new GemExchange();
                 $new->setAverage($copper)
-                    ->setExchangeDate($date)
-                    ->setExchangeTime($date)
+                    ->setExchangeDatetime($date)
                     ->save();
             }
         }

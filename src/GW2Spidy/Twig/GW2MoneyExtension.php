@@ -28,14 +28,10 @@ class GW2MoneyExtension extends \Twig_Extension {
         }
 
         if ($copper = floor($copper)) {
-            $result .= "{$copper}c";
+            $result .= "{$copper}c ";
         }
 
-        if (!$result) {
-            return "{$copper}c";
-        } else {
-            return $result;
-        }
+        return $result ? trim($result) : '0c';
     }
 
     public function getName() {

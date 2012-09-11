@@ -152,7 +152,9 @@ $app->get("/gem", function() use($app) {
     // workaround for now to set active menu item
     $app->setGemActive();
 
-    return $app['twig']->render('gem.html.twig', array());
+    $summary = GemExchangeQuery::getSummaryData();
+
+    return $app['twig']->render('gem.html.twig', $summary);
 })
 ->bind('gem');
 

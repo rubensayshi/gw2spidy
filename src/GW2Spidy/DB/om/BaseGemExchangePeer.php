@@ -35,19 +35,16 @@ abstract class BaseGemExchangePeer {
     const TM_CLASS = 'GemExchangeTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 2;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 2;
 
-    /** the column name for the EXCHANGE_DATE field */
-    const EXCHANGE_DATE = 'gem_exchange.EXCHANGE_DATE';
-
-    /** the column name for the EXCHANGE_TIME field */
-    const EXCHANGE_TIME = 'gem_exchange.EXCHANGE_TIME';
+    /** the column name for the EXCHANGE_DATETIME field */
+    const EXCHANGE_DATETIME = 'gem_exchange.EXCHANGE_DATETIME';
 
     /** the column name for the AVERAGE field */
     const AVERAGE = 'gem_exchange.AVERAGE';
@@ -71,12 +68,12 @@ abstract class BaseGemExchangePeer {
      * e.g. GemExchangePeer::$fieldNames[GemExchangePeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('ExchangeDate', 'ExchangeTime', 'Average', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('exchangeDate', 'exchangeTime', 'average', ),
-        BasePeer::TYPE_COLNAME => array (GemExchangePeer::EXCHANGE_DATE, GemExchangePeer::EXCHANGE_TIME, GemExchangePeer::AVERAGE, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('EXCHANGE_DATE', 'EXCHANGE_TIME', 'AVERAGE', ),
-        BasePeer::TYPE_FIELDNAME => array ('exchange_date', 'exchange_time', 'average', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, )
+        BasePeer::TYPE_PHPNAME => array ('ExchangeDatetime', 'Average', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('exchangeDatetime', 'average', ),
+        BasePeer::TYPE_COLNAME => array (GemExchangePeer::EXCHANGE_DATETIME, GemExchangePeer::AVERAGE, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('EXCHANGE_DATETIME', 'AVERAGE', ),
+        BasePeer::TYPE_FIELDNAME => array ('exchange_datetime', 'average', ),
+        BasePeer::TYPE_NUM => array (0, 1, )
     );
 
     /**
@@ -86,12 +83,12 @@ abstract class BaseGemExchangePeer {
      * e.g. GemExchangePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('ExchangeDate' => 0, 'ExchangeTime' => 1, 'Average' => 2, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('exchangeDate' => 0, 'exchangeTime' => 1, 'average' => 2, ),
-        BasePeer::TYPE_COLNAME => array (GemExchangePeer::EXCHANGE_DATE => 0, GemExchangePeer::EXCHANGE_TIME => 1, GemExchangePeer::AVERAGE => 2, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('EXCHANGE_DATE' => 0, 'EXCHANGE_TIME' => 1, 'AVERAGE' => 2, ),
-        BasePeer::TYPE_FIELDNAME => array ('exchange_date' => 0, 'exchange_time' => 1, 'average' => 2, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, )
+        BasePeer::TYPE_PHPNAME => array ('ExchangeDatetime' => 0, 'Average' => 1, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('exchangeDatetime' => 0, 'average' => 1, ),
+        BasePeer::TYPE_COLNAME => array (GemExchangePeer::EXCHANGE_DATETIME => 0, GemExchangePeer::AVERAGE => 1, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('EXCHANGE_DATETIME' => 0, 'AVERAGE' => 1, ),
+        BasePeer::TYPE_FIELDNAME => array ('exchange_datetime' => 0, 'average' => 1, ),
+        BasePeer::TYPE_NUM => array (0, 1, )
     );
 
     /**
@@ -165,12 +162,10 @@ abstract class BaseGemExchangePeer {
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(GemExchangePeer::EXCHANGE_DATE);
-            $criteria->addSelectColumn(GemExchangePeer::EXCHANGE_TIME);
+            $criteria->addSelectColumn(GemExchangePeer::EXCHANGE_DATETIME);
             $criteria->addSelectColumn(GemExchangePeer::AVERAGE);
         } else {
-            $criteria->addSelectColumn($alias . '.EXCHANGE_DATE');
-            $criteria->addSelectColumn($alias . '.EXCHANGE_TIME');
+            $criteria->addSelectColumn($alias . '.EXCHANGE_DATETIME');
             $criteria->addSelectColumn($alias . '.AVERAGE');
         }
     }
@@ -298,7 +293,7 @@ abstract class BaseGemExchangePeer {
     {
         if (Propel::isInstancePoolingEnabled()) {
             if ($key === null) {
-                $key = serialize(array((string) $obj->getExchangeDate(), (string) $obj->getExchangeTime()));
+                $key = (string) $obj->getExchangeDatetime();
             } // if key === null
             GemExchangePeer::$instances[$key] = $obj;
         }
@@ -321,10 +316,10 @@ abstract class BaseGemExchangePeer {
     {
         if (Propel::isInstancePoolingEnabled() && $value !== null) {
             if (is_object($value) && $value instanceof GemExchange) {
-                $key = serialize(array((string) $value->getExchangeDate(), (string) $value->getExchangeTime()));
-            } elseif (is_array($value) && count($value) === 2) {
+                $key = (string) $value->getExchangeDatetime();
+            } elseif (is_scalar($value)) {
                 // assume we've been passed a primary key
-                $key = serialize(array((string) $value[0], (string) $value[1]));
+                $key = (string) $value;
             } else {
                 $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or GemExchange object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
                 throw $e;
@@ -386,11 +381,11 @@ abstract class BaseGemExchangePeer {
     public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[$startcol] === null && $row[$startcol + 1] === null) {
+        if ($row[$startcol] === null) {
             return null;
         }
 
-        return serialize(array((string) $row[$startcol], (string) $row[$startcol + 1]));
+        return (string) $row[$startcol];
     }
 
     /**
@@ -405,7 +400,7 @@ abstract class BaseGemExchangePeer {
     public static function getPrimaryKeyFromRow($row, $startcol = 0)
     {
 
-        return array((string) $row[$startcol], (string) $row[$startcol + 1]);
+        return (string) $row[$startcol];
     }
     
     /**
@@ -560,18 +555,10 @@ abstract class BaseGemExchangePeer {
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
 
-            $comparison = $criteria->getComparison(GemExchangePeer::EXCHANGE_DATE);
-            $value = $criteria->remove(GemExchangePeer::EXCHANGE_DATE);
+            $comparison = $criteria->getComparison(GemExchangePeer::EXCHANGE_DATETIME);
+            $value = $criteria->remove(GemExchangePeer::EXCHANGE_DATETIME);
             if ($value) {
-                $selectCriteria->add(GemExchangePeer::EXCHANGE_DATE, $value, $comparison);
-            } else {
-                $selectCriteria->setPrimaryTableName(GemExchangePeer::TABLE_NAME);
-            }
-
-            $comparison = $criteria->getComparison(GemExchangePeer::EXCHANGE_TIME);
-            $value = $criteria->remove(GemExchangePeer::EXCHANGE_TIME);
-            if ($value) {
-                $selectCriteria->add(GemExchangePeer::EXCHANGE_TIME, $value, $comparison);
+                $selectCriteria->add(GemExchangePeer::EXCHANGE_DATETIME, $value, $comparison);
             } else {
                 $selectCriteria->setPrimaryTableName(GemExchangePeer::TABLE_NAME);
             }
@@ -650,18 +637,10 @@ abstract class BaseGemExchangePeer {
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(GemExchangePeer::DATABASE_NAME);
-            // primary key is composite; we therefore, expect
-            // the primary key passed to be an array of pkey values
-            if (count($values) == count($values, COUNT_RECURSIVE)) {
-                // array is not multi-dimensional
-                $values = array($values);
-            }
-            foreach ($values as $value) {
-                $criterion = $criteria->getNewCriterion(GemExchangePeer::EXCHANGE_DATE, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(GemExchangePeer::EXCHANGE_TIME, $value[1]));
-                $criteria->addOr($criterion);
-                // we can invalidate the cache for this single PK
-                GemExchangePeer::removeInstanceFromPool($value);
+            $criteria->add(GemExchangePeer::EXCHANGE_DATETIME, (array) $values, Criteria::IN);
+            // invalidate the cache for this object(s)
+            foreach ((array) $values as $singleval) {
+                GemExchangePeer::removeInstanceFromPool($singleval);
             }
         }
 
@@ -724,28 +703,58 @@ abstract class BaseGemExchangePeer {
     }
 
     /**
-     * Retrieve object using using composite pkey values.
-     * @param   string $exchange_date
-     * @param   string $exchange_time
-     * @param      PropelPDO $con
-     * @return   GemExchange
+     * Retrieve a single object by pkey.
+     *
+     * @param      string $pk the primary key.
+     * @param      PropelPDO $con the connection to use
+     * @return GemExchange
      */
-    public static function retrieveByPK($exchange_date, $exchange_time, PropelPDO $con = null) {
-        $_instancePoolKey = serialize(array((string) $exchange_date, (string) $exchange_time));
-         if (null !== ($obj = GemExchangePeer::getInstanceFromPool($_instancePoolKey))) {
-             return $obj;
+    public static function retrieveByPK($pk, PropelPDO $con = null)
+    {
+
+        if (null !== ($obj = GemExchangePeer::getInstanceFromPool((string) $pk))) {
+            return $obj;
         }
 
         if ($con === null) {
             $con = Propel::getConnection(GemExchangePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
+
         $criteria = new Criteria(GemExchangePeer::DATABASE_NAME);
-        $criteria->add(GemExchangePeer::EXCHANGE_DATE, $exchange_date);
-        $criteria->add(GemExchangePeer::EXCHANGE_TIME, $exchange_time);
+        $criteria->add(GemExchangePeer::EXCHANGE_DATETIME, $pk);
+
         $v = GemExchangePeer::doSelect($criteria, $con);
 
-        return !empty($v) ? $v[0] : null;
+        return !empty($v) > 0 ? $v[0] : null;
     }
+
+    /**
+     * Retrieve multiple objects by pkey.
+     *
+     * @param      array $pks List of primary keys
+     * @param      PropelPDO $con the connection to use
+     * @return GemExchange[]
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function retrieveByPKs($pks, PropelPDO $con = null)
+    {
+        if ($con === null) {
+            $con = Propel::getConnection(GemExchangePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $objs = null;
+        if (empty($pks)) {
+            $objs = array();
+        } else {
+            $criteria = new Criteria(GemExchangePeer::DATABASE_NAME);
+            $criteria->add(GemExchangePeer::EXCHANGE_DATETIME, $pks, Criteria::IN);
+            $objs = GemExchangePeer::doSelect($criteria, $con);
+        }
+
+        return $objs;
+    }
+
 } // BaseGemExchangePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.

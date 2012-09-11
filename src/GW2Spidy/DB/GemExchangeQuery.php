@@ -29,11 +29,11 @@ class GemExchangeQuery extends BaseGemExchangeQuery {
             $data = array();
 
             $rates = static::create()
-                            ->select(array('exchangeDate', 'exchangeTime', 'average'))
+                            ->select(array('exchangeDatetime', 'average'))
                             ->find();
 
             foreach ($rates as $rateEntry) {
-                $date = new DateTime("{$rateEntry['exchangeDate']} {$rateEntry['exchangeTime']}");
+                $date = new DateTime("{$rateEntry['exchangeDatetime']}");
                 $date->setTimezone(new DateTimeZone('UTC'));
 
                 $rateEntry['average'] = round($rateEntry['average'], 2);
@@ -47,4 +47,27 @@ class GemExchangeQuery extends BaseGemExchangeQuery {
         return $data;
     }
 
+    public static function getSummaryData() {
+        $last = self::create()
+                ->addDescendingOrderByColumn("exchange_datetime")
+                ->offset(-1)
+                ->limit(1)
+                ->findOne();
+
+        $gemtogold = $last->getAverage();
+        $goldtogem = $gemtogold * 1.40;
+
+        $usdtogem    = 10  / 800 * 100;
+        $poundstogem = 8.5 / 800 * 100;
+        $eurostogem  = 10  / 800 * 100;
+
+        $usdtogold   = (10000 / $gemtogold) * $usdtogem;
+
+        return array(
+            'gemtogold' => $gemtogold,
+            'goldtogem' => $goldtogem,
+            'usdtogem'  => $usdtogem,
+            'usdtogold' => $usdtogold,
+        );
+    }
 } // GemExchangeQuery

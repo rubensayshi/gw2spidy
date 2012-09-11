@@ -121,10 +121,9 @@ DROP TABLE IF EXISTS `gem_exchange`;
 
 CREATE TABLE `gem_exchange`
 (
-    `exchange_date` DATE NOT NULL,
-    `exchange_time` TIME NOT NULL,
+    `exchange_datetime` DATETIME NOT NULL,
     `average` INTEGER NOT NULL,
-    PRIMARY KEY (`exchange_date`,`exchange_time`)
+    PRIMARY KEY (`exchange_datetime`)
 ) ENGINE=MyISAM;
 
 # This restores the fkey checks, after having unset them earlier

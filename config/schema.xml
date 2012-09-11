@@ -71,8 +71,7 @@
         </index>
     </table>
     <table name="gem_exchange" phpName="GemExchange">
-        <column name="exchange_date" type="date" required="true" primaryKey="true" />
-        <column name="exchange_time" type="time" required="true" primaryKey="true" />
+        <column name="exchange_datetime" type="timestamp" required="true" primaryKey="true" />
         <column name="average" type="integer" required="true" />
     </table>
 </database>

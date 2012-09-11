@@ -42,8 +42,7 @@ class GemExchangeTableMap extends TableMap
         $this->setPackage('gw2spidy');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('EXCHANGE_DATE', 'ExchangeDate', 'DATE', true, null, null);
-        $this->addPrimaryKey('EXCHANGE_TIME', 'ExchangeTime', 'TIME', true, null, null);
+        $this->addPrimaryKey('EXCHANGE_DATETIME', 'ExchangeDatetime', 'TIMESTAMP', true, null, null);
         $this->addColumn('AVERAGE', 'Average', 'INTEGER', true, null, null);
         // validators
     } // initialize()

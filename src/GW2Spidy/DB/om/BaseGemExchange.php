@@ -50,16 +50,10 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     protected $startCopy = false;
 
     /**
-     * The value for the exchange_date field.
+     * The value for the exchange_datetime field.
      * @var        string
      */
-    protected $exchange_date;
-
-    /**
-     * The value for the exchange_time field.
-     * @var        string
-     */
-    protected $exchange_time;
+    protected $exchange_datetime;
 
     /**
      * The value for the average field.
@@ -82,64 +76,31 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     protected $alreadyInValidation = false;
 
     /**
-     * Get the [optionally formatted] temporal [exchange_date] column value.
+     * Get the [optionally formatted] temporal [exchange_datetime] column value.
      * 
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *							If format is NULL, then the raw DateTime object will be returned.
-     * @return mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+     * @return mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getExchangeDate($format = '%x')
+    public function getExchangeDatetime($format = 'Y-m-d H:i:s')
     {
-        if ($this->exchange_date === null) {
+        if ($this->exchange_datetime === null) {
             return null;
         }
 
 
-        if ($this->exchange_date === '0000-00-00') {
+        if ($this->exchange_datetime === '0000-00-00 00:00:00') {
             // while technically this is not a default value of NULL,
             // this seems to be closest in meaning.
             return null;
         } else {
             try {
-                $dt = new DateTime($this->exchange_date);
+                $dt = new DateTime($this->exchange_datetime);
             } catch (Exception $x) {
-                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->exchange_date, true), $x);
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->exchange_datetime, true), $x);
             }
-        }
-
-        if ($format === null) {
-            // Because propel.useDateTimeClass is TRUE, we return a DateTime object.
-            return $dt;
-        } elseif (strpos($format, '%') !== false) {
-            return strftime($format, $dt->format('U'));
-        } else {
-            return $dt->format($format);
-        }
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [exchange_time] column value.
-     * 
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *							If format is NULL, then the raw DateTime object will be returned.
-     * @return mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getExchangeTime($format = '%X')
-    {
-        if ($this->exchange_time === null) {
-            return null;
-        }
-
-
-
-        try {
-            $dt = new DateTime($this->exchange_time);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->exchange_time, true), $x);
         }
 
         if ($format === null) {
@@ -164,50 +125,27 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     }
 
     /**
-     * Sets the value of [exchange_date] column to a normalized version of the date/time value specified.
+     * Sets the value of [exchange_datetime] column to a normalized version of the date/time value specified.
      * 
      * @param      mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as NULL.
      * @return   GemExchange The current object (for fluent API support)
      */
-    public function setExchangeDate($v)
+    public function setExchangeDatetime($v)
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->exchange_date !== null || $dt !== null) {
-            $currentDateAsString = ($this->exchange_date !== null && $tmpDt = new DateTime($this->exchange_date)) ? $tmpDt->format('Y-m-d') : null;
-            $newDateAsString = $dt ? $dt->format('Y-m-d') : null;
+        if ($this->exchange_datetime !== null || $dt !== null) {
+            $currentDateAsString = ($this->exchange_datetime !== null && $tmpDt = new DateTime($this->exchange_datetime)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+            $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
-                $this->exchange_date = $newDateAsString;
-                $this->modifiedColumns[] = GemExchangePeer::EXCHANGE_DATE;
+                $this->exchange_datetime = $newDateAsString;
+                $this->modifiedColumns[] = GemExchangePeer::EXCHANGE_DATETIME;
             }
         } // if either are not null
 
 
         return $this;
-    } // setExchangeDate()
-
-    /**
-     * Sets the value of [exchange_time] column to a normalized version of the date/time value specified.
-     * 
-     * @param      mixed $v string, integer (timestamp), or DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return   GemExchange The current object (for fluent API support)
-     */
-    public function setExchangeTime($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->exchange_time !== null || $dt !== null) {
-            $currentDateAsString = ($this->exchange_time !== null && $tmpDt = new DateTime($this->exchange_time)) ? $tmpDt->format('H:i:s') : null;
-            $newDateAsString = $dt ? $dt->format('H:i:s') : null;
-            if ($currentDateAsString !== $newDateAsString) {
-                $this->exchange_time = $newDateAsString;
-                $this->modifiedColumns[] = GemExchangePeer::EXCHANGE_TIME;
-            }
-        } // if either are not null
-
-
-        return $this;
-    } // setExchangeTime()
+    } // setExchangeDatetime()
 
     /**
      * Set the value of [average] column.
@@ -262,9 +200,8 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     {
         try {
 
-            $this->exchange_date = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
-            $this->exchange_time = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-            $this->average = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
+            $this->exchange_datetime = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
+            $this->average = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -273,7 +210,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = GemExchangePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 2; // 2 = GemExchangePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating GemExchange object", $e);
@@ -481,11 +418,8 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(GemExchangePeer::EXCHANGE_DATE)) {
-            $modifiedColumns[':p' . $index++]  = '`EXCHANGE_DATE`';
-        }
-        if ($this->isColumnModified(GemExchangePeer::EXCHANGE_TIME)) {
-            $modifiedColumns[':p' . $index++]  = '`EXCHANGE_TIME`';
+        if ($this->isColumnModified(GemExchangePeer::EXCHANGE_DATETIME)) {
+            $modifiedColumns[':p' . $index++]  = '`EXCHANGE_DATETIME`';
         }
         if ($this->isColumnModified(GemExchangePeer::AVERAGE)) {
             $modifiedColumns[':p' . $index++]  = '`AVERAGE`';
@@ -501,11 +435,8 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`EXCHANGE_DATE`':
-						$stmt->bindValue($identifier, $this->exchange_date, PDO::PARAM_STR);
-                        break;
-                    case '`EXCHANGE_TIME`':
-						$stmt->bindValue($identifier, $this->exchange_time, PDO::PARAM_STR);
+                    case '`EXCHANGE_DATETIME`':
+						$stmt->bindValue($identifier, $this->exchange_datetime, PDO::PARAM_STR);
                         break;
                     case '`AVERAGE`':
 						$stmt->bindValue($identifier, $this->average, PDO::PARAM_INT);
@@ -638,12 +569,9 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                return $this->getExchangeDate();
+                return $this->getExchangeDatetime();
                 break;
             case 1:
-                return $this->getExchangeTime();
-                break;
-            case 2:
                 return $this->getAverage();
                 break;
             default:
@@ -668,15 +596,14 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
-        if (isset($alreadyDumpedObjects['GemExchange'][serialize($this->getPrimaryKey())])) {
+        if (isset($alreadyDumpedObjects['GemExchange'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['GemExchange'][serialize($this->getPrimaryKey())] = true;
+        $alreadyDumpedObjects['GemExchange'][$this->getPrimaryKey()] = true;
         $keys = GemExchangePeer::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getExchangeDate(),
-            $keys[1] => $this->getExchangeTime(),
-            $keys[2] => $this->getAverage(),
+            $keys[0] => $this->getExchangeDatetime(),
+            $keys[1] => $this->getAverage(),
         );
 
         return $result;
@@ -712,12 +639,9 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                $this->setExchangeDate($value);
+                $this->setExchangeDatetime($value);
                 break;
             case 1:
-                $this->setExchangeTime($value);
-                break;
-            case 2:
                 $this->setAverage($value);
                 break;
         } // switch()
@@ -744,9 +668,8 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     {
         $keys = GemExchangePeer::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setExchangeDate($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setExchangeTime($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setAverage($arr[$keys[2]]);
+        if (array_key_exists($keys[0], $arr)) $this->setExchangeDatetime($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setAverage($arr[$keys[1]]);
     }
 
     /**
@@ -758,8 +681,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     {
         $criteria = new Criteria(GemExchangePeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(GemExchangePeer::EXCHANGE_DATE)) $criteria->add(GemExchangePeer::EXCHANGE_DATE, $this->exchange_date);
-        if ($this->isColumnModified(GemExchangePeer::EXCHANGE_TIME)) $criteria->add(GemExchangePeer::EXCHANGE_TIME, $this->exchange_time);
+        if ($this->isColumnModified(GemExchangePeer::EXCHANGE_DATETIME)) $criteria->add(GemExchangePeer::EXCHANGE_DATETIME, $this->exchange_datetime);
         if ($this->isColumnModified(GemExchangePeer::AVERAGE)) $criteria->add(GemExchangePeer::AVERAGE, $this->average);
 
         return $criteria;
@@ -776,36 +698,29 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     public function buildPkeyCriteria()
     {
         $criteria = new Criteria(GemExchangePeer::DATABASE_NAME);
-        $criteria->add(GemExchangePeer::EXCHANGE_DATE, $this->exchange_date);
-        $criteria->add(GemExchangePeer::EXCHANGE_TIME, $this->exchange_time);
+        $criteria->add(GemExchangePeer::EXCHANGE_DATETIME, $this->exchange_datetime);
 
         return $criteria;
     }
 
     /**
-     * Returns the composite primary key for this object.
-     * The array elements will be in same order as specified in XML.
-     * @return array
+     * Returns the primary key for this object (row).
+     * @return   string
      */
     public function getPrimaryKey()
     {
-        $pks = array();
-        $pks[0] = $this->getExchangeDate();
-        $pks[1] = $this->getExchangeTime();
-
-        return $pks;
+        return $this->getExchangeDatetime();
     }
 
     /**
-     * Set the [composite] primary key.
+     * Generic method to set the primary key (exchange_datetime column).
      *
-     * @param      array $keys The elements of the composite key (order must match the order in XML file).
+     * @param       string $key Primary key.
      * @return void
      */
-    public function setPrimaryKey($keys)
+    public function setPrimaryKey($key)
     {
-        $this->setExchangeDate($keys[0]);
-        $this->setExchangeTime($keys[1]);
+        $this->setExchangeDatetime($key);
     }
 
     /**
@@ -815,7 +730,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     public function isPrimaryKeyNull()
     {
 
-        return (null === $this->getExchangeDate()) && (null === $this->getExchangeTime());
+        return null === $this->getExchangeDatetime();
     }
 
     /**
@@ -831,11 +746,10 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setExchangeDate($this->getExchangeDate());
-        $copyObj->setExchangeTime($this->getExchangeTime());
         $copyObj->setAverage($this->getAverage());
         if ($makeNew) {
             $copyObj->setNew(true);
+            $copyObj->setExchangeDatetime(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -884,8 +798,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function clear()
     {
-        $this->exchange_date = null;
-        $this->exchange_time = null;
+        $this->exchange_datetime = null;
         $this->average = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;

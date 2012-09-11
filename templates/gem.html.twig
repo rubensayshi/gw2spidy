@@ -1,6 +1,17 @@
 {% extends "content_sidebar.html.twig" %}
 
+{% block sidebar %}{% endblock %}
+
 {% block content %}
+<h1>Gem Exchange Rate</h1>
+<p>The graph below displays how much ingame currency you can buy with 100 gems. <br />
+    <ul>
+        <li>100 gems sells for {{ gemtogold | gw2money }}.</li>
+        <li>100 gems costs {{ goldtogem | gw2money }} to buy.</li>
+        <li>100 gems costs {{ usdtogem | number_format(2, '.', ',') }} USD to buy.</li>
+        <li>{{ (10000) | gw2money }} costs {{ usdtogold | number_format(2, '.', ',') }} USD to buy through gems.</li>
+    </ul>
+</p>
 <div id="chart_wrapper">
     <div id="placeholder" style="width: {% if width is defined %}width{% else %}100%{% endif %}; height: 400px;"></div>
 </div>

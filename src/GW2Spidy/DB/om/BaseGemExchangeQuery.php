@@ -20,12 +20,10 @@ use GW2Spidy\DB\GemExchangeQuery;
  *
  * 
  *
- * @method     GemExchangeQuery orderByExchangeDate($order = Criteria::ASC) Order by the exchange_date column
- * @method     GemExchangeQuery orderByExchangeTime($order = Criteria::ASC) Order by the exchange_time column
+ * @method     GemExchangeQuery orderByExchangeDatetime($order = Criteria::ASC) Order by the exchange_datetime column
  * @method     GemExchangeQuery orderByAverage($order = Criteria::ASC) Order by the average column
  *
- * @method     GemExchangeQuery groupByExchangeDate() Group by the exchange_date column
- * @method     GemExchangeQuery groupByExchangeTime() Group by the exchange_time column
+ * @method     GemExchangeQuery groupByExchangeDatetime() Group by the exchange_datetime column
  * @method     GemExchangeQuery groupByAverage() Group by the average column
  *
  * @method     GemExchangeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -35,12 +33,10 @@ use GW2Spidy\DB\GemExchangeQuery;
  * @method     GemExchange findOne(PropelPDO $con = null) Return the first GemExchange matching the query
  * @method     GemExchange findOneOrCreate(PropelPDO $con = null) Return the first GemExchange matching the query, or a new GemExchange object populated from the query conditions when no match is found
  *
- * @method     GemExchange findOneByExchangeDate(string $exchange_date) Return the first GemExchange filtered by the exchange_date column
- * @method     GemExchange findOneByExchangeTime(string $exchange_time) Return the first GemExchange filtered by the exchange_time column
+ * @method     GemExchange findOneByExchangeDatetime(string $exchange_datetime) Return the first GemExchange filtered by the exchange_datetime column
  * @method     GemExchange findOneByAverage(int $average) Return the first GemExchange filtered by the average column
  *
- * @method     array findByExchangeDate(string $exchange_date) Return GemExchange objects filtered by the exchange_date column
- * @method     array findByExchangeTime(string $exchange_time) Return GemExchange objects filtered by the exchange_time column
+ * @method     array findByExchangeDatetime(string $exchange_datetime) Return GemExchange objects filtered by the exchange_datetime column
  * @method     array findByAverage(int $average) Return GemExchange objects filtered by the average column
  *
  * @package    propel.generator.gw2spidy.om
@@ -90,11 +86,10 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      * Go fast if the query is untouched.
      *
      * <code>
-     * $obj = $c->findPk(array(12, 34), $con);
+     * $obj  = $c->findPk(12, $con);
      * </code>
      *
-     * @param array $key Primary key to use for the query 
-                         A Primary key composition: [$exchange_date, $exchange_time]
+     * @param mixed $key Primary key to use for the query 
      * @param     PropelPDO $con an optional connection object
      *
      * @return   GemExchange|GemExchange[]|mixed the result, formatted by the current formatter
@@ -104,7 +99,7 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = GemExchangePeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
+        if ((null !== ($obj = GemExchangePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is alredy in the instance pool
             return $obj;
         }
@@ -133,11 +128,10 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `EXCHANGE_DATE`, `EXCHANGE_TIME`, `AVERAGE` FROM `gem_exchange` WHERE `EXCHANGE_DATE` = :p0 AND `EXCHANGE_TIME` = :p1';
+        $sql = 'SELECT `EXCHANGE_DATETIME`, `AVERAGE` FROM `gem_exchange` WHERE `EXCHANGE_DATETIME` = :p0';
         try {
             $stmt = $con->prepare($sql);
-			$stmt->bindValue(':p0', $key[0], PDO::PARAM_STR);
-			$stmt->bindValue(':p1', $key[1], PDO::PARAM_STR);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_STR);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -147,7 +141,7 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
         if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
             $obj = new GemExchange();
             $obj->hydrate($row);
-            GemExchangePeer::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            GemExchangePeer::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 
@@ -176,7 +170,7 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
     /**
      * Find objects by primary key
      * <code>
-     * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
+     * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
      * @param     array $keys Primary keys to use for the query
      * @param     PropelPDO $con an optional connection object
@@ -206,10 +200,8 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
-        $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATE, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(GemExchangePeer::EXCHANGE_TIME, $key[1], Criteria::EQUAL);
 
-        return $this;
+        return $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $key, Criteria::EQUAL);
     }
 
     /**
@@ -221,30 +213,21 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
-        if (empty($keys)) {
-            return $this->add(null, '1<>1', Criteria::CUSTOM);
-        }
-        foreach ($keys as $key) {
-            $cton0 = $this->getNewCriterion(GemExchangePeer::EXCHANGE_DATE, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(GemExchangePeer::EXCHANGE_TIME, $key[1], Criteria::EQUAL);
-            $cton0->addAnd($cton1);
-            $this->addOr($cton0);
-        }
 
-        return $this;
+        return $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $keys, Criteria::IN);
     }
 
     /**
-     * Filter the query on the exchange_date column
+     * Filter the query on the exchange_datetime column
      *
      * Example usage:
      * <code>
-     * $query->filterByExchangeDate('2011-03-14'); // WHERE exchange_date = '2011-03-14'
-     * $query->filterByExchangeDate('now'); // WHERE exchange_date = '2011-03-14'
-     * $query->filterByExchangeDate(array('max' => 'yesterday')); // WHERE exchange_date > '2011-03-13'
+     * $query->filterByExchangeDatetime('2011-03-14'); // WHERE exchange_datetime = '2011-03-14'
+     * $query->filterByExchangeDatetime('now'); // WHERE exchange_datetime = '2011-03-14'
+     * $query->filterByExchangeDatetime(array('max' => 'yesterday')); // WHERE exchange_datetime > '2011-03-13'
      * </code>
      *
-     * @param     mixed $exchangeDate The value to use as filter.
+     * @param     mixed $exchangeDatetime The value to use as filter.
      *              Values can be integers (unix timestamps), DateTime objects, or strings.
      *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
@@ -254,16 +237,16 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      *
      * @return GemExchangeQuery The current query, for fluid interface
      */
-    public function filterByExchangeDate($exchangeDate = null, $comparison = null)
+    public function filterByExchangeDatetime($exchangeDatetime = null, $comparison = null)
     {
-        if (is_array($exchangeDate)) {
+        if (is_array($exchangeDatetime)) {
             $useMinMax = false;
-            if (isset($exchangeDate['min'])) {
-                $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATE, $exchangeDate['min'], Criteria::GREATER_EQUAL);
+            if (isset($exchangeDatetime['min'])) {
+                $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $exchangeDatetime['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($exchangeDate['max'])) {
-                $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATE, $exchangeDate['max'], Criteria::LESS_EQUAL);
+            if (isset($exchangeDatetime['max'])) {
+                $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $exchangeDatetime['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -274,50 +257,7 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATE, $exchangeDate, $comparison);
-    }
-
-    /**
-     * Filter the query on the exchange_time column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByExchangeTime('2011-03-14'); // WHERE exchange_time = '2011-03-14'
-     * $query->filterByExchangeTime('now'); // WHERE exchange_time = '2011-03-14'
-     * $query->filterByExchangeTime(array('max' => 'yesterday')); // WHERE exchange_time > '2011-03-13'
-     * </code>
-     *
-     * @param     mixed $exchangeTime The value to use as filter.
-     *              Values can be integers (unix timestamps), DateTime objects, or strings.
-     *              Empty strings are treated as NULL.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return GemExchangeQuery The current query, for fluid interface
-     */
-    public function filterByExchangeTime($exchangeTime = null, $comparison = null)
-    {
-        if (is_array($exchangeTime)) {
-            $useMinMax = false;
-            if (isset($exchangeTime['min'])) {
-                $this->addUsingAlias(GemExchangePeer::EXCHANGE_TIME, $exchangeTime['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($exchangeTime['max'])) {
-                $this->addUsingAlias(GemExchangePeer::EXCHANGE_TIME, $exchangeTime['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(GemExchangePeer::EXCHANGE_TIME, $exchangeTime, $comparison);
+        return $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $exchangeDatetime, $comparison);
     }
 
     /**
@@ -371,9 +311,7 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
     public function prune($gemExchange = null)
     {
         if ($gemExchange) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(GemExchangePeer::EXCHANGE_DATE), $gemExchange->getExchangeDate(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(GemExchangePeer::EXCHANGE_TIME), $gemExchange->getExchangeTime(), Criteria::NOT_EQUAL);
-            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
+            $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $gemExchange->getExchangeDatetime(), Criteria::NOT_EQUAL);
         }
 
         return $this;

@@ -11,6 +11,12 @@ body {
             background-size: cover;
 }
 
+h1 {
+    font-size: 26px;
+    line-height: 32px;
+    border-bottom: 1px solid grey;
+}
+
 .well {
     background-color: rgba(245, 245, 245, 0.8);
 }
