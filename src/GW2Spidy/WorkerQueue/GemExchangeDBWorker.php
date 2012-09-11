@@ -28,10 +28,18 @@ class GemExchangeDBWorker implements Worker {
         }
 
         foreach ($plots as $plot) {
+            /*
+             * I'm not sure wtf ArenaNet is doing with the time here
+             * but they use their server time or something and output it as if it's UTC (which it's not)
+             * so I convert it to GMT+7, which seems to match (for now)
+             *
+             * and after that I convert it to our server timezone, until I convert everything to use UTC this will have to do
+             */
             $date   = new DateTime($plot['last_updated']);
+            $date   = new DateTime($date->format("Y-m-d H:i:s") . " GMT+7");
             $silver = $plot['average'];
             $copper = $silver * 100;
-            $date->setTimezone(new DateTimeZone(date_default_timezone_get())); // convert to server time
+            $date->setTimezone(new DateTimeZone(date_default_timezone_get()));
 
             $exists = GemExchangeQuery::create()
             ->filterByExchangeDate($date)
