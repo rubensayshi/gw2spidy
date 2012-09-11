@@ -169,8 +169,12 @@ $app->get("/gem", function() use($app) {
                 ->limit(1)
                 ->findOne();
 
-    $gemtogold = $lastSell->getAverage();
-    $goldtogem = $lastBuy->getAverage();
+    if (!$lastSell || !$lastBuy) {
+        return $app['twig']->render('gem.html.twig', array());
+    }
+
+    $gemtogold = $lastSell->getRate();
+    $goldtogem = $lastBuy->getRate();
 
     $usdtogem    = 10  / 800 * 100;
     $poundstogem = 8.5 / 800 * 100;

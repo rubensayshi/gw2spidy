@@ -1,7 +1,6 @@
 {% set url = url is defined ? url : path('chart', {dataId: item.dataId}) %}
 {% set title = title is defined ? title : item.name %}
 <div id="container" style="height: 500px; min-width: 500px"></div>
-
 <script type="text/javascript">
 $(function() {
     $.getJSON('{{ url }}', function(data) {
