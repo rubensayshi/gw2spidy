@@ -15,6 +15,18 @@ class TradingPostSpider extends BaseSpider {
     const LISTING_TYPE_SELL = 'sells';
     const LISTING_TYPE_BUY  = 'buys';
 
+    public function getItemById($id) {
+        $this->ensureLogin();
+
+        $curl = CurlRequest::newInstance(TRADINGPOST_URL . "/ws/search.json?ids=".urlencode($id))
+             ->exec()
+             ;
+
+        $data = json_decode($curl->getResponseBody(), true);
+
+        return reset($data['results']);
+    }
+
     public function getItemByExactName($name) {
         $curl = CurlRequest::newInstance(TRADINGPOST_URL . " /ws/search.json?text=".urlencode($name)."&levelmin=0&levelmax=80")
                     ->setCookie("s={$this->getSession()->getSessionKey()}")
