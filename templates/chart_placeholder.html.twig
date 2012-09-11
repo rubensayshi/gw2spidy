@@ -1,3 +1,4 @@
+{% set url = url is defined ? url : path('chart', {dataId: item.dataId}) %}
 <div class="clearfix">
     <div id="select_zoom_mode">
         <p style="float: left;">You can zoom in by selecting a part of the chart (drag a selection). <br />
@@ -337,7 +338,7 @@ $("#select_zoom_mode button").click(function() {
 });
 
 var fetchchart = function(callback) {
-    $.ajax("{{ path('chart', {dataId: item.dataId}) }}", {
+    $.ajax("{{ url }}", {
         success: function(chartdata) {
             initchart(chartdata, callback);
         }
