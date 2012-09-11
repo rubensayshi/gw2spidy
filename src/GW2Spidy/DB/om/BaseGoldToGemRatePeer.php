@@ -35,19 +35,22 @@ abstract class BaseGoldToGemRatePeer {
     const TM_CLASS = 'GoldToGemRateTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 3;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /** the column name for the RATE_DATETIME field */
     const RATE_DATETIME = 'gold_to_gem_rate.RATE_DATETIME';
 
-    /** the column name for the AVERAGE field */
-    const AVERAGE = 'gold_to_gem_rate.AVERAGE';
+    /** the column name for the RATE field */
+    const RATE = 'gold_to_gem_rate.RATE';
+
+    /** the column name for the VOLUME field */
+    const VOLUME = 'gold_to_gem_rate.VOLUME';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -68,12 +71,12 @@ abstract class BaseGoldToGemRatePeer {
      * e.g. GoldToGemRatePeer::$fieldNames[GoldToGemRatePeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('RateDatetime', 'Average', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('rateDatetime', 'average', ),
-        BasePeer::TYPE_COLNAME => array (GoldToGemRatePeer::RATE_DATETIME, GoldToGemRatePeer::AVERAGE, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('RATE_DATETIME', 'AVERAGE', ),
-        BasePeer::TYPE_FIELDNAME => array ('rate_datetime', 'average', ),
-        BasePeer::TYPE_NUM => array (0, 1, )
+        BasePeer::TYPE_PHPNAME => array ('RateDatetime', 'Rate', 'Volume', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('rateDatetime', 'rate', 'volume', ),
+        BasePeer::TYPE_COLNAME => array (GoldToGemRatePeer::RATE_DATETIME, GoldToGemRatePeer::RATE, GoldToGemRatePeer::VOLUME, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('RATE_DATETIME', 'RATE', 'VOLUME', ),
+        BasePeer::TYPE_FIELDNAME => array ('rate_datetime', 'rate', 'volume', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, )
     );
 
     /**
@@ -83,12 +86,12 @@ abstract class BaseGoldToGemRatePeer {
      * e.g. GoldToGemRatePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('RateDatetime' => 0, 'Average' => 1, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('rateDatetime' => 0, 'average' => 1, ),
-        BasePeer::TYPE_COLNAME => array (GoldToGemRatePeer::RATE_DATETIME => 0, GoldToGemRatePeer::AVERAGE => 1, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('RATE_DATETIME' => 0, 'AVERAGE' => 1, ),
-        BasePeer::TYPE_FIELDNAME => array ('rate_datetime' => 0, 'average' => 1, ),
-        BasePeer::TYPE_NUM => array (0, 1, )
+        BasePeer::TYPE_PHPNAME => array ('RateDatetime' => 0, 'Rate' => 1, 'Volume' => 2, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('rateDatetime' => 0, 'rate' => 1, 'volume' => 2, ),
+        BasePeer::TYPE_COLNAME => array (GoldToGemRatePeer::RATE_DATETIME => 0, GoldToGemRatePeer::RATE => 1, GoldToGemRatePeer::VOLUME => 2, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('RATE_DATETIME' => 0, 'RATE' => 1, 'VOLUME' => 2, ),
+        BasePeer::TYPE_FIELDNAME => array ('rate_datetime' => 0, 'rate' => 1, 'volume' => 2, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, )
     );
 
     /**
@@ -163,10 +166,12 @@ abstract class BaseGoldToGemRatePeer {
     {
         if (null === $alias) {
             $criteria->addSelectColumn(GoldToGemRatePeer::RATE_DATETIME);
-            $criteria->addSelectColumn(GoldToGemRatePeer::AVERAGE);
+            $criteria->addSelectColumn(GoldToGemRatePeer::RATE);
+            $criteria->addSelectColumn(GoldToGemRatePeer::VOLUME);
         } else {
             $criteria->addSelectColumn($alias . '.RATE_DATETIME');
-            $criteria->addSelectColumn($alias . '.AVERAGE');
+            $criteria->addSelectColumn($alias . '.RATE');
+            $criteria->addSelectColumn($alias . '.VOLUME');
         }
     }
 

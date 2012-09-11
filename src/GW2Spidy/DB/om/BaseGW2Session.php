@@ -16,30 +16,30 @@ use \PropelDateTime;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
-use GW2Spidy\DB\GoldToGemRate;
-use GW2Spidy\DB\GoldToGemRatePeer;
-use GW2Spidy\DB\GoldToGemRateQuery;
+use GW2Spidy\DB\GW2Session;
+use GW2Spidy\DB\GW2SessionPeer;
+use GW2Spidy\DB\GW2SessionQuery;
 
 /**
- * Base class that represents a row from the 'gold_to_gem_rate' table.
+ * Base class that represents a row from the 'gw2session' table.
  *
  * 
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseGoldToGemRate extends BaseObject implements Persistent
+abstract class BaseGW2Session extends BaseObject implements Persistent
 {
 
     /**
      * Peer class name
      */
-    const PEER = 'GW2Spidy\\DB\\GoldToGemRatePeer';
+    const PEER = 'GW2Spidy\\DB\\GW2SessionPeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        GoldToGemRatePeer
+     * @var        GW2SessionPeer
      */
     protected static $peer;
 
@@ -50,22 +50,28 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
     protected $startCopy = false;
 
     /**
-     * The value for the rate_datetime field.
+     * The value for the session_key field.
      * @var        string
      */
-    protected $rate_datetime;
+    protected $session_key;
 
     /**
-     * The value for the rate field.
-     * @var        int
+     * The value for the game_session field.
+     * @var        boolean
      */
-    protected $rate;
+    protected $game_session;
 
     /**
-     * The value for the volume field.
+     * The value for the created field.
      * @var        string
      */
-    protected $volume;
+    protected $created;
+
+    /**
+     * The value for the source field.
+     * @var        string
+     */
+    protected $source;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -82,7 +88,29 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
     protected $alreadyInValidation = false;
 
     /**
-     * Get the [optionally formatted] temporal [rate_datetime] column value.
+     * Get the [session_key] column value.
+     * 
+     * @return   string
+     */
+    public function getSessionKey()
+    {
+
+        return $this->session_key;
+    }
+
+    /**
+     * Get the [game_session] column value.
+     * 
+     * @return   boolean
+     */
+    public function getGameSession()
+    {
+
+        return $this->game_session;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [created] column value.
      * 
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
@@ -90,22 +118,22 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      * @return mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getRateDatetime($format = 'Y-m-d H:i:s')
+    public function getCreated($format = 'Y-m-d H:i:s')
     {
-        if ($this->rate_datetime === null) {
+        if ($this->created === null) {
             return null;
         }
 
 
-        if ($this->rate_datetime === '0000-00-00 00:00:00') {
+        if ($this->created === '0000-00-00 00:00:00') {
             // while technically this is not a default value of NULL,
             // this seems to be closest in meaning.
             return null;
         } else {
             try {
-                $dt = new DateTime($this->rate_datetime);
+                $dt = new DateTime($this->created);
             } catch (Exception $x) {
-                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->rate_datetime, true), $x);
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created, true), $x);
             }
         }
 
@@ -120,91 +148,109 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
     }
 
     /**
-     * Get the [rate] column value.
-     * 
-     * @return   int
-     */
-    public function getRate()
-    {
-
-        return $this->rate;
-    }
-
-    /**
-     * Get the [volume] column value.
+     * Get the [source] column value.
      * 
      * @return   string
      */
-    public function getVolume()
+    public function getSource()
     {
 
-        return $this->volume;
+        return $this->source;
     }
 
     /**
-     * Sets the value of [rate_datetime] column to a normalized version of the date/time value specified.
-     * 
-     * @param      mixed $v string, integer (timestamp), or DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return   GoldToGemRate The current object (for fluent API support)
-     */
-    public function setRateDatetime($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->rate_datetime !== null || $dt !== null) {
-            $currentDateAsString = ($this->rate_datetime !== null && $tmpDt = new DateTime($this->rate_datetime)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-            $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
-            if ($currentDateAsString !== $newDateAsString) {
-                $this->rate_datetime = $newDateAsString;
-                $this->modifiedColumns[] = GoldToGemRatePeer::RATE_DATETIME;
-            }
-        } // if either are not null
-
-
-        return $this;
-    } // setRateDatetime()
-
-    /**
-     * Set the value of [rate] column.
-     * 
-     * @param      int $v new value
-     * @return   GoldToGemRate The current object (for fluent API support)
-     */
-    public function setRate($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->rate !== $v) {
-            $this->rate = $v;
-            $this->modifiedColumns[] = GoldToGemRatePeer::RATE;
-        }
-
-
-        return $this;
-    } // setRate()
-
-    /**
-     * Set the value of [volume] column.
+     * Set the value of [session_key] column.
      * 
      * @param      string $v new value
-     * @return   GoldToGemRate The current object (for fluent API support)
+     * @return   GW2Session The current object (for fluent API support)
      */
-    public function setVolume($v)
+    public function setSessionKey($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->volume !== $v) {
-            $this->volume = $v;
-            $this->modifiedColumns[] = GoldToGemRatePeer::VOLUME;
+        if ($this->session_key !== $v) {
+            $this->session_key = $v;
+            $this->modifiedColumns[] = GW2SessionPeer::SESSION_KEY;
         }
 
 
         return $this;
-    } // setVolume()
+    } // setSessionKey()
+
+    /**
+     * Sets the value of the [game_session] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * 
+     * @param      boolean|integer|string $v The new value
+     * @return   GW2Session The current object (for fluent API support)
+     */
+    public function setGameSession($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->game_session !== $v) {
+            $this->game_session = $v;
+            $this->modifiedColumns[] = GW2SessionPeer::GAME_SESSION;
+        }
+
+
+        return $this;
+    } // setGameSession()
+
+    /**
+     * Sets the value of [created] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   GW2Session The current object (for fluent API support)
+     */
+    public function setCreated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created !== null || $dt !== null) {
+            $currentDateAsString = ($this->created !== null && $tmpDt = new DateTime($this->created)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+            $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+            if ($currentDateAsString !== $newDateAsString) {
+                $this->created = $newDateAsString;
+                $this->modifiedColumns[] = GW2SessionPeer::CREATED;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreated()
+
+    /**
+     * Set the value of [source] column.
+     * 
+     * @param      string $v new value
+     * @return   GW2Session The current object (for fluent API support)
+     */
+    public function setSource($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->source !== $v) {
+            $this->source = $v;
+            $this->modifiedColumns[] = GW2SessionPeer::SOURCE;
+        }
+
+
+        return $this;
+    } // setSource()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -238,9 +284,10 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
     {
         try {
 
-            $this->rate_datetime = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
-            $this->rate = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
-            $this->volume = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+            $this->session_key = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
+            $this->game_session = ($row[$startcol + 1] !== null) ? (boolean) $row[$startcol + 1] : null;
+            $this->created = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+            $this->source = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -249,10 +296,10 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = GoldToGemRatePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = GW2SessionPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating GoldToGemRate object", $e);
+            throw new PropelException("Error populating GW2Session object", $e);
         }
     }
 
@@ -295,13 +342,13 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(GW2SessionPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = GoldToGemRatePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = GW2SessionPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
@@ -331,12 +378,12 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GW2SessionPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = GoldToGemRateQuery::create()
+            $deleteQuery = GW2SessionQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -374,7 +421,7 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(GoldToGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GW2SessionPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -394,7 +441,7 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                GoldToGemRatePeer::addInstanceToPool($this);
+                GW2SessionPeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -457,18 +504,21 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(GoldToGemRatePeer::RATE_DATETIME)) {
-            $modifiedColumns[':p' . $index++]  = '`RATE_DATETIME`';
+        if ($this->isColumnModified(GW2SessionPeer::SESSION_KEY)) {
+            $modifiedColumns[':p' . $index++]  = '`SESSION_KEY`';
         }
-        if ($this->isColumnModified(GoldToGemRatePeer::RATE)) {
-            $modifiedColumns[':p' . $index++]  = '`RATE`';
+        if ($this->isColumnModified(GW2SessionPeer::GAME_SESSION)) {
+            $modifiedColumns[':p' . $index++]  = '`GAME_SESSION`';
         }
-        if ($this->isColumnModified(GoldToGemRatePeer::VOLUME)) {
-            $modifiedColumns[':p' . $index++]  = '`VOLUME`';
+        if ($this->isColumnModified(GW2SessionPeer::CREATED)) {
+            $modifiedColumns[':p' . $index++]  = '`CREATED`';
+        }
+        if ($this->isColumnModified(GW2SessionPeer::SOURCE)) {
+            $modifiedColumns[':p' . $index++]  = '`SOURCE`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `gold_to_gem_rate` (%s) VALUES (%s)',
+            'INSERT INTO `gw2session` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -477,14 +527,17 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`RATE_DATETIME`':
-						$stmt->bindValue($identifier, $this->rate_datetime, PDO::PARAM_STR);
+                    case '`SESSION_KEY`':
+						$stmt->bindValue($identifier, $this->session_key, PDO::PARAM_STR);
                         break;
-                    case '`RATE`':
-						$stmt->bindValue($identifier, $this->rate, PDO::PARAM_INT);
+                    case '`GAME_SESSION`':
+						$stmt->bindValue($identifier, (int) $this->game_session, PDO::PARAM_INT);
                         break;
-                    case '`VOLUME`':
-						$stmt->bindValue($identifier, $this->volume, PDO::PARAM_INT);
+                    case '`CREATED`':
+						$stmt->bindValue($identifier, $this->created, PDO::PARAM_STR);
+                        break;
+                    case '`SOURCE`':
+						$stmt->bindValue($identifier, $this->source, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -573,7 +626,7 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
             $failureMap = array();
 
 
-            if (($retval = GoldToGemRatePeer::doValidate($this, $columns)) !== true) {
+            if (($retval = GW2SessionPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
@@ -597,7 +650,7 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = GoldToGemRatePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = GW2SessionPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -614,13 +667,16 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                return $this->getRateDatetime();
+                return $this->getSessionKey();
                 break;
             case 1:
-                return $this->getRate();
+                return $this->getGameSession();
                 break;
             case 2:
-                return $this->getVolume();
+                return $this->getCreated();
+                break;
+            case 3:
+                return $this->getSource();
                 break;
             default:
                 return null;
@@ -644,15 +700,16 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
-        if (isset($alreadyDumpedObjects['GoldToGemRate'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['GW2Session'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['GoldToGemRate'][$this->getPrimaryKey()] = true;
-        $keys = GoldToGemRatePeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['GW2Session'][$this->getPrimaryKey()] = true;
+        $keys = GW2SessionPeer::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getRateDatetime(),
-            $keys[1] => $this->getRate(),
-            $keys[2] => $this->getVolume(),
+            $keys[0] => $this->getSessionKey(),
+            $keys[1] => $this->getGameSession(),
+            $keys[2] => $this->getCreated(),
+            $keys[3] => $this->getSource(),
         );
 
         return $result;
@@ -671,7 +728,7 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = GoldToGemRatePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = GW2SessionPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -688,13 +745,16 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                $this->setRateDatetime($value);
+                $this->setSessionKey($value);
                 break;
             case 1:
-                $this->setRate($value);
+                $this->setGameSession($value);
                 break;
             case 2:
-                $this->setVolume($value);
+                $this->setCreated($value);
+                break;
+            case 3:
+                $this->setSource($value);
                 break;
         } // switch()
     }
@@ -718,11 +778,12 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = GoldToGemRatePeer::getFieldNames($keyType);
+        $keys = GW2SessionPeer::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setRateDatetime($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setRate($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setVolume($arr[$keys[2]]);
+        if (array_key_exists($keys[0], $arr)) $this->setSessionKey($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setGameSession($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setCreated($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setSource($arr[$keys[3]]);
     }
 
     /**
@@ -732,11 +793,12 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(GoldToGemRatePeer::DATABASE_NAME);
+        $criteria = new Criteria(GW2SessionPeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(GoldToGemRatePeer::RATE_DATETIME)) $criteria->add(GoldToGemRatePeer::RATE_DATETIME, $this->rate_datetime);
-        if ($this->isColumnModified(GoldToGemRatePeer::RATE)) $criteria->add(GoldToGemRatePeer::RATE, $this->rate);
-        if ($this->isColumnModified(GoldToGemRatePeer::VOLUME)) $criteria->add(GoldToGemRatePeer::VOLUME, $this->volume);
+        if ($this->isColumnModified(GW2SessionPeer::SESSION_KEY)) $criteria->add(GW2SessionPeer::SESSION_KEY, $this->session_key);
+        if ($this->isColumnModified(GW2SessionPeer::GAME_SESSION)) $criteria->add(GW2SessionPeer::GAME_SESSION, $this->game_session);
+        if ($this->isColumnModified(GW2SessionPeer::CREATED)) $criteria->add(GW2SessionPeer::CREATED, $this->created);
+        if ($this->isColumnModified(GW2SessionPeer::SOURCE)) $criteria->add(GW2SessionPeer::SOURCE, $this->source);
 
         return $criteria;
     }
@@ -751,8 +813,8 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(GoldToGemRatePeer::DATABASE_NAME);
-        $criteria->add(GoldToGemRatePeer::RATE_DATETIME, $this->rate_datetime);
+        $criteria = new Criteria(GW2SessionPeer::DATABASE_NAME);
+        $criteria->add(GW2SessionPeer::SESSION_KEY, $this->session_key);
 
         return $criteria;
     }
@@ -763,18 +825,18 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      */
     public function getPrimaryKey()
     {
-        return $this->getRateDatetime();
+        return $this->getSessionKey();
     }
 
     /**
-     * Generic method to set the primary key (rate_datetime column).
+     * Generic method to set the primary key (session_key column).
      *
      * @param       string $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setRateDatetime($key);
+        $this->setSessionKey($key);
     }
 
     /**
@@ -784,7 +846,7 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getRateDatetime();
+        return null === $this->getSessionKey();
     }
 
     /**
@@ -793,18 +855,19 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of GoldToGemRate (or compatible) type.
+     * @param      object $copyObj An object of GW2Session (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setRate($this->getRate());
-        $copyObj->setVolume($this->getVolume());
+        $copyObj->setGameSession($this->getGameSession());
+        $copyObj->setCreated($this->getCreated());
+        $copyObj->setSource($this->getSource());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setRateDatetime(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setSessionKey(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -817,7 +880,7 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 GoldToGemRate Clone of current object.
+     * @return                 GW2Session Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -837,12 +900,12 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return   GoldToGemRatePeer
+     * @return   GW2SessionPeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new GoldToGemRatePeer();
+            self::$peer = new GW2SessionPeer();
         }
 
         return self::$peer;
@@ -853,9 +916,10 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      */
     public function clear()
     {
-        $this->rate_datetime = null;
-        $this->rate = null;
-        $this->volume = null;
+        $this->session_key = null;
+        $this->game_session = null;
+        $this->created = null;
+        $this->source = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();
@@ -887,7 +951,7 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(GoldToGemRatePeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(GW2SessionPeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
@@ -900,4 +964,4 @@ abstract class BaseGoldToGemRate extends BaseObject implements Persistent
         return $this->alreadyInSave;
     }
 
-} // BaseGoldToGemRate
+} // BaseGW2Session

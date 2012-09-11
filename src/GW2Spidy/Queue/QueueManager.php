@@ -28,7 +28,7 @@ class QueueManager {
     }
 
     public function buildGemExchangeDB() {
-        GemExchangeDBWorker::enqueueWorkers();
+        GemExchangeDBWorker::enqueueWorker();
     }
 }
 

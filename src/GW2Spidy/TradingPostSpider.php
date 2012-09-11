@@ -15,17 +15,12 @@ class TradingPostSpider extends BaseSpider {
     const LISTING_TYPE_SELL = 'sells';
     const LISTING_TYPE_BUY  = 'buys';
 
-    protected function getLoginToUrl() {
-        return TRADINGPOST_URL;
-    }
-
     public function getItemByExactName($name) {
-        $this->ensureLogin();
-
         $curl = CurlRequest::newInstance(TRADINGPOST_URL . " /ws/search.json?text=".urlencode($name)."&levelmin=0&levelmax=80")
-                     ->setHeader("X-Requested-With: XMLHttpRequest")
-                     ->exec()
-                     ;
+                    ->setCookie("s={$this->getSession()->getSessionKey()}")
+                    ->setHeader("X-Requested-With: XMLHttpRequest")
+                    ->exec()
+                    ;
 
         $data = json_decode($curl->getResponseBody(), true);
 
@@ -39,8 +34,6 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getListingsById($id, $type = self::LISTING_TYPE_SELL) {
-        $this->ensureLogin();
-
         // for now we can query for 'all' and get both sell and buy in the return
         //  should it stop working like that we can just query for what we want
         $queryType = 'all';
@@ -48,9 +41,10 @@ class TradingPostSpider extends BaseSpider {
 
         if (!($listings = $this->cache->get($cacheKey))) {
             $curl = CurlRequest::newInstance(TRADINGPOST_URL . "/ws/listings.json?id={$id}&type={$queryType}")
-                         ->setHeader("X-Requested-With: XMLHttpRequest")
-                         ->exec()
-                         ;
+                        ->setCookie("s={$this->getSession()->getSessionKey()}")
+                        ->setHeader("X-Requested-With: XMLHttpRequest")
+                        ->exec()
+                        ;
 
             $data = json_decode($curl->getResponseBody(), true);
 
@@ -67,8 +61,6 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getMarketData() {
-        $this->ensureLogin();
-
         $curl = CurlRequest::newInstance(TRADINGPOST_URL)
              ->exec()
              ;
@@ -84,8 +76,6 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getItemList($type=null, $subType=null, $offset=0) {
-        $this->ensureLogin();
-
         $typeId    = ($type instanceof ItemType)       ? $type->getId()    : $type;
         $subTypeId = ($subType instanceof ItemSubType) ? $subType->getId() : $subType;
 
@@ -99,8 +89,10 @@ class TradingPostSpider extends BaseSpider {
         }
 
         $curl = CurlRequest::newInstance($url)
-             ->exec()
-             ;
+                    ->setHeader("X-Requested-With: XMLHttpRequest")
+                    ->setCookie("s={$this->getSession()->getSessionKey()}")
+                    ->exec()
+                    ;
 
         $result = $curl->getResponseBody();
         $json   = json_decode($result, true);

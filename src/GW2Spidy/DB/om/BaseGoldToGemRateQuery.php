@@ -21,10 +21,12 @@ use GW2Spidy\DB\GoldToGemRateQuery;
  * 
  *
  * @method     GoldToGemRateQuery orderByRateDatetime($order = Criteria::ASC) Order by the rate_datetime column
- * @method     GoldToGemRateQuery orderByAverage($order = Criteria::ASC) Order by the average column
+ * @method     GoldToGemRateQuery orderByRate($order = Criteria::ASC) Order by the rate column
+ * @method     GoldToGemRateQuery orderByVolume($order = Criteria::ASC) Order by the volume column
  *
  * @method     GoldToGemRateQuery groupByRateDatetime() Group by the rate_datetime column
- * @method     GoldToGemRateQuery groupByAverage() Group by the average column
+ * @method     GoldToGemRateQuery groupByRate() Group by the rate column
+ * @method     GoldToGemRateQuery groupByVolume() Group by the volume column
  *
  * @method     GoldToGemRateQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     GoldToGemRateQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -34,10 +36,12 @@ use GW2Spidy\DB\GoldToGemRateQuery;
  * @method     GoldToGemRate findOneOrCreate(PropelPDO $con = null) Return the first GoldToGemRate matching the query, or a new GoldToGemRate object populated from the query conditions when no match is found
  *
  * @method     GoldToGemRate findOneByRateDatetime(string $rate_datetime) Return the first GoldToGemRate filtered by the rate_datetime column
- * @method     GoldToGemRate findOneByAverage(int $average) Return the first GoldToGemRate filtered by the average column
+ * @method     GoldToGemRate findOneByRate(int $rate) Return the first GoldToGemRate filtered by the rate column
+ * @method     GoldToGemRate findOneByVolume(string $volume) Return the first GoldToGemRate filtered by the volume column
  *
  * @method     array findByRateDatetime(string $rate_datetime) Return GoldToGemRate objects filtered by the rate_datetime column
- * @method     array findByAverage(int $average) Return GoldToGemRate objects filtered by the average column
+ * @method     array findByRate(int $rate) Return GoldToGemRate objects filtered by the rate column
+ * @method     array findByVolume(string $volume) Return GoldToGemRate objects filtered by the volume column
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -128,7 +132,7 @@ abstract class BaseGoldToGemRateQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `RATE_DATETIME`, `AVERAGE` FROM `gold_to_gem_rate` WHERE `RATE_DATETIME` = :p0';
+        $sql = 'SELECT `RATE_DATETIME`, `RATE`, `VOLUME` FROM `gold_to_gem_rate` WHERE `RATE_DATETIME` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_STR);
@@ -261,16 +265,16 @@ abstract class BaseGoldToGemRateQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the average column
+     * Filter the query on the rate column
      *
      * Example usage:
      * <code>
-     * $query->filterByAverage(1234); // WHERE average = 1234
-     * $query->filterByAverage(array(12, 34)); // WHERE average IN (12, 34)
-     * $query->filterByAverage(array('min' => 12)); // WHERE average > 12
+     * $query->filterByRate(1234); // WHERE rate = 1234
+     * $query->filterByRate(array(12, 34)); // WHERE rate IN (12, 34)
+     * $query->filterByRate(array('min' => 12)); // WHERE rate > 12
      * </code>
      *
-     * @param     mixed $average The value to use as filter.
+     * @param     mixed $rate The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -278,16 +282,16 @@ abstract class BaseGoldToGemRateQuery extends ModelCriteria
      *
      * @return GoldToGemRateQuery The current query, for fluid interface
      */
-    public function filterByAverage($average = null, $comparison = null)
+    public function filterByRate($rate = null, $comparison = null)
     {
-        if (is_array($average)) {
+        if (is_array($rate)) {
             $useMinMax = false;
-            if (isset($average['min'])) {
-                $this->addUsingAlias(GoldToGemRatePeer::AVERAGE, $average['min'], Criteria::GREATER_EQUAL);
+            if (isset($rate['min'])) {
+                $this->addUsingAlias(GoldToGemRatePeer::RATE, $rate['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($average['max'])) {
-                $this->addUsingAlias(GoldToGemRatePeer::AVERAGE, $average['max'], Criteria::LESS_EQUAL);
+            if (isset($rate['max'])) {
+                $this->addUsingAlias(GoldToGemRatePeer::RATE, $rate['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -298,7 +302,48 @@ abstract class BaseGoldToGemRateQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(GoldToGemRatePeer::AVERAGE, $average, $comparison);
+        return $this->addUsingAlias(GoldToGemRatePeer::RATE, $rate, $comparison);
+    }
+
+    /**
+     * Filter the query on the volume column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByVolume(1234); // WHERE volume = 1234
+     * $query->filterByVolume(array(12, 34)); // WHERE volume IN (12, 34)
+     * $query->filterByVolume(array('min' => 12)); // WHERE volume > 12
+     * </code>
+     *
+     * @param     mixed $volume The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return GoldToGemRateQuery The current query, for fluid interface
+     */
+    public function filterByVolume($volume = null, $comparison = null)
+    {
+        if (is_array($volume)) {
+            $useMinMax = false;
+            if (isset($volume['min'])) {
+                $this->addUsingAlias(GoldToGemRatePeer::VOLUME, $volume['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($volume['max'])) {
+                $this->addUsingAlias(GoldToGemRatePeer::VOLUME, $volume['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(GoldToGemRatePeer::VOLUME, $volume, $comparison);
     }
 
     /**

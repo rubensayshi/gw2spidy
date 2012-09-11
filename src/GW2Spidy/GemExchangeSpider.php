@@ -2,28 +2,58 @@
 
 namespace GW2Spidy;
 
-use GW2Spidy\Util\CurlRequest;
 use \Exception;
 
+use GW2Spidy\Util\CurlRequest;
+
 class GemExchangeSpider extends BaseSpider {
-    const GEM_RATE_TYPE_RECIEVE_GEMS  = 'ReceivingGems';
-    const GEM_RATE_TYPE_RECIEVE_COINS = 'ReceivingCoins';
+    public function getGemExchangeRate() {
+        if (!$this->getSession()->getGameSession()) {
+            throw new Exception("Trying to get gem exchange rate with a non-game-session.");
+        }
 
-    protected function getLoginToUrl() {
-        return GEMEXCHANGE_URL;
-    }
+        $gems  = 100000;
+        $coins = 10000000;
 
-    public function getGemExchange($type = self::GEM_RATE_TYPE_RECIEVE_COINS) {
-        $this->ensureLogin();
-
-        $curl = CurlRequest::newInstance(GEMEXCHANGE_URL . "/ws/trends.json?type={$type}")
+        $curl = CurlRequest::newInstance(GEMEXCHANGE_URL . "/ws/rates.json?gems=100000&coins=10000000")
+                    ->setCookie("s={$this->getSession()->getSessionKey()}")
                     ->setHeader("X-Requested-With: XMLHttpRequest")
                     ->exec()
                     ;
 
         $data = json_decode($curl->getResponseBody(), true);
 
-        return $data;
+        if (!$data) {
+            throw new Exception("Failed to retrieve exchange rates.");
+        }
+
+        return array (
+            'gem_to_gold' => $data['results']['coins']['quantity'] / $gems,
+            'gold_to_gem' => $coins / $data['results']['gems']['quantity'],
+        );
+    }
+
+    public function getGemExchangeVolume() {
+        if (!$this->getSession()->getGameSession()) {
+            throw new Exception("Trying to get gem exchange volume with a non-game-session.");
+        }
+
+        $curl = CurlRequest::newInstance(GEMEXCHANGE_URL . "/ws/rates.json?gems=10000000000000000&coins=10000000000000000")
+                    ->setCookie("s={$this->getSession()->getSessionKey()}")
+                    ->setHeader("X-Requested-With: XMLHttpRequest")
+                    ->exec()
+                    ;
+
+        $data = json_decode($curl->getResponseBody(), true);
+
+        if (!$data) {
+            throw new Exception("Failed to retrieve exchange rates.");
+        }
+
+        return array (
+            'gem_count'  => $data['results']['gems']['quantity'],
+            'gold_count' => $data['results']['coins']['quantity'],
+        );
     }
 }
 

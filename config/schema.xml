@@ -72,10 +72,18 @@
     </table>
     <table name="gold_to_gem_rate" phpName="GoldToGemRate">
         <column name="rate_datetime" type="timestamp" required="true" primaryKey="true" />
-        <column name="average" type="integer" required="true" />
+        <column name="rate" type="integer" required="true" />
+        <column name="volume" type="bigint" required="true" />
     </table>
     <table name="gem_to_gold_rate" phpName="GemToGoldRate">
         <column name="rate_datetime" type="timestamp" required="true" primaryKey="true" />
-        <column name="average" type="integer" required="true" />
+        <column name="rate" type="integer" required="true" />
+        <column name="volume" type="bigint" required="true" />
+    </table>
+    <table name="gw2session" phpName="GW2Session">
+        <column name="session_key" type="varchar" size="255" required="true" primaryKey="true" />
+        <column name="game_session" type="boolean" required="true" />
+        <column name="created" type="timestamp" required="true" />
+        <column name="source" type="varchar" size="255" />
     </table>
 </database>

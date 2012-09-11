@@ -122,7 +122,8 @@ DROP TABLE IF EXISTS `gold_to_gem_rate`;
 CREATE TABLE `gold_to_gem_rate`
 (
     `rate_datetime` DATETIME NOT NULL,
-    `average` INTEGER NOT NULL,
+    `rate` INTEGER NOT NULL,
+    `volume` BIGINT NOT NULL,
     PRIMARY KEY (`rate_datetime`)
 ) ENGINE=MyISAM;
 
@@ -135,8 +136,24 @@ DROP TABLE IF EXISTS `gem_to_gold_rate`;
 CREATE TABLE `gem_to_gold_rate`
 (
     `rate_datetime` DATETIME NOT NULL,
-    `average` INTEGER NOT NULL,
+    `rate` INTEGER NOT NULL,
+    `volume` BIGINT NOT NULL,
     PRIMARY KEY (`rate_datetime`)
+) ENGINE=MyISAM;
+
+-- ---------------------------------------------------------------------
+-- gw2session
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `gw2session`;
+
+CREATE TABLE `gw2session`
+(
+    `session_key` VARCHAR(255) NOT NULL,
+    `game_session` TINYINT(1) NOT NULL,
+    `created` DATETIME NOT NULL,
+    `source` VARCHAR(255),
+    PRIMARY KEY (`session_key`)
 ) ENGINE=MyISAM;
 
 # This restores the fkey checks, after having unset them earlier

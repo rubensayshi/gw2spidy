@@ -9,57 +9,60 @@ use \PDOStatement;
 use \Propel;
 use \PropelException;
 use \PropelPDO;
-use GW2Spidy\DB\GemToGoldRate;
-use GW2Spidy\DB\GemToGoldRatePeer;
-use GW2Spidy\DB\map\GemToGoldRateTableMap;
+use GW2Spidy\DB\GW2Session;
+use GW2Spidy\DB\GW2SessionPeer;
+use GW2Spidy\DB\map\GW2SessionTableMap;
 
 /**
- * Base static class for performing query and update operations on the 'gem_to_gold_rate' table.
+ * Base static class for performing query and update operations on the 'gw2session' table.
  *
  * 
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseGemToGoldRatePeer {
+abstract class BaseGW2SessionPeer {
 
     /** the default database name for this class */
     const DATABASE_NAME = 'gw2spidy';
 
     /** the table name for this class */
-    const TABLE_NAME = 'gem_to_gold_rate';
+    const TABLE_NAME = 'gw2session';
 
     /** the related Propel class for this table */
-    const OM_CLASS = 'GW2Spidy\\DB\\GemToGoldRate';
+    const OM_CLASS = 'GW2Spidy\\DB\\GW2Session';
 
     /** the related TableMap class for this table */
-    const TM_CLASS = 'GemToGoldRateTableMap';
+    const TM_CLASS = 'GW2SessionTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 4;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 4;
 
-    /** the column name for the RATE_DATETIME field */
-    const RATE_DATETIME = 'gem_to_gold_rate.RATE_DATETIME';
+    /** the column name for the SESSION_KEY field */
+    const SESSION_KEY = 'gw2session.SESSION_KEY';
 
-    /** the column name for the RATE field */
-    const RATE = 'gem_to_gold_rate.RATE';
+    /** the column name for the GAME_SESSION field */
+    const GAME_SESSION = 'gw2session.GAME_SESSION';
 
-    /** the column name for the VOLUME field */
-    const VOLUME = 'gem_to_gold_rate.VOLUME';
+    /** the column name for the CREATED field */
+    const CREATED = 'gw2session.CREATED';
+
+    /** the column name for the SOURCE field */
+    const SOURCE = 'gw2session.SOURCE';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * An identiy map to hold any loaded instances of GemToGoldRate objects.
+     * An identiy map to hold any loaded instances of GW2Session objects.
      * This must be public so that other peer classes can access this when hydrating from JOIN
      * queries.
-     * @var        array GemToGoldRate[]
+     * @var        array GW2Session[]
      */
     public static $instances = array();
 
@@ -68,30 +71,30 @@ abstract class BaseGemToGoldRatePeer {
      * holds an array of fieldnames
      *
      * first dimension keys are the type constants
-     * e.g. GemToGoldRatePeer::$fieldNames[GemToGoldRatePeer::TYPE_PHPNAME][0] = 'Id'
+     * e.g. GW2SessionPeer::$fieldNames[GW2SessionPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('RateDatetime', 'Rate', 'Volume', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('rateDatetime', 'rate', 'volume', ),
-        BasePeer::TYPE_COLNAME => array (GemToGoldRatePeer::RATE_DATETIME, GemToGoldRatePeer::RATE, GemToGoldRatePeer::VOLUME, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('RATE_DATETIME', 'RATE', 'VOLUME', ),
-        BasePeer::TYPE_FIELDNAME => array ('rate_datetime', 'rate', 'volume', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, )
+        BasePeer::TYPE_PHPNAME => array ('SessionKey', 'GameSession', 'Created', 'Source', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('sessionKey', 'gameSession', 'created', 'source', ),
+        BasePeer::TYPE_COLNAME => array (GW2SessionPeer::SESSION_KEY, GW2SessionPeer::GAME_SESSION, GW2SessionPeer::CREATED, GW2SessionPeer::SOURCE, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('SESSION_KEY', 'GAME_SESSION', 'CREATED', 'SOURCE', ),
+        BasePeer::TYPE_FIELDNAME => array ('session_key', 'game_session', 'created', 'source', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
     );
 
     /**
      * holds an array of keys for quick access to the fieldnames array
      *
      * first dimension keys are the type constants
-     * e.g. GemToGoldRatePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
+     * e.g. GW2SessionPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('RateDatetime' => 0, 'Rate' => 1, 'Volume' => 2, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('rateDatetime' => 0, 'rate' => 1, 'volume' => 2, ),
-        BasePeer::TYPE_COLNAME => array (GemToGoldRatePeer::RATE_DATETIME => 0, GemToGoldRatePeer::RATE => 1, GemToGoldRatePeer::VOLUME => 2, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('RATE_DATETIME' => 0, 'RATE' => 1, 'VOLUME' => 2, ),
-        BasePeer::TYPE_FIELDNAME => array ('rate_datetime' => 0, 'rate' => 1, 'volume' => 2, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, )
+        BasePeer::TYPE_PHPNAME => array ('SessionKey' => 0, 'GameSession' => 1, 'Created' => 2, 'Source' => 3, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('sessionKey' => 0, 'gameSession' => 1, 'created' => 2, 'source' => 3, ),
+        BasePeer::TYPE_COLNAME => array (GW2SessionPeer::SESSION_KEY => 0, GW2SessionPeer::GAME_SESSION => 1, GW2SessionPeer::CREATED => 2, GW2SessionPeer::SOURCE => 3, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('SESSION_KEY' => 0, 'GAME_SESSION' => 1, 'CREATED' => 2, 'SOURCE' => 3, ),
+        BasePeer::TYPE_FIELDNAME => array ('session_key' => 0, 'game_session' => 1, 'created' => 2, 'source' => 3, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
     );
 
     /**
@@ -106,10 +109,10 @@ abstract class BaseGemToGoldRatePeer {
      */
     public static function translateFieldName($name, $fromType, $toType)
     {
-        $toNames = GemToGoldRatePeer::getFieldNames($toType);
-        $key = isset(GemToGoldRatePeer::$fieldKeys[$fromType][$name]) ? GemToGoldRatePeer::$fieldKeys[$fromType][$name] : null;
+        $toNames = GW2SessionPeer::getFieldNames($toType);
+        $key = isset(GW2SessionPeer::$fieldKeys[$fromType][$name]) ? GW2SessionPeer::$fieldKeys[$fromType][$name] : null;
         if ($key === null) {
-            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(GemToGoldRatePeer::$fieldKeys[$fromType], true));
+            throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(GW2SessionPeer::$fieldKeys[$fromType], true));
         }
 
         return $toNames[$key];
@@ -126,11 +129,11 @@ abstract class BaseGemToGoldRatePeer {
      */
     public static function getFieldNames($type = BasePeer::TYPE_PHPNAME)
     {
-        if (!array_key_exists($type, GemToGoldRatePeer::$fieldNames)) {
+        if (!array_key_exists($type, GW2SessionPeer::$fieldNames)) {
             throw new PropelException('Method getFieldNames() expects the parameter $type to be one of the class constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME, BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. ' . $type . ' was given.');
         }
 
-        return GemToGoldRatePeer::$fieldNames[$type];
+        return GW2SessionPeer::$fieldNames[$type];
     }
 
     /**
@@ -142,12 +145,12 @@ abstract class BaseGemToGoldRatePeer {
      *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
      * </code>
      * @param      string $alias The alias for the current table.
-     * @param      string $column The column name for current table. (i.e. GemToGoldRatePeer::COLUMN_NAME).
+     * @param      string $column The column name for current table. (i.e. GW2SessionPeer::COLUMN_NAME).
      * @return string
      */
     public static function alias($alias, $column)
     {
-        return str_replace(GemToGoldRatePeer::TABLE_NAME.'.', $alias.'.', $column);
+        return str_replace(GW2SessionPeer::TABLE_NAME.'.', $alias.'.', $column);
     }
 
     /**
@@ -165,13 +168,15 @@ abstract class BaseGemToGoldRatePeer {
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(GemToGoldRatePeer::RATE_DATETIME);
-            $criteria->addSelectColumn(GemToGoldRatePeer::RATE);
-            $criteria->addSelectColumn(GemToGoldRatePeer::VOLUME);
+            $criteria->addSelectColumn(GW2SessionPeer::SESSION_KEY);
+            $criteria->addSelectColumn(GW2SessionPeer::GAME_SESSION);
+            $criteria->addSelectColumn(GW2SessionPeer::CREATED);
+            $criteria->addSelectColumn(GW2SessionPeer::SOURCE);
         } else {
-            $criteria->addSelectColumn($alias . '.RATE_DATETIME');
-            $criteria->addSelectColumn($alias . '.RATE');
-            $criteria->addSelectColumn($alias . '.VOLUME');
+            $criteria->addSelectColumn($alias . '.SESSION_KEY');
+            $criteria->addSelectColumn($alias . '.GAME_SESSION');
+            $criteria->addSelectColumn($alias . '.CREATED');
+            $criteria->addSelectColumn($alias . '.SOURCE');
         }
     }
 
@@ -191,21 +196,21 @@ abstract class BaseGemToGoldRatePeer {
         // We need to set the primary table name, since in the case that there are no WHERE columns
         // it will be impossible for the BasePeer::createSelectSql() method to determine which
         // tables go into the FROM clause.
-        $criteria->setPrimaryTableName(GemToGoldRatePeer::TABLE_NAME);
+        $criteria->setPrimaryTableName(GW2SessionPeer::TABLE_NAME);
 
         if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
             $criteria->setDistinct();
         }
 
         if (!$criteria->hasSelectClause()) {
-            GemToGoldRatePeer::addSelectColumns($criteria);
+            GW2SessionPeer::addSelectColumns($criteria);
         }
 
         $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-        $criteria->setDbName(GemToGoldRatePeer::DATABASE_NAME); // Set the correct dbName
+        $criteria->setDbName(GW2SessionPeer::DATABASE_NAME); // Set the correct dbName
 
         if ($con === null) {
-            $con = Propel::getConnection(GemToGoldRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(GW2SessionPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
         // BasePeer returns a PDOStatement
         $stmt = BasePeer::doCount($criteria, $con);
@@ -224,7 +229,7 @@ abstract class BaseGemToGoldRatePeer {
      *
      * @param      Criteria $criteria object used to create the SELECT statement.
      * @param      PropelPDO $con
-     * @return                 GemToGoldRate
+     * @return                 GW2Session
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
@@ -232,7 +237,7 @@ abstract class BaseGemToGoldRatePeer {
     {
         $critcopy = clone $criteria;
         $critcopy->setLimit(1);
-        $objects = GemToGoldRatePeer::doSelect($critcopy, $con);
+        $objects = GW2SessionPeer::doSelect($critcopy, $con);
         if ($objects) {
             return $objects[0];
         }
@@ -250,7 +255,7 @@ abstract class BaseGemToGoldRatePeer {
      */
     public static function doSelect(Criteria $criteria, PropelPDO $con = null)
     {
-        return GemToGoldRatePeer::populateObjects(GemToGoldRatePeer::doSelectStmt($criteria, $con));
+        return GW2SessionPeer::populateObjects(GW2SessionPeer::doSelectStmt($criteria, $con));
     }
     /**
      * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -268,16 +273,16 @@ abstract class BaseGemToGoldRatePeer {
     public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(GemToGoldRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(GW2SessionPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         if (!$criteria->hasSelectClause()) {
             $criteria = clone $criteria;
-            GemToGoldRatePeer::addSelectColumns($criteria);
+            GW2SessionPeer::addSelectColumns($criteria);
         }
 
         // Set the correct dbName
-        $criteria->setDbName(GemToGoldRatePeer::DATABASE_NAME);
+        $criteria->setDbName(GW2SessionPeer::DATABASE_NAME);
 
         // BasePeer returns a PDOStatement
         return BasePeer::doSelect($criteria, $con);
@@ -291,16 +296,16 @@ abstract class BaseGemToGoldRatePeer {
      * to the cache in order to ensure that the same objects are always returned by doSelect*()
      * and retrieveByPK*() calls.
      *
-     * @param      GemToGoldRate $obj A GemToGoldRate object.
+     * @param      GW2Session $obj A GW2Session object.
      * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
     {
         if (Propel::isInstancePoolingEnabled()) {
             if ($key === null) {
-                $key = (string) $obj->getRateDatetime();
+                $key = (string) $obj->getSessionKey();
             } // if key === null
-            GemToGoldRatePeer::$instances[$key] = $obj;
+            GW2SessionPeer::$instances[$key] = $obj;
         }
     }
 
@@ -312,7 +317,7 @@ abstract class BaseGemToGoldRatePeer {
      * methods in your stub classes -- you may need to explicitly remove objects
      * from the cache in order to prevent returning objects that no longer exist.
      *
-     * @param      mixed $value A GemToGoldRate object or a primary key value.
+     * @param      mixed $value A GW2Session object or a primary key value.
      *
      * @return void
      * @throws PropelException - if the value is invalid.
@@ -320,17 +325,17 @@ abstract class BaseGemToGoldRatePeer {
     public static function removeInstanceFromPool($value)
     {
         if (Propel::isInstancePoolingEnabled() && $value !== null) {
-            if (is_object($value) && $value instanceof GemToGoldRate) {
-                $key = (string) $value->getRateDatetime();
+            if (is_object($value) && $value instanceof GW2Session) {
+                $key = (string) $value->getSessionKey();
             } elseif (is_scalar($value)) {
                 // assume we've been passed a primary key
                 $key = (string) $value;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or GemToGoldRate object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or GW2Session object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
                 throw $e;
             }
 
-            unset(GemToGoldRatePeer::$instances[$key]);
+            unset(GW2SessionPeer::$instances[$key]);
         }
     } // removeInstanceFromPool()
 
@@ -341,14 +346,14 @@ abstract class BaseGemToGoldRatePeer {
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
      * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-     * @return   GemToGoldRate Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+     * @return   GW2Session Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
      * @see        getPrimaryKeyHash()
      */
     public static function getInstanceFromPool($key)
     {
         if (Propel::isInstancePoolingEnabled()) {
-            if (isset(GemToGoldRatePeer::$instances[$key])) {
-                return GemToGoldRatePeer::$instances[$key];
+            if (isset(GW2SessionPeer::$instances[$key])) {
+                return GW2SessionPeer::$instances[$key];
             }
         }
 
@@ -362,11 +367,11 @@ abstract class BaseGemToGoldRatePeer {
      */
     public static function clearInstancePool()
     {
-        GemToGoldRatePeer::$instances = array();
+        GW2SessionPeer::$instances = array();
     }
     
     /**
-     * Method to invalidate the instance pool of all tables related to gem_to_gold_rate
+     * Method to invalidate the instance pool of all tables related to gw2session
      * by a foreign key with ON DELETE CASCADE
      */
     public static function clearRelatedInstancePool()
@@ -420,11 +425,11 @@ abstract class BaseGemToGoldRatePeer {
         $results = array();
     
         // set the class once to avoid overhead in the loop
-        $cls = GemToGoldRatePeer::getOMClass();
+        $cls = GW2SessionPeer::getOMClass();
         // populate the object(s)
         while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $key = GemToGoldRatePeer::getPrimaryKeyHashFromRow($row, 0);
-            if (null !== ($obj = GemToGoldRatePeer::getInstanceFromPool($key))) {
+            $key = GW2SessionPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj = GW2SessionPeer::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -433,7 +438,7 @@ abstract class BaseGemToGoldRatePeer {
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                GemToGoldRatePeer::addInstanceToPool($obj, $key);
+                GW2SessionPeer::addInstanceToPool($obj, $key);
             } // if key exists
         }
         $stmt->closeCursor();
@@ -447,21 +452,21 @@ abstract class BaseGemToGoldRatePeer {
      * @param      int $startcol The 0-based offset for reading from the resultset row.
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
-     * @return array (GemToGoldRate object, last column rank)
+     * @return array (GW2Session object, last column rank)
      */
     public static function populateObject($row, $startcol = 0)
     {
-        $key = GemToGoldRatePeer::getPrimaryKeyHashFromRow($row, $startcol);
-        if (null !== ($obj = GemToGoldRatePeer::getInstanceFromPool($key))) {
+        $key = GW2SessionPeer::getPrimaryKeyHashFromRow($row, $startcol);
+        if (null !== ($obj = GW2SessionPeer::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $startcol, true); // rehydrate
-            $col = $startcol + GemToGoldRatePeer::NUM_HYDRATE_COLUMNS;
+            $col = $startcol + GW2SessionPeer::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = GemToGoldRatePeer::OM_CLASS;
+            $cls = GW2SessionPeer::OM_CLASS;
             $obj = new $cls();
             $col = $obj->hydrate($row, $startcol);
-            GemToGoldRatePeer::addInstanceToPool($obj, $key);
+            GW2SessionPeer::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -476,7 +481,7 @@ abstract class BaseGemToGoldRatePeer {
      */
     public static function getTableMap()
     {
-        return Propel::getDatabaseMap(GemToGoldRatePeer::DATABASE_NAME)->getTable(GemToGoldRatePeer::TABLE_NAME);
+        return Propel::getDatabaseMap(GW2SessionPeer::DATABASE_NAME)->getTable(GW2SessionPeer::TABLE_NAME);
     }
 
     /**
@@ -484,9 +489,9 @@ abstract class BaseGemToGoldRatePeer {
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getDatabaseMap(BaseGemToGoldRatePeer::DATABASE_NAME);
-      if (!$dbMap->hasTable(BaseGemToGoldRatePeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new GemToGoldRateTableMap());
+      $dbMap = Propel::getDatabaseMap(BaseGW2SessionPeer::DATABASE_NAME);
+      if (!$dbMap->hasTable(BaseGW2SessionPeer::TABLE_NAME)) {
+        $dbMap->addTableObject(new GW2SessionTableMap());
       }
     }
 
@@ -498,13 +503,13 @@ abstract class BaseGemToGoldRatePeer {
      */
     public static function getOMClass()
     {
-        return GemToGoldRatePeer::OM_CLASS;
+        return GW2SessionPeer::OM_CLASS;
     }
 
     /**
-     * Performs an INSERT on the database, given a GemToGoldRate or Criteria object.
+     * Performs an INSERT on the database, given a GW2Session or Criteria object.
      *
-     * @param      mixed $values Criteria or GemToGoldRate object containing data that is used to create the INSERT statement.
+     * @param      mixed $values Criteria or GW2Session object containing data that is used to create the INSERT statement.
      * @param      PropelPDO $con the PropelPDO connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -513,18 +518,18 @@ abstract class BaseGemToGoldRatePeer {
     public static function doInsert($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(GemToGoldRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GW2SessionPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
         } else {
-            $criteria = $values->buildCriteria(); // build Criteria from GemToGoldRate object
+            $criteria = $values->buildCriteria(); // build Criteria from GW2Session object
         }
 
 
         // Set the correct dbName
-        $criteria->setDbName(GemToGoldRatePeer::DATABASE_NAME);
+        $criteria->setDbName(GW2SessionPeer::DATABASE_NAME);
 
         try {
             // use transaction because $criteria could contain info
@@ -541,9 +546,9 @@ abstract class BaseGemToGoldRatePeer {
     }
 
     /**
-     * Performs an UPDATE on the database, given a GemToGoldRate or Criteria object.
+     * Performs an UPDATE on the database, given a GW2Session or Criteria object.
      *
-     * @param      mixed $values Criteria or GemToGoldRate object containing data that is used to create the UPDATE statement.
+     * @param      mixed $values Criteria or GW2Session object containing data that is used to create the UPDATE statement.
      * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
      * @return int             The number of affected rows (if supported by underlying database driver).
      * @throws PropelException Any exceptions caught during processing will be
@@ -552,35 +557,35 @@ abstract class BaseGemToGoldRatePeer {
     public static function doUpdate($values, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(GemToGoldRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GW2SessionPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
-        $selectCriteria = new Criteria(GemToGoldRatePeer::DATABASE_NAME);
+        $selectCriteria = new Criteria(GW2SessionPeer::DATABASE_NAME);
 
         if ($values instanceof Criteria) {
             $criteria = clone $values; // rename for clarity
 
-            $comparison = $criteria->getComparison(GemToGoldRatePeer::RATE_DATETIME);
-            $value = $criteria->remove(GemToGoldRatePeer::RATE_DATETIME);
+            $comparison = $criteria->getComparison(GW2SessionPeer::SESSION_KEY);
+            $value = $criteria->remove(GW2SessionPeer::SESSION_KEY);
             if ($value) {
-                $selectCriteria->add(GemToGoldRatePeer::RATE_DATETIME, $value, $comparison);
+                $selectCriteria->add(GW2SessionPeer::SESSION_KEY, $value, $comparison);
             } else {
-                $selectCriteria->setPrimaryTableName(GemToGoldRatePeer::TABLE_NAME);
+                $selectCriteria->setPrimaryTableName(GW2SessionPeer::TABLE_NAME);
             }
 
-        } else { // $values is GemToGoldRate object
+        } else { // $values is GW2Session object
             $criteria = $values->buildCriteria(); // gets full criteria
             $selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
         }
 
         // set the correct dbName
-        $criteria->setDbName(GemToGoldRatePeer::DATABASE_NAME);
+        $criteria->setDbName(GW2SessionPeer::DATABASE_NAME);
 
         return BasePeer::doUpdate($selectCriteria, $criteria, $con);
     }
 
     /**
-     * Deletes all rows from the gem_to_gold_rate table.
+     * Deletes all rows from the gw2session table.
      *
      * @param      PropelPDO $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).
@@ -589,19 +594,19 @@ abstract class BaseGemToGoldRatePeer {
     public static function doDeleteAll(PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(GemToGoldRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GW2SessionPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
         $affectedRows = 0; // initialize var to track total num of affected rows
         try {
             // use transaction because $criteria could contain info
             // for more than one table or we could emulating ON DELETE CASCADE, etc.
             $con->beginTransaction();
-            $affectedRows += BasePeer::doDeleteAll(GemToGoldRatePeer::TABLE_NAME, $con, GemToGoldRatePeer::DATABASE_NAME);
+            $affectedRows += BasePeer::doDeleteAll(GW2SessionPeer::TABLE_NAME, $con, GW2SessionPeer::DATABASE_NAME);
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            GemToGoldRatePeer::clearInstancePool();
-            GemToGoldRatePeer::clearRelatedInstancePool();
+            GW2SessionPeer::clearInstancePool();
+            GW2SessionPeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -612,9 +617,9 @@ abstract class BaseGemToGoldRatePeer {
     }
 
     /**
-     * Performs a DELETE on the database, given a GemToGoldRate or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a GW2Session or Criteria object OR a primary key value.
      *
-     * @param      mixed $values Criteria or GemToGoldRate object or primary key or array of primary keys
+     * @param      mixed $values Criteria or GW2Session object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param      PropelPDO $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -625,32 +630,32 @@ abstract class BaseGemToGoldRatePeer {
      public static function doDelete($values, PropelPDO $con = null)
      {
         if ($con === null) {
-            $con = Propel::getConnection(GemToGoldRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(GW2SessionPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         if ($values instanceof Criteria) {
             // invalidate the cache for all objects of this type, since we have no
             // way of knowing (without running a query) what objects should be invalidated
             // from the cache based on this Criteria.
-            GemToGoldRatePeer::clearInstancePool();
+            GW2SessionPeer::clearInstancePool();
             // rename for clarity
             $criteria = clone $values;
-        } elseif ($values instanceof GemToGoldRate) { // it's a model object
+        } elseif ($values instanceof GW2Session) { // it's a model object
             // invalidate the cache for this single object
-            GemToGoldRatePeer::removeInstanceFromPool($values);
+            GW2SessionPeer::removeInstanceFromPool($values);
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(GemToGoldRatePeer::DATABASE_NAME);
-            $criteria->add(GemToGoldRatePeer::RATE_DATETIME, (array) $values, Criteria::IN);
+            $criteria = new Criteria(GW2SessionPeer::DATABASE_NAME);
+            $criteria->add(GW2SessionPeer::SESSION_KEY, (array) $values, Criteria::IN);
             // invalidate the cache for this object(s)
             foreach ((array) $values as $singleval) {
-                GemToGoldRatePeer::removeInstanceFromPool($singleval);
+                GW2SessionPeer::removeInstanceFromPool($singleval);
             }
         }
 
         // Set the correct dbName
-        $criteria->setDbName(GemToGoldRatePeer::DATABASE_NAME);
+        $criteria->setDbName(GW2SessionPeer::DATABASE_NAME);
 
         $affectedRows = 0; // initialize var to track total num of affected rows
 
@@ -660,7 +665,7 @@ abstract class BaseGemToGoldRatePeer {
             $con->beginTransaction();
             
             $affectedRows += BasePeer::doDelete($criteria, $con);
-            GemToGoldRatePeer::clearRelatedInstancePool();
+            GW2SessionPeer::clearRelatedInstancePool();
             $con->commit();
 
             return $affectedRows;
@@ -671,13 +676,13 @@ abstract class BaseGemToGoldRatePeer {
     }
 
     /**
-     * Validates all modified columns of given GemToGoldRate object.
+     * Validates all modified columns of given GW2Session object.
      * If parameter $columns is either a single column name or an array of column names
      * than only those columns are validated.
      *
      * NOTICE: This does not apply to primary or foreign keys for now.
      *
-     * @param      GemToGoldRate $obj The object to validate.
+     * @param      GW2Session $obj The object to validate.
      * @param      mixed $cols Column name or array of column names.
      *
      * @return mixed TRUE if all columns are valid or the error message of the first invalid column.
@@ -687,8 +692,8 @@ abstract class BaseGemToGoldRatePeer {
         $columns = array();
 
         if ($cols) {
-            $dbMap = Propel::getDatabaseMap(GemToGoldRatePeer::DATABASE_NAME);
-            $tableMap = $dbMap->getTable(GemToGoldRatePeer::TABLE_NAME);
+            $dbMap = Propel::getDatabaseMap(GW2SessionPeer::DATABASE_NAME);
+            $tableMap = $dbMap->getTable(GW2SessionPeer::TABLE_NAME);
 
             if (! is_array($cols)) {
                 $cols = array($cols);
@@ -704,7 +709,7 @@ abstract class BaseGemToGoldRatePeer {
 
         }
 
-        return BasePeer::doValidate(GemToGoldRatePeer::DATABASE_NAME, GemToGoldRatePeer::TABLE_NAME, $columns);
+        return BasePeer::doValidate(GW2SessionPeer::DATABASE_NAME, GW2SessionPeer::TABLE_NAME, $columns);
     }
 
     /**
@@ -712,23 +717,23 @@ abstract class BaseGemToGoldRatePeer {
      *
      * @param      string $pk the primary key.
      * @param      PropelPDO $con the connection to use
-     * @return GemToGoldRate
+     * @return GW2Session
      */
     public static function retrieveByPK($pk, PropelPDO $con = null)
     {
 
-        if (null !== ($obj = GemToGoldRatePeer::getInstanceFromPool((string) $pk))) {
+        if (null !== ($obj = GW2SessionPeer::getInstanceFromPool((string) $pk))) {
             return $obj;
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(GemToGoldRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(GW2SessionPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria = new Criteria(GemToGoldRatePeer::DATABASE_NAME);
-        $criteria->add(GemToGoldRatePeer::RATE_DATETIME, $pk);
+        $criteria = new Criteria(GW2SessionPeer::DATABASE_NAME);
+        $criteria->add(GW2SessionPeer::SESSION_KEY, $pk);
 
-        $v = GemToGoldRatePeer::doSelect($criteria, $con);
+        $v = GW2SessionPeer::doSelect($criteria, $con);
 
         return !empty($v) > 0 ? $v[0] : null;
     }
@@ -738,31 +743,31 @@ abstract class BaseGemToGoldRatePeer {
      *
      * @param      array $pks List of primary keys
      * @param      PropelPDO $con the connection to use
-     * @return GemToGoldRate[]
+     * @return GW2Session[]
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
     public static function retrieveByPKs($pks, PropelPDO $con = null)
     {
         if ($con === null) {
-            $con = Propel::getConnection(GemToGoldRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(GW2SessionPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         $objs = null;
         if (empty($pks)) {
             $objs = array();
         } else {
-            $criteria = new Criteria(GemToGoldRatePeer::DATABASE_NAME);
-            $criteria->add(GemToGoldRatePeer::RATE_DATETIME, $pks, Criteria::IN);
-            $objs = GemToGoldRatePeer::doSelect($criteria, $con);
+            $criteria = new Criteria(GW2SessionPeer::DATABASE_NAME);
+            $criteria->add(GW2SessionPeer::SESSION_KEY, $pks, Criteria::IN);
+            $objs = GW2SessionPeer::doSelect($criteria, $con);
         }
 
         return $objs;
     }
 
-} // BaseGemToGoldRatePeer
+} // BaseGW2SessionPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseGemToGoldRatePeer::buildTableMap();
+BaseGW2SessionPeer::buildTableMap();
 

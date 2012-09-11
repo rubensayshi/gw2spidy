@@ -8,9 +8,11 @@ class CurlRequest {
     protected $url;
     protected $options;
     protected $headers;
+    protected $cookies;
     protected $urlAsReferer = true;
     protected $verbose      = false;
     protected $cookiejar;
+    protected $throwOnError = true;
 
     protected $result;
     protected $info;
@@ -40,6 +42,7 @@ class CurlRequest {
         $this->url     = $url;
         $this->options = $options + self::$defaultOptions;
         $this->headers = $headers + self::$defaultHeaders;
+        $this->cookies = array();
     }
 
     /**
@@ -122,6 +125,9 @@ class CurlRequest {
         if ($this->urlAsReferer) {
             $options[CURLOPT_REFERER] =  $this->url;
         }
+        if ($this->cookies) {
+            $options[CURLOPT_COOKIE] = implode("; ", $this->cookies);
+        }
         $options[CURLOPT_COOKIEJAR]  = CookieJar::getInstance()->getCookieJar();
         $options[CURLOPT_COOKIEFILE] = CookieJar::getInstance()->getCookieJar();
         $options[CURLOPT_HTTPHEADER] = array_merge($this->headers, isset($options[CURLOPT_HTTPHEADER]) ? $options[CURLOPT_HTTPHEADER] : array());
@@ -133,7 +139,7 @@ class CurlRequest {
 
         curl_close($ch);
 
-        if ($this->getInfo('http_code') >= 400) {
+        if ($this->throwOnError && $this->getInfo('http_code') >= 400) {
             throw new Exception("CurlRequest failed [[ {$this->getInfo('http_code')} ]] [[ {$this->url} ]]");
         }
 
@@ -232,12 +238,23 @@ class CurlRequest {
         return $this;
     }
 
+    public function setCookie($cookie) {
+        $this->cookies[] = $cookie;
+
+        return $this;
+    }
+
     public function setVerbose($verbose = true) {
         $this->verbose = $verbose;
 
         return $this;
     }
 
+    public function setThrowOnError($throw = true) {
+        $this->throwOnError = $throw;
+
+        return $this;
+    }
 }
 
 ?>

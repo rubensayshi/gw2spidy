@@ -2,6 +2,8 @@
 
 namespace GW2Spidy;
 
+use GW2Spidy\DB\GW2Session;
+
 use GW2Spidy\Util\Singleton;
 
 use \Exception;
@@ -13,29 +15,18 @@ use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemType;
 
 abstract class BaseSpider extends Singleton {
-    protected $loggedIn;
+    protected $gw2session;
 
-    abstract protected function getLoginToUrl();
-
-    public function ensureLogin() {
-        if (!$this->loggedIn) {
-            $this->loggedIn = $this->doLogin();
+    protected function getSession() {
+        if (is_null($this->gw2session)) {
+            $this->gw2session = GW2SessionManager::getInstance()->getSession();
         }
+
+        return $this->gw2session;
     }
 
-    public function doLogin() {
-        if ($sid = GW2LoginManager::getInstance()->getSessionID()) {
-            $loginURL = $this->getLoginToUrl() . "/authenticate";
-            $loginURL .= "?account_name=". urlencode("Guild Wars 2");
-            $loginURL .= "&session_key={$sid}";
-
-            $curl = CurlRequest::newInstance($loginURL)
-                        ->exec();
-        } else {
-            throw new Exception("Login request failed, no SID.");
-        }
-
-        return true;
+    public function setSession(GW2Session $gw2session) {
+        $this->gw2session = $gw2session;
     }
 }
 

@@ -7,7 +7,7 @@ use \TableMap;
 
 
 /**
- * This class defines the structure of the 'gem_to_gold_rate' table.
+ * This class defines the structure of the 'gw2session' table.
  *
  *
  *
@@ -18,13 +18,13 @@ use \TableMap;
  *
  * @package    propel.generator.gw2spidy.map
  */
-class GemToGoldRateTableMap extends TableMap
+class GW2SessionTableMap extends TableMap
 {
 
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'gw2spidy.map.GemToGoldRateTableMap';
+    const CLASS_NAME = 'gw2spidy.map.GW2SessionTableMap';
 
     /**
      * Initialize the table attributes, columns and validators
@@ -36,15 +36,16 @@ class GemToGoldRateTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('gem_to_gold_rate');
-        $this->setPhpName('GemToGoldRate');
-        $this->setClassname('GW2Spidy\\DB\\GemToGoldRate');
+        $this->setName('gw2session');
+        $this->setPhpName('GW2Session');
+        $this->setClassname('GW2Spidy\\DB\\GW2Session');
         $this->setPackage('gw2spidy');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('RATE_DATETIME', 'RateDatetime', 'TIMESTAMP', true, null, null);
-        $this->addColumn('RATE', 'Rate', 'INTEGER', true, null, null);
-        $this->addColumn('VOLUME', 'Volume', 'BIGINT', true, null, null);
+        $this->addPrimaryKey('SESSION_KEY', 'SessionKey', 'VARCHAR', true, 255, null);
+        $this->addColumn('GAME_SESSION', 'GameSession', 'BOOLEAN', true, 1, null);
+        $this->addColumn('CREATED', 'Created', 'TIMESTAMP', true, null, null);
+        $this->addColumn('SOURCE', 'Source', 'VARCHAR', false, 255, null);
         // validators
     } // initialize()
 
@@ -55,4 +56,4 @@ class GemToGoldRateTableMap extends TableMap
     {
     } // buildRelations()
 
-} // GemToGoldRateTableMap
+} // GW2SessionTableMap

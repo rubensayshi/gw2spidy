@@ -5,6 +5,9 @@ namespace GW2Spidy\Util;
 abstract class Singleton {
     protected static $instances;
 
+    /**
+     * @return static
+     */
     public static function getInstance() {
         $class = get_called_class();
 

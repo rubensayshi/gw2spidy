@@ -43,7 +43,8 @@ class GoldToGemRateTableMap extends TableMap
         $this->setUseIdGenerator(false);
         // columns
         $this->addPrimaryKey('RATE_DATETIME', 'RateDatetime', 'TIMESTAMP', true, null, null);
-        $this->addColumn('AVERAGE', 'Average', 'INTEGER', true, null, null);
+        $this->addColumn('RATE', 'Rate', 'INTEGER', true, null, null);
+        $this->addColumn('VOLUME', 'Volume', 'BIGINT', true, null, null);
         // validators
     } // initialize()
 

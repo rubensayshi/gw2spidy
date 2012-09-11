@@ -6,7 +6,7 @@
 
 use GW2Spidy\GemExchangeSpider;
 
-use GW2Spidy\GW2LoginManager;
+use GW2Spidy\GW2SessionManager;
 
 use GW2Spidy\TradingPostSpider;
 
@@ -32,16 +32,11 @@ $queueManager = WorkerQueueManager::getInstance();
 print "login ... \n";
 try {
     $begin = microtime(true);
-    $sid = GW2LoginManager::getInstance()->getSessionID();
-    echo "login ok [".(microtime(true) - $begin)."] -> [{$sid}] \n";
+    $gw2session = GW2SessionManager::getInstance()->getSession();
+    echo "login ok [".(microtime(true) - $begin)."] -> [".(int)$gw2session->getGameSession()."] -> [{$gw2session->getSessionKey()}] \n";
 
-    $begin = microtime(true);
-    GemExchangeSpider::getInstance()->ensureLogin();
-    echo "gemexchange auth ok [".(microtime(true) - $begin)."] \n";
-
-    $begin = microtime(true);
-    TradingPostSpider::getInstance()->ensureLogin();
-    echo "tradingpost auth ok [".(microtime(true) - $begin)."] \n";
+    GemExchangeSpider::getInstance()->setSession($gw2session);
+    TradingPostSpider::getInstance()->setSession($gw2session);
 } catch (Exception $e) {
     echo "login failed ... sleeping [60] and restarting \n";
     sleep(60);
@@ -116,7 +111,7 @@ while ($run < $max) {
             break;
         } catch (Exception $e) {
             $log = ob_get_clean();
-            echo " !! worker process threw exception !! \n\n\n --------------- \n\n\n {$log} \n\n\n --------------- \n\n\n {$e} ";
+            echo " --------------- \n !! worker process threw exception !!\n --------------- \n {$log} \n --------------- \n {$e} \n --------------- \n";
 
             if ($try <= $retries) {
                 echo "error, retrying, sleeping [5] ... \n";

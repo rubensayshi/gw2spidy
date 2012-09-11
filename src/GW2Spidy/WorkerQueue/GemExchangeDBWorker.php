@@ -6,78 +6,57 @@ use \DateTime;
 use \DateTimeZone;
 use \Exception;
 
+use GW2Spidy\DB\GoldToGemRate;
+use GW2Spidy\DB\GoldToGemRateQuery;
+
+use GW2Spidy\DB\GemToGoldRate;
+use GW2Spidy\DB\GemToGoldRateQuery;
+
 use GW2Spidy\GemExchangeSpider;
 
 use GW2Spidy\Queue\WorkerQueueManager;
 use GW2Spidy\Queue\WorkerQueueItem;
 
 class GemExchangeDBWorker implements Worker {
-    protected function getTypes() {
-        return array(
-            GemExchangeSpider::GEM_RATE_TYPE_RECIEVE_GEMS  => '\\GW2Spidy\\DB\\GoldToGemRate',
-            GemExchangeSpider::GEM_RATE_TYPE_RECIEVE_COINS => '\\GW2Spidy\\DB\\GemToGoldRate'
-        );
-    }
-
     public function getRetries() {
         return 1;
     }
 
     public function work(WorkerQueueItem $item) {
-        $types = self::getTypes();
-        if (!($type = $item->getData())) {
-            throw new Exception("bad worker item - no type defined!");
-        }
-        if (!isset($types[$type]) || !($class = $types[$type])) {
-            throw new Exception("bad worker item - type doesn't resolve to a class in the mapping!");
-        }
-        $queryClass = "{$class}Query";
+        $rates  = GemExchangeSpider::getInstance()->getGemExchangeRate();
+        $volume = GemExchangeSpider::getInstance()->getGemExchangeVolume();
 
-        $data = GemExchangeSpider::getInstance()->getGemExchange($type);
-
-        if (isset($data['plots']) && $data['plots']) {
-            $plots = $data['plots'];
-        } else if(isset($data['average'])) {
-            $plots = array(array('average' => $data['average'], 'last_updated' => date('Y-m-d H:i:s')));
+        if (!$rates || !$volume) {
+            throw new Exception("No gem exchange data");
         }
 
-        foreach ($plots as $plot) {
-            /*
-             * I'm not sure wtf ArenaNet is doing with the time here
-             * but they use their server time or something and output it as if it's UTC (which it's not)
-             * so I convert it to GMT+7, which seems to match (for now)
-             *
-             * and after that I convert it to our server timezone, until I convert everything to use UTC this will have to do
-             */
-            $date   = new DateTime($plot['last_updated']);
-            $date   = new DateTime($date->format("Y-m-d H:i:s") . " GMT+7");
-            $silver = $plot['average'];
-            $copper = $silver * 100;
-            $date->setTimezone(new DateTimeZone(date_default_timezone_get()));
+        $date   = new DateTime();
+        $date   = new DateTime($date->format('Y-m-d H:i:00'));
 
-            $exists = $queryClass::create()
+        if (!($exists = GoldToGemRateQuery::create()
+                ->filterByRateDatetime($date)
+                ->count() > 0)) {
+
+            $goldtogem = new GoldToGemRate();
+            $goldtogem->setRate($rates['gold_to_gem'] * 100); // convert to copper
+            $goldtogem->setVolume($volume['gems']);
+            $goldtogem->save();
+        }
+
+        if (!($exists = GemToGoldRateQuery::create()
                         ->filterByRateDatetime($date)
-                        ->count() > 0;
+                        ->count() > 0)) {
 
-            if (!$exists) {
-                $new = new $class();
-                $new->setAverage($copper)
-                    ->setRateDatetime($date)
-                    ->save();
-            }
+            $goldtogem = new GemToGoldRate();
+            $goldtogem->setRate($rates['gold_to_gem'] * 100); // convert to copper
+            $goldtogem->setVolume($volume['gems']);
+            $goldtogem->save();
         }
     }
 
-    public static function enqueueWorkers() {
-        foreach (self::getTypes() as $type => $class) {
-            self::enqueueWorker($type);
-        }
-    }
-
-    public static function enqueueWorker($type) {
+    public static function enqueueWorker() {
         $queueItem = new WorkerQueueItem();
         $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\GemExchangeDBWorker");
-        $queueItem->setData($type);
 
         WorkerQueueManager::getInstance()->enqueue($queueItem);
 

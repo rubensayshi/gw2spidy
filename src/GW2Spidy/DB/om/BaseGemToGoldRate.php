@@ -56,10 +56,16 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
     protected $rate_datetime;
 
     /**
-     * The value for the average field.
+     * The value for the rate field.
      * @var        int
      */
-    protected $average;
+    protected $rate;
+
+    /**
+     * The value for the volume field.
+     * @var        string
+     */
+    protected $volume;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -114,14 +120,25 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
     }
 
     /**
-     * Get the [average] column value.
+     * Get the [rate] column value.
      * 
      * @return   int
      */
-    public function getAverage()
+    public function getRate()
     {
 
-        return $this->average;
+        return $this->rate;
+    }
+
+    /**
+     * Get the [volume] column value.
+     * 
+     * @return   string
+     */
+    public function getVolume()
+    {
+
+        return $this->volume;
     }
 
     /**
@@ -148,25 +165,46 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
     } // setRateDatetime()
 
     /**
-     * Set the value of [average] column.
+     * Set the value of [rate] column.
      * 
      * @param      int $v new value
      * @return   GemToGoldRate The current object (for fluent API support)
      */
-    public function setAverage($v)
+    public function setRate($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->average !== $v) {
-            $this->average = $v;
-            $this->modifiedColumns[] = GemToGoldRatePeer::AVERAGE;
+        if ($this->rate !== $v) {
+            $this->rate = $v;
+            $this->modifiedColumns[] = GemToGoldRatePeer::RATE;
         }
 
 
         return $this;
-    } // setAverage()
+    } // setRate()
+
+    /**
+     * Set the value of [volume] column.
+     * 
+     * @param      string $v new value
+     * @return   GemToGoldRate The current object (for fluent API support)
+     */
+    public function setVolume($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->volume !== $v) {
+            $this->volume = $v;
+            $this->modifiedColumns[] = GemToGoldRatePeer::VOLUME;
+        }
+
+
+        return $this;
+    } // setVolume()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -201,7 +239,8 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
         try {
 
             $this->rate_datetime = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
-            $this->average = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+            $this->rate = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+            $this->volume = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -210,7 +249,7 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = GemToGoldRatePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 3; // 3 = GemToGoldRatePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating GemToGoldRate object", $e);
@@ -421,8 +460,11 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
         if ($this->isColumnModified(GemToGoldRatePeer::RATE_DATETIME)) {
             $modifiedColumns[':p' . $index++]  = '`RATE_DATETIME`';
         }
-        if ($this->isColumnModified(GemToGoldRatePeer::AVERAGE)) {
-            $modifiedColumns[':p' . $index++]  = '`AVERAGE`';
+        if ($this->isColumnModified(GemToGoldRatePeer::RATE)) {
+            $modifiedColumns[':p' . $index++]  = '`RATE`';
+        }
+        if ($this->isColumnModified(GemToGoldRatePeer::VOLUME)) {
+            $modifiedColumns[':p' . $index++]  = '`VOLUME`';
         }
 
         $sql = sprintf(
@@ -438,8 +480,11 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
                     case '`RATE_DATETIME`':
 						$stmt->bindValue($identifier, $this->rate_datetime, PDO::PARAM_STR);
                         break;
-                    case '`AVERAGE`':
-						$stmt->bindValue($identifier, $this->average, PDO::PARAM_INT);
+                    case '`RATE`':
+						$stmt->bindValue($identifier, $this->rate, PDO::PARAM_INT);
+                        break;
+                    case '`VOLUME`':
+						$stmt->bindValue($identifier, $this->volume, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -572,7 +617,10 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
                 return $this->getRateDatetime();
                 break;
             case 1:
-                return $this->getAverage();
+                return $this->getRate();
+                break;
+            case 2:
+                return $this->getVolume();
                 break;
             default:
                 return null;
@@ -603,7 +651,8 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
         $keys = GemToGoldRatePeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getRateDatetime(),
-            $keys[1] => $this->getAverage(),
+            $keys[1] => $this->getRate(),
+            $keys[2] => $this->getVolume(),
         );
 
         return $result;
@@ -642,7 +691,10 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
                 $this->setRateDatetime($value);
                 break;
             case 1:
-                $this->setAverage($value);
+                $this->setRate($value);
+                break;
+            case 2:
+                $this->setVolume($value);
                 break;
         } // switch()
     }
@@ -669,7 +721,8 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
         $keys = GemToGoldRatePeer::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setRateDatetime($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setAverage($arr[$keys[1]]);
+        if (array_key_exists($keys[1], $arr)) $this->setRate($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setVolume($arr[$keys[2]]);
     }
 
     /**
@@ -682,7 +735,8 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
         $criteria = new Criteria(GemToGoldRatePeer::DATABASE_NAME);
 
         if ($this->isColumnModified(GemToGoldRatePeer::RATE_DATETIME)) $criteria->add(GemToGoldRatePeer::RATE_DATETIME, $this->rate_datetime);
-        if ($this->isColumnModified(GemToGoldRatePeer::AVERAGE)) $criteria->add(GemToGoldRatePeer::AVERAGE, $this->average);
+        if ($this->isColumnModified(GemToGoldRatePeer::RATE)) $criteria->add(GemToGoldRatePeer::RATE, $this->rate);
+        if ($this->isColumnModified(GemToGoldRatePeer::VOLUME)) $criteria->add(GemToGoldRatePeer::VOLUME, $this->volume);
 
         return $criteria;
     }
@@ -746,7 +800,8 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setAverage($this->getAverage());
+        $copyObj->setRate($this->getRate());
+        $copyObj->setVolume($this->getVolume());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setRateDatetime(NULL); // this is a auto-increment column, so set to default value
@@ -799,7 +854,8 @@ abstract class BaseGemToGoldRate extends BaseObject implements Persistent
     public function clear()
     {
         $this->rate_datetime = null;
-        $this->average = null;
+        $this->rate = null;
+        $this->volume = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();
