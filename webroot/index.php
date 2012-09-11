@@ -314,10 +314,10 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     /*---------------
      *  BUY LISTINGS
      *---------------*/
-    /*$chart[] = array(
+    $chart[] = array(
         'data'   => BuyListingQuery::getChartDatasetDataForItem($item),
         'name'   => "Buy Listings",
-    );*/
+    );
 
     $wrap    = false;
     $content = json_encode($chart);
