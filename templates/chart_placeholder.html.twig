@@ -1,20 +1,30 @@
 {% set url = url is defined ? url : path('chart', {dataId: item.dataId}) %}
 {% set title = title is defined ? title : item.name %}
-<div id="container" style="height: 500px; min-width: 500px"></div>
+<div id="container" style="height: 500px; width: 100%; min-width: 450px;"></div>
 <script type="text/javascript">
 $(function() {
     $.getJSON('{{ url }}', function(data) {
         // Create the chart
         var chart = new Highcharts.StockChart({
             chart : {
-                renderTo : 'container'
+                renderTo : 'container',
+                height   : 500
+            },
+            exporting : {
+                enabled: false
+            },
+            legend : {
+                enabled: true,
+                floating: true,
+                verticalAlign: "top",
+                y: 20
             },
             rangeSelector : {
                 buttons: [
                     {type: 'day',  count: 1,  text: '1d'},
                     {type: 'day',  count: 3,  text: '3d'},
                     {type: 'week', count: 1,  text: '1w'},
-                    {type: 'all',             text: 'all'},
+                    {type: 'all',             text: 'all'}
                 ],
                 selected : 1
             },
