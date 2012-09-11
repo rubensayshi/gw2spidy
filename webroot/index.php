@@ -304,16 +304,16 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
      *----------------*/
     $chart[] = array(
         'data'   => SellListingQuery::getChartDatasetDataForItem($item),
-        'label'  => "Sell Listings",
+        'name'  => "Sell Listings",
     );
 
     /*---------------
      *  BUY LISTINGS
      *---------------*/
-    $chart[] = array(
+    /*$chart[] = array(
         'data'   => BuyListingQuery::getChartDatasetDataForItem($item),
-        'label'  => "Buy Listings",
-    );
+        'name'   => "Buy Listings",
+    );*/
 
     $wrap    = false;
     $content = json_encode($chart);

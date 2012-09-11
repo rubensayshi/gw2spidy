@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highstock Example</title>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script type="text/javascript">
+$(function() {
+	$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-v.json&callback=?', function(data) {
+
+		// create the chart
+		chart = new Highcharts.StockChart({
+		    chart: {
+		        renderTo: 'container',
+		        alignTicks: false
+		    },
+
+		    rangeSelector: {
+		        selected: 1
+		    },
+
+		    title: {
+		        text: 'AAPL Stock Volume'
+		    },
+
+		    series: [{
+		        type: 'column',
+		        name: 'AAPL Stock Volume',
+		        data: data,
+		        dataGrouping: {
+					units: [[
+						'week', // unit name
+						[1] // allowed multiples
+					], [
+						'month',
+						[1, 2, 3, 4, 6]
+					]]
+		        }
+		    }]
+		});
+	});
+});
+		</script>
+	</head>
+	<body>
+<script src="../../js/highstock.js"></script>
+<script src="../../js/modules/exporting.js"></script>
+
+<div id="container" style="height: 500px"></div>
+	</body>
+</html>

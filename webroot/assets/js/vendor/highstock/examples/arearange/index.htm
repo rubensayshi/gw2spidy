@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highstock Example</title>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script type="text/javascript">
+$(function () {
+    $.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=range.json&callback=?', function(data) {
+    
+    	window.chart = new Highcharts.StockChart({
+    	
+		    chart: {
+		        renderTo: 'container',
+		        type: 'arearange'
+		    },
+		    
+		    rangeSelector: {
+		    	selected: 2
+		    },
+		    
+		    title: {
+		        text: 'Temperature variation by day'
+		    },
+		
+		    tooltip: {
+		        valueSuffix: '°C'
+		    },
+		    
+		    series: [{
+		        name: 'Temperatures',
+		        data: data
+		    }]
+		
+		});
+    });
+    
+});
+		</script>
+	</head>
+	<body>
+<script src="../../js/highstock.js"></script>
+<script src="../../js/highcharts-more.js"></script>
+<script src="../../js/modules/exporting.js"></script>
+
+<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+
+	</body>
+</html>
