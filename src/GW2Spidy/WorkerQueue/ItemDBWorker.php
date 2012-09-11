@@ -35,7 +35,6 @@ class ItemDBWorker implements Worker {
     }
 
     protected function buildItemDB($type, $subtype, $offset) {
-        $now    = new \DateTime();
         var_dump((string)$type, (string)$subtype, $offset) . "\n\n";
         $items  = TradeMarket::getInstance()->getItemList($type, $subtype, $offset);
 
@@ -43,54 +42,60 @@ class ItemDBWorker implements Worker {
 
         if ($items) {
             foreach ($items as $itemData) {
-                $item = ItemQuery::create()->findPK($itemData['data_id']);
-
-                var_dump($itemData['name'], (string)$item, $itemData['min_sale_unit_price']) . "\n\n";
-                if ($item) {
-                    if (($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
-                        $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
-                        $item->save();
-
-                    } else {
-                        throw new \Exception("Title for ID no longer matches! item [{$p}] [json::{$itemData['data_id']}::{$itemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}]");
-                    }
-                } else {
-                    $item = new Item();
-                    $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
-                    $item->setItemType($type);
-                    $item->setItemSubType($subtype);
-
-                    $item->save();
-                }
-
-                if ($itemData['min_sale_unit_price'] > 0) {
-                    $sellListing = new SellListing();
-                    $sellListing->setItem($item);
-                    $sellListing->setListingDate($now);
-                    $sellListing->setListingTime($now);
-                    $sellListing->setQuantity($itemData['sale_availability'] ?: 1);
-                    $sellListing->setUnitPrice($itemData['min_sale_unit_price']);
-                    $sellListing->setListings(1);
-
-                    $sellListing->save();
-                }
-
-                if ($itemData['max_offer_unit_price'] > 0) {
-                    $buyListing = new BuyListing();
-                    $buyListing->setItem($item);
-                    $buyListing->setListingDate($now);
-                    $buyListing->setListingTime($now);
-                    $buyListing->setQuantity($itemData['offer_availability'] ?: 1);
-                    $buyListing->setUnitPrice($itemData['max_offer_unit_price']);
-                    $buyListing->setListings(1);
-
-                    $buyListing->save();
-                }
+                $this->storeItemData($itemData, $type, $subtype);
             }
         }
 
         return (boolean)$items;
     }
+
+    public function storeItemData($itemData, ItemType $type = null, ItemSubType $subtype = null) {
+        $now  = new \DateTime();
+        $item = ItemQuery::create()->findPK($itemData['data_id']);
+
+        var_dump($itemData['name'], (string)$item, $itemData['min_sale_unit_price']) . "\n\n";
+        if ($item) {
+            if (($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
+                $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
+                $item->save();
+
+            } else {
+                throw new \Exception("Title for ID no longer matches! item [{$p}] [json::{$itemData['data_id']}::{$itemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}]");
+            }
+        } else {
+            $item = new Item();
+            $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
+            $item->setItemType($type);
+            $item->setItemSubType($subtype);
+
+            $item->save();
+        }
+
+        if ($itemData['min_sale_unit_price'] > 0) {
+            $sellListing = new SellListing();
+            $sellListing->setItem($item);
+            $sellListing->setListingDate($now);
+            $sellListing->setListingTime($now);
+            $sellListing->setQuantity($itemData['sale_availability'] ?: 1);
+            $sellListing->setUnitPrice($itemData['min_sale_unit_price']);
+            $sellListing->setListings(1);
+
+            $sellListing->save();
+        }
+
+        if ($itemData['max_offer_unit_price'] > 0) {
+            $buyListing = new BuyListing();
+            $buyListing->setItem($item);
+            $buyListing->setListingDate($now);
+            $buyListing->setListingTime($now);
+            $buyListing->setQuantity($itemData['offer_availability'] ?: 1);
+            $buyListing->setUnitPrice($itemData['max_offer_unit_price']);
+            $buyListing->setListings(1);
+
+            $buyListing->save();
+        }
+    }
+
 
     protected function enqeueNextOffset($type, $subtype, $offset) {
         return self::enqueueWorker($type, $subtype, $offset + 10, true);
