@@ -5,11 +5,9 @@
  *  this file contains all routing and the 'controllers' using lambda functions
  */
 
-use GW2Spidy\DB\GemExchangeQuery;
+use GW2Spidy\DB\BuyGemRateQuery;
 
-use GW2Spidy\Twig\ItemListRoutingExtension;
-
-use GW2Spidy\Twig\GW2MoneyExtension;
+use GW2Spidy\DB\SellGemRateQuery;
 
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemTypeQuery;
@@ -24,8 +22,11 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 use GW2Spidy\Application;
-use GW2Spidy\Twig\VersionedAssetsRoutingExtension;
 use GW2Spidy\ItemHistory;
+
+use GW2Spidy\Twig\VersionedAssetsRoutingExtension;
+use GW2Spidy\Twig\ItemListRoutingExtension;
+use GW2Spidy\Twig\GW2MoneyExtension;
 
 use GW2Spidy\Queue\RequestSlotManager;
 use GW2Spidy\Queue\WorkerQueueManager;
@@ -152,9 +153,34 @@ $app->get("/gem", function() use($app) {
     // workaround for now to set active menu item
     $app->setGemActive();
 
-    $summary = GemExchangeQuery::getSummaryData();
 
-    return $app['twig']->render('gem.html.twig', $summary);
+    $lastSell = SellGemRateQuery::create()
+                ->addDescendingOrderByColumn("rate_datetime")
+                ->offset(-1)
+                ->limit(1)
+                ->findOne();
+
+    $lastBuy = BuyGemRateQuery::create()
+                ->addDescendingOrderByColumn("rate_datetime")
+                ->offset(-1)
+                ->limit(1)
+                ->findOne();
+
+    $gemtogold = $lastSell->getAverage();
+    $goldtogem = $lastBuy->getAverage();
+
+    $usdtogem    = 10  / 800 * 100;
+    $poundstogem = 8.5 / 800 * 100;
+    $eurostogem  = 10  / 800 * 100;
+
+    $usdtogold   = (10000 / $gemtogold) * $usdtogem;
+
+    return $app['twig']->render('gem.html.twig', array(
+        'gemtogold' => $gemtogold,
+        'goldtogem' => $goldtogem,
+        'usdtogem'  => $usdtogem,
+        'usdtogold' => $usdtogold,
+    ));
 })
 ->bind('gem');
 
@@ -166,12 +192,20 @@ $app->get("/gem", function() use($app) {
 $app->get("/gem_chart", function() use($app) {
     $chart = array();
 
-    /*----------------
-     *  SELL LISTINGS
-     *----------------*/
+    /*---------------------
+     *  BUY GEMS WITH GOLD
+    *----------------------*/
     $chart[] = array(
-        'data'   => GemExchangeQuery::getChartDatasetData(),
-        'label'  => "Exchange Rate",
+        'data'   => SellGemRateQuery::getChartDatasetData(),
+        'label'  => "Gold to Gems",
+    );
+
+    /*---------------------
+     *  SELL GEMS FOR GOLD
+    *----------------------*/
+    $chart[] = array(
+        'data'   => BuyGemRateQuery::getChartDatasetData(),
+        'label'  => "Gems to Gold",
     );
 
     $content = json_encode($chart);

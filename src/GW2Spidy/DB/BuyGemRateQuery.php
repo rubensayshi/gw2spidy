@@ -6,11 +6,11 @@ use \DateTime;
 use \DateTimeZone;
 
 use GW2Spidy\Util\ApplicationCache;
-use GW2Spidy\DB\om\BaseGemExchangeQuery;
+use GW2Spidy\DB\om\BaseBuyGemRateQuery;
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'gem_exchange' table.
+ * Skeleton subclass for performing query and update operations on the 'buy_gem_rate' table.
  *
  *
  *
@@ -20,7 +20,7 @@ use GW2Spidy\DB\om\BaseGemExchangeQuery;
  *
  * @package    propel.generator.gw2spidy
  */
-class GemExchangeQuery extends BaseGemExchangeQuery {
+class BuyGemRateQuery extends BaseBuyGemRateQuery {
     public static function getChartDatasetData() {
         $cacheKey = __CLASS__ . "::" . __METHOD__;
         $data     = ApplicationCache::getInstance()->get($cacheKey);
@@ -29,11 +29,11 @@ class GemExchangeQuery extends BaseGemExchangeQuery {
             $data = array();
 
             $rates = static::create()
-                            ->select(array('exchangeDatetime', 'average'))
+                            ->select(array('rateDatetime', 'average'))
                             ->find();
 
             foreach ($rates as $rateEntry) {
-                $date = new DateTime("{$rateEntry['exchangeDatetime']}");
+                $date = new DateTime("{$rateEntry['rateDatetime']}");
                 $date->setTimezone(new DateTimeZone('UTC'));
 
                 $rateEntry['average'] = round($rateEntry['average'], 2);
@@ -46,28 +46,4 @@ class GemExchangeQuery extends BaseGemExchangeQuery {
 
         return $data;
     }
-
-    public static function getSummaryData() {
-        $last = self::create()
-                ->addDescendingOrderByColumn("exchange_datetime")
-                ->offset(-1)
-                ->limit(1)
-                ->findOne();
-
-        $gemtogold = $last->getAverage();
-        $goldtogem = $gemtogold * 1.40;
-
-        $usdtogem    = 10  / 800 * 100;
-        $poundstogem = 8.5 / 800 * 100;
-        $eurostogem  = 10  / 800 * 100;
-
-        $usdtogold   = (10000 / $gemtogold) * $usdtogem;
-
-        return array(
-            'gemtogold' => $gemtogold,
-            'goldtogem' => $goldtogem,
-            'usdtogem'  => $usdtogem,
-            'usdtogold' => $usdtogold,
-        );
-    }
-} // GemExchangeQuery
+} // BuyGemRateQuery

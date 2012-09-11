@@ -114,16 +114,29 @@ CREATE TABLE `buy_listing`
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
--- gem_exchange
+-- buy_gem_rate
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `gem_exchange`;
+DROP TABLE IF EXISTS `buy_gem_rate`;
 
-CREATE TABLE `gem_exchange`
+CREATE TABLE `buy_gem_rate`
 (
-    `exchange_datetime` DATETIME NOT NULL,
+    `rate_datetime` DATETIME NOT NULL,
     `average` INTEGER NOT NULL,
-    PRIMARY KEY (`exchange_datetime`)
+    PRIMARY KEY (`rate_datetime`)
+) ENGINE=MyISAM;
+
+-- ---------------------------------------------------------------------
+-- sell_gem_rate
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `sell_gem_rate`;
+
+CREATE TABLE `sell_gem_rate`
+(
+    `rate_datetime` DATETIME NOT NULL,
+    `average` INTEGER NOT NULL,
+    PRIMARY KEY (`rate_datetime`)
 ) ENGINE=MyISAM;
 
 # This restores the fkey checks, after having unset them earlier

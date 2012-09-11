@@ -4,22 +4,36 @@ namespace GW2Spidy\WorkerQueue;
 
 use \DateTime;
 use \DateTimeZone;
+use \Exception;
 
 use GW2Spidy\GemExchangeSpider;
-
-use GW2Spidy\DB\GemExchange;
-use GW2Spidy\DB\GemExchangeQuery;
 
 use GW2Spidy\Queue\WorkerQueueManager;
 use GW2Spidy\Queue\WorkerQueueItem;
 
 class GemExchangeDBWorker implements Worker {
+    protected function getTypes() {
+        return array(
+            GemExchangeSpider::GEM_RATE_TYPE_RECIEVE_GEMS  => '\\GW2Spidy\\DB\\BuyGemRate',
+            GemExchangeSpider::GEM_RATE_TYPE_RECIEVE_COINS => '\\GW2Spidy\\DB\\SellGemRate'
+        );
+    }
+
     public function getRetries() {
         return 1;
     }
 
     public function work(WorkerQueueItem $item) {
-        $data = GemExchangeSpider::getInstance()->getGemExchange();
+        $types = self::getTypes();
+        if (!($type = $item->getData())) {
+            throw new Exception("bad worker item - no type defined!");
+        }
+        if (!isset($types[$type]) || !($class = $types[$type])) {
+            throw new Exception("bad worker item - type doesn't resolve to a class in the mapping!");
+        }
+        $queryClass = "{$class}Query";
+
+        $data = GemExchangeSpider::getInstance()->getGemExchange($type);
 
         if (isset($data['plots']) && $data['plots']) {
             $plots = $data['plots'];
@@ -41,22 +55,29 @@ class GemExchangeDBWorker implements Worker {
             $copper = $silver * 100;
             $date->setTimezone(new DateTimeZone(date_default_timezone_get()));
 
-            $exists = GemExchangeQuery::create()
-                        ->filterByExchangeDatetime($date)
+            $exists = $queryClass::create()
+                        ->filterByRateDatetime($date)
                         ->count() > 0;
 
             if (!$exists) {
-                $new = new GemExchange();
+                $new = new $class();
                 $new->setAverage($copper)
-                    ->setExchangeDatetime($date)
+                    ->setRateDatetime($date)
                     ->save();
             }
         }
     }
 
-    public static function enqueueWorker() {
+    public static function enqueueWorkers() {
+        foreach (self::getTypes() as $type => $class) {
+            self::enqueueWorker($type);
+        }
+    }
+
+    public static function enqueueWorker($type) {
         $queueItem = new WorkerQueueItem();
         $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\GemExchangeDBWorker");
+        $queueItem->setData($type);
 
         WorkerQueueManager::getInstance()->enqueue($queueItem);
 

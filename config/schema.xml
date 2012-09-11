@@ -70,8 +70,12 @@
             <index-column name="listing_time" />
         </index>
     </table>
-    <table name="gem_exchange" phpName="GemExchange">
-        <column name="exchange_datetime" type="timestamp" required="true" primaryKey="true" />
+    <table name="buy_gem_rate" phpName="BuyGemRate">
+        <column name="rate_datetime" type="timestamp" required="true" primaryKey="true" />
+        <column name="average" type="integer" required="true" />
+    </table>
+    <table name="sell_gem_rate" phpName="SellGemRate">
+        <column name="rate_datetime" type="timestamp" required="true" primaryKey="true" />
         <column name="average" type="integer" required="true" />
     </table>
 </database>

@@ -7,7 +7,7 @@ use \TableMap;
 
 
 /**
- * This class defines the structure of the 'gem_exchange' table.
+ * This class defines the structure of the 'sell_gem_rate' table.
  *
  *
  *
@@ -18,13 +18,13 @@ use \TableMap;
  *
  * @package    propel.generator.gw2spidy.map
  */
-class GemExchangeTableMap extends TableMap
+class SellGemRateTableMap extends TableMap
 {
 
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'gw2spidy.map.GemExchangeTableMap';
+    const CLASS_NAME = 'gw2spidy.map.SellGemRateTableMap';
 
     /**
      * Initialize the table attributes, columns and validators
@@ -36,13 +36,13 @@ class GemExchangeTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('gem_exchange');
-        $this->setPhpName('GemExchange');
-        $this->setClassname('GW2Spidy\\DB\\GemExchange');
+        $this->setName('sell_gem_rate');
+        $this->setPhpName('SellGemRate');
+        $this->setClassname('GW2Spidy\\DB\\SellGemRate');
         $this->setPackage('gw2spidy');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('EXCHANGE_DATETIME', 'ExchangeDatetime', 'TIMESTAMP', true, null, null);
+        $this->addPrimaryKey('RATE_DATETIME', 'RateDatetime', 'TIMESTAMP', true, null, null);
         $this->addColumn('AVERAGE', 'Average', 'INTEGER', true, null, null);
         // validators
     } // initialize()
@@ -54,4 +54,4 @@ class GemExchangeTableMap extends TableMap
     {
     } // buildRelations()
 
-} // GemExchangeTableMap
+} // SellGemRateTableMap

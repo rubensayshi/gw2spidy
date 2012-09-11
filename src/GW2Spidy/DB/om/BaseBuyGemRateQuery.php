@@ -11,65 +11,65 @@ use \Propel;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
-use GW2Spidy\DB\GemExchange;
-use GW2Spidy\DB\GemExchangePeer;
-use GW2Spidy\DB\GemExchangeQuery;
+use GW2Spidy\DB\BuyGemRate;
+use GW2Spidy\DB\BuyGemRatePeer;
+use GW2Spidy\DB\BuyGemRateQuery;
 
 /**
- * Base class that represents a query for the 'gem_exchange' table.
+ * Base class that represents a query for the 'buy_gem_rate' table.
  *
  * 
  *
- * @method     GemExchangeQuery orderByExchangeDatetime($order = Criteria::ASC) Order by the exchange_datetime column
- * @method     GemExchangeQuery orderByAverage($order = Criteria::ASC) Order by the average column
+ * @method     BuyGemRateQuery orderByRateDatetime($order = Criteria::ASC) Order by the rate_datetime column
+ * @method     BuyGemRateQuery orderByAverage($order = Criteria::ASC) Order by the average column
  *
- * @method     GemExchangeQuery groupByExchangeDatetime() Group by the exchange_datetime column
- * @method     GemExchangeQuery groupByAverage() Group by the average column
+ * @method     BuyGemRateQuery groupByRateDatetime() Group by the rate_datetime column
+ * @method     BuyGemRateQuery groupByAverage() Group by the average column
  *
- * @method     GemExchangeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     GemExchangeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     GemExchangeQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     BuyGemRateQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     BuyGemRateQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     BuyGemRateQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     GemExchange findOne(PropelPDO $con = null) Return the first GemExchange matching the query
- * @method     GemExchange findOneOrCreate(PropelPDO $con = null) Return the first GemExchange matching the query, or a new GemExchange object populated from the query conditions when no match is found
+ * @method     BuyGemRate findOne(PropelPDO $con = null) Return the first BuyGemRate matching the query
+ * @method     BuyGemRate findOneOrCreate(PropelPDO $con = null) Return the first BuyGemRate matching the query, or a new BuyGemRate object populated from the query conditions when no match is found
  *
- * @method     GemExchange findOneByExchangeDatetime(string $exchange_datetime) Return the first GemExchange filtered by the exchange_datetime column
- * @method     GemExchange findOneByAverage(int $average) Return the first GemExchange filtered by the average column
+ * @method     BuyGemRate findOneByRateDatetime(string $rate_datetime) Return the first BuyGemRate filtered by the rate_datetime column
+ * @method     BuyGemRate findOneByAverage(int $average) Return the first BuyGemRate filtered by the average column
  *
- * @method     array findByExchangeDatetime(string $exchange_datetime) Return GemExchange objects filtered by the exchange_datetime column
- * @method     array findByAverage(int $average) Return GemExchange objects filtered by the average column
+ * @method     array findByRateDatetime(string $rate_datetime) Return BuyGemRate objects filtered by the rate_datetime column
+ * @method     array findByAverage(int $average) Return BuyGemRate objects filtered by the average column
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseGemExchangeQuery extends ModelCriteria
+abstract class BaseBuyGemRateQuery extends ModelCriteria
 {
     
     /**
-     * Initializes internal state of BaseGemExchangeQuery object.
+     * Initializes internal state of BaseBuyGemRateQuery object.
      *
      * @param     string $dbName The dabase name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'gw2spidy', $modelName = 'GW2Spidy\\DB\\GemExchange', $modelAlias = null)
+    public function __construct($dbName = 'gw2spidy', $modelName = 'GW2Spidy\\DB\\BuyGemRate', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new GemExchangeQuery object.
+     * Returns a new BuyGemRateQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
-     * @param     GemExchangeQuery|Criteria $criteria Optional Criteria to build the query from
+     * @param     BuyGemRateQuery|Criteria $criteria Optional Criteria to build the query from
      *
-     * @return GemExchangeQuery
+     * @return BuyGemRateQuery
      */
     public static function create($modelAlias = null, $criteria = null)
     {
-        if ($criteria instanceof GemExchangeQuery) {
+        if ($criteria instanceof BuyGemRateQuery) {
             return $criteria;
         }
-        $query = new GemExchangeQuery();
+        $query = new BuyGemRateQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -92,19 +92,19 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query 
      * @param     PropelPDO $con an optional connection object
      *
-     * @return   GemExchange|GemExchange[]|mixed the result, formatted by the current formatter
+     * @return   BuyGemRate|BuyGemRate[]|mixed the result, formatted by the current formatter
      */
     public function findPk($key, $con = null)
     {
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = GemExchangePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
+        if ((null !== ($obj = BuyGemRatePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is alredy in the instance pool
             return $obj;
         }
         if ($con === null) {
-            $con = Propel::getConnection(GemExchangePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(BuyGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
@@ -123,12 +123,12 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return   GemExchange A model object, or null if the key is not found
+     * @return   BuyGemRate A model object, or null if the key is not found
      * @throws   PropelException
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `EXCHANGE_DATETIME`, `AVERAGE` FROM `gem_exchange` WHERE `EXCHANGE_DATETIME` = :p0';
+        $sql = 'SELECT `RATE_DATETIME`, `AVERAGE` FROM `buy_gem_rate` WHERE `RATE_DATETIME` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_STR);
@@ -139,9 +139,9 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-            $obj = new GemExchange();
+            $obj = new BuyGemRate();
             $obj->hydrate($row);
-            GemExchangePeer::addInstanceToPool($obj, (string) $key);
+            BuyGemRatePeer::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 
@@ -154,7 +154,7 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     PropelPDO $con A connection object
      *
-     * @return GemExchange|GemExchange[]|mixed the result, formatted by the current formatter
+     * @return BuyGemRate|BuyGemRate[]|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, $con)
     {
@@ -175,7 +175,7 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      * @param     array $keys Primary keys to use for the query
      * @param     PropelPDO $con an optional connection object
      *
-     * @return PropelObjectCollection|GemExchange[]|mixed the list of results, formatted by the current formatter
+     * @return PropelObjectCollection|BuyGemRate[]|mixed the list of results, formatted by the current formatter
      */
     public function findPks($keys, $con = null)
     {
@@ -196,12 +196,12 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return GemExchangeQuery The current query, for fluid interface
+     * @return BuyGemRateQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(BuyGemRatePeer::RATE_DATETIME, $key, Criteria::EQUAL);
     }
 
     /**
@@ -209,25 +209,25 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return GemExchangeQuery The current query, for fluid interface
+     * @return BuyGemRateQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $keys, Criteria::IN);
+        return $this->addUsingAlias(BuyGemRatePeer::RATE_DATETIME, $keys, Criteria::IN);
     }
 
     /**
-     * Filter the query on the exchange_datetime column
+     * Filter the query on the rate_datetime column
      *
      * Example usage:
      * <code>
-     * $query->filterByExchangeDatetime('2011-03-14'); // WHERE exchange_datetime = '2011-03-14'
-     * $query->filterByExchangeDatetime('now'); // WHERE exchange_datetime = '2011-03-14'
-     * $query->filterByExchangeDatetime(array('max' => 'yesterday')); // WHERE exchange_datetime > '2011-03-13'
+     * $query->filterByRateDatetime('2011-03-14'); // WHERE rate_datetime = '2011-03-14'
+     * $query->filterByRateDatetime('now'); // WHERE rate_datetime = '2011-03-14'
+     * $query->filterByRateDatetime(array('max' => 'yesterday')); // WHERE rate_datetime > '2011-03-13'
      * </code>
      *
-     * @param     mixed $exchangeDatetime The value to use as filter.
+     * @param     mixed $rateDatetime The value to use as filter.
      *              Values can be integers (unix timestamps), DateTime objects, or strings.
      *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
@@ -235,18 +235,18 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return GemExchangeQuery The current query, for fluid interface
+     * @return BuyGemRateQuery The current query, for fluid interface
      */
-    public function filterByExchangeDatetime($exchangeDatetime = null, $comparison = null)
+    public function filterByRateDatetime($rateDatetime = null, $comparison = null)
     {
-        if (is_array($exchangeDatetime)) {
+        if (is_array($rateDatetime)) {
             $useMinMax = false;
-            if (isset($exchangeDatetime['min'])) {
-                $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $exchangeDatetime['min'], Criteria::GREATER_EQUAL);
+            if (isset($rateDatetime['min'])) {
+                $this->addUsingAlias(BuyGemRatePeer::RATE_DATETIME, $rateDatetime['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($exchangeDatetime['max'])) {
-                $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $exchangeDatetime['max'], Criteria::LESS_EQUAL);
+            if (isset($rateDatetime['max'])) {
+                $this->addUsingAlias(BuyGemRatePeer::RATE_DATETIME, $rateDatetime['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -257,7 +257,7 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $exchangeDatetime, $comparison);
+        return $this->addUsingAlias(BuyGemRatePeer::RATE_DATETIME, $rateDatetime, $comparison);
     }
 
     /**
@@ -276,18 +276,18 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return GemExchangeQuery The current query, for fluid interface
+     * @return BuyGemRateQuery The current query, for fluid interface
      */
     public function filterByAverage($average = null, $comparison = null)
     {
         if (is_array($average)) {
             $useMinMax = false;
             if (isset($average['min'])) {
-                $this->addUsingAlias(GemExchangePeer::AVERAGE, $average['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(BuyGemRatePeer::AVERAGE, $average['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($average['max'])) {
-                $this->addUsingAlias(GemExchangePeer::AVERAGE, $average['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(BuyGemRatePeer::AVERAGE, $average['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -298,23 +298,23 @@ abstract class BaseGemExchangeQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(GemExchangePeer::AVERAGE, $average, $comparison);
+        return $this->addUsingAlias(BuyGemRatePeer::AVERAGE, $average, $comparison);
     }
 
     /**
      * Exclude object from result
      *
-     * @param   GemExchange $gemExchange Object to remove from the list of results
+     * @param   BuyGemRate $buyGemRate Object to remove from the list of results
      *
-     * @return GemExchangeQuery The current query, for fluid interface
+     * @return BuyGemRateQuery The current query, for fluid interface
      */
-    public function prune($gemExchange = null)
+    public function prune($buyGemRate = null)
     {
-        if ($gemExchange) {
-            $this->addUsingAlias(GemExchangePeer::EXCHANGE_DATETIME, $gemExchange->getExchangeDatetime(), Criteria::NOT_EQUAL);
+        if ($buyGemRate) {
+            $this->addUsingAlias(BuyGemRatePeer::RATE_DATETIME, $buyGemRate->getRateDatetime(), Criteria::NOT_EQUAL);
         }
 
         return $this;
     }
 
-} // BaseGemExchangeQuery
+} // BaseBuyGemRateQuery

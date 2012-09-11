@@ -16,30 +16,30 @@ use \PropelDateTime;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
-use GW2Spidy\DB\GemExchange;
-use GW2Spidy\DB\GemExchangePeer;
-use GW2Spidy\DB\GemExchangeQuery;
+use GW2Spidy\DB\BuyGemRate;
+use GW2Spidy\DB\BuyGemRatePeer;
+use GW2Spidy\DB\BuyGemRateQuery;
 
 /**
- * Base class that represents a row from the 'gem_exchange' table.
+ * Base class that represents a row from the 'buy_gem_rate' table.
  *
  * 
  *
  * @package    propel.generator.gw2spidy.om
  */
-abstract class BaseGemExchange extends BaseObject implements Persistent
+abstract class BaseBuyGemRate extends BaseObject implements Persistent
 {
 
     /**
      * Peer class name
      */
-    const PEER = 'GW2Spidy\\DB\\GemExchangePeer';
+    const PEER = 'GW2Spidy\\DB\\BuyGemRatePeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        GemExchangePeer
+     * @var        BuyGemRatePeer
      */
     protected static $peer;
 
@@ -50,10 +50,10 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     protected $startCopy = false;
 
     /**
-     * The value for the exchange_datetime field.
+     * The value for the rate_datetime field.
      * @var        string
      */
-    protected $exchange_datetime;
+    protected $rate_datetime;
 
     /**
      * The value for the average field.
@@ -76,7 +76,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     protected $alreadyInValidation = false;
 
     /**
-     * Get the [optionally formatted] temporal [exchange_datetime] column value.
+     * Get the [optionally formatted] temporal [rate_datetime] column value.
      * 
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
@@ -84,22 +84,22 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      * @return mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getExchangeDatetime($format = 'Y-m-d H:i:s')
+    public function getRateDatetime($format = 'Y-m-d H:i:s')
     {
-        if ($this->exchange_datetime === null) {
+        if ($this->rate_datetime === null) {
             return null;
         }
 
 
-        if ($this->exchange_datetime === '0000-00-00 00:00:00') {
+        if ($this->rate_datetime === '0000-00-00 00:00:00') {
             // while technically this is not a default value of NULL,
             // this seems to be closest in meaning.
             return null;
         } else {
             try {
-                $dt = new DateTime($this->exchange_datetime);
+                $dt = new DateTime($this->rate_datetime);
             } catch (Exception $x) {
-                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->exchange_datetime, true), $x);
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->rate_datetime, true), $x);
             }
         }
 
@@ -125,33 +125,33 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     }
 
     /**
-     * Sets the value of [exchange_datetime] column to a normalized version of the date/time value specified.
+     * Sets the value of [rate_datetime] column to a normalized version of the date/time value specified.
      * 
      * @param      mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as NULL.
-     * @return   GemExchange The current object (for fluent API support)
+     * @return   BuyGemRate The current object (for fluent API support)
      */
-    public function setExchangeDatetime($v)
+    public function setRateDatetime($v)
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->exchange_datetime !== null || $dt !== null) {
-            $currentDateAsString = ($this->exchange_datetime !== null && $tmpDt = new DateTime($this->exchange_datetime)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+        if ($this->rate_datetime !== null || $dt !== null) {
+            $currentDateAsString = ($this->rate_datetime !== null && $tmpDt = new DateTime($this->rate_datetime)) ? $tmpDt->format('Y-m-d H:i:s') : null;
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
-                $this->exchange_datetime = $newDateAsString;
-                $this->modifiedColumns[] = GemExchangePeer::EXCHANGE_DATETIME;
+                $this->rate_datetime = $newDateAsString;
+                $this->modifiedColumns[] = BuyGemRatePeer::RATE_DATETIME;
             }
         } // if either are not null
 
 
         return $this;
-    } // setExchangeDatetime()
+    } // setRateDatetime()
 
     /**
      * Set the value of [average] column.
      * 
      * @param      int $v new value
-     * @return   GemExchange The current object (for fluent API support)
+     * @return   BuyGemRate The current object (for fluent API support)
      */
     public function setAverage($v)
     {
@@ -161,7 +161,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
 
         if ($this->average !== $v) {
             $this->average = $v;
-            $this->modifiedColumns[] = GemExchangePeer::AVERAGE;
+            $this->modifiedColumns[] = BuyGemRatePeer::AVERAGE;
         }
 
 
@@ -200,7 +200,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     {
         try {
 
-            $this->exchange_datetime = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
+            $this->rate_datetime = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
             $this->average = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
             $this->resetModified();
 
@@ -210,10 +210,10 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = GemExchangePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 2; // 2 = BuyGemRatePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating GemExchange object", $e);
+            throw new PropelException("Error populating BuyGemRate object", $e);
         }
     }
 
@@ -256,13 +256,13 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(GemExchangePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(BuyGemRatePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = GemExchangePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = BuyGemRatePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
@@ -292,12 +292,12 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(GemExchangePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(BuyGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = GemExchangeQuery::create()
+            $deleteQuery = BuyGemRateQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -335,7 +335,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(GemExchangePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(BuyGemRatePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -355,7 +355,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                GemExchangePeer::addInstanceToPool($this);
+                BuyGemRatePeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -418,15 +418,15 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(GemExchangePeer::EXCHANGE_DATETIME)) {
-            $modifiedColumns[':p' . $index++]  = '`EXCHANGE_DATETIME`';
+        if ($this->isColumnModified(BuyGemRatePeer::RATE_DATETIME)) {
+            $modifiedColumns[':p' . $index++]  = '`RATE_DATETIME`';
         }
-        if ($this->isColumnModified(GemExchangePeer::AVERAGE)) {
+        if ($this->isColumnModified(BuyGemRatePeer::AVERAGE)) {
             $modifiedColumns[':p' . $index++]  = '`AVERAGE`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `gem_exchange` (%s) VALUES (%s)',
+            'INSERT INTO `buy_gem_rate` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -435,8 +435,8 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`EXCHANGE_DATETIME`':
-						$stmt->bindValue($identifier, $this->exchange_datetime, PDO::PARAM_STR);
+                    case '`RATE_DATETIME`':
+						$stmt->bindValue($identifier, $this->rate_datetime, PDO::PARAM_STR);
                         break;
                     case '`AVERAGE`':
 						$stmt->bindValue($identifier, $this->average, PDO::PARAM_INT);
@@ -528,7 +528,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
             $failureMap = array();
 
 
-            if (($retval = GemExchangePeer::doValidate($this, $columns)) !== true) {
+            if (($retval = BuyGemRatePeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
@@ -552,7 +552,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = GemExchangePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = BuyGemRatePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -569,7 +569,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                return $this->getExchangeDatetime();
+                return $this->getRateDatetime();
                 break;
             case 1:
                 return $this->getAverage();
@@ -596,13 +596,13 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
-        if (isset($alreadyDumpedObjects['GemExchange'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['BuyGemRate'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['GemExchange'][$this->getPrimaryKey()] = true;
-        $keys = GemExchangePeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['BuyGemRate'][$this->getPrimaryKey()] = true;
+        $keys = BuyGemRatePeer::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getExchangeDatetime(),
+            $keys[0] => $this->getRateDatetime(),
             $keys[1] => $this->getAverage(),
         );
 
@@ -622,7 +622,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = GemExchangePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = BuyGemRatePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -639,7 +639,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                $this->setExchangeDatetime($value);
+                $this->setRateDatetime($value);
                 break;
             case 1:
                 $this->setAverage($value);
@@ -666,9 +666,9 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = GemExchangePeer::getFieldNames($keyType);
+        $keys = BuyGemRatePeer::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setExchangeDatetime($arr[$keys[0]]);
+        if (array_key_exists($keys[0], $arr)) $this->setRateDatetime($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setAverage($arr[$keys[1]]);
     }
 
@@ -679,10 +679,10 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(GemExchangePeer::DATABASE_NAME);
+        $criteria = new Criteria(BuyGemRatePeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(GemExchangePeer::EXCHANGE_DATETIME)) $criteria->add(GemExchangePeer::EXCHANGE_DATETIME, $this->exchange_datetime);
-        if ($this->isColumnModified(GemExchangePeer::AVERAGE)) $criteria->add(GemExchangePeer::AVERAGE, $this->average);
+        if ($this->isColumnModified(BuyGemRatePeer::RATE_DATETIME)) $criteria->add(BuyGemRatePeer::RATE_DATETIME, $this->rate_datetime);
+        if ($this->isColumnModified(BuyGemRatePeer::AVERAGE)) $criteria->add(BuyGemRatePeer::AVERAGE, $this->average);
 
         return $criteria;
     }
@@ -697,8 +697,8 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(GemExchangePeer::DATABASE_NAME);
-        $criteria->add(GemExchangePeer::EXCHANGE_DATETIME, $this->exchange_datetime);
+        $criteria = new Criteria(BuyGemRatePeer::DATABASE_NAME);
+        $criteria->add(BuyGemRatePeer::RATE_DATETIME, $this->rate_datetime);
 
         return $criteria;
     }
@@ -709,18 +709,18 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function getPrimaryKey()
     {
-        return $this->getExchangeDatetime();
+        return $this->getRateDatetime();
     }
 
     /**
-     * Generic method to set the primary key (exchange_datetime column).
+     * Generic method to set the primary key (rate_datetime column).
      *
      * @param       string $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setExchangeDatetime($key);
+        $this->setRateDatetime($key);
     }
 
     /**
@@ -730,7 +730,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getExchangeDatetime();
+        return null === $this->getRateDatetime();
     }
 
     /**
@@ -739,7 +739,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of GemExchange (or compatible) type.
+     * @param      object $copyObj An object of BuyGemRate (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -749,7 +749,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
         $copyObj->setAverage($this->getAverage());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setExchangeDatetime(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setRateDatetime(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -762,7 +762,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 GemExchange Clone of current object.
+     * @return                 BuyGemRate Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -782,12 +782,12 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return   GemExchangePeer
+     * @return   BuyGemRatePeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new GemExchangePeer();
+            self::$peer = new BuyGemRatePeer();
         }
 
         return self::$peer;
@@ -798,7 +798,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function clear()
     {
-        $this->exchange_datetime = null;
+        $this->rate_datetime = null;
         $this->average = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
@@ -831,7 +831,7 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(GemExchangePeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(BuyGemRatePeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
@@ -844,4 +844,4 @@ abstract class BaseGemExchange extends BaseObject implements Persistent
         return $this->alreadyInSave;
     }
 
-} // BaseGemExchange
+} // BaseBuyGemRate
