@@ -319,7 +319,6 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
         'name'   => "Buy Listings",
     );
 
-    $wrap    = false;
     $content = json_encode($chart);
 
     return $content;
