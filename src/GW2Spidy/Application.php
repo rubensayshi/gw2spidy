@@ -108,6 +108,10 @@ class Application extends \Silex\Application {
     }
 
     public function isNotificationVisible($key, $cnt = 1) {
+        if ($this->isDevMode()) {
+            return true;
+        }
+
         if (!isset($_SESSION["notification_{$key}_count"])) {
             $_SESSION["notification_{$key}_count"] = 0;
         }
