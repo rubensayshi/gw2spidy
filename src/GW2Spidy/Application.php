@@ -106,6 +106,19 @@ class Application extends \Silex\Application {
 
         return $this->displayTypes;
     }
+
+    public function isNotificationVisible($key, $cnt = 1) {
+        if (!isset($_SESSION["notification_{$key}_count"])) {
+            $_SESSION["notification_{$key}_count"] = 0;
+        }
+
+        if ($_SESSION["notification_{$key}_count"] < $cnt) {
+            $_SESSION["notification_{$key}_count"]++;
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 ?>
