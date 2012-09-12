@@ -2,6 +2,7 @@ GW2Spidy - Trade Market Graphs
 ==============================
 This project aims to provide you with graphs of the sale and buy listings of items on the Guild Wars 2 Trade Market.
 
+
 How does it work?
 =================
 ArenaNet has build the Trade Market so that it's loaded into the game from a website.
@@ -10,6 +11,7 @@ You can also access this website with a browser and use your game account to log
 Now what I've build is some tools which will run constantly to automatically login to that website and record all data we can find,
 as a result I can record the sale listings for all the items about every hour and with that data I can create graphs with the price changing over time! 
 
+
 Contributing
 ============
 Everyone is very much welcome to contribute, 99% chance you're reading this on github so it shouldn't be to hard to fork and do pull requests right :) ?
@@ -17,10 +19,12 @@ Everyone is very much welcome to contribute, 99% chance you're reading this on g
 If you need any help with setup of the project or using git(hub) then just contact me and I'll be glad to help you!
 If you want a dump of the database, since that's a lot easier to work with, then just contact me ;)
 
+
 Date/time data
 ==============
 As usual I didn't really think about timezones when I started this project, but now that multiple people forked the project and that I'm exporting data to some people 
 it suddently matters ... so I'll refactor the code soon to ensure all date/time data is stored as UTC ... atm all data is stored in the server's timezone, in my case Europe/Amsterdam!
+
 
 Project setup
 =============
@@ -124,14 +128,39 @@ I now added some bash scripts in the `bin` folder to `bin/start-workers.sh 4` an
 You have to `mkdir -p /var/run/gw2spidy/` first though since I manage the processIDs there.
 
 Fill Queue Listings
------------------
+-------------------
 The `daemon/fill-queue-listings.php` atm does the same as the fill queue daily since we can no longer fetch listings directly. 
 We just do it more frequent then daily xD
 
 Fill Queue Daily
------------------
+----------------
 The `daemon/fill-queue-daily.php` script enqueues a job for every (sub)type in the database to fetch the first page of items,
 that job then requeues itself until all the pages are fetched.
+
+Fill Queue Gems
+---------------
+The `daemon/fill-queue-gems.php` script enqueues one job which does 2 requests to the gem-exchange site to retrieve the exchange rates and volume.
+
+
+GW2 Sessions
+============
+When spidering we're accessing the tradingpost using a session created by logging into accounts.guildwars2.com. 
+Aftering logging in it gives us a session_key which allows access to the tradingpost, however limited to only being able to get the lists of items! 
+
+When you open the tradingpost from inside the game you access it using a session_key generated from the game login, these sessions have access to more features of the tradingpost! 
+With that session you can also see the list of offers for the various prices, instead of only the lowest sell and highest buy! 
+For the gem-exchange the ingame session_key allows you to calculate conversions, while the accounts.guildwars2.com session only gives you a rounded average (which is kinda useless). 
+
+Because I've added gem-exchange now, I needed a way to be able to use an ingame session_key when spidering! 
+You can intercept the session_key by either using Fiddler to intercept the HTTPS trafic or using some custom tools to grab the URLs from share memory ... 
+I've added a table to propel named `gw2session` and a form on `/admin/session` to insert the ingame session_key, it requires you to also fill in a 'secret' which is equal to what you configure by defining the 'ADMIN_SECRET' constant 
+
+The previous ingame session_key expires when you login to the game client, so you need to use the new session_key whenever you login.
+
+*I don't know exactly what you can do with someone elses session_key* thus I rely on myself not slacking and updating the session_key everytime I login. 
+I think it's fairly harmless, since the game client handles all sell/buy actions (and those are related/linked to your character too).
+
+*As a fallback* whenever there's no ingame session_key available to use (or it has died) we'll generate one from accounts.guildwars2.com, this gives us enough access for the tradingpost, but won't be able to gather gem-exchange data.
 
 Copyright and License
 =====================
