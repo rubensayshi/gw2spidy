@@ -87,14 +87,16 @@
             </div>
         </div>
         {# fairly stupid IF block around the notice area so I can easily enable/disable it manually :-) #}
-        {% if (false) %}
+        {% if (app.isNotificationVisible('new_gem_exchange_and_highcharts', 5)) %}
             <div class="row-fluid content-row">
                 <div class="well">
                     <h3 style="border-bottom: 1px solid #ccc; margin-bottom: 5px;">Notices</h3>
-                    <div class="alert alert-error">
-                        <strong>Important!</strong>As of last night ArenaNet changed something to the tradingpost, the price display in the list of items is no longer updated. <br />
-                        Since I was using that price to build up my data I'm now stuck waiting for a response on a ticket, luckily it's an ingame issue too, sorta ... <br />
-                        I'm sorry for this, I'll try to find a workaround tonight, but don't get your hopes up ;)
+                    <div class="alert alert-success">
+                        <strong>UPDATE!</strong> I just deployed a new version with 2 features added in: <br />
+                        - <a href="{{ path('gem') }}">Gem Exchange</a> rates are now being gathered and displayed, both gold to gem and gem to gold. <br />
+                        - Using a new library for the charts (HighCharts), it offers a lot of (better) functionality out of the box and it has some other interesting features for the future (such as candlesticks). <br />
+                        <br />
+                        Let me know what you think of the changes on twitter <a href="https://twitter.com/gw2spidy">@GW2Spidy</a> ;)
                     </div>
                 </div>
             </div>
