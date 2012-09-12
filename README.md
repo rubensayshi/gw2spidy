@@ -157,10 +157,12 @@ I've added a table to propel named `gw2session` and a form on `/admin/session` t
 
 The previous ingame session_key expires when you login to the game client, so you need to use the new session_key whenever you login.
 
-*I don't know exactly what you can do with someone elses session_key* thus I rely on myself not slacking and updating the session_key everytime I login.  
+**I don't know exactly what you can do with someone elses session_key** thus I rely on myself not slacking and updating the session_key everytime I login.  
 I think it's fairly harmless, since the game client handles all sell/buy actions (and those are related/linked to your character too).
 
-*As a fallback* whenever there's no ingame session_key available to use (or it has died) we'll generate one from accounts.guildwars2.com, this gives us enough access for the tradingpost, but won't be able to gather gem-exchange data.
+**As a fallback** whenever there's no ingame session_key available to use (or it has died) we'll generate one from accounts.guildwars2.com, this gives us enough access for the tradingpost, but won't be able to gather gem-exchange data.
+
+I do have a small tool (provided by someone else) that quickly grabs the session_key without much hassle, but it can be optimized a bit and if I were to share it then I'd want to be able to share the source code to to ensure it's safe!
 
 Copyright and License
 =====================
