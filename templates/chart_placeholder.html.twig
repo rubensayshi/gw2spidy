@@ -5,16 +5,65 @@
 
 <div id="container" style="height: 500px; width: 100%; min-width: 450px;"></div>
 <script type="text/javascript">
+var formatGW2Money = function(copper) {
+    var string = "";
+
+    var gold = Math.floor(copper / 10000);
+    if (gold) {
+        copper = copper % (gold * 10000);
+        string += gold + "g ";
+    }
+
+    var silver = Math.floor(copper / 100);
+    if (silver) {
+        copper = copper % (silver * 100);
+        if (silver) string += silver + "s ";
+    }
+
+    copper = Math.floor(copper);
+
+    if (copper) string += copper + "c ";
+
+    if (!string) {
+        return copper + "c";
+    } else {
+        return string;
+    }
+};
+
 $(function() {
     $.getJSON('{{ url }}', function(data) {
         // Create the chart
         var chart = new Highcharts.StockChart({
             chart : {
+                type: 'line',
                 renderTo : 'container',
                 height   : 500
             },
             exporting : {
                 enabled: false
+            },
+            tooltip: {
+                formatter: function() {
+                    var pThis = this,
+    				items     = pThis.points || splat(pThis),
+    				series    = items[0].series,
+    				s;
+
+        			// build the header
+        			s = [series.tooltipHeaderFormatter(items[0].key)];
+
+        			// build the values
+        			$.each(items, function (key, item) {
+        				series = item.series;
+        				s.push('<span style="color:'+ series.color +'">' + series.name + '</span>: <b>' + formatGW2Money(item.y) + '</b> <br />');
+        			});
+
+        			// footer
+        			// s.push(options.footerFormat || ''); // todo how to get the options xD
+
+        			return s.join('');
+                }
             },
             legend : {
                 enabled: {{ hideLegend ? 'false' : 'true' }},
@@ -30,6 +79,11 @@ $(function() {
                     {type: 'all',             text: 'all'}
                 ],
                 selected : 1
+            },
+            yAxis : {
+                labels : {
+                    formatter: function() { return formatGW2Money(this.value); }
+                }
             },
             series : data
         });

@@ -204,7 +204,7 @@ $app->get("/gem_chart", function() use($app) {
     *----------------------*/
     $chart[] = array(
         'data'   => GoldToGemRateQuery::getChartDatasetData(),
-        'label'  => "Gold to Gems",
+        'name'   => "Gold to Gems",
     );
 
     /*---------------------
@@ -212,7 +212,7 @@ $app->get("/gem_chart", function() use($app) {
     *----------------------*/
     $chart[] = array(
         'data'   => GemToGoldRateQuery::getChartDatasetData(),
-        'label'  => "Gems to Gold",
+        'name'   => "Gems to Gold",
     );
 
     $content = json_encode($chart);
