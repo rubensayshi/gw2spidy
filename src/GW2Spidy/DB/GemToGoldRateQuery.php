@@ -30,16 +30,16 @@ class GemToGoldRateQuery extends BaseGemToGoldRateQuery {
             $data = array();
 
             $rates = static::create()
-                            ->select(array('rateDatetime', 'average'))
+                            ->select(array('rateDatetime', 'rate'))
                             ->find();
 
             foreach ($rates as $rateEntry) {
                 $date = new DateTime("{$rateEntry['rateDatetime']}");
                 $date->setTimezone(new DateTimeZone('UTC'));
 
-                $rateEntry['average'] = round($rateEntry['average'], 2);
+                $rateEntry['rate'] = round($rateEntry['rate'], 2);
 
-                $data[] = array($date->getTimestamp()*1000, $rateEntry['average']);
+                $data[] = array($date->getTimestamp()*1000, $rateEntry['rate']);
             }
 
             ApplicationCache::getInstance()->set($cacheKey, $data, MEMCACHE_COMPRESSED, 600);
