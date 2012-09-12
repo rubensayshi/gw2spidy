@@ -59,7 +59,7 @@ Or join me on irc.gamsurge.net with your favorite IRC client or the <a href="htt
 {% block sidebar %}
     {% if featured %}
         <h3>Just an example</h3>
-        {% include "item.html.twig" with {'item': featured, 'href': path('item', {dataId: featured.dataId}), width: '100%', 'included': true} %}
+        {% include "item.html.twig" with {'item': featured, 'href': path('item', {dataId: featured.dataId}), width: '100%', 'included': true, hideLegend: true} %}
     {% endif %}
     <p>&nbsp;</p>
     <h3>Tweet!</h3>

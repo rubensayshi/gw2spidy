@@ -1,5 +1,7 @@
 {% set url = url is defined ? url : path('chart', {dataId: item.dataId}) %}
 {% set title = title is defined ? title : item.name %}
+{% set hideLegend = hideLegend is defined ? hideLegend : false %}
+
 <div id="container" style="height: 500px; width: 100%; min-width: 450px;"></div>
 <script type="text/javascript">
 $(function() {
@@ -14,7 +16,7 @@ $(function() {
                 enabled: false
             },
             legend : {
-                enabled: true,
+                enabled: {{ hideLegend ? 'false' : 'true' }},
                 floating: true,
                 verticalAlign: "top",
                 y: 20

@@ -1,7 +1,8 @@
 {% extends not included is defined ? "content_sidebar.html.twig" : "empty_shell.html.twig" %}
+{% set hideLegend = hideLegend is defined ? hideLegend : false %}
 
 {% block content %}
 {% include "item_snippet.html.twig" with {'item': item, 'tag': 'div'} %}
 <div class="clearfix">&nbsp;</div>
-{% include "chart_placeholder.html.twig" with {'item': item} %}
+{% include "chart_placeholder.html.twig" with {'item': item, 'hideLegend': hideLegend} %}
 {% endblock %}
