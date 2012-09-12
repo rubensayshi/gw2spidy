@@ -74,8 +74,10 @@ class TradingPostSpider extends BaseSpider {
 
     public function getMarketData() {
         $curl = CurlRequest::newInstance(TRADINGPOST_URL)
+             ->setCookie("s={$this->getSession()->getSessionKey()}")
              ->exec()
              ;
+
 
         $result = $curl->getResponseBody();
 
