@@ -1,5 +1,6 @@
 {% set url = url is defined ? url : path('chart', {dataId: item.dataId}) %}
-{% set title = title is defined ? title : item.name %}
+{% set title = title is defined ? title : '' %}
+{% set title = title == '' and item is defined ? item.name : title %}
 {% set hideLegend = hideLegend is defined ? hideLegend : false %}
 
 <div id="container" style="height: 500px; width: 100%; min-width: 450px;"></div>
@@ -17,9 +18,9 @@ $(function() {
             },
             legend : {
                 enabled: {{ hideLegend ? 'false' : 'true' }},
+                padding: 6,
                 floating: true,
-                verticalAlign: "top",
-                y: 20
+                verticalAlign: "top"
             },
             rangeSelector : {
                 buttons: [
@@ -29,9 +30,6 @@ $(function() {
                     {type: 'all',             text: 'all'}
                 ],
                 selected : 1
-            },
-            title : {
-                text : '{{ title }}'
             },
             series : data
         });
