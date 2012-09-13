@@ -32,6 +32,8 @@ var formatGW2Money = function(copper) {
 };
 
 $(function() {
+    Highcharts.setOptions({global: { useUTC: false }});
+
     $.getJSON('{{ url }}', function(data) {
         // Create the chart
         var chart = new Highcharts.StockChart({
