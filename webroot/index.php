@@ -578,8 +578,8 @@ $app->get("/profit", function(Request $request) use($app) {
         data_id,
         name,
         min_sale_unit_price,
-        sale_availability,
         max_offer_unit_price,
+        sale_availability,
         offer_availability,
         ((min_sale_unit_price - max_offer_unit_price) / max_offer_unit_price) * 100 as margin
     FROM item
