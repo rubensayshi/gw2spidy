@@ -4,6 +4,7 @@
  * process queue items
  */
 
+use GW2Spidy\WorkerQueue\ItemDBWorker;
 use GW2Spidy\GemExchangeSpider;
 
 use GW2Spidy\GW2SessionManager;
@@ -118,15 +119,17 @@ while ($run < $max) {
             $log = ob_get_clean();
             echo " --------------- \n !! worker process threw exception !!\n --------------- \n {$log} \n --------------- \n {$e} \n --------------- \n";
 
-            if ($try <= $retries) {
-                echo "error, retrying, sleeping [5] ... \n";
-                sleep(5);
-                $try++;
-                continue;
-            } else {
-                echo "error, sleeping [60] ... \n";
-                sleep(60);
-                break;
+            if ($e->getCode() != ItemDBWorker::ERROR_CODE_NO_LONGER_EXISTS) {
+                if ($try <= $retries) {
+                    echo "error, retrying, sleeping [5] ... \n";
+                    sleep(5);
+                    $try++;
+                    continue;
+                } else {
+                    echo "error, sleeping [60] ... \n";
+                    sleep(60);
+                    break;
+                }
             }
         }
     }

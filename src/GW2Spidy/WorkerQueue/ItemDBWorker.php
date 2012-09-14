@@ -21,6 +21,8 @@ use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemSubType;
 
 class ItemDBWorker implements Worker {
+    const ERROR_CODE_NO_LONGER_EXISTS = 444441;
+
     public function getRetries() {
         return 1;
     }
@@ -70,9 +72,8 @@ class ItemDBWorker implements Worker {
             if (($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
                 $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
                 $item->save();
-
             } else {
-                throw new \Exception("Title for ID no longer matches! item [{$p}] [json::{$itemData['data_id']}::{$itemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}]");
+                throw new \Exception("Title for ID no longer matches! item [{$p}] [json::{$itemData['data_id']}::{$itemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}]", self::ERROR_CODE_NO_LONGER_EXISTS);
             }
         } else {
             $item = new Item();
