@@ -44,16 +44,18 @@ class ItemDBWorker implements Worker {
                 ;
 
         $items = $q->find();
+        $ok = false;
 
         foreach ($items as $item) {
-            $itemData = TradingPostSpider::getInstance()->getItemById($item->getDataId());
+            if ($itemData = TradingPostSpider::getInstance()->getItemById($item->getDataId())) {
+                var_dump($item->getName(), (boolean)$itemData);
 
-            var_dump($item->getName(), (boolean)$itemData);
-
-            $this->storeItemData($itemData, $type, null, $item);
+                $this->storeItemData($itemData, $type, null, $item);
+                $ok = true;
+            }
         }
 
-        return (boolean)$items;
+        return $ok;
     }
 
     public function storeItemData($itemData, ItemType $type = null, ItemSubType $subtype = null, $item = null) {
