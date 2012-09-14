@@ -587,9 +587,9 @@ $app->get("/profit", function(Request $request) use($app) {
     ORDER BY margin DESC
     LIMIT 50");
 
-    $res = $stmt->execute();
+    $stmt->execute();
     return $app['twig']->render('dump.html.twig', array(
-        'dump' => var_export($res->fetchAll(), true),
+        'dump' => var_export($stmt->fetchAll(), true),
     ));
 })
 ->bind('admin_session_post');
