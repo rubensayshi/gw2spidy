@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\WorkerQueue;
 
+use \Criteria;
+
 use GW2Spidy\DB\BuyListing;
 
 use GW2Spidy\DB\SellListing;
