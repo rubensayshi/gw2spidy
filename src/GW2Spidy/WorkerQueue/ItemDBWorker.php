@@ -39,6 +39,7 @@ class ItemDBWorker implements Worker {
 
         $q = ItemQuery::create()
                 ->filterByItemType($type)
+                ->orderByRarity(Criteria::DESC)
                 ->limit(10)
                 ->offset($offset)
                 ;
