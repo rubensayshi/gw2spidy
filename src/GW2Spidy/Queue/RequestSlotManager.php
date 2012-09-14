@@ -9,18 +9,16 @@ class RequestSlotManager extends RedisSlotManager {
         return 'request.slots';
     }
     /**
-     * 700 requests with a (250 sec = ) 4.666 min timeout
-     *  gives us 700 x (60 / (250 / 60)) = 10080 requests / hr = 2.8 requests / sec
+     *  gives us 800 x (60 / (200 / 60)) = 14400 requests / hr = 4 requests / sec
      * this is excluding the time it takes to handle the slots
      *
-     * in 1 round fill-queue-hourly we create about 6500 jobs
      */
     protected function getSlots() {
-        return 700;
+        return 800;
     }
 
     protected function getTimeout() {
-        return 250;
+        return 200;
     }
 
     /**
