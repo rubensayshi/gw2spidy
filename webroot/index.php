@@ -593,7 +593,7 @@ $app->get("/profit", function(Request $request) use($app) {
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     return $app['twig']->render('quick_table.html.twig', array(
-        'headers' => array_keys($headers),
+        'headers' => array_keys($data),
         'data'    => $data,
     ));
 })

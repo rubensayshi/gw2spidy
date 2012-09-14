@@ -1,0 +1,22 @@
+{% extends "content_wide.html.twig" %}
+
+{% block content %}
+<table class="item-list-table table table-striped table-condensed">
+    <thead>
+        <tr>
+            {% for header in headers %}
+                <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+            <tr>
+                {% for value in row %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}
