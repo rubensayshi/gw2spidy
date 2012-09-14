@@ -532,7 +532,7 @@ $app->get("/admin/session", function(Request $request) use($app) {
 $app->post("/admin/session", function(Request $request) use($app) {
     $secret = $request->get('admin_secret');
     if (!$secret || !defined('ADMIN_SECRET') || $secret !== ADMIN_SECRET) {
-
+        return '';
     }
 
     $session_key  = $request->get('session_key');
@@ -564,6 +564,33 @@ $app->post("/admin/session", function(Request $request) use($app) {
             throw $e;
         }
     }
+})
+->bind('admin_session_post');
+
+/**
+ * ----------------------
+ *  route /profit
+ * ----------------------
+ */
+$app->get("/profit", function(Request $request) use($app) {
+    $stmt = Propel::getConnection()->prepare("
+    SELECT
+        data_id,
+        name,
+        min_sale_unit_price,
+        max_offer_unit_price,
+        ((min_sale_unit_price - max_offer_unit_price) / max_offer_unit_price) * 100 as margin
+    FROM item
+    WHERE offer_availability > 1
+    AND   sale_availability > 5
+    AND   ((min_sale_unit_price - max_offer_unit_price) / max_offer_unit_price) * 100 < 500
+    ORDER BY margin DESC
+    LIMIT 50");
+
+    $res = $stmt->execute();
+    return $app['twig']->render('dump.html.twig', array(
+        'dump' => var_export($res->fetchAll(), true),
+    ));
 })
 ->bind('admin_session_post');
 
