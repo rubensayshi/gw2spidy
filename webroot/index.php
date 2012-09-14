@@ -573,6 +573,26 @@ $app->post("/admin/session", function(Request $request) use($app) {
  * ----------------------
  */
 $app->get("/profit", function(Request $request) use($app) {
+    $where = "";
+
+    if ($minlevel = $request->get('minlevel')) {
+        $where .= " AND restriction_level >= {$minlevel}";
+    }
+
+    $margin = $request->get('margin') ?: 500;
+
+    if ($minprice = $request->get('minprice')) {
+        $where .= " AND min_sale_unit_price >= {$minprice}";
+    }
+
+    if ($maxprice = $request->get('maxprice')) {
+        $where .= " AND min_sale_unit_price <= {$maxprice}";
+    }
+
+    if ($type = $request->get('type')) {
+        $where .= " AND item_type_id = {$type}";
+    }
+
     $stmt = Propel::getConnection()->prepare("
     SELECT
         data_id,
@@ -585,7 +605,8 @@ $app->get("/profit", function(Request $request) use($app) {
     FROM item
     WHERE offer_availability > 1
     AND   sale_availability > 5
-    AND   ((min_sale_unit_price - max_offer_unit_price) / max_offer_unit_price) * 100 < 500
+    AND   ((min_sale_unit_price - max_offer_unit_price) / max_offer_unit_price) * 100 < {$margin}
+    {$where}
     ORDER BY margin DESC
     LIMIT 50");
 
@@ -597,8 +618,7 @@ $app->get("/profit", function(Request $request) use($app) {
         'data'    => $data,
     ));
 })
-->bind('admin_session_post');
-
+->assert('minlevel', '\d*');
 
 // bootstrap the app
 $app->run();
