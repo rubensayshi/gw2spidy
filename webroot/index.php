@@ -589,7 +589,7 @@ $app->get("/profit", function(Request $request) use($app) {
 
     $stmt->execute();
     return $app['twig']->render('dump.html.twig', array(
-        'dump' => var_export($stmt->fetchAll(), true),
+        'dump' => var_export($stmt->fetchAll(PDO::FETCH_ASSOC), true),
     ));
 })
 ->bind('admin_session_post');
