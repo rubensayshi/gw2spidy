@@ -36,22 +36,29 @@ class ItemDBWorker implements Worker {
 
     protected function buildItemDB($type, $subtype, $offset) {
         var_dump((string)$type, (string)$subtype, $offset) . "\n\n";
-        $items  = TradingPostSpider::getInstance()->getItemList($type, $subtype, $offset);
 
-        var_dump($items) . "\n\n";
+        $q = ItemQuery::create()
+                ->filterByItemType($type)
+                ->limit(10)
+                ->offset($offset)
+                ;
 
-        if ($items) {
-            foreach ($items as $itemData) {
-                $this->storeItemData($itemData, $type, $subtype);
-            }
+        $items = $q->find();
+
+        foreach ($items as $item) {
+            $itemData = TradingPostSpider::getInstance()->getItemById($item->getDataId());
+
+            var_dump($item->getName(), (boolean)$itemData);
+
+            $this->storeItemData($itemData, $type, null, $item);
         }
 
         return (boolean)$items;
     }
 
-    public function storeItemData($itemData, ItemType $type = null, ItemSubType $subtype = null) {
+    public function storeItemData($itemData, ItemType $type = null, ItemSubType $subtype = null, $item = null) {
         $now  = new \DateTime();
-        $item = ItemQuery::create()->findPK($itemData['data_id']);
+        $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
         var_dump($itemData['name'], (string)$item, $itemData['min_sale_unit_price']) . "\n\n";
         if ($item) {
