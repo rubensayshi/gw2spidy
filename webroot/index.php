@@ -578,7 +578,9 @@ $app->get("/profit", function(Request $request) use($app) {
         data_id,
         name,
         min_sale_unit_price,
+        sale_availability,
         max_offer_unit_price,
+        offer_availability,
         ((min_sale_unit_price - max_offer_unit_price) / max_offer_unit_price) * 100 as margin
     FROM item
     WHERE offer_availability > 1
@@ -588,8 +590,11 @@ $app->get("/profit", function(Request $request) use($app) {
     LIMIT 50");
 
     $stmt->execute();
-    return $app['twig']->render('dump.html.twig', array(
-        'dump' => var_export($stmt->fetchAll(PDO::FETCH_ASSOC), true),
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $app['twig']->render('quick_table.html.twig', array(
+        'headers' => array_keys($headers),
+        'data'    => $data,
     ));
 })
 ->bind('admin_session_post');
