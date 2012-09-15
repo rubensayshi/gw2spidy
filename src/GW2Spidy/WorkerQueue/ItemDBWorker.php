@@ -41,7 +41,7 @@ class ItemDBWorker implements Worker {
     protected function buildItemDB($type, $subtype, $offset) {
         var_dump((string)$type, (string)$subtype, $offset) . "\n\n";
 
-        $items = TradingPostSpider::getInstance()->getItemList($type, $subType, $offset);
+        $items = TradingPostSpider::getInstance()->getItemList($type, $subtype, $offset);
 
         if ($items) {
             foreach ($items as $itemData) {
@@ -56,7 +56,7 @@ class ItemDBWorker implements Worker {
         $now  = new \DateTime();
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
-        var_dump($itemData['name'], $item->getName()) . "\n\n";
+        var_dump($itemData['name']) . "\n\n";
         if ($item) {
             if (($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
                 $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
