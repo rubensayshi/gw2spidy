@@ -41,33 +41,22 @@ class ItemDBWorker implements Worker {
     protected function buildItemDB($type, $subtype, $offset) {
         var_dump((string)$type, (string)$subtype, $offset) . "\n\n";
 
-        $q = ItemQuery::create()
-                ->filterByItemType($type)
-                ->orderByRarity(Criteria::DESC)
-                ->limit(10)
-                ->offset($offset)
-                ;
+        $items = TradingPostSpider::getInstance()->getItemList($type, $subType, $offset);
 
-        $items = $q->find();
-        $ok = false;
-
-        foreach ($items as $item) {
-            if ($itemData = TradingPostSpider::getInstance()->getItemById($item->getDataId())) {
-                var_dump($item->getName(), (boolean)$itemData);
-
-                $this->storeItemData($itemData, $type, null, $item);
-                $ok = true;
+        if ($items) {
+            foreach ($items as $itemData) {
+                $this->storeItemData($itemData, $type, null);
             }
-        }
 
-        return $ok;
+            return true;
+        }
     }
 
     public function storeItemData($itemData, ItemType $type = null, ItemSubType $subtype = null, $item = null) {
         $now  = new \DateTime();
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
-        var_dump($itemData['name'], (string)$item, $itemData['min_sale_unit_price']) . "\n\n";
+        var_dump($itemData['name'], $item->getName()) . "\n\n";
         if ($item) {
             if (($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
                 $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
@@ -84,7 +73,7 @@ class ItemDBWorker implements Worker {
             $item->save();
         }
 
-        if ($itemData['min_sale_unit_price'] > 0) {
+        if (isset($itemData['min_sale_unit_price']) && $itemData['min_sale_unit_price'] > 0) {
             $sellListing = new SellListing();
             $sellListing->setItem($item);
             $sellListing->setListingDate($now);
@@ -96,7 +85,7 @@ class ItemDBWorker implements Worker {
             $sellListing->save();
         }
 
-        if ($itemData['max_offer_unit_price'] > 0) {
+        if (isset($itemData['max_offer_unit_price']) && $itemData['max_offer_unit_price'] > 0) {
             $buyListing = new BuyListing();
             $buyListing->setItem($item);
             $buyListing->setListingDate($now);

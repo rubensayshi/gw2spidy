@@ -15,7 +15,7 @@ use GW2Spidy\TradingPostSpider;
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemSubType;
 
-class ItemListingsDBWorker implements Worker {
+class ItemListingsDBWorker extends ItemDBWorker implements Worker {
     public function getRetries() {
         return 0;
     }
@@ -27,32 +27,12 @@ class ItemListingsDBWorker implements Worker {
     }
 
     public function buildListingsDB(Item $item) {
-        $now      = new \DateTime();
-        $market   = TradingPostSpider::getInstance();
+       if ($itemData = TradingPostSpider::getInstance()->getItemById($item->getDataId())) {
+            var_dump($item->getName(), (boolean)$itemData);
 
-        if ($listings = $market->getListingsById($item->getDataId(), TradingPostSpider::LISTING_TYPE_SELL)) {
-            foreach ($listings as $listingData) {
-                $listing = new SellListing();
-                $listing->fromArray($listingData, \BasePeer::TYPE_FIELDNAME);
-                $listing->setItem($item);
-                $listing->setListingDate($now);
-                $listing->setListingTime($now);
-
-                $listing->save();
-            }
+            $this->storeItemData($itemData, null, null, $item);
         }
 
-        if ($listings = $market->getListingsById($item->getDataId(), TradingPostSpider::LISTING_TYPE_BUY)) {
-            foreach ($listings as $listingData) {
-                $listing = new BuyListing();
-                $listing->fromArray($listingData, \BasePeer::TYPE_FIELDNAME);
-                $listing->setItem($item);
-                $listing->setListingDate($now);
-                $listing->setListingTime($now);
-
-                $listing->save();
-            }
-        }
     }
 
     public static function enqueueWorker($item) {

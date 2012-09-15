@@ -10,4 +10,4 @@ $manager = new QueueManager();
 /*
  * build item DB, atm that also builds listingDB
  */
-$manager->buildItemDB();
+$manager->buildListingsDB();

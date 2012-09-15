@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\Queue;
 
+use GW2Spidy\DB\ItemType;
+
 use GW2Spidy\WorkerQueue\GemExchangeDBWorker;
 
 use GW2Spidy\DB\ItemQuery;
@@ -15,19 +17,27 @@ class QueueManager {
         ItemTypeDBWorker::enqueueWorker();
     }
 
-    public function buildItemDB($full = true, $type = null) {
-        if ($type) {
+    public function buildItemDB($full = true) {
+        foreach (ItemTypeQuery::create()->find() as $type) {
             ItemDBWorker::enqueueWorker($type, null, $full);
-        } else {
-            foreach (ItemTypeQuery::create()->find() as $type) {
-                ItemDBWorker::enqueueWorker($type, null, $full);
-            }
         }
     }
 
-    public function buildListingsDB() {
-        foreach (ItemQuery::create()->find() as $item) {
+    public function buildListingsDB($type = null) {
+        Propel::disableInstancePooling();
+
+        $q = ItemQuery::create();
+
+        if ($type instanceof ItemType) {
+            $q->filterByType($type);
+        } else if (is_numeric($type)) {
+            $q->filterByTypeId($type);
+        }
+
+        foreach ($q->find() as $item) {
             ItemListingsDBWorker::enqueueWorker($item);
+
+            unset($item);
         }
     }
 
