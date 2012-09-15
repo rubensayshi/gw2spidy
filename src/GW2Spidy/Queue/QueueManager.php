@@ -2,6 +2,7 @@
 
 namespace GW2Spidy\Queue;
 
+use \Propel;
 use GW2Spidy\DB\ItemType;
 
 use GW2Spidy\WorkerQueue\GemExchangeDBWorker;
