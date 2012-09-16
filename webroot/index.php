@@ -575,21 +575,21 @@ $app->post("/admin/session", function(Request $request) use($app) {
 $app->get("/profit", function(Request $request) use($app) {
     $where = "";
 
-    if ($minlevel = $request->get('minlevel')) {
+    if ($minlevel = intval($request->get('minlevel'))) {
         $where .= " AND restriction_level >= {$minlevel}";
     }
 
-    $margin = $request->get('margin') ?: 500;
+    $margin = intval($request->get('margin')) ?: 500;
 
-    if ($minprice = $request->get('minprice')) {
+    if ($minprice = intval($request->get('minprice'))) {
         $where .= " AND min_sale_unit_price >= {$minprice}";
     }
 
-    if ($maxprice = $request->get('maxprice')) {
+    if ($maxprice = intval($request->get('maxprice'))) {
         $where .= " AND min_sale_unit_price <= {$maxprice}";
     }
 
-    if ($type = $request->get('type')) {
+    if ($type = intval($request->get('type'))) {
         $where .= " AND item_type_id = {$type}";
     }
 
@@ -617,8 +617,7 @@ $app->get("/profit", function(Request $request) use($app) {
         'headers' => array_keys(reset($data)),
         'data'    => $data,
     ));
-})
-->assert('minlevel', '\d*');
+});
 
 // bootstrap the app
 $app->run();
