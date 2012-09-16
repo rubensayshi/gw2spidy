@@ -31,8 +31,29 @@ class ItemListingsDBWorker extends ItemDBWorker implements Worker {
         $items = ($input instanceof Item) ? array($input->getDataId() => $input) : $input;
 
         if ($itemsData = TradingPostSpider::getInstance()->getItemsByIds(array_keys($items))) {
+            $exceptions = array();
+
             foreach ($itemsData as $itemData) {
-                $this->storeItemData($itemData, null, null, $items[$itemData['data_id']]);
+                try {
+                    $this->storeItemData($itemData, null, null, $items[$itemData['data_id']]);
+                } catch (Exception $e) {
+                    if ($e->getCode() == ItemDBWorker::ERROR_CODE_NO_LONGER_EXISTS || strstr("CurlRequest failed [[ 401 ]]", $e->getMessage())) {
+                        continue;
+                    }
+
+                    $exceptions[] = $e;
+                }
+            }
+
+            if (count($exceptions) == 1) {
+                throw $exceptions[0];
+            } else if (count($exceptions) > 1) {
+                $s = "";
+                foreach ($exceptions as $e) {
+                    $s .= $e->getMessage() . " \n ------------ \n";
+                }
+
+                throw new Exception("Multiple Exceptions were thrown: \n {$s}");
             }
         }
     }
