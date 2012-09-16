@@ -39,7 +39,7 @@ class QueueManager {
         foreach ($q->find() as $item) {
             $items[$item->getDataId()] = $item;
 
-            if (count($items) >= 20) {
+            if (count($items) >= 50) {
                 ItemListingsDBWorker::enqueueWorker($items);
                 $items = array();
             }
