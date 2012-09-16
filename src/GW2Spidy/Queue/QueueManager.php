@@ -35,10 +35,20 @@ class QueueManager {
             $q->filterByTypeId($type);
         }
 
+        $items = array();
         foreach ($q->find() as $item) {
-            ItemListingsDBWorker::enqueueWorker($item);
+            $items[$item->getDataId()] = $item;
+
+            if (count($items) >= 10) {
+                ItemListingsDBWorker::enqueueWorker($items);
+                $items = array();
+            }
 
             unset($item);
+        }
+
+        if (count($items) > 0) {
+            ItemListingsDBWorker::enqueueWorker($items);
         }
     }
 

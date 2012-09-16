@@ -26,20 +26,22 @@ class ItemListingsDBWorker extends ItemDBWorker implements Worker {
         $this->buildListingsDB($item);
     }
 
-    public function buildListingsDB(Item $item) {
-       if ($itemData = TradingPostSpider::getInstance()->getItemById($item->getDataId())) {
-            var_dump($item->getName(), (boolean)$itemData);
+    public function buildListingsDB($input) {
+        // ensure we're always working with an array of items
+        $items = ($input instanceof Item) ? array($input->getDataId() => $input) : $input;
 
-            $this->storeItemData($itemData, null, null, $item);
+        if ($itemsData = TradingPostSpider::getInstance()->getItemsByIds(array_keys($items))) {
+            foreach ($itemsData as $itemData) {
+                $this->storeItemData($itemData, null, null, $items[$itemData['data_id']]);
+            }
         }
-
     }
 
-    public static function enqueueWorker($item) {
+    public static function enqueueWorker($input) {
         $queueItem = new WorkerQueueItem();
         $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\ItemListingsDBWorker");
         // $queueItem->setPriority(WorkerQueueItem::PRIORITY_LISTINGSDB);
-        $queueItem->setData($item);
+        $queueItem->setData($input);
 
         WorkerQueueManager::getInstance()->enqueue($queueItem);
 

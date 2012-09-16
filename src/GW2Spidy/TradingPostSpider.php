@@ -16,7 +16,15 @@ class TradingPostSpider extends BaseSpider {
     const LISTING_TYPE_BUY  = 'buys';
 
     public function getItemById($id) {
-        $curl = CurlRequest::newInstance(TRADINGPOST_URL . "/ws/search.json?ids=".urlencode($id))
+        $results = $this->getItemsByIds(array($id));
+
+        return reset($results);
+    }
+
+    public function getItemsByIds(array $ids) {
+        $ids = array_map('urlencode', $ids);
+
+        $curl = CurlRequest::newInstance(TRADINGPOST_URL . "/ws/search.json?ids=".implode(",", $ids))
              ->setCookie("s={$this->getSession()->getSessionKey()}")
              ->setHeader("X-Requested-With: XMLHttpRequest")
              ->exec()
@@ -24,7 +32,7 @@ class TradingPostSpider extends BaseSpider {
 
         $data = json_decode($curl->getResponseBody(), true);
 
-        return reset($data['results']);
+        return $data['results'];
     }
 
     public function getItemByExactName($name) {
