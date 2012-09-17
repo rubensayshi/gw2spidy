@@ -53,6 +53,13 @@ class ItemDBWorker implements Worker {
     }
 
     public function storeItemData($itemData, ItemType $type = null, ItemSubType $subtype = null, $item = null) {
+
+        // not sure when this happens, I think when the item is no longer on the tradingpost at all
+        // it has an ID and img, but nothing more ... skipping it silently for now
+        if (!isset($itemData['name']) && !isset($itemData['rarity']) && !isset($itemData['restriction_level']) && isset($itemData['data_id'])) {
+            return;
+        }
+
         $now  = new \DateTime();
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
