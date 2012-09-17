@@ -60,6 +60,14 @@ class ItemDBWorker implements Worker {
         if ($item) {
             if (($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
                 $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
+
+                if ($type) {
+                    $item->setItemType($type);
+                }
+                if ($subtype) {
+                    $item->setItemSubType($subtype);
+                }
+
                 $item->save();
             } else {
                 throw new \Exception("Title for ID no longer matches! item [{$p}] [json::{$itemData['data_id']}::{$itemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}]", self::ERROR_CODE_NO_LONGER_EXISTS);
@@ -67,8 +75,13 @@ class ItemDBWorker implements Worker {
         } else {
             $item = new Item();
             $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
-            $item->setItemType($type);
-            $item->setItemSubType($subtype);
+
+            if ($type) {
+                $item->setItemType($type);
+            }
+            if ($subtype) {
+                $item->setItemSubType($subtype);
+            }
 
             $item->save();
         }
