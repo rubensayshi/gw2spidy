@@ -123,12 +123,11 @@
          *  there's a semi-transparent div over it with default 0.8 opacity,
          *  the 2nd value for each entry can be an altered opacity
          */
-        $(window).ready(function() {
+        $(window).load(function() {
             // IE8 and older won't support RGBA so the background makes a mess ...
             if ($.browser.msie && $.browser.version <= 8) {
                 return;
             }
-
 
             var images = [
                 // some color wallpapers
