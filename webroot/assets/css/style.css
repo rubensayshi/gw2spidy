@@ -75,6 +75,7 @@ h1 {
 
 .item .image {
     float: left;
+    max-height: 35px;
 }
 
 .item .stats {
