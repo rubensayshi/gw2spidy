@@ -252,7 +252,7 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
     if (!is_null($type) && $type != -1) {
         $q->filterByItemTypeId($type);
     }
-    if (!is_null($subtype) && $type != -1) {
+    if (!is_null($subtype) && $subtype != -1) {
         $q->filterByItemSubTypeId($subtype);
     }
 
