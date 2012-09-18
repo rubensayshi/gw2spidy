@@ -258,9 +258,6 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
 ->assert('type',     '\d+')
 ->assert('subtype',  '\d+')
 ->assert('page',     '-?\d+')
-->convert('type',    $toInt)
-->convert('subtype', $toInt)
-->convert('page',    $toInt)
 ->value('type',      null)
 ->value('subtype',   null)
 ->value('page',      1)
@@ -286,7 +283,6 @@ $app->get("/item/{dataId}", function($dataId) use ($app) {
     ));
 })
 ->assert('dataId',  '\d+')
-->convert('dataId', $toInt)
 ->bind('item');
 
 /**
@@ -324,7 +320,6 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     return $content;
 })
 ->assert('dataId',  '\d+')
-->convert('dataId', $toInt)
 ->bind('chart');
 
 /**
