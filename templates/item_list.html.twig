@@ -4,14 +4,39 @@
     pager is repeated multiple times
    --------------- #}
 {% macro pager(page, lastpage, parent_context) %}
+    {# ---------------
+        calculate how many pages we can display before and after the curently active page
+         - add a [...] link (eating up 1 page number) if there's an overflow
+       --------------- #}
+    {% set maxpages = 20 %}
+    {% set before = ((maxpages / 2) | floor) %}
+    {% set before = page <= before ? page -1 : before %}
+    {% set after = maxpages - before - 1 %}
+    {% set before = (page + after > lastpage) ? before + (after - (lastpage - page)) : before %}
+    {% set dotsbefore = (page - before > 1) %}
+    {% set dotsafter  = (page + after < lastpage) %}
+    {% set before = dotsbefore ? before -1 : before %}
+    {% set after  = dotsafter  ? after  -1 : after %}
     <div class="pagination">
         <ul>
             <li class="{% if page <= 1 %}disabled{% endif %}"><a href="{{ item_list_path(parent_context, {page: (page-1)}) }}">Prev</a></li>
-            {% for i in range(1, lastpage) %}
-                <li class="{% if i == page %}active{% endif %}">
-                    <a href="{{ item_list_path(parent_context, {page: i}) }}">{{ i }}</a>
+            {% if dotsbefore %}
+                <li>
+                    <a href="{{ item_list_path(parent_context, {page: (page - before - 1)}) }}">...</a>
                 </li>
+            {% endif %}
+            {% for i in range(1, lastpage) %}
+                {% if (i >= (page - before)) and (i <= page + after) %}
+                    <li class="{% if i == page %}active{% endif %}">
+                        <a href="{{ item_list_path(parent_context, {page: i}) }}">{{ i }}</a>
+                    </li>
+                {% endif %}
             {% endfor %}
+            {% if dotsafter %}
+                <li>
+                    <a href="{{ item_list_path(parent_context, {page: (page + after + 1)}) }}">...</a>
+                </li>
+            {% endif %}
             <li class="{% if page >= lastpage %}disabled{% endif %}"><a href="{{ item_list_path(parent_context, {page: (page+1)}) }}">Next</a></li>
         </ul>
     </div>

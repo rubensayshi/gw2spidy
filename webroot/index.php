@@ -5,6 +5,8 @@
  *  this file contains all routing and the 'controllers' using lambda functions
  */
 
+use GW2Spidy\Twig\GenericHelpersExtension;
+
 use GW2Spidy\GW2SessionManager;
 
 use \DateTime;
@@ -58,9 +60,11 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 /*
  * register custom extensions
  */
+$app['twig']->addExtension(new GenericHelpersExtension());
 $app['twig']->addExtension(new VersionedAssetsRoutingExtension());
 $app['twig']->addExtension(new GW2MoneyExtension());
 $app['twig']->addExtension(new ItemListRoutingExtension($app['url_generator']));
+
 
 /**
  * lambda used to convert URL arguments

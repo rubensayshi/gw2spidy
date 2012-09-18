@@ -20,10 +20,10 @@ class ItemListRoutingExtension extends \Twig_Extension {
     }
 
     public function getPath($context, $parameters = array()) {
-        if (isset($context['search'])) {
+        if (array_key_exists('search', $context)) {
             $name = 'search';
             $parameters['search'] = $context['search'];
-        } else if (isset($context['type'])) {
+        } else if (array_key_exists('type', $context)) {
             $name = 'type';
             $parameters['type']    = $context['type'];
             $parameters['subtype'] = $context['subtype'];
