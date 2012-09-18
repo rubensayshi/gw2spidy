@@ -18,9 +18,9 @@
         <column name="name" type="varchar" size="255" required="true" />
         <column name="gem_store_description" type="varchar" size="255" required="true" />
         <column name="gem_store_blurb" type="varchar" size="255" required="true" />
-        <column name="restriction_level" type="varchar" size="255" required="true" />
-        <column name="rarity" type="varchar" size="255" required="true" />
-        <column name="vendor_sell_price" type="varchar" size="255" required="true" />
+        <column name="restriction_level" type="integer" required="true" />
+        <column name="rarity" type="integer" required="true" />
+        <column name="vendor_sell_price" type="integer" required="true" />
         <column name="img" type="varchar" size="255" required="true" />
         <column name="rarity_word" type="varchar" size="255" required="true" />
         <column name="item_type_id" type="integer" required="true" />
