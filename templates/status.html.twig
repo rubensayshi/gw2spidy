@@ -1,11 +1,23 @@
 {% extends "content_wide.html.twig" %}
 
 {% block content %}
-<pre>{{ dump }}</pre>
+<pre class="dump">{{ dump }}</pre>
 
 <script type="text/javascript">
-setTimeout(function() {
-    window.location.reload(true);
-}, 5000);
+var updateStatus = function() {
+    setTimeout(function() {
+        $.ajax('/status', {
+            success: function(resp) {
+                console.log($(resp).find('pre.dump').html());
+
+                $('pre.dump').html($(resp).find('pre.dump').html());
+
+                updateStatus();
+             }
+        });
+    }, 5000);
+};
+
+updateStatus();
 </script>
 {% endblock content %}
