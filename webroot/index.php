@@ -249,21 +249,21 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
 
     $q = ItemQuery::create();
 
-    if (!is_null($type)) {
+    if (!is_null($type) && $type != -1) {
         $q->filterByItemTypeId($type);
     }
-    if (!is_null($subtype)) {
+    if (!is_null($subtype) && $type != -1) {
         $q->filterByItemSubTypeId($subtype);
     }
 
     // use generic function to render
     return item_list($app, $request, $q, $page, 50, array('type' => $type, 'subtype' => $subtype));
 })
-->assert('type',     '\d+')
-->assert('subtype',  '\d+')
+->assert('type',     '-?\d+')
+->assert('subtype',  '-?\d+')
 ->assert('page',     '-?\d+')
-->value('type',      null)
-->value('subtype',   null)
+->value('type',      -1)
+->value('subtype',   -1)
 ->value('page',      1)
 ->bind('type');
 
