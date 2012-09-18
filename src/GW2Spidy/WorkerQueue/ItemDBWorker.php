@@ -45,7 +45,7 @@ class ItemDBWorker implements Worker {
 
         if ($items) {
             foreach ($items as $itemData) {
-                $this->storeItemData($itemData, $type, null);
+                $this->storeItemData($itemData, $type, $subtype);
             }
 
             return true;
