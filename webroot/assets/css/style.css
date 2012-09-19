@@ -313,11 +313,3 @@ h1 {
  * [END] tweet plugin style
    ---------------- */
    
-.search-icon {
-	display: inline-block;
-    background-image: url('../img/search.png');
-    height: 12px;
-    width: 12px;
-    text-indent: -1999px;
-    overflow: hidden;
-}

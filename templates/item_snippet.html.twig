@@ -1,14 +1,15 @@
 <{{ tag }} class="item  clearfix">
-    {% if href is defined %}
-        <a href="{{ href }}" class="clearfix">
-    {% endif %}
     <div class="image">
-        <img src="{{ item.img }}" width="64" height="64" />
+        {% if href is defined %}<a href="{{ href }}">{% endif %}
+            <img src="{{ item.img }}" width="64" height="64" />
+        {% if href is defined %}</a>{% endif %}
     </div>
     <div class="stats">
         <div class="name {{ item.rarityCssClass }}">
-        	{{ item.name }}
-        	<a href="http://www.gw2db.com/search?search={{ item.name|url_encode() }}" target="_blank" class="search-icon" title="Search for this item on GW2DB">Search for this item on GW2DB</a>
+            {% if href is defined %}<a href="{{ href }}">{% endif %}
+                {{- item.name -}}
+            {% if href is defined %}</a>{% endif %}
+        	<a href="http://www.gw2db.com/search?search={{ item.name | url_encode }}" target="_blank" title="Search for this item on GW2DB"><i class="icon-search"></i></a>
         </div>
         {% if item.itemType %}
             <div class="item-type">{{ item.itemType.title }}</div>
@@ -21,7 +22,4 @@
             <div class="restriction-level">Required Level: {{ item.restrictionLevel }}</div>
         {% endif %}
     </div>
-    {% if href is defined %}
-        </a>
-    {% endif %}
 </{{ tag }}>
