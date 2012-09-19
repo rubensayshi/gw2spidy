@@ -75,7 +75,7 @@
             <tr class="item">
                 <td>
                     <a href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
-                        <img class="image" src="{{ item.img }}" /> {{ item.name }}
+                        <img class="image" src="{{ item.img }}" width="32" height="32" /> {{ item.name }}
                     </a>
                 </td>
                 <td class="restriction_level">{% if item.restrictionLevel %}{{ item.restrictionLevel }}{% endif %}</td>
