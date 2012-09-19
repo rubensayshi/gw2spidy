@@ -304,17 +304,51 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     /*----------------
      *  SELL LISTINGS
      *----------------*/
+    $sellListings = SellListingQuery::getChartDatasetDataForItem($item);
     $chart[] = array(
-        'data'   => SellListingQuery::getChartDatasetDataForItem($item),
-        'name'  => "Sell Listings",
+        'data'   => $sellListings['raw'],
+        'name'  => "Sell Listings Raw Data",
+    	'visible' => false,
+    );
+    $chart[] = array(
+    	'data'   => $sellListings['daily'],
+    	'name'  => "Sell Listings Daily Average",
+    	'visible' => true,
+    );
+    $chart[] = array(
+    	'data'   => $sellListings['weekly'],
+    	'name'  => "Sell Listings Weekly Average",
+    	'visible' => false,
+    );
+    $chart[] = array(
+    	'data'   => $sellListings['monthly'],
+    	'name'  => "Sell Listings 30-day Average",
+    	'visible' => false,
     );
 
     /*---------------
      *  BUY LISTINGS
      *---------------*/
+    $buyListings = BuyListingQuery::getChartDatasetDataForItem($item);
     $chart[] = array(
-        'data'   => BuyListingQuery::getChartDatasetDataForItem($item),
-        'name'   => "Buy Listings",
+        'data'   => $buyListings['raw'],
+        'name'   => "Buy Listings Raw Data",
+    	'visible' => false,
+    );
+    $chart[] = array(
+    	'data'   => $buyListings['daily'],
+    	'name'  => "Buy Listings Daily Average",
+    	'visible' => true,
+    );
+    $chart[] = array(
+    	'data'   => $buyListings['weekly'],
+    	'name'  => "Buy Listings Weekly Average",
+    	'visible' => false,
+    );
+    $chart[] = array(
+    	'data'   => $buyListings['monthly'],
+    	'name'  => "Buy Listings 30-day Average",
+    	'visible' => false,
     );
 
     $content = json_encode($chart);
