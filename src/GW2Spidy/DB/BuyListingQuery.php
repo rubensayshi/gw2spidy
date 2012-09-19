@@ -25,7 +25,11 @@ class BuyListingQuery extends BaseBuyListingQuery {
         $data     = ApplicationCache::getInstance()->get($cacheKey);
 
         if (!$data) {
-            $data = array();
+            $data = array(
+            	'raw' => array(),
+            	'weekly' => array(),
+            	'monthly' => array(),
+            );
 
             $listings = static::create()
                             ->select(array('listingDate', 'listingTime'))
@@ -35,13 +39,33 @@ class BuyListingQuery extends BaseBuyListingQuery {
                             ->filterByItemId($item->getDataId())
                             ->find();
 
+            $weeklyValues = array();
+            $monthlyValues = array();
             foreach ($listings as $listingEntry) {
                 $date = new DateTime("{$listingEntry['listingDate']} {$listingEntry['listingTime']}");
                 $date->setTimezone(new DateTimeZone('UTC'));
 
+                $weeklyValues[$date->getTimestamp()] = $listingEntry['min_unit_price'];
+                $monthlyValues[$date->getTimestamp()] = $listingEntry['min_unit_price'];
                 $listingEntry['min_unit_price'] = round($listingEntry['min_unit_price'], 2);
 
-                $data[] = array($date->getTimestamp()*1000, $listingEntry['min_unit_price']);
+                $data['raw'][] = array($date->getTimestamp()*1000, $listingEntry['min_unit_price']);
+                $data['weekly'][] = array($date->getTimestamp()*1000, round(array_sum($weeklyValues)/count($weeklyValues), 2));
+                $data['monthly'][] = array($date->getTimestamp()*1000, round(array_sum($monthlyValues)/count($monthlyValues), 2));
+                
+                /**
+                 * @TODO: This might be optimizable, don't feel like thinking about it though
+                 */
+                foreach ($weeklyValues as $timestamp => $value) {
+                	if ($date->getTimestamp() - $timestamp > 604800/*24*3600*7*/) {
+                		unset($weeklyValues[$timestamp]);
+                	}
+                }
+                foreach ($monthlyValues as $timestamp => $value) {
+                	if ($date->getTimestamp() - $timestamp > 18144000/*24*3600*7*30*/) {
+                		unset($monthlyValues[$timestamp]);
+                	}
+                }
             }
 
             ApplicationCache::getInstance()->set($cacheKey, $data, MEMCACHE_COMPRESSED, 600);
