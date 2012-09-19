@@ -27,6 +27,7 @@ class BuyListingQuery extends BaseBuyListingQuery {
         if (!$data) {
             $data = array(
             	'raw' => array(),
+            	'daily' => array(),
             	'weekly' => array(),
             	'monthly' => array(),
             );
@@ -39,23 +40,31 @@ class BuyListingQuery extends BaseBuyListingQuery {
                             ->filterByItemId($item->getDataId())
                             ->find();
 
+            $dailyValues = array();
             $weeklyValues = array();
             $monthlyValues = array();
             foreach ($listings as $listingEntry) {
                 $date = new DateTime("{$listingEntry['listingDate']} {$listingEntry['listingTime']}");
                 $date->setTimezone(new DateTimeZone('UTC'));
 
+                $dailyValues[$date->getTimestamp()] = $listingEntry['min_unit_price'];
                 $weeklyValues[$date->getTimestamp()] = $listingEntry['min_unit_price'];
                 $monthlyValues[$date->getTimestamp()] = $listingEntry['min_unit_price'];
                 $listingEntry['min_unit_price'] = round($listingEntry['min_unit_price'], 2);
 
                 $data['raw'][] = array($date->getTimestamp()*1000, $listingEntry['min_unit_price']);
+                $data['daily'][] = array($date->getTimestamp()*1000, round(array_sum($dailyValues)/count($dailyValues), 2));
                 $data['weekly'][] = array($date->getTimestamp()*1000, round(array_sum($weeklyValues)/count($weeklyValues), 2));
                 $data['monthly'][] = array($date->getTimestamp()*1000, round(array_sum($monthlyValues)/count($monthlyValues), 2));
                 
                 /**
                  * @TODO: This might be optimizable, don't feel like thinking about it though
                  */
+                foreach ($dailyValues as $timestamp => $value) {
+                	if ($date->getTimestamp() - $timestamp > 86400/*24*3600*/) {
+                		unset($dailyValues[$timestamp]);
+                	}
+                }
                 foreach ($weeklyValues as $timestamp => $value) {
                 	if ($date->getTimestamp() - $timestamp > 604800/*24*3600*7*/) {
                 		unset($weeklyValues[$timestamp]);

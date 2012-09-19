@@ -309,7 +309,13 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     $sellListings = SellListingQuery::getChartDatasetDataForItem($item);
     $chart[] = array(
         'data'   => $sellListings['raw'],
-        'name'  => "Sell Listings",
+        'name'  => "Sell Listings Raw Data",
+    	'visible' => false,
+    );
+    $chart[] = array(
+    	'data'   => $sellListings['daily'],
+    	'name'  => "Sell Listings Daily Average",
+    	'visible' => true,
     );
     $chart[] = array(
     	'data'   => $sellListings['weekly'],
@@ -328,7 +334,13 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     $buyListings = BuyListingQuery::getChartDatasetDataForItem($item);
     $chart[] = array(
         'data'   => $buyListings['raw'],
-        'name'   => "Buy Listings",
+        'name'   => "Buy Listings Raw Data",
+    	'visible' => false,
+    );
+    $chart[] = array(
+    	'data'   => $buyListings['daily'],
+    	'name'  => "Buy Listings Daily Average",
+    	'visible' => true,
     );
     $chart[] = array(
     	'data'   => $buyListings['weekly'],
