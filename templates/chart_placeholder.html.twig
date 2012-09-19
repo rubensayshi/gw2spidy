@@ -3,6 +3,7 @@
 {% set title = title == '' and item is defined ? item.name : title %}
 {% set hideLegend = hideLegend is defined ? hideLegend : false %}
 
+<div id="seriesVisibility"></div>
 <div id="container" style="height: 500px; width: 100%; min-width: 450px;"></div>
 <script type="text/javascript">
 var formatGW2Money = function(copper) {
@@ -89,6 +90,29 @@ $(function() {
             },
             series : data
         });
+        
+        var $seriesVisibility = $('#seriesVisibility');
+        for (var i in data) {
+        	// closure probably required here because of events
+        	(function(j) {
+        		var series = chart.series[j];
+        		var $checkbox = $('<input />').attr('type', 'checkbox');
+        		if (series.visible) {
+        			$checkbox.attr('checked', 'checked');
+        		}
+        		var $label = $('<label />').html(series.name);
+        		var $span = $('<span />').append($checkbox).append($label);
+        		$seriesVisibility.append($span);
+        		
+        		$checkbox.change(function() {
+        			if (series.visible) {
+        				series.hide();
+        			} else {
+        				series.show();
+        			}
+        		});
+        	})(i);
+        }
     });
 });
 </script>

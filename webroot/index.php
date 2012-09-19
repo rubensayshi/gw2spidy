@@ -314,10 +314,12 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     $chart[] = array(
     	'data'   => $sellListings['weekly'],
     	'name'  => "Sell Listings Weekly Average",
+    	'visible' => false,
     );
     $chart[] = array(
     	'data'   => $sellListings['monthly'],
     	'name'  => "Sell Listings 30-day Average",
+    	'visible' => false,
     );
 
     /*---------------
@@ -331,10 +333,12 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     $chart[] = array(
     	'data'   => $buyListings['weekly'],
     	'name'  => "Buy Listings Weekly Average",
+    	'visible' => false,
     );
     $chart[] = array(
     	'data'   => $buyListings['monthly'],
     	'name'  => "Buy Listings 30-day Average",
+    	'visible' => false,
     );
 
     $content = json_encode($chart);
