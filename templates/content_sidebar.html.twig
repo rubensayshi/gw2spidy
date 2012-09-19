@@ -9,22 +9,7 @@
     <div class="span4 sidebar">
         <div class="well">
         {% block sidebar %}
-            <div>
-                <h3>Item history</h3>
-                <ul class="nav nav-pills nav-stacked item-history-list">
-                    {% for item in app.getItemHistory.getItems %}
-                        <li class="item">
-                            <a href="{{ path('item', {dataId: item.dataId}) }}">
-                                <div class="image"><img src="{{ item.img }}" width="32" height="32" /></div>
-                                <div class="stats">
-                                    <span class="name {{ item.rarityCssClass }}">{{ item.name }}</span>
-                                </div>
-                            <div class="clearfix"></div>
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+            <div id="item-history-placeholder"></div>
         {% endblock %}
         </div>
     </div>

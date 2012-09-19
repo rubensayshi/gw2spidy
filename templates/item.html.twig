@@ -5,4 +5,13 @@
 {% include "item_snippet.html.twig" with {'item': item, 'tag': 'div'} %}
 <div class="clearfix">&nbsp;</div>
 {% include "chart_placeholder.html.twig" with {'item': item, 'hideLegend': hideLegend} %}
+
+<script type="text/javascript">
+{% set historySnippet %}
+{% spaceless %}
+    {% include "item_snippet.html.twig" with {'item': item, 'tag': 'li', 'href': path('item', {dataId: item.dataId})} %}
+{% endspaceless %}
+{% endset %}
+    window.GW2SpidyItemHistory.addItem({{ item.dataId }}, '{{- historySnippet | e('js') -}}');
+</script>
 {% endblock %}

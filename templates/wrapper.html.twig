@@ -19,6 +19,8 @@
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
 
+    <script type="text/javascript" src="{{ versioned_asset('/assets/js/item-history.js') }}"></script>
+
     <link href="{{ versioned_asset('/assets/css/bootstrap.css') }}" rel="stylesheet" />
     <link href="{{ versioned_asset('/assets/css/bootstrap-responsive.css') }}" rel="stylesheet" />
     <link href="{{ versioned_asset('/assets/css/style.css') }}" rel="stylesheet" />
@@ -86,7 +88,7 @@
                 </div>
             </div>
         </div>
-        {% if (false and app.isNotificationVisible('new_gem_exchange_and_highcharts', 5)) %}
+        {% if (false) %}
             <div class="row-fluid content-row">
                 <div class="well">
                     <h3 style="border-bottom: 1px solid #ccc; margin-bottom: 5px;">Notices</h3>
