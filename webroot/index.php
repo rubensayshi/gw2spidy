@@ -39,8 +39,6 @@ use GW2Spidy\Queue\WorkerQueueManager;
 require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
 
-@session_start();
-
 // initiate the application, check config to enable debug / sql logging when needed
 $app = Application::getInstance();
 $app->isSQLLogMode() && $app->enableSQLLogging();
