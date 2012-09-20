@@ -38,10 +38,6 @@ var GW2SpidyItemHistory = (function() {
             itemSnippets = JSON.parse(json);
         }
 
-
-        console.log(itemHistory);
-        console.log(itemSnippets);
-
         itemSnippets = itemSnippets || {};
         itemHistory  = itemHistory  || {};
 
@@ -83,9 +79,6 @@ var GW2SpidyItemHistory = (function() {
                 itemHistory[_visited] = undefined;
             }
         });
-
-        console.log(itemHistory);
-        console.log(itemSnippets);
 
         itemHistory[(new Date()).getTime()] = itemID;
         itemSnippets[itemID] = snippet;

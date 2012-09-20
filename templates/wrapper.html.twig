@@ -20,6 +20,7 @@
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
 
     <script type="text/javascript" src="{{ versioned_asset('/assets/js/item-history.js') }}"></script>
+    <script type="text/javascript" src="{{ versioned_asset('/assets/js/js-flash-messages.js') }}"></script>
 
     <link href="{{ versioned_asset('/assets/css/bootstrap.css') }}" rel="stylesheet" />
     <link href="{{ versioned_asset('/assets/css/bootstrap-responsive.css') }}" rel="stylesheet" />
@@ -88,20 +89,30 @@
                 </div>
             </div>
         </div>
-        {% if (false) %}
-            <div class="row-fluid content-row">
-                <div class="well">
-                    <h3 style="border-bottom: 1px solid #ccc; margin-bottom: 5px;">Notices</h3>
-                    <div class="alert alert-success">
-                        <strong>UPDATE!</strong> I just deployed a new version with 2 features added in: <br />
-                        - <a href="{{ path('gem') }}">Gem Exchange</a> rates are now being gathered and displayed, both gold to gem and gem to gold. <br />
-                        - Using a new library for the charts (HighCharts), it offers a lot of (better) functionality out of the box and it has some other interesting features for the future (such as candlesticks). <br />
-                        <br />
-                        Let me know what you think of the changes on twitter <a href="https://twitter.com/gw2spidy">@GW2Spidy</a> ;)
-                    </div>
-                </div>
+        <div id="flash-message-wrapper" class="row-fluid content-row" style="display: none;">
+            <div class="well">
+                <h3 style="border-bottom: 1px solid #ccc; margin-bottom: 5px;">Notices</h3>
+                <div id="flash-message-container"></div>
             </div>
-        {% endif %}
+        </div>
+        <div id="flash-message-library" style="display: none;">
+            {% if (true) %}
+                <div id="flash-flashes" class="alert alert-warning">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>FLASH MESSAGES!</strong> <br />
+                    The messages you get to see here will keep showing up until you click the little × on the right side ;)
+                </div>
+                <div id="flash-moving-average" class="alert alert-success">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>NEW VERSION RELEASED!</strong> <br />
+                    The new version adds daily/weekly/monthly moving/rolling averages (and uses daily as default instead of the raw data). <br />
+                    This makes the charts smooth out the data, you can switch between the different lines by clicking on them in the legend @ the top! <br />
+                    <i>Now don't go look at the example on the homepage, the legend is disabled there because it doesn't fit :P</i> <br />
+                    <br />
+                    Let me know what you think of the changes on twitter <a href="https://twitter.com/gw2spidy">@GW2Spidy</a> ;)
+                </div>
+            {% endif %}
+        </div>
         <div class="row-fluid content-row">
             {% block content_body %}{% endblock %}
         </div>
