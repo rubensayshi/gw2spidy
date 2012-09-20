@@ -27,7 +27,7 @@ class GW2MoneyExtension extends \Twig_Extension {
             $result .= "{$silver}s ";
         }
 
-        if ($copper = floor($copper)) {
+        if ($copper) {
             $result .= "{$copper}c ";
         }
 
