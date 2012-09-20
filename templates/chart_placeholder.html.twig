@@ -20,8 +20,6 @@ var formatGW2Money = function(copper) {
         if (silver) string += silver + "s ";
     }
 
-    copper = Math.floor(copper);
-
     if (copper) string += copper + "c ";
 
     if (!string) {
@@ -70,8 +68,10 @@ $(function() {
             legend : {
                 enabled: {{ hideLegend ? 'false' : 'true' }},
                 padding: 6,
-                floating: true,
-                verticalAlign: "top"
+                floating: false,
+                verticalAlign: "top",
+                width: 800,
+                itemWidth: 200
             },
             rangeSelector : {
                 buttons: [
@@ -80,7 +80,7 @@ $(function() {
                     {type: 'week', count: 1,  text: '1w'},
                     {type: 'all',             text: 'all'}
                 ],
-                selected : 1
+                selected : 2
             },
             yAxis : {
                 labels : {

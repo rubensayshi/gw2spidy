@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\DB;
 
+use GW2Spidy\ListingQueryHelper;
+
 use \DateTime;
 use \DateTimeZone;
 use GW2Spidy\Util\ApplicationCache;
@@ -21,33 +23,7 @@ use GW2Spidy\DB\om\BaseBuyListingQuery;
  */
 class BuyListingQuery extends BaseBuyListingQuery {
     public static function getChartDatasetDataForItem(Item $item) {
-        $cacheKey = __CLASS__ . "::" . __METHOD__ . "::" . $item->getDataId();
-        $data     = ApplicationCache::getInstance()->get($cacheKey);
-
-        if (!$data) {
-            $data = array();
-
-            $listings = static::create()
-                            ->select(array('listingDate', 'listingTime'))
-                            ->withColumn('MIN(unit_price)', 'min_unit_price')
-                            ->groupBy('listingDate')
-                            ->groupBy('listingTime')
-                            ->filterByItemId($item->getDataId())
-                            ->find();
-
-            foreach ($listings as $listingEntry) {
-                $date = new DateTime("{$listingEntry['listingDate']} {$listingEntry['listingTime']}");
-                $date->setTimezone(new DateTimeZone('UTC'));
-
-                $listingEntry['min_unit_price'] = round($listingEntry['min_unit_price'], 2);
-
-                $data[] = array($date->getTimestamp()*1000, $listingEntry['min_unit_price']);
-            }
-
-            ApplicationCache::getInstance()->set($cacheKey, $data, MEMCACHE_COMPRESSED, 600);
-        }
-
-        return $data;
+        return ListingQueryHelper::getChartDatasetDataForItem($item, self::create());
     }
 
 } // BuyListingQuery
