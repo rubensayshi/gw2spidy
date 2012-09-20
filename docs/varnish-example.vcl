@@ -5,6 +5,11 @@ backend default {
 
 sub vcl_recv {
         unset req.http.cookie;
+             
+        if (req.http.x-pipe && req.restarts > 0) {
+                return(pipe);
+        }
+        
 }
 
 sub vcl_fetch {
@@ -37,6 +42,13 @@ sub vcl_fetch {
         if (req.url ~ "^/type") {
                 set beresp.ttl = 1d;
         }
+        
+        # This is the rule to knock out big files
+        if ( beresp.http.Content-Length ~ "[0-9]{8,}" ) {
+                set req.http.x-pipe = "1";
+                restart;
+        }
+        
 }
 
 sub vcl_hit {
