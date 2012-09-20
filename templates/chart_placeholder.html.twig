@@ -20,7 +20,12 @@ var formatGW2Money = function(copper) {
         if (silver) string += silver + "s ";
     }
 
-    if (copper) string += copper + "c ";
+    if (copper) {
+        // round by 2 digits
+        copper = Math.round(copper * 100) / 100;
+
+        string += copper + "c ";
+    }
 
     if (!string) {
         return copper + "c";
