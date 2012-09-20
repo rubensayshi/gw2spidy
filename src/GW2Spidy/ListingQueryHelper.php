@@ -10,10 +10,11 @@ use GW2Spidy\DB\Item;
 
 class ListingQueryHelper {
     public static function getChartDatasetDataForItem(Item $item, \ModelCriteria $q) {
+        var_dump(__LINE__, $app->getTime());
         $cacheKey = get_class($q) . "::" . __METHOD__ . "::" . $item->getDataId();
         $data     = ApplicationCache::getInstance()->get($cacheKey);
 
-        if (!$data) {
+        if (true || !$data) {
             $data = array(
             	'raw'     => array(),
             	'daily'   => array(),
@@ -21,12 +22,14 @@ class ListingQueryHelper {
             	'monthly' => array(),
             );
 
+            var_dump(__LINE__, $app->getTime());
             $listings = $q->select(array('listingDate', 'listingTime'))
                           ->withColumn('MIN(unit_price)', 'min_unit_price')
                           ->groupBy('listingDate')
                           ->groupBy('listingTime')
                           ->filterByItemId($item->getDataId())
                           ->find();
+        var_dump(__LINE__, $app->getTime());
 
             /*
              * use these 3 arrays to maintain the values over which we calculate the moving average
@@ -73,6 +76,7 @@ class ListingQueryHelper {
                 $data['weekly'][]  = array($timestamp*1000, round(array_sum($weeklyValues)  / count($weeklyValues),  2));
                 $data['monthly'][] = array($timestamp*1000, round(array_sum($monthlyValues) / count($monthlyValues), 2));
             }
+        var_dump(__LINE__, $app->getTime());
 
             ApplicationCache::getInstance()->set($cacheKey, $data, MEMCACHE_COMPRESSED, 600);
         }
