@@ -207,17 +207,51 @@ $app->get("/gem_chart", function() use($app) {
     /*---------------------
      *  BUY GEMS WITH GOLD
     *----------------------*/
+    $goldToGem = GoldToGemRateQuery::getChartDatasetData();
     $chart[] = array(
-        'data'   => GoldToGemRateQuery::getChartDatasetData(),
-        'name'   => "Gold to Gems",
+        'data'   => $goldToGem['raw'],
+        'name'  => "Gold To Gems Raw Data",
+    	'visible' => true,
+    );
+    $chart[] = array(
+    	'data'   => $goldToGem['daily'],
+    	'name'  => "Gold To Gems Daily Average",
+    	'visible' => true,
+    );
+    $chart[] = array(
+    	'data'   => $goldToGem['weekly'],
+    	'name'  => "Gold To Gems Weekly Average",
+    	'visible' => false,
+    );
+    $chart[] = array(
+    	'data'   => $goldToGem['monthly'],
+    	'name'  => "Gold To Gems 30-day Average",
+    	'visible' => false,
     );
 
     /*---------------------
      *  SELL GEMS FOR GOLD
     *----------------------*/
+    $gemToGold = GemToGoldRateQuery::getChartDatasetData();
     $chart[] = array(
-        'data'   => GemToGoldRateQuery::getChartDatasetData(),
-        'name'   => "Gems to Gold",
+        'data'   => $gemToGold['raw'],
+        'name'  => "Gems to Gold Raw Data",
+    	'visible' => true,
+    );
+    $chart[] = array(
+    	'data'   => $gemToGold['daily'],
+    	'name'  => "Gems to Gold Daily Average",
+    	'visible' => true,
+    );
+    $chart[] = array(
+    	'data'   => $gemToGold['weekly'],
+    	'name'  => "Gems to Gold Weekly Average",
+    	'visible' => false,
+    );
+    $chart[] = array(
+    	'data'   => $gemToGold['monthly'],
+    	'name'  => "Gems to Gold 30-day Average",
+    	'visible' => false,
     );
 
     $content = json_encode($chart);

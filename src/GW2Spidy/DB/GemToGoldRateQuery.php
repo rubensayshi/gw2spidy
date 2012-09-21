@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\DB;
 
+use GW2Spidy\ListingQueryHelper;
+
 use \DateTime;
 use \DateTimeZone;
 
@@ -23,28 +25,6 @@ use GW2Spidy\DB\om\BaseGemToGoldRateQuery;
  */
 class GemToGoldRateQuery extends BaseGemToGoldRateQuery {
     public static function getChartDatasetData() {
-        $cacheKey = __CLASS__ . "::" . __METHOD__;
-        $data     = ApplicationCache::getInstance()->get($cacheKey);
-
-        if (!$data) {
-            $data = array();
-
-            $rates = static::create()
-                            ->select(array('rateDatetime', 'rate'))
-                            ->find();
-
-            foreach ($rates as $rateEntry) {
-                $date = new DateTime("{$rateEntry['rateDatetime']}");
-                $date->setTimezone(new DateTimeZone('UTC'));
-
-                $rateEntry['rate'] = round($rateEntry['rate'], 2);
-
-                $data[] = array($date->getTimestamp()*1000, $rateEntry['rate']);
-            }
-
-            ApplicationCache::getInstance()->set($cacheKey, $data, MEMCACHE_COMPRESSED, 600);
-        }
-
-        return $data;
+        return ListingQueryHelper::getChartDatasetData(self::create());
     }
 } // GemToGoldRateQuery
