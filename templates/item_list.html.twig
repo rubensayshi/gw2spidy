@@ -45,11 +45,11 @@
 {# ---------------
     table header (with sorting link) is repeated multiple times
    --------------- #}
-{% macro th_sortable(title, key, current_sort, current_sort_order, parent_context) %}
+{% macro th_sortable(title, key, current_sort, current_sort_order, parent_context, extra_classes) %}
     {# set the inverted order if we're already sorting by this key #}
     {% set sort_order = current_sort == key ? (current_sort_order == 'desc' ? 'asc' : 'desc') : 'asc' %}
 
-    <th class="{{ key }}">
+    <th class="{{ key }} {{ extra_classes }}">
         <a href="{{ item_list_path(parent_context, {('sort_' ~ key): sort_order}) }}">
             {{ title }}
             {% if current_sort == key %}
@@ -67,21 +67,21 @@
             {{ _self.th_sortable('Name', 'name', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Level', 'restriction_level', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Rarity', 'rarity', current_sort, current_sort_order, _context) }}
-            <th class="type">Type</th>
+            <th class="type hidden-phone">Type</th>
             {{ _self.th_sortable('Min Sale Offer', 'min_sale_unit_price', current_sort, current_sort_order, _context) }}
-            {{ _self.th_sortable('Max Buy Offer', 'max_offer_unit_price', current_sort, current_sort_order, _context) }}
-            {{ _self.th_sortable('Margin', 'margin', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Max Buy Offer', 'max_offer_unit_price', current_sort, current_sort_order, _context, 'hidden-phone') }}
+            {{ _self.th_sortable('Margin', 'margin', current_sort, current_sort_order, _context, 'hidden-phone') }}
         </thead>
         {% for item in items %}
             <tr class="item">
-                <td width="20%">
+                <td class="info">
                     <a href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
                         <img class="image" src="{{ item.img }}" width="32" height="32" /> {{ item.name }}
                     </a>
                 </td>
                 <td class="restriction_level">{% if item.restrictionLevel %}{{ item.restrictionLevel }}{% endif %}</td>
                 <td class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</td>
-                <td class="type">
+                <td class="type hidden-phone">
                     {% if item.itemType %}
                         <span class="item-type">{{ item.itemType.title }}</span>
                     {% endif %}
@@ -91,8 +91,8 @@
                     {% endif %}
                 </td>
                 <td class="min_sale_unit_price" title="{{ item.saleAvailability }} sales available">{{ item.minSaleUnitPrice | gw2money }}</td>
-                <td class="max_offer_unit_price" title="{{ item.offerAvailability }} offers available">{{ item.maxOfferUnitPrice | gw2money }}</td>
-                <td>{{ item.margin | gw2money }}</td>
+                <td class="max_offer_unit_price hidden-phone" title="{{ item.offerAvailability }} offers available">{{ item.maxOfferUnitPrice | gw2money }}</td>
+                <td class="margin hidden-phone">{{ item.margin | gw2money }}</td>
             </tr>
         {% endfor %}
     </table>
