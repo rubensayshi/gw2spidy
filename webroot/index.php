@@ -86,7 +86,7 @@ $toInt = function($val) {
  * @param  array         $tplVars
  */
 function item_list(Application $app, Request $request, ItemQuery $q, $page, $itemsperpage, array $tplVars = array()) {
-    $sortByOptions = array('name', 'rarity', 'restriction_level', 'min_sale_unit_price', 'max_offer_unit_price');
+    $sortByOptions = array('name', 'rarity', 'restriction_level', 'min_sale_unit_price', 'max_offer_unit_price', 'margin');
 
     foreach ($sortByOptions as $sortByOption) {
         if ($request->get("sort_{$sortByOption}", null)) {
@@ -109,6 +109,9 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
         $page     = 1;
         $lastpage = 1;
     }
+
+    $q->addAsColumn("margin", "min_sale_unit_price * 0.85 - max_offer_unit_price");
+    $q->addSelectColumn("*");
 
     $q->offset($itemsperpage * ($page-1))
     ->limit($itemsperpage);

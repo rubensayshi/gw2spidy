@@ -70,10 +70,11 @@
             <th class="type">Type</th>
             {{ _self.th_sortable('Min Sale Offer', 'min_sale_unit_price', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Max Buy Offer', 'max_offer_unit_price', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Margin', 'margin', current_sort, current_sort_order, _context) }}
         </thead>
         {% for item in items %}
             <tr class="item">
-                <td>
+                <td width="20%">
                     <a href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
                         <img class="image" src="{{ item.img }}" width="32" height="32" /> {{ item.name }}
                     </a>
@@ -91,6 +92,7 @@
                 </td>
                 <td class="min_sale_unit_price" title="{{ item.saleAvailability }} sales available">{{ item.minSaleUnitPrice | gw2money }}</td>
                 <td class="max_offer_unit_price" title="{{ item.offerAvailability }} offers available">{{ item.maxOfferUnitPrice | gw2money }}</td>
+                <td>{{ item.margin | gw2money }}</td>
             </tr>
         {% endfor %}
     </table>
