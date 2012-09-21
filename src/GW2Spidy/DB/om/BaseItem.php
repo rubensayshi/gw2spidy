@@ -86,19 +86,19 @@ abstract class BaseItem extends BaseObject implements Persistent
 
     /**
      * The value for the restriction_level field.
-     * @var        string
+     * @var        int
      */
     protected $restriction_level;
 
     /**
      * The value for the rarity field.
-     * @var        string
+     * @var        int
      */
     protected $rarity;
 
     /**
      * The value for the vendor_sell_price field.
-     * @var        string
+     * @var        int
      */
     protected $vendor_sell_price;
 
@@ -280,7 +280,7 @@ abstract class BaseItem extends BaseObject implements Persistent
     /**
      * Get the [restriction_level] column value.
      * 
-     * @return   string
+     * @return   int
      */
     public function getRestrictionLevel()
     {
@@ -291,7 +291,7 @@ abstract class BaseItem extends BaseObject implements Persistent
     /**
      * Get the [rarity] column value.
      * 
-     * @return   string
+     * @return   int
      */
     public function getRarity()
     {
@@ -302,7 +302,7 @@ abstract class BaseItem extends BaseObject implements Persistent
     /**
      * Get the [vendor_sell_price] column value.
      * 
-     * @return   string
+     * @return   int
      */
     public function getVendorSellPrice()
     {
@@ -506,13 +506,13 @@ abstract class BaseItem extends BaseObject implements Persistent
     /**
      * Set the value of [restriction_level] column.
      * 
-     * @param      string $v new value
+     * @param      int $v new value
      * @return   Item The current object (for fluent API support)
      */
     public function setRestrictionLevel($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (int) $v;
         }
 
         if ($this->restriction_level !== $v) {
@@ -527,13 +527,13 @@ abstract class BaseItem extends BaseObject implements Persistent
     /**
      * Set the value of [rarity] column.
      * 
-     * @param      string $v new value
+     * @param      int $v new value
      * @return   Item The current object (for fluent API support)
      */
     public function setRarity($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (int) $v;
         }
 
         if ($this->rarity !== $v) {
@@ -548,13 +548,13 @@ abstract class BaseItem extends BaseObject implements Persistent
     /**
      * Set the value of [vendor_sell_price] column.
      * 
-     * @param      string $v new value
+     * @param      int $v new value
      * @return   Item The current object (for fluent API support)
      */
     public function setVendorSellPrice($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (int) $v;
         }
 
         if ($this->vendor_sell_price !== $v) {
@@ -787,9 +787,9 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->name = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
             $this->gem_store_description = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
             $this->gem_store_blurb = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-            $this->restriction_level = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-            $this->rarity = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->vendor_sell_price = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+            $this->restriction_level = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
+            $this->rarity = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+            $this->vendor_sell_price = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
             $this->img = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
             $this->rarity_word = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
             $this->item_type_id = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
@@ -1154,13 +1154,13 @@ abstract class BaseItem extends BaseObject implements Persistent
 						$stmt->bindValue($identifier, $this->gem_store_blurb, PDO::PARAM_STR);
                         break;
                     case '`RESTRICTION_LEVEL`':
-						$stmt->bindValue($identifier, $this->restriction_level, PDO::PARAM_STR);
+						$stmt->bindValue($identifier, $this->restriction_level, PDO::PARAM_INT);
                         break;
                     case '`RARITY`':
-						$stmt->bindValue($identifier, $this->rarity, PDO::PARAM_STR);
+						$stmt->bindValue($identifier, $this->rarity, PDO::PARAM_INT);
                         break;
                     case '`VENDOR_SELL_PRICE`':
-						$stmt->bindValue($identifier, $this->vendor_sell_price, PDO::PARAM_STR);
+						$stmt->bindValue($identifier, $this->vendor_sell_price, PDO::PARAM_INT);
                         break;
                     case '`IMG`':
 						$stmt->bindValue($identifier, $this->img, PDO::PARAM_STR);

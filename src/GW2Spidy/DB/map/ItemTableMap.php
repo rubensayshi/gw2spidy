@@ -47,9 +47,9 @@ class ItemTableMap extends TableMap
         $this->addColumn('NAME', 'Name', 'VARCHAR', true, 255, null);
         $this->addColumn('GEM_STORE_DESCRIPTION', 'GemStoreDescription', 'VARCHAR', true, 255, null);
         $this->addColumn('GEM_STORE_BLURB', 'GemStoreBlurb', 'VARCHAR', true, 255, null);
-        $this->addColumn('RESTRICTION_LEVEL', 'RestrictionLevel', 'VARCHAR', true, 255, null);
-        $this->addColumn('RARITY', 'Rarity', 'VARCHAR', true, 255, null);
-        $this->addColumn('VENDOR_SELL_PRICE', 'VendorSellPrice', 'VARCHAR', true, 255, null);
+        $this->addColumn('RESTRICTION_LEVEL', 'RestrictionLevel', 'INTEGER', true, null, null);
+        $this->addColumn('RARITY', 'Rarity', 'INTEGER', true, null, null);
+        $this->addColumn('VENDOR_SELL_PRICE', 'VendorSellPrice', 'INTEGER', true, null, null);
         $this->addColumn('IMG', 'Img', 'VARCHAR', true, 255, null);
         $this->addColumn('RARITY_WORD', 'RarityWord', 'VARCHAR', true, 255, null);
         $this->addForeignKey('ITEM_TYPE_ID', 'ItemTypeId', 'INTEGER', 'item_type', 'ID', true, null, null);

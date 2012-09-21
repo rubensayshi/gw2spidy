@@ -87,9 +87,9 @@ use GW2Spidy\DB\SellListing;
  * @method     Item findOneByName(string $name) Return the first Item filtered by the name column
  * @method     Item findOneByGemStoreDescription(string $gem_store_description) Return the first Item filtered by the gem_store_description column
  * @method     Item findOneByGemStoreBlurb(string $gem_store_blurb) Return the first Item filtered by the gem_store_blurb column
- * @method     Item findOneByRestrictionLevel(string $restriction_level) Return the first Item filtered by the restriction_level column
- * @method     Item findOneByRarity(string $rarity) Return the first Item filtered by the rarity column
- * @method     Item findOneByVendorSellPrice(string $vendor_sell_price) Return the first Item filtered by the vendor_sell_price column
+ * @method     Item findOneByRestrictionLevel(int $restriction_level) Return the first Item filtered by the restriction_level column
+ * @method     Item findOneByRarity(int $rarity) Return the first Item filtered by the rarity column
+ * @method     Item findOneByVendorSellPrice(int $vendor_sell_price) Return the first Item filtered by the vendor_sell_price column
  * @method     Item findOneByImg(string $img) Return the first Item filtered by the img column
  * @method     Item findOneByRarityWord(string $rarity_word) Return the first Item filtered by the rarity_word column
  * @method     Item findOneByItemTypeId(int $item_type_id) Return the first Item filtered by the item_type_id column
@@ -104,9 +104,9 @@ use GW2Spidy\DB\SellListing;
  * @method     array findByName(string $name) Return Item objects filtered by the name column
  * @method     array findByGemStoreDescription(string $gem_store_description) Return Item objects filtered by the gem_store_description column
  * @method     array findByGemStoreBlurb(string $gem_store_blurb) Return Item objects filtered by the gem_store_blurb column
- * @method     array findByRestrictionLevel(string $restriction_level) Return Item objects filtered by the restriction_level column
- * @method     array findByRarity(string $rarity) Return Item objects filtered by the rarity column
- * @method     array findByVendorSellPrice(string $vendor_sell_price) Return Item objects filtered by the vendor_sell_price column
+ * @method     array findByRestrictionLevel(int $restriction_level) Return Item objects filtered by the restriction_level column
+ * @method     array findByRarity(int $rarity) Return Item objects filtered by the rarity column
+ * @method     array findByVendorSellPrice(int $vendor_sell_price) Return Item objects filtered by the vendor_sell_price column
  * @method     array findByImg(string $img) Return Item objects filtered by the img column
  * @method     array findByRarityWord(string $rarity_word) Return Item objects filtered by the rarity_word column
  * @method     array findByItemTypeId(int $item_type_id) Return Item objects filtered by the item_type_id column
@@ -454,24 +454,36 @@ abstract class BaseItemQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByRestrictionLevel('fooValue');   // WHERE restriction_level = 'fooValue'
-     * $query->filterByRestrictionLevel('%fooValue%'); // WHERE restriction_level LIKE '%fooValue%'
+     * $query->filterByRestrictionLevel(1234); // WHERE restriction_level = 1234
+     * $query->filterByRestrictionLevel(array(12, 34)); // WHERE restriction_level IN (12, 34)
+     * $query->filterByRestrictionLevel(array('min' => 12)); // WHERE restriction_level > 12
      * </code>
      *
-     * @param     string $restrictionLevel The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     mixed $restrictionLevel The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ItemQuery The current query, for fluid interface
      */
     public function filterByRestrictionLevel($restrictionLevel = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($restrictionLevel)) {
+        if (is_array($restrictionLevel)) {
+            $useMinMax = false;
+            if (isset($restrictionLevel['min'])) {
+                $this->addUsingAlias(ItemPeer::RESTRICTION_LEVEL, $restrictionLevel['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($restrictionLevel['max'])) {
+                $this->addUsingAlias(ItemPeer::RESTRICTION_LEVEL, $restrictionLevel['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $restrictionLevel)) {
-                $restrictionLevel = str_replace('*', '%', $restrictionLevel);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -483,24 +495,36 @@ abstract class BaseItemQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByRarity('fooValue');   // WHERE rarity = 'fooValue'
-     * $query->filterByRarity('%fooValue%'); // WHERE rarity LIKE '%fooValue%'
+     * $query->filterByRarity(1234); // WHERE rarity = 1234
+     * $query->filterByRarity(array(12, 34)); // WHERE rarity IN (12, 34)
+     * $query->filterByRarity(array('min' => 12)); // WHERE rarity > 12
      * </code>
      *
-     * @param     string $rarity The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     mixed $rarity The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ItemQuery The current query, for fluid interface
      */
     public function filterByRarity($rarity = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($rarity)) {
+        if (is_array($rarity)) {
+            $useMinMax = false;
+            if (isset($rarity['min'])) {
+                $this->addUsingAlias(ItemPeer::RARITY, $rarity['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($rarity['max'])) {
+                $this->addUsingAlias(ItemPeer::RARITY, $rarity['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $rarity)) {
-                $rarity = str_replace('*', '%', $rarity);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -512,24 +536,36 @@ abstract class BaseItemQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByVendorSellPrice('fooValue');   // WHERE vendor_sell_price = 'fooValue'
-     * $query->filterByVendorSellPrice('%fooValue%'); // WHERE vendor_sell_price LIKE '%fooValue%'
+     * $query->filterByVendorSellPrice(1234); // WHERE vendor_sell_price = 1234
+     * $query->filterByVendorSellPrice(array(12, 34)); // WHERE vendor_sell_price IN (12, 34)
+     * $query->filterByVendorSellPrice(array('min' => 12)); // WHERE vendor_sell_price > 12
      * </code>
      *
-     * @param     string $vendorSellPrice The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     mixed $vendorSellPrice The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ItemQuery The current query, for fluid interface
      */
     public function filterByVendorSellPrice($vendorSellPrice = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($vendorSellPrice)) {
+        if (is_array($vendorSellPrice)) {
+            $useMinMax = false;
+            if (isset($vendorSellPrice['min'])) {
+                $this->addUsingAlias(ItemPeer::VENDOR_SELL_PRICE, $vendorSellPrice['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($vendorSellPrice['max'])) {
+                $this->addUsingAlias(ItemPeer::VENDOR_SELL_PRICE, $vendorSellPrice['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $vendorSellPrice)) {
-                $vendorSellPrice = str_replace('*', '%', $vendorSellPrice);
-                $comparison = Criteria::LIKE;
             }
         }
 
