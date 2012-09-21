@@ -545,8 +545,8 @@ $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $
             $date = new DateTime("{$listing->getListingDate()} {$listing->getListingTime()}");
             $date->setTimezone(new DateTimeZone('UTC'));
 
-            $data[$listing->getId()]['listing_date'] = $date->format("Y-m-d");
-            $data[$listing->getId()]['listing_time'] = $date->format("H:i:s");
+            $data['listing_date'] = $date->format("Y-m-d");
+            $data['listing_time'] = $date->format("H:i:s");
 
             echo implode(",", $data) . "\n";
         }
