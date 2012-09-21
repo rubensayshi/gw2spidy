@@ -38,7 +38,20 @@ class Item extends BaseItem {
         }
     }
 
-    public function getRarityCSSClass() {
+    public function getMargin() {
+	$margin = intval($this->getMinSaleUnitPrice() * 0.85 - $this->getMaxOfferUnitPrice());
+	if($this->getMaxOfferUnitPrice() == 0 | $this->getMinSaleUnitPrice() == 0)
+	{
+		$margin = 0;
+	}
+
+   	$margin = ($margin > 0) ? $margin : 0;
+	return $margin;
+
+    }
+
+
+   public function getRarityCSSClass() {
         return strtolower("rarity-" . str_replace(" ", "-", $this->getRarityName()));
     }
 
