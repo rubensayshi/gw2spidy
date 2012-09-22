@@ -44,6 +44,10 @@ class ItemListRoutingExtension extends \Twig_Extension {
             $parameters["sort_{$context['current_sort']}"] = $context['current_sort_order'];
         }
 
+        if (isset($context['rarity_filter'])) {
+            $parameters['rarity_filter'] = $context['rarity_filter'];
+        }
+
         return $this->generator->generate($name, $parameters, false);
     }
 

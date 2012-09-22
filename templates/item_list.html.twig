@@ -60,6 +60,31 @@
 {% endmacro %}
 
 {% block content %}
+    <p>
+        Filter by rarity: 
+        <select name="rarity_filter" id="rarity_filter">
+            <option value="1" data-href="{{ item_list_path(_context, {rarity_filter: null}) }}">Junk</option>
+            <option value="2" data-href="{{ item_list_path(_context, {rarity_filter: 2}) }}">Common</option>
+            <option value="3" data-href="{{ item_list_path(_context, {rarity_filter: 3}) }}">Fine</option>
+            <option value="4" data-href="{{ item_list_path(_context, {rarity_filter: 4}) }}">Masterwork</option>
+            <option value="5" data-href="{{ item_list_path(_context, {rarity_filter: 5}) }}">Rare</option>
+            <option value="6" data-href="{{ item_list_path(_context, {rarity_filter: 6}) }}">Exotic</option>
+            <option value="7" data-href="{{ item_list_path(_context, {rarity_filter: 7}) }}">Legendary</option>
+        </select> or better
+    </p>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#rarity_filter").on('change', function() {
+                var href = $(this).find(':selected').data('href'));
+
+                if (href != window.location.href) {
+                    window.location.href = href;
+                }
+            });
+        });
+    </script>
+
     {{ _self.pager(page, lastpage, _context) }}
 
     <table class="item-list-table table table-striped table-condensed">
