@@ -57,7 +57,7 @@ Or join me on irc.gamsurge.net with your favorite IRC client or the <a href="htt
 {% endblock %}
 
 {% block sidebar %}
-    <a href="{{ path('gem') }}"><h3>Gem Exchange <small>click for details</small></h3></a>
+    <a href="{{ path('gem') }}"><h3>Gem Exchange Rate <small>click for bigger chart</small></h3></a>
     {% include "gem.html.twig" with {'included': true, hideLegend: true} %}
     <p>&nbsp;</p>
     <h3>Tweet!</h3>

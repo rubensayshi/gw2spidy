@@ -4,7 +4,11 @@
 {% block sidebar %}{% endblock %}
 
 {% block content %}
-<h1>Gem Exchange Rate</h1>
+
+{% if not included %}
+	<h1>Gem Exchange Rate</h1>
+{% endif %}
+
 <p>The graph below displays how much ingame currency you can buy with 100 gems. <br />
 {% if gemtogold is defined %}
     <ul>
