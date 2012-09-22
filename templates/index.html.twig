@@ -57,10 +57,8 @@ Or join me on irc.gamsurge.net with your favorite IRC client or the <a href="htt
 {% endblock %}
 
 {% block sidebar %}
-    {% if featured %}
-        <h3>Just an example</h3>
-        {% include "item.html.twig" with {'item': featured, 'href': path('item', {dataId: featured.dataId}), width: '100%', 'included': true, hideLegend: true} %}
-    {% endif %}
+    <a href="{{ path('gem') }}"><h3>Gem Exchange <small>click for details</small></h3></a>
+    {% include "gem.html.twig" with {'included': true, hideLegend: true} %}
     <p>&nbsp;</p>
     <h3>Tweet!</h3>
     <div id="tweet"></div>

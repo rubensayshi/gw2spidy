@@ -1,4 +1,5 @@
-{% extends "content_sidebar.html.twig" %}
+{% extends not included is defined ? "content_sidebar.html.twig" : "empty_shell.html.twig" %}
+{% set hideLegend = hideLegend is defined ? hideLegend : false %}
 
 {% block sidebar %}{% endblock %}
 
@@ -15,6 +16,6 @@
 {% endif %}
 </p>
 
-{%  include "chart_placeholder.html.twig" with {url: path('gem_chart')} %}
+{%  include "chart_placeholder.html.twig" with {url: path('gem_chart'), hideLegend: hideLegend} %}
 
 {% endblock %}
