@@ -126,7 +126,7 @@
                 </td>
                 <td class="min_sale_unit_price" title="{{ item.saleAvailability }} sales available">{{ item.minSaleUnitPrice | gw2money }}</td>
                 <td class="max_offer_unit_price hidden-phone" title="{{ item.offerAvailability }} offers available">{{ item.maxOfferUnitPrice | gw2money }}</td>
-                <td class="margin hidden-phone">{{ item.margin | gw2money }}</td>
+                <td class="margin hidden-phone">{{ item.margin }}%</td>
             </tr>
         {% endfor %}
     </table>
