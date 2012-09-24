@@ -46,6 +46,11 @@ class Item extends BaseItem {
 	}
 
    	$margin = ($margin > 0) ? $margin : 0;
+
+	if($margin > 0)
+	{
+		$margin = round((($margin / $this->getMinSaleUnitPrice)*100),2) ;
+	}
 	return $margin;
 
     }

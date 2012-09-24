@@ -10,8 +10,8 @@ $conf = array (
       'connection' => 
       array (
         'dsn' => 'mysql:host=localhost;dbname=gw2spidy',
-        'user' => 'root',
-        'password' => 'root',
+        'user' => 'gw2spidy',
+        'password' => 'gw2spidy',
       ),
     ),
     'default' => 'gw2spidy',
