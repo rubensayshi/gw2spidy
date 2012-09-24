@@ -7,6 +7,7 @@ class GenericHelpersExtension extends \Twig_Extension {
         return array(
             'ceil' => new \Twig_Filter_Method($this, 'ceil'),
             'floor' => new \Twig_Filter_Method($this, 'floor'),
+            'rarity_css_class' => new \Twig_Filter_Method($this, 'rarity_css_class'),
         );
     }
 
@@ -16,6 +17,10 @@ class GenericHelpersExtension extends \Twig_Extension {
 
     public function ceil($num) {
         return ceil($num);
+    }
+
+    public function rarity_css_class($rarity) {
+        return strtolower("rarity-" . str_replace(" ", "-", $rarity));
     }
 
     public function getName() {

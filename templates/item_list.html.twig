@@ -59,32 +59,42 @@
     </th>
 {% endmacro %}
 
-{% block content %}
-    <p>
-        Filter by rarity: 
-        <select name="rarity_filter" id="rarity_filter">
-            <option value="1" data-href="{{ item_list_path(_context, {rarity_filter: null}) }}">Junk</option>
-            <option value="2" data-href="{{ item_list_path(_context, {rarity_filter: 2}) }}">Common</option>
-            <option value="3" data-href="{{ item_list_path(_context, {rarity_filter: 3}) }}">Fine</option>
-            <option value="4" data-href="{{ item_list_path(_context, {rarity_filter: 4}) }}">Masterwork</option>
-            <option value="5" data-href="{{ item_list_path(_context, {rarity_filter: 5}) }}">Rare</option>
-            <option value="6" data-href="{{ item_list_path(_context, {rarity_filter: 6}) }}">Exotic</option>
-            <option value="7" data-href="{{ item_list_path(_context, {rarity_filter: 7}) }}">Legendary</option>
-        </select> or better
-    </p>
+{% block sidebar %}
+    <h3>Filter item list</h3>
+    <div class="form-horizontal">
+        <div class="control-group" style="margin-bottom: 0px;">
+            <label class="control-label" for="rarity_filter">Filter by rarity:</label>
+            <div class="controls">
+                <div class="input-append">
+                    <select name="rarity_filter" id="rarity_filter">
+                        {% for rarity, rarityname in {1: 'Junk', 2: 'Common', 3: 'Fine', 4: 'Masterwork', 5: 'Rare', 6: 'Exotic', 7: 'Legendary'} %}
+                            <option class="{{ rarityname | rarity_css_class }}" {% if rarity == rarity_filter %}selected{% endif %} value="{{ rarity }}" data-href="{{ item_list_path(_context, {rarity_filter: (rarity != 1 ? rarity : null)}) }}">{{ rarityname }}</option>
+                        {% endfor %}
+                    </select><span class="add-on"> or better</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>&nbsp;</p>
 
     <script type="text/javascript">
         $(document).ready(function() {
+            console.log($("#rarity_filter"));
             $("#rarity_filter").on('change', function() {
-                var href = $(this).find(':selected').data('href'));
+                var href = $(this).find(':selected').data('href');
 
-                if (href != window.location.href) {
+                pos = window.location.href.indexOf(href);
+                if (pos == -1 || window.location.href.substr(pos) != href) {
                     window.location.href = href;
                 }
             });
         });
     </script>
 
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
     {{ _self.pager(page, lastpage, _context) }}
 
     <table class="item-list-table table table-striped table-condensed">

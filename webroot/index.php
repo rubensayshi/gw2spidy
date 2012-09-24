@@ -98,7 +98,7 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
     $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'name';
     $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'asc';
 
-    $rarityFilter = $request->get('min_rarity');
+    $rarityFilter = $request->get('rarity_filter');
 
     if ($rarityFilter && in_array($rarityFilter, array(/*1, omit default*/2,3,4,5,6,7))) {
         $q->filterByRarity($rarityFilter, Criteria::GREATER_EQUAL);
