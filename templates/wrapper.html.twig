@@ -54,7 +54,7 @@
                         </li>
                         <li class="divider-vertical"></li>
                         <li class="dropdown {% if app.isBrowseActive %}active{% endif %}">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="{{ path('types') }}" data-target="#">Browse <b class="caret"></b></a>
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="{{ path('types') }}" data-target="#">ITEMS <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 {% for type in app.displayTypes %}
                                     {% if type.title %}
@@ -89,30 +89,7 @@
                 </div>
             </div>
         </div>
-        <div id="flash-message-wrapper" class="row-fluid content-row" style="display: none;">
-            <div class="well">
-                <h3 style="border-bottom: 1px solid #ccc; margin-bottom: 5px;">Notices</h3>
-                <div id="flash-message-container"></div>
-            </div>
-        </div>
-        <div id="flash-message-library" style="display: none;">
-            {% if (true) %}
-                <div id="flash-flashes" class="alert alert-warning">
-                    <button type="button" class="close" data-dismiss="alert">×</button>
-                    <strong>FLASH MESSAGES!</strong> <br />
-                    The messages you get to see here will keep showing up until you click the little × on the right side ;)
-                </div>
-                <div id="flash-moving-average" class="alert alert-success">
-                    <button type="button" class="close" data-dismiss="alert">×</button>
-                    <strong>NEW VERSION RELEASED!</strong> <br />
-                    The new version adds daily/weekly/monthly moving/rolling averages (and uses daily as default instead of the raw data). <br />
-                    This makes the charts smooth out the data, you can switch between the different lines by clicking on them in the legend @ the top! <br />
-                    <i>Now don't go look at the example on the homepage, the legend is disabled there because it doesn't fit :P</i> <br />
-                    <br />
-                    Let me know what you think of the changes on twitter <a href="https://twitter.com/gw2spidy">@GW2Spidy</a> ;)
-                </div>
-            {% endif %}
-        </div>
+        {% include "notices.html.twig" %}
         <div class="row-fluid content-row">
             {% block content_body %}{% endblock %}
         </div>
