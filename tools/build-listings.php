@@ -2,8 +2,6 @@
 
 use GW2Spidy\TradingPostSpider;
 
-use GW2Spidy\TradingPostSpider;
-
 use GW2Spidy\DB\ItemQuery;
 
 use GW2Spidy\WorkerQueue\ItemDBWorker;
