@@ -27,7 +27,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 use GW2Spidy\Application;
-use GW2Spidy\ItemHistory;
 
 use GW2Spidy\Twig\VersionedAssetsRoutingExtension;
 use GW2Spidy\Twig\ItemListRoutingExtension;
@@ -313,9 +312,6 @@ $app->get("/item/{dataId}", function($dataId) use ($app) {
     if (!$item) {
         return $app->abort(404, "Page does not exist.");
     }
-
-    // add item to the history stored in session
-    ItemHistory::getInstance()->addItem($item);
 
     return $app['twig']->render('item.html.twig', array(
         'item'        => $item,

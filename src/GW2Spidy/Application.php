@@ -38,10 +38,6 @@ class Application extends \Silex\Application {
         return defined('VERSION_STRING') ? VERSION_STRING : null;
     }
 
-    public function getItemHistory() {
-        return ItemHistory::getInstance();
-    }
-
     public function isDevMode() {
         return defined('DEV_MODE') && DEV_MODE;
     }
