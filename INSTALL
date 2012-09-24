@@ -1,0 +1,7 @@
+apt-get update
+apt-get -y install curl screen git
+apt-get -y install mysql-server-5.5 nginx varnish php5-fpm redis-server memcached
+apt-get -y install php5-curl php5-gd php5-mysql php5-memcache php-pear
+pear channel-discover pear.phing.info
+pear install phing/phing
+pear install Log

@@ -29,6 +29,7 @@ so I'll refactor the code soon to ensure all date/time data is stored as UTC ...
 Project setup
 =============
 I'll provide you with some short setup instructions to make your life easier if you want to run the code for yourself or contribute.
+There's also a INSTALL file which contains a snippet I copy paste when I setup my VM, it should suffice ;-)
 
 Environment
 -----------
@@ -69,13 +70,12 @@ Previously I was using MySQL for this, but using MySQL was a lot heavier on load
 ### Silex / Twig / Predis
 Just some PHP libs, already included in the `vendor` folder.
 
-### jQuery / Flot / Twitter Bootstrap
+### jQuery / Highcharts / Twitter Bootstrap
 Just some HTML / JS / CSS libs, already included in `webroot/assets/vendor` folder.
 
-### yui-compressor
-You will need to install yui-compressor and then run ```make``` in the ```webroot/assets/js/vendor/flot``` directory to minify the javascript
-
 ### You will need a pear library Log
+pear channel-discover pear.phing.info
+pear install phing/phing
 pear install Log
 
 RequestSlots
