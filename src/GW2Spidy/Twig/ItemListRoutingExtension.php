@@ -31,7 +31,7 @@ class ItemListRoutingExtension extends \Twig_Extension {
             throw new \Exception("invalid context " . var_export(array_keys($context), true));
         }
 
-        if (isset($context['rarity_filter']) && !$parameters['rarity_filter']) {
+        if (isset($context['rarity_filter']) && !array_key_exists('rarity_filter', $parameters)) {
             $parameters['rarity_filter'] = $context['rarity_filter'];
         }
 
