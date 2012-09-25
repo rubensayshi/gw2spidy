@@ -22,6 +22,10 @@ use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemSubTypeQuery;
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemTypeQuery;
+use GW2Spidy\DB\Recipe;
+use GW2Spidy\DB\RecipeIngredient;
+use GW2Spidy\DB\RecipeIngredientQuery;
+use GW2Spidy\DB\RecipeQuery;
 use GW2Spidy\DB\SellListing;
 use GW2Spidy\DB\SellListingQuery;
 
@@ -175,6 +179,18 @@ abstract class BaseItem extends BaseObject implements Persistent
     protected $aItemSubType;
 
     /**
+     * @var        PropelObjectCollection|Recipe[] Collection to store aggregation of Recipe objects.
+     */
+    protected $collResultOfRecipes;
+    protected $collResultOfRecipesPartial;
+
+    /**
+     * @var        PropelObjectCollection|RecipeIngredient[] Collection to store aggregation of RecipeIngredient objects.
+     */
+    protected $collIngredients;
+    protected $collIngredientsPartial;
+
+    /**
      * @var        PropelObjectCollection|SellListing[] Collection to store aggregation of SellListing objects.
      */
     protected $collSellListings;
@@ -185,6 +201,11 @@ abstract class BaseItem extends BaseObject implements Persistent
      */
     protected $collBuyListings;
     protected $collBuyListingsPartial;
+
+    /**
+     * @var        PropelObjectCollection|Recipe[] Collection to store aggregation of Recipe objects.
+     */
+    protected $collRecipes;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -199,6 +220,24 @@ abstract class BaseItem extends BaseObject implements Persistent
      * @var        boolean
      */
     protected $alreadyInValidation = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $recipesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $resultOfRecipesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $ingredientsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -954,10 +993,15 @@ abstract class BaseItem extends BaseObject implements Persistent
 
             $this->aItemType = null;
             $this->aItemSubType = null;
+            $this->collResultOfRecipes = null;
+
+            $this->collIngredients = null;
+
             $this->collSellListings = null;
 
             $this->collBuyListings = null;
 
+            $this->collRecipes = null;
         } // if (deep)
     }
 
@@ -1099,6 +1143,61 @@ abstract class BaseItem extends BaseObject implements Persistent
                 }
                 $affectedRows += 1;
                 $this->resetModified();
+            }
+
+            if ($this->recipesScheduledForDeletion !== null) {
+                if (!$this->recipesScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    $pk = $this->getPrimaryKey();
+                    foreach ($this->recipesScheduledForDeletion->getPrimaryKeys(false) as $remotePk) {
+                        $pks[] = array($remotePk, $pk);
+                    }
+                    IngredientQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+                    $this->recipesScheduledForDeletion = null;
+                }
+
+                foreach ($this->getRecipes() as $recipe) {
+                    if ($recipe->isModified()) {
+                        $recipe->save($con);
+                    }
+                }
+            }
+
+            if ($this->resultOfRecipesScheduledForDeletion !== null) {
+                if (!$this->resultOfRecipesScheduledForDeletion->isEmpty()) {
+                    foreach ($this->resultOfRecipesScheduledForDeletion as $resultOfRecipe) {
+                        // need to save related object because we set the relation to null
+                        $resultOfRecipe->save($con);
+                    }
+                    $this->resultOfRecipesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collResultOfRecipes !== null) {
+                foreach ($this->collResultOfRecipes as $referrerFK) {
+                    if (!$referrerFK->isDeleted()) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->ingredientsScheduledForDeletion !== null) {
+                if (!$this->ingredientsScheduledForDeletion->isEmpty()) {
+                    RecipeIngredientQuery::create()
+                        ->filterByPrimaryKeys($this->ingredientsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->ingredientsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collIngredients !== null) {
+                foreach ($this->collIngredients as $referrerFK) {
+                    if (!$referrerFK->isDeleted()) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             if ($this->sellListingsScheduledForDeletion !== null) {
@@ -1386,6 +1485,22 @@ abstract class BaseItem extends BaseObject implements Persistent
             }
 
 
+                if ($this->collResultOfRecipes !== null) {
+                    foreach ($this->collResultOfRecipes as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
+                if ($this->collIngredients !== null) {
+                    foreach ($this->collIngredients as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
                 if ($this->collSellListings !== null) {
                     foreach ($this->collSellListings as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
@@ -1545,6 +1660,12 @@ abstract class BaseItem extends BaseObject implements Persistent
             }
             if (null !== $this->aItemSubType) {
                 $result['ItemSubType'] = $this->aItemSubType->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collResultOfRecipes) {
+                $result['ResultOfRecipes'] = $this->collResultOfRecipes->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collIngredients) {
+                $result['Ingredients'] = $this->collIngredients->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collSellListings) {
                 $result['SellListings'] = $this->collSellListings->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -1799,6 +1920,18 @@ abstract class BaseItem extends BaseObject implements Persistent
             // store object hash to prevent cycle
             $this->startCopy = true;
 
+            foreach ($this->getResultOfRecipes() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addResultOfRecipe($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getIngredients() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addIngredient($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getSellListings() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addSellListing($relObj->copy($deepCopy));
@@ -1976,12 +2109,482 @@ abstract class BaseItem extends BaseObject implements Persistent
      */
     public function initRelation($relationName)
     {
+        if ('ResultOfRecipe' == $relationName) {
+            $this->initResultOfRecipes();
+        }
+        if ('Ingredient' == $relationName) {
+            $this->initIngredients();
+        }
         if ('SellListing' == $relationName) {
             $this->initSellListings();
         }
         if ('BuyListing' == $relationName) {
             $this->initBuyListings();
         }
+    }
+
+    /**
+     * Clears out the collResultOfRecipes collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addResultOfRecipes()
+     */
+    public function clearResultOfRecipes()
+    {
+        $this->collResultOfRecipes = null; // important to set this to NULL since that means it is uninitialized
+        $this->collResultOfRecipesPartial = null;
+    }
+
+    /**
+     * reset is the collResultOfRecipes collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialResultOfRecipes($v = true)
+    {
+        $this->collResultOfRecipesPartial = $v;
+    }
+
+    /**
+     * Initializes the collResultOfRecipes collection.
+     *
+     * By default this just sets the collResultOfRecipes collection to an empty array (like clearcollResultOfRecipes());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initResultOfRecipes($overrideExisting = true)
+    {
+        if (null !== $this->collResultOfRecipes && !$overrideExisting) {
+            return;
+        }
+        $this->collResultOfRecipes = new PropelObjectCollection();
+        $this->collResultOfRecipes->setModel('Recipe');
+    }
+
+    /**
+     * Gets an array of Recipe objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Item is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Recipe[] List of Recipe objects
+     * @throws PropelException
+     */
+    public function getResultOfRecipes($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collResultOfRecipesPartial && !$this->isNew();
+        if (null === $this->collResultOfRecipes || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collResultOfRecipes) {
+                // return empty collection
+                $this->initResultOfRecipes();
+            } else {
+                $collResultOfRecipes = RecipeQuery::create(null, $criteria)
+                    ->filterByResultItem($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collResultOfRecipesPartial && count($collResultOfRecipes)) {
+                      $this->initResultOfRecipes(false);
+
+                      foreach($collResultOfRecipes as $obj) {
+                        if (false == $this->collResultOfRecipes->contains($obj)) {
+                          $this->collResultOfRecipes->append($obj);
+                        }
+                      }
+
+                      $this->collResultOfRecipesPartial = true;
+                    }
+
+                    return $collResultOfRecipes;
+                }
+
+                if($partial && $this->collResultOfRecipes) {
+                    foreach($this->collResultOfRecipes as $obj) {
+                        if($obj->isNew()) {
+                            $collResultOfRecipes[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collResultOfRecipes = $collResultOfRecipes;
+                $this->collResultOfRecipesPartial = false;
+            }
+        }
+
+        return $this->collResultOfRecipes;
+    }
+
+    /**
+     * Sets a collection of ResultOfRecipe objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      PropelCollection $resultOfRecipes A Propel collection.
+     * @param      PropelPDO $con Optional connection object
+     */
+    public function setResultOfRecipes(PropelCollection $resultOfRecipes, PropelPDO $con = null)
+    {
+        $this->resultOfRecipesScheduledForDeletion = $this->getResultOfRecipes(new Criteria(), $con)->diff($resultOfRecipes);
+
+        foreach ($this->resultOfRecipesScheduledForDeletion as $resultOfRecipeRemoved) {
+            $resultOfRecipeRemoved->setResultItem(null);
+        }
+
+        $this->collResultOfRecipes = null;
+        foreach ($resultOfRecipes as $resultOfRecipe) {
+            $this->addResultOfRecipe($resultOfRecipe);
+        }
+
+        $this->collResultOfRecipes = $resultOfRecipes;
+        $this->collResultOfRecipesPartial = false;
+    }
+
+    /**
+     * Returns the number of related Recipe objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      PropelPDO $con
+     * @return int             Count of related Recipe objects.
+     * @throws PropelException
+     */
+    public function countResultOfRecipes(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collResultOfRecipesPartial && !$this->isNew();
+        if (null === $this->collResultOfRecipes || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collResultOfRecipes) {
+                return 0;
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getResultOfRecipes());
+                }
+                $query = RecipeQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByResultItem($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collResultOfRecipes);
+        }
+    }
+
+    /**
+     * Method called to associate a Recipe object to this object
+     * through the Recipe foreign key attribute.
+     *
+     * @param    Recipe $l Recipe
+     * @return   Item The current object (for fluent API support)
+     */
+    public function addResultOfRecipe(Recipe $l)
+    {
+        if ($this->collResultOfRecipes === null) {
+            $this->initResultOfRecipes();
+            $this->collResultOfRecipesPartial = true;
+        }
+        if (!$this->collResultOfRecipes->contains($l)) { // only add it if the **same** object is not already associated
+            $this->doAddResultOfRecipe($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	ResultOfRecipe $resultOfRecipe The resultOfRecipe object to add.
+     */
+    protected function doAddResultOfRecipe($resultOfRecipe)
+    {
+        $this->collResultOfRecipes[]= $resultOfRecipe;
+        $resultOfRecipe->setResultItem($this);
+    }
+
+    /**
+     * @param	ResultOfRecipe $resultOfRecipe The resultOfRecipe object to remove.
+     */
+    public function removeResultOfRecipe($resultOfRecipe)
+    {
+        if ($this->getResultOfRecipes()->contains($resultOfRecipe)) {
+            $this->collResultOfRecipes->remove($this->collResultOfRecipes->search($resultOfRecipe));
+            if (null === $this->resultOfRecipesScheduledForDeletion) {
+                $this->resultOfRecipesScheduledForDeletion = clone $this->collResultOfRecipes;
+                $this->resultOfRecipesScheduledForDeletion->clear();
+            }
+            $this->resultOfRecipesScheduledForDeletion[]= $resultOfRecipe;
+            $resultOfRecipe->setResultItem(null);
+        }
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Item is new, it will return
+     * an empty collection; or if this Item has previously
+     * been saved, it will retrieve related ResultOfRecipes from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Item.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      PropelPDO $con optional connection object
+     * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Recipe[] List of Recipe objects
+     */
+    public function getResultOfRecipesJoinDiscipline($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = RecipeQuery::create(null, $criteria);
+        $query->joinWith('Discipline', $join_behavior);
+
+        return $this->getResultOfRecipes($query, $con);
+    }
+
+    /**
+     * Clears out the collIngredients collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addIngredients()
+     */
+    public function clearIngredients()
+    {
+        $this->collIngredients = null; // important to set this to NULL since that means it is uninitialized
+        $this->collIngredientsPartial = null;
+    }
+
+    /**
+     * reset is the collIngredients collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialIngredients($v = true)
+    {
+        $this->collIngredientsPartial = $v;
+    }
+
+    /**
+     * Initializes the collIngredients collection.
+     *
+     * By default this just sets the collIngredients collection to an empty array (like clearcollIngredients());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initIngredients($overrideExisting = true)
+    {
+        if (null !== $this->collIngredients && !$overrideExisting) {
+            return;
+        }
+        $this->collIngredients = new PropelObjectCollection();
+        $this->collIngredients->setModel('RecipeIngredient');
+    }
+
+    /**
+     * Gets an array of RecipeIngredient objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Item is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      PropelPDO $con optional connection object
+     * @return PropelObjectCollection|RecipeIngredient[] List of RecipeIngredient objects
+     * @throws PropelException
+     */
+    public function getIngredients($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collIngredientsPartial && !$this->isNew();
+        if (null === $this->collIngredients || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collIngredients) {
+                // return empty collection
+                $this->initIngredients();
+            } else {
+                $collIngredients = RecipeIngredientQuery::create(null, $criteria)
+                    ->filterByItem($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collIngredientsPartial && count($collIngredients)) {
+                      $this->initIngredients(false);
+
+                      foreach($collIngredients as $obj) {
+                        if (false == $this->collIngredients->contains($obj)) {
+                          $this->collIngredients->append($obj);
+                        }
+                      }
+
+                      $this->collIngredientsPartial = true;
+                    }
+
+                    return $collIngredients;
+                }
+
+                if($partial && $this->collIngredients) {
+                    foreach($this->collIngredients as $obj) {
+                        if($obj->isNew()) {
+                            $collIngredients[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collIngredients = $collIngredients;
+                $this->collIngredientsPartial = false;
+            }
+        }
+
+        return $this->collIngredients;
+    }
+
+    /**
+     * Sets a collection of Ingredient objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      PropelCollection $ingredients A Propel collection.
+     * @param      PropelPDO $con Optional connection object
+     */
+    public function setIngredients(PropelCollection $ingredients, PropelPDO $con = null)
+    {
+        $this->ingredientsScheduledForDeletion = $this->getIngredients(new Criteria(), $con)->diff($ingredients);
+
+        foreach ($this->ingredientsScheduledForDeletion as $ingredientRemoved) {
+            $ingredientRemoved->setItem(null);
+        }
+
+        $this->collIngredients = null;
+        foreach ($ingredients as $ingredient) {
+            $this->addIngredient($ingredient);
+        }
+
+        $this->collIngredients = $ingredients;
+        $this->collIngredientsPartial = false;
+    }
+
+    /**
+     * Returns the number of related RecipeIngredient objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      PropelPDO $con
+     * @return int             Count of related RecipeIngredient objects.
+     * @throws PropelException
+     */
+    public function countIngredients(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collIngredientsPartial && !$this->isNew();
+        if (null === $this->collIngredients || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collIngredients) {
+                return 0;
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getIngredients());
+                }
+                $query = RecipeIngredientQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByItem($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collIngredients);
+        }
+    }
+
+    /**
+     * Method called to associate a RecipeIngredient object to this object
+     * through the RecipeIngredient foreign key attribute.
+     *
+     * @param    RecipeIngredient $l RecipeIngredient
+     * @return   Item The current object (for fluent API support)
+     */
+    public function addIngredient(RecipeIngredient $l)
+    {
+        if ($this->collIngredients === null) {
+            $this->initIngredients();
+            $this->collIngredientsPartial = true;
+        }
+        if (!$this->collIngredients->contains($l)) { // only add it if the **same** object is not already associated
+            $this->doAddIngredient($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Ingredient $ingredient The ingredient object to add.
+     */
+    protected function doAddIngredient($ingredient)
+    {
+        $this->collIngredients[]= $ingredient;
+        $ingredient->setItem($this);
+    }
+
+    /**
+     * @param	Ingredient $ingredient The ingredient object to remove.
+     */
+    public function removeIngredient($ingredient)
+    {
+        if ($this->getIngredients()->contains($ingredient)) {
+            $this->collIngredients->remove($this->collIngredients->search($ingredient));
+            if (null === $this->ingredientsScheduledForDeletion) {
+                $this->ingredientsScheduledForDeletion = clone $this->collIngredients;
+                $this->ingredientsScheduledForDeletion->clear();
+            }
+            $this->ingredientsScheduledForDeletion[]= $ingredient;
+            $ingredient->setItem(null);
+        }
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Item is new, it will return
+     * an empty collection; or if this Item has previously
+     * been saved, it will retrieve related Ingredients from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Item.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      PropelPDO $con optional connection object
+     * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|RecipeIngredient[] List of RecipeIngredient objects
+     */
+    public function getIngredientsJoinRecipe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = RecipeIngredientQuery::create(null, $criteria);
+        $query->joinWith('Recipe', $join_behavior);
+
+        return $this->getIngredients($query, $con);
     }
 
     /**
@@ -2399,6 +3002,174 @@ abstract class BaseItem extends BaseObject implements Persistent
     }
 
     /**
+     * Clears out the collRecipes collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRecipes()
+     */
+    public function clearRecipes()
+    {
+        $this->collRecipes = null; // important to set this to NULL since that means it is uninitialized
+        $this->collRecipesPartial = null;
+    }
+
+    /**
+     * Initializes the collRecipes collection.
+     *
+     * By default this just sets the collRecipes collection to an empty collection (like clearRecipes());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRecipes()
+    {
+        $this->collRecipes = new PropelObjectCollection();
+        $this->collRecipes->setModel('Recipe');
+    }
+
+    /**
+     * Gets a collection of Recipe objects related by a many-to-many relationship
+     * to the current object by way of the recipe_ingredient cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Item is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      PropelPDO $con Optional connection object
+     *
+     * @return PropelObjectCollection|Recipe[] List of Recipe objects
+     */
+    public function getRecipes($criteria = null, PropelPDO $con = null)
+    {
+        if (null === $this->collRecipes || null !== $criteria) {
+            if ($this->isNew() && null === $this->collRecipes) {
+                // return empty collection
+                $this->initRecipes();
+            } else {
+                $collRecipes = RecipeQuery::create(null, $criteria)
+                    ->filterByItem($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    return $collRecipes;
+                }
+                $this->collRecipes = $collRecipes;
+            }
+        }
+
+        return $this->collRecipes;
+    }
+
+    /**
+     * Sets a collection of Recipe objects related by a many-to-many relationship
+     * to the current object by way of the recipe_ingredient cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      PropelCollection $recipes A Propel collection.
+     * @param      PropelPDO $con Optional connection object
+     */
+    public function setRecipes(PropelCollection $recipes, PropelPDO $con = null)
+    {
+        $this->clearRecipes();
+        $currentRecipes = $this->getRecipes();
+
+        $this->recipesScheduledForDeletion = $currentRecipes->diff($recipes);
+
+        foreach ($recipes as $recipe) {
+            if (!$currentRecipes->contains($recipe)) {
+                $this->doAddRecipe($recipe);
+            }
+        }
+
+        $this->collRecipes = $recipes;
+    }
+
+    /**
+     * Gets the number of Recipe objects related by a many-to-many relationship
+     * to the current object by way of the recipe_ingredient cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      PropelPDO $con Optional connection object
+     *
+     * @return int the number of related Recipe objects
+     */
+    public function countRecipes($criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        if (null === $this->collRecipes || null !== $criteria) {
+            if ($this->isNew() && null === $this->collRecipes) {
+                return 0;
+            } else {
+                $query = RecipeQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByItem($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRecipes);
+        }
+    }
+
+    /**
+     * Associate a Recipe object to this object
+     * through the recipe_ingredient cross reference table.
+     *
+     * @param  Recipe $recipe The RecipeIngredient object to relate
+     * @return void
+     */
+    public function addRecipe(Recipe $recipe)
+    {
+        if ($this->collRecipes === null) {
+            $this->initRecipes();
+        }
+        if (!$this->collRecipes->contains($recipe)) { // only add it if the **same** object is not already associated
+            $this->doAddRecipe($recipe);
+
+            $this->collRecipes[]= $recipe;
+        }
+    }
+
+    /**
+     * @param	Recipe $recipe The recipe object to add.
+     */
+    protected function doAddRecipe($recipe)
+    {
+        $recipeIngredient = new RecipeIngredient();
+        $recipeIngredient->setRecipe($recipe);
+        $this->addRecipeIngredient($recipeIngredient);
+    }
+
+    /**
+     * Remove a Recipe object to this object
+     * through the recipe_ingredient cross reference table.
+     *
+     * @param      Recipe $recipe The RecipeIngredient object to relate
+     * @return void
+     */
+    public function removeRecipe(Recipe $recipe)
+    {
+        if ($this->getRecipes()->contains($recipe)) {
+            $this->collRecipes->remove($this->collRecipes->search($recipe));
+            if (null === $this->recipesScheduledForDeletion) {
+                $this->recipesScheduledForDeletion = clone $this->collRecipes;
+                $this->recipesScheduledForDeletion->clear();
+            }
+            $this->recipesScheduledForDeletion[]= $recipe;
+        }
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -2442,6 +3213,16 @@ abstract class BaseItem extends BaseObject implements Persistent
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collResultOfRecipes) {
+                foreach ($this->collResultOfRecipes as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collIngredients) {
+                foreach ($this->collIngredients as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collSellListings) {
                 foreach ($this->collSellListings as $o) {
                     $o->clearAllReferences($deep);
@@ -2452,8 +3233,21 @@ abstract class BaseItem extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRecipes) {
+                foreach ($this->collRecipes as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        if ($this->collResultOfRecipes instanceof PropelCollection) {
+            $this->collResultOfRecipes->clearIterator();
+        }
+        $this->collResultOfRecipes = null;
+        if ($this->collIngredients instanceof PropelCollection) {
+            $this->collIngredients->clearIterator();
+        }
+        $this->collIngredients = null;
         if ($this->collSellListings instanceof PropelCollection) {
             $this->collSellListings->clearIterator();
         }
@@ -2462,6 +3256,10 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->collBuyListings->clearIterator();
         }
         $this->collBuyListings = null;
+        if ($this->collRecipes instanceof PropelCollection) {
+            $this->collRecipes->clearIterator();
+        }
+        $this->collRecipes = null;
         $this->aItemType = null;
         $this->aItemSubType = null;
     }

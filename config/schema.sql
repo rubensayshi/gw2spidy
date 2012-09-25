@@ -72,6 +72,82 @@ CREATE TABLE `item`
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
+-- gw2db_item_archive
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `gw2db_item_archive`;
+
+CREATE TABLE `gw2db_item_archive`
+(
+    `ID` INTEGER NOT NULL,
+    `ExternalID` INTEGER,
+    `DataID` INTEGER,
+    `Name` VARCHAR(255),
+    PRIMARY KEY (`ID`)
+) ENGINE=MyISAM;
+
+-- ---------------------------------------------------------------------
+-- discipline
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `discipline`;
+
+CREATE TABLE `discipline`
+(
+    `id` INTEGER NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+-- ---------------------------------------------------------------------
+-- recipe
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `recipe`;
+
+CREATE TABLE `recipe`
+(
+    `data_id` INTEGER NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `discipline_id` INTEGER,
+    `rating` INTEGER(4) DEFAULT 0,
+    `result_item_id` INTEGER,
+    `count` INTEGER(4) DEFAULT 1,
+    `gw2db_id` INTEGER,
+    `gw2db_external_id` INTEGER,
+    PRIMARY KEY (`data_id`),
+    INDEX `recipe_FI_1` (`discipline_id`),
+    INDEX `recipe_FI_2` (`result_item_id`),
+    CONSTRAINT `recipe_FK_1`
+        FOREIGN KEY (`discipline_id`)
+        REFERENCES `discipline` (`id`),
+    CONSTRAINT `recipe_FK_2`
+        FOREIGN KEY (`result_item_id`)
+        REFERENCES `item` (`data_id`)
+) ENGINE=MyISAM;
+
+-- ---------------------------------------------------------------------
+-- recipe_ingredient
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `recipe_ingredient`;
+
+CREATE TABLE `recipe_ingredient`
+(
+    `recipe_id` INTEGER NOT NULL,
+    `item_id` INTEGER NOT NULL,
+    `count` INTEGER DEFAULT 1 NOT NULL,
+    PRIMARY KEY (`recipe_id`,`item_id`),
+    INDEX `recipe_ingredient_FI_2` (`item_id`),
+    CONSTRAINT `recipe_ingredient_FK_1`
+        FOREIGN KEY (`recipe_id`)
+        REFERENCES `recipe` (`data_id`),
+    CONSTRAINT `recipe_ingredient_FK_2`
+        FOREIGN KEY (`item_id`)
+        REFERENCES `item` (`data_id`)
+) ENGINE=MyISAM;
+
+-- ---------------------------------------------------------------------
 -- sell_listing
 -- ---------------------------------------------------------------------
 

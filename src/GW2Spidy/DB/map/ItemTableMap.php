@@ -70,8 +70,11 @@ class ItemTableMap extends TableMap
     {
         $this->addRelation('ItemType', 'GW2Spidy\\DB\\ItemType', RelationMap::MANY_TO_ONE, array('item_type_id' => 'id', ), null, null);
         $this->addRelation('ItemSubType', 'GW2Spidy\\DB\\ItemSubType', RelationMap::MANY_TO_ONE, array('item_sub_type_id' => 'id', ), null, null);
+        $this->addRelation('ResultOfRecipe', 'GW2Spidy\\DB\\Recipe', RelationMap::ONE_TO_MANY, array('data_id' => 'result_item_id', ), null, null, 'ResultOfRecipes');
+        $this->addRelation('Ingredient', 'GW2Spidy\\DB\\RecipeIngredient', RelationMap::ONE_TO_MANY, array('data_id' => 'item_id', ), null, null, 'Ingredients');
         $this->addRelation('SellListing', 'GW2Spidy\\DB\\SellListing', RelationMap::ONE_TO_MANY, array('data_id' => 'item_id', ), null, null, 'SellListings');
         $this->addRelation('BuyListing', 'GW2Spidy\\DB\\BuyListing', RelationMap::ONE_TO_MANY, array('data_id' => 'item_id', ), null, null, 'BuyListings');
+        $this->addRelation('Recipe', 'GW2Spidy\\DB\\Recipe', RelationMap::MANY_TO_MANY, array(), null, null, 'Recipes');
     } // buildRelations()
 
 } // ItemTableMap

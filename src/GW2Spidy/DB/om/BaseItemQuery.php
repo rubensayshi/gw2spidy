@@ -18,6 +18,8 @@ use GW2Spidy\DB\ItemPeer;
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemType;
+use GW2Spidy\DB\Recipe;
+use GW2Spidy\DB\RecipeIngredient;
 use GW2Spidy\DB\SellListing;
 
 /**
@@ -74,6 +76,14 @@ use GW2Spidy\DB\SellListing;
  * @method     ItemQuery leftJoinItemSubType($relationAlias = null) Adds a LEFT JOIN clause to the query using the ItemSubType relation
  * @method     ItemQuery rightJoinItemSubType($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ItemSubType relation
  * @method     ItemQuery innerJoinItemSubType($relationAlias = null) Adds a INNER JOIN clause to the query using the ItemSubType relation
+ *
+ * @method     ItemQuery leftJoinResultOfRecipe($relationAlias = null) Adds a LEFT JOIN clause to the query using the ResultOfRecipe relation
+ * @method     ItemQuery rightJoinResultOfRecipe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ResultOfRecipe relation
+ * @method     ItemQuery innerJoinResultOfRecipe($relationAlias = null) Adds a INNER JOIN clause to the query using the ResultOfRecipe relation
+ *
+ * @method     ItemQuery leftJoinIngredient($relationAlias = null) Adds a LEFT JOIN clause to the query using the Ingredient relation
+ * @method     ItemQuery rightJoinIngredient($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Ingredient relation
+ * @method     ItemQuery innerJoinIngredient($relationAlias = null) Adds a INNER JOIN clause to the query using the Ingredient relation
  *
  * @method     ItemQuery leftJoinSellListing($relationAlias = null) Adds a LEFT JOIN clause to the query using the SellListing relation
  * @method     ItemQuery rightJoinSellListing($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SellListing relation
@@ -1123,6 +1133,154 @@ abstract class BaseItemQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related Recipe object
+     *
+     * @param   Recipe|PropelObjectCollection $recipe  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return   ItemQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
+     */
+    public function filterByResultOfRecipe($recipe, $comparison = null)
+    {
+        if ($recipe instanceof Recipe) {
+            return $this
+                ->addUsingAlias(ItemPeer::DATA_ID, $recipe->getResultItemId(), $comparison);
+        } elseif ($recipe instanceof PropelObjectCollection) {
+            return $this
+                ->useResultOfRecipeQuery()
+                ->filterByPrimaryKeys($recipe->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByResultOfRecipe() only accepts arguments of type Recipe or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ResultOfRecipe relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function joinResultOfRecipe($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ResultOfRecipe');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ResultOfRecipe');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ResultOfRecipe relation Recipe object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \GW2Spidy\DB\RecipeQuery A secondary query class using the current class as primary query
+     */
+    public function useResultOfRecipeQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinResultOfRecipe($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ResultOfRecipe', '\GW2Spidy\DB\RecipeQuery');
+    }
+
+    /**
+     * Filter the query by a related RecipeIngredient object
+     *
+     * @param   RecipeIngredient|PropelObjectCollection $recipeIngredient  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return   ItemQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
+     */
+    public function filterByIngredient($recipeIngredient, $comparison = null)
+    {
+        if ($recipeIngredient instanceof RecipeIngredient) {
+            return $this
+                ->addUsingAlias(ItemPeer::DATA_ID, $recipeIngredient->getItemId(), $comparison);
+        } elseif ($recipeIngredient instanceof PropelObjectCollection) {
+            return $this
+                ->useIngredientQuery()
+                ->filterByPrimaryKeys($recipeIngredient->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByIngredient() only accepts arguments of type RecipeIngredient or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Ingredient relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function joinIngredient($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Ingredient');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Ingredient');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Ingredient relation RecipeIngredient object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \GW2Spidy\DB\RecipeIngredientQuery A secondary query class using the current class as primary query
+     */
+    public function useIngredientQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinIngredient($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Ingredient', '\GW2Spidy\DB\RecipeIngredientQuery');
+    }
+
+    /**
      * Filter the query by a related SellListing object
      *
      * @param   SellListing|PropelObjectCollection $sellListing  the related object to use as filter
@@ -1268,6 +1426,23 @@ abstract class BaseItemQuery extends ModelCriteria
         return $this
             ->joinBuyListing($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'BuyListing', '\GW2Spidy\DB\BuyListingQuery');
+    }
+
+    /**
+     * Filter the query by a related Recipe object
+     * using the recipe_ingredient table as cross reference
+     *
+     * @param   Recipe $recipe the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return   ItemQuery The current query, for fluid interface
+     */
+    public function filterByRecipe($recipe, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useIngredientQuery()
+            ->filterByRecipe($recipe, $comparison)
+            ->endUse();
     }
 
     /**
