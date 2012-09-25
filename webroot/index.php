@@ -649,7 +649,8 @@ $app->get("/profit", function(Request $request) use($app) {
         $where .= " AND restriction_level >= {$minlevel}";
     }
 
-    $margin = intval($request->get('margin')) ?: 500;
+    $margin     = intval($request->get('margin')) ?: 500;
+    $max_margin = intval($request->get('max_margin')) ?: 1000;
 
     if ($minprice = intval($request->get('minprice'))) {
         $where .= " AND min_sale_unit_price >= {$minprice}";
@@ -673,11 +674,12 @@ $app->get("/profit", function(Request $request) use($app) {
         max_offer_unit_price,
         sale_availability,
         offer_availability,
-        ((min_sale_unit_price - max_offer_unit_price) / max_offer_unit_price) * 100 as margin
+        ((min_sale_unit_price*0.75 - max_offer_unit_price) / max_offer_unit_price) * 100 as margin
     FROM item
     WHERE offer_availability > 1
     AND   sale_availability > 5
-    AND   ((min_sale_unit_price - max_offer_unit_price) / max_offer_unit_price) * 100 < {$margin}
+    AND   ((min_sale_unit_price*0.75 - max_offer_unit_price) / max_offer_unit_price) * 100 < {$max_margin}
+    AND   ((min_sale_unit_price*0.75 - max_offer_unit_price) > {$margin}
     {$where}
     ORDER BY margin DESC
     LIMIT {$offset}, 50");
