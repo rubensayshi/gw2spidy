@@ -37,7 +37,7 @@ class Env {
         return $this->env;
     }
 
-    public function atemptRetrieveFromCache($envfile) {
+    public function atemptRetrieveFromCache() {
         if (function_exists('apc_fetch')) {
             return apc_fetch($this->envfile);
         }
