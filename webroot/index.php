@@ -665,6 +665,7 @@ $app->get("/profit", function(Request $request) use($app) {
     }
 
     $offset = intval($request->get('offset')) ?: 0;
+    $limit  = intval($request->get('limit')) ?: 50;
 
     $stmt = Propel::getConnection()->prepare("
     SELECT
@@ -683,7 +684,7 @@ $app->get("/profit", function(Request $request) use($app) {
     AND   (min_sale_unit_price*0.75 - max_offer_unit_price) > {$margin}
     {$where}
     ORDER BY margin DESC
-    LIMIT {$offset}, 50");
+    LIMIT {$offset}, {$limit}");
 
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
