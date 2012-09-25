@@ -86,22 +86,28 @@ h1 {
     font-weight: bold;
 }
 
-.rarity-common {
+.rarity-common,
+.rarity-common a {
     color: #4C4C4C !important;
 }
-.rarity-masterwork {
+.rarity-masterwork,
+.rarity-masterwork a {
     color: #2DC50E !important;
 }
-.rarity-fine {
+.rarity-fine,
+.rarity-fine a {
     color: #4F9DFE !important;
 }
-.rarity-exotic {
+.rarity-exotic,
+.rarity-exotic a {
     color: #CC6600 !important;
 }
-.rarity-rare {
+.rarity-rare,
+.rarity-rare a {
     color: #FDA500 !important;
 }
-.rarity-legendary {
+.rarity-legendary,
+.rarity-legendary a {
     color: #DD2222 !important;
 }
 
