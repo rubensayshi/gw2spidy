@@ -664,6 +664,13 @@ $app->get("/profit", function(Request $request) use($app) {
         $where .= " AND item_type_id = {$type}";
     }
 
+    if ($blacklist = $request->get('blacklist')) {
+        foreach (explode(",", $blacklist) as $blacklist) {
+            $blacklist = Propel::getConnection()->quote("%{$blacklist}%", PDO::PARAM_STR);
+            $where .= " AND name NOT LIKE {$blacklist}";
+        }
+    }
+
     $offset = intval($request->get('offset')) ?: 0;
     $limit  = intval($request->get('limit')) ?: 50;
 
