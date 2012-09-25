@@ -646,7 +646,7 @@ $app->get("/profit", function(Request $request) use($app) {
     $where = "";
 
     if ($minlevel = intval($request->get('minlevel'))) {
-        $where .= " AND restriction_level >= {$minlevel}";
+        $where .= " AND (restriction_level = 0 OR restriction_level >= {$minlevel})";
     }
 
     $margin     = intval($request->get('margin')) ?: 500;
