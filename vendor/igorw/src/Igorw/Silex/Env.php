@@ -3,38 +3,41 @@
 namespace Igorw\Silex;
 
 class Env {
-    const ENV_UNKNOWN = 'unknown';
-
     protected $envfile = null;
-    protected $env     = null;
+    protected $envs    = null;
 
     public function __construct($envfile = null) {
         $this->envfile = $envfile;
     }
 
-    public function getEnv() {
-        if (is_null($this->env)) {
+    public function getEnvs() {
+        if (is_null($this->envs)) {
+            $this->envs = array();
+
             if ($this->envfile) {
-                if ($env = $this->atemptRetrieveFromCache()) {
-                    $this->env = $env;
-                } else if (file_exists($this->envfile)) {
+                if ($envs = $this->atemptRetrieveFromCache()) {
+                    if (!in_array('dev', $envs)) {
+                        $this->envs = $envs;
+                    }
+                }
+
+                if (!$this->envs && file_exists($this->envfile)) {
                     if (!is_readable($this->envfile)) {
                         throw new Exception("Env file is there but not readable.");
                     }
 
-                    if ($env = trim(file_get_contents($this->envfile))) {
-                        $this->env = $env;
-                        $this->atemptStoreInCache($this->env);
+                    if ($envs = file_get_contents($this->envfile)) {
+                        if ($envs = array_filter(array_map('trim', explode("\n", $envs)))) {
+                            $this->envs = $envs;
+
+                            $this->atemptStoreInCache($this->envs);
+                        }
                     }
                 }
             }
-
-            if (!$this->env) {
-                 $this->env = self::ENV_UNKNOWN;
-            }
         }
 
-        return $this->env;
+        return $this->envs;
     }
 
     public function atemptRetrieveFromCache() {
@@ -45,9 +48,9 @@ class Env {
         return null;
     }
 
-    public function atemptStoreInCache($env) {
+    public function atemptStoreInCache($envs) {
         if (function_exists('apc_store')) {
-            return apc_store($this->envfile, $env);
+            return apc_store($this->envfile, $envs);
         }
 
         return null;

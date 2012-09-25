@@ -36,16 +36,21 @@ use GW2Spidy\Queue\RequestSlotManager;
 use GW2Spidy\Queue\WorkerQueueManager;
 
 require dirname(__FILE__) . '/../config/config.inc.php';
+
+/* @var Igorw\Silex\Config $cnf */
+/* @var Igorw\Silex\Env $env */
 require dirname(__FILE__) . '/../autoload.php';
 
 // initiate the application, check config to enable debug / sql logging when needed
 $app = Application::getInstance();
-$app->isSQLLogMode() && $app->enableSQLLogging();
-$app->isDevMode()    && $app['debug'] = true;
 
-/*
- * register providers
- */
+// register config provider
+$app->register(new Igorw\Silex\ConfigServiceProvider($cnf));
+
+// setup dev mode related stuff based on config
+$app['sql_logging'] && $app->enableSQLLogging();
+
+// register providers
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path'    => dirname(__FILE__) . '/../templates',
@@ -54,9 +59,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     ),
 ));
 
-/*
- * register custom extensions
- */
+// register custom twig extensions
 $app['twig']->addExtension(new GenericHelpersExtension());
 $app['twig']->addExtension(new VersionedAssetsRoutingExtension());
 $app['twig']->addExtension(new GW2MoneyExtension());

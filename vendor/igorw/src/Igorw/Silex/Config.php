@@ -5,12 +5,14 @@ namespace Igorw\Silex;
 use Symfony\Component\Yaml\Yaml;
 
 class Config {
-    private $filename;
+    private $env;
+    private $cnfdir;
     private $config       = null;
     private $replacements = array();
 
-    public function __construct($filename, array $replacements = array()) {
-        $this->filename = $filename;
+    public function __construct(Env $env, $cnfdir, array $replacements = array()) {
+        $this->env    = $env;
+        $this->cnfdir = $cnfdir;
     }
 
     public function getConfig() {
@@ -22,7 +24,11 @@ class Config {
     }
 
     private function buildConfig() {
-        $config = $this->readConfig();
+        $config = array();
+
+        foreach ($this->env->getEnvs() as $env) {
+            $config += $this->readConfig("{$this->cnfdir}/{$env}.cnf.json");
+        }
 
         if ($replacements) {
             foreach ($replacements as $key => $value) {
@@ -57,36 +63,34 @@ class Config {
         return $value;
     }
 
-    private function readConfig() {
-        $format = $this->getFileFormat();
+    private function readConfig($filename) {
+        $format = $this->getFileFormat($filename);
 
-        if (!$this->filename || !$format) {
+        if (!$filename || !$format) {
             throw new \RuntimeException('A valid configuration file must be passed before reading the config.');
         }
 
-        if (!file_exists($this->filename)) {
+        if (!file_exists($filename)) {
             throw new \InvalidArgumentException(
-                sprintf("The config file '%s' does not exist.", $this->filename));
+                sprintf("The config file '%s' does not exist.", $filename));
         }
 
         if ('yaml' === $format) {
             if (!class_exists('Symfony\\Component\\Yaml\\Yaml')) {
                 throw new \RuntimeException('Unable to read yaml as the Symfony Yaml Component is not installed.');
             }
-            return Yaml::parse($this->filename);
+            return Yaml::parse($filename);
         }
 
         if ('json' === $format) {
-            return json_decode(file_get_contents($this->filename), true);
+            return json_decode(file_get_contents($filename), true);
         }
 
         throw new \InvalidArgumentException(
-                sprintf("The config file '%s' appears has invalid format '%s'.", $this->filename, $format));
+                sprintf("The config file '%s' appears has invalid format '%s'.", $filename, $format));
     }
 
-    public function getFileFormat() {
-        $filename = $this->filename;
-
+    public function getFileFormat($filename) {
         if (preg_match('#.ya?ml(.dist)?$#i', $filename)) {
             return 'yaml';
         }
