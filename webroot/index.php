@@ -672,7 +672,9 @@ $app->get("/profit", function(Request $request) use($app) {
     }
 
     $offset = intval($request->get('offset')) ?: 0;
-    $limit  = intval($request->get('limit')) ?: 50;
+    $limit  = intval($request->get('limit'))  ?: 50;
+    $mmod   = intval($request->get('mmod')) ?: 0;
+    $mnum   = intval($request->get('mnum')) ?: 0;
 
     $stmt = Propel::getConnection()->prepare("
     SELECT
@@ -695,6 +697,17 @@ $app->get("/profit", function(Request $request) use($app) {
 
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if ($mmod) {
+        $i = 0;
+        foreach ($data as $k => $v) {
+            if ($i % $mmod != $mnum) {
+                unset($data[$k]);
+            }
+
+            $i ++;
+        }
+    }
 
     if ($request->get('asJson')) {
         $json = array();
