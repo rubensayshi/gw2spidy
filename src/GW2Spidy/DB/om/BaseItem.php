@@ -153,6 +153,18 @@ abstract class BaseItem extends BaseObject implements Persistent
     protected $sale_availability;
 
     /**
+     * The value for the gw2db_id field.
+     * @var        int
+     */
+    protected $gw2db_id;
+
+    /**
+     * The value for the gw2db_external_id field.
+     * @var        int
+     */
+    protected $gw2db_external_id;
+
+    /**
      * @var        ItemType
      */
     protected $aItemType;
@@ -396,6 +408,28 @@ abstract class BaseItem extends BaseObject implements Persistent
     {
 
         return $this->sale_availability;
+    }
+
+    /**
+     * Get the [gw2db_id] column value.
+     * 
+     * @return   int
+     */
+    public function getGw2dbId()
+    {
+
+        return $this->gw2db_id;
+    }
+
+    /**
+     * Get the [gw2db_external_id] column value.
+     * 
+     * @return   int
+     */
+    public function getGw2dbExternalId()
+    {
+
+        return $this->gw2db_external_id;
     }
 
     /**
@@ -743,6 +777,48 @@ abstract class BaseItem extends BaseObject implements Persistent
     } // setSaleAvailability()
 
     /**
+     * Set the value of [gw2db_id] column.
+     * 
+     * @param      int $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setGw2dbId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->gw2db_id !== $v) {
+            $this->gw2db_id = $v;
+            $this->modifiedColumns[] = ItemPeer::GW2DB_ID;
+        }
+
+
+        return $this;
+    } // setGw2dbId()
+
+    /**
+     * Set the value of [gw2db_external_id] column.
+     * 
+     * @param      int $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setGw2dbExternalId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->gw2db_external_id !== $v) {
+            $this->gw2db_external_id = $v;
+            $this->modifiedColumns[] = ItemPeer::GW2DB_EXTERNAL_ID;
+        }
+
+
+        return $this;
+    } // setGw2dbExternalId()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -798,6 +874,8 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->min_sale_unit_price = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
             $this->offer_availability = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
             $this->sale_availability = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+            $this->gw2db_id = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
+            $this->gw2db_external_id = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -806,7 +884,7 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 16; // 16 = ItemPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 18; // 18 = ItemPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Item object", $e);
@@ -1127,6 +1205,12 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::SALE_AVAILABILITY)) {
             $modifiedColumns[':p' . $index++]  = '`SALE_AVAILABILITY`';
         }
+        if ($this->isColumnModified(ItemPeer::GW2DB_ID)) {
+            $modifiedColumns[':p' . $index++]  = '`GW2DB_ID`';
+        }
+        if ($this->isColumnModified(ItemPeer::GW2DB_EXTERNAL_ID)) {
+            $modifiedColumns[':p' . $index++]  = '`GW2DB_EXTERNAL_ID`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `item` (%s) VALUES (%s)',
@@ -1185,6 +1269,12 @@ abstract class BaseItem extends BaseObject implements Persistent
                         break;
                     case '`SALE_AVAILABILITY`':
 						$stmt->bindValue($identifier, $this->sale_availability, PDO::PARAM_INT);
+                        break;
+                    case '`GW2DB_ID`':
+						$stmt->bindValue($identifier, $this->gw2db_id, PDO::PARAM_INT);
+                        break;
+                    case '`GW2DB_EXTERNAL_ID`':
+						$stmt->bindValue($identifier, $this->gw2db_external_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -1395,6 +1485,12 @@ abstract class BaseItem extends BaseObject implements Persistent
             case 15:
                 return $this->getSaleAvailability();
                 break;
+            case 16:
+                return $this->getGw2dbId();
+                break;
+            case 17:
+                return $this->getGw2dbExternalId();
+                break;
             default:
                 return null;
                 break;
@@ -1440,6 +1536,8 @@ abstract class BaseItem extends BaseObject implements Persistent
             $keys[13] => $this->getMinSaleUnitPrice(),
             $keys[14] => $this->getOfferAvailability(),
             $keys[15] => $this->getSaleAvailability(),
+            $keys[16] => $this->getGw2dbId(),
+            $keys[17] => $this->getGw2dbExternalId(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aItemType) {
@@ -1536,6 +1634,12 @@ abstract class BaseItem extends BaseObject implements Persistent
             case 15:
                 $this->setSaleAvailability($value);
                 break;
+            case 16:
+                $this->setGw2dbId($value);
+                break;
+            case 17:
+                $this->setGw2dbExternalId($value);
+                break;
         } // switch()
     }
 
@@ -1576,6 +1680,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         if (array_key_exists($keys[13], $arr)) $this->setMinSaleUnitPrice($arr[$keys[13]]);
         if (array_key_exists($keys[14], $arr)) $this->setOfferAvailability($arr[$keys[14]]);
         if (array_key_exists($keys[15], $arr)) $this->setSaleAvailability($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setGw2dbId($arr[$keys[16]]);
+        if (array_key_exists($keys[17], $arr)) $this->setGw2dbExternalId($arr[$keys[17]]);
     }
 
     /**
@@ -1603,6 +1709,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::MIN_SALE_UNIT_PRICE)) $criteria->add(ItemPeer::MIN_SALE_UNIT_PRICE, $this->min_sale_unit_price);
         if ($this->isColumnModified(ItemPeer::OFFER_AVAILABILITY)) $criteria->add(ItemPeer::OFFER_AVAILABILITY, $this->offer_availability);
         if ($this->isColumnModified(ItemPeer::SALE_AVAILABILITY)) $criteria->add(ItemPeer::SALE_AVAILABILITY, $this->sale_availability);
+        if ($this->isColumnModified(ItemPeer::GW2DB_ID)) $criteria->add(ItemPeer::GW2DB_ID, $this->gw2db_id);
+        if ($this->isColumnModified(ItemPeer::GW2DB_EXTERNAL_ID)) $criteria->add(ItemPeer::GW2DB_EXTERNAL_ID, $this->gw2db_external_id);
 
         return $criteria;
     }
@@ -1681,6 +1789,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         $copyObj->setMinSaleUnitPrice($this->getMinSaleUnitPrice());
         $copyObj->setOfferAvailability($this->getOfferAvailability());
         $copyObj->setSaleAvailability($this->getSaleAvailability());
+        $copyObj->setGw2dbId($this->getGw2dbId());
+        $copyObj->setGw2dbExternalId($this->getGw2dbExternalId());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -2309,6 +2419,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         $this->min_sale_unit_price = null;
         $this->offer_availability = null;
         $this->sale_availability = null;
+        $this->gw2db_id = null;
+        $this->gw2db_external_id = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();

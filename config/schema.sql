@@ -58,6 +58,8 @@ CREATE TABLE `item`
     `min_sale_unit_price` INTEGER NOT NULL,
     `offer_availability` INTEGER DEFAULT 0 NOT NULL,
     `sale_availability` INTEGER DEFAULT 0 NOT NULL,
+    `gw2db_id` INTEGER,
+    `gw2db_external_id` INTEGER,
     PRIMARY KEY (`data_id`),
     INDEX `item_FI_1` (`item_type_id`),
     INDEX `item_FI_2` (`item_sub_type_id`),
