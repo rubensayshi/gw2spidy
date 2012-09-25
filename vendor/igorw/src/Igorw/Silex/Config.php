@@ -6,13 +6,12 @@ use Symfony\Component\Yaml\Yaml;
 
 class Config {
     private $env;
-    private $cnfdir;
     private $config       = null;
     private $replacements = array();
 
-    public function __construct(Env $env, $cnfdir, array $replacements = array()) {
-        $this->env    = $env;
-        $this->cnfdir = $cnfdir;
+    public function __construct(Env $env, array $replacements = array()) {
+        $this->env          = $env;
+        $this->replacements = $replacements;
     }
 
     public function getConfig() {
@@ -24,40 +23,39 @@ class Config {
     }
 
     private function buildConfig() {
-        $config = array();
+        $config       = array();
+        $replacements = array();
 
         foreach ($this->env->getEnvs() as $env) {
-            $config += $this->readConfig("{$this->cnfdir}/{$env}.cnf.json");
+            $config += $this->readConfig("{$this->env->getCnfDir()}/{$env}.json");
         }
 
-        if ($replacements) {
-            foreach ($replacements as $key => $value) {
-                $this->replacements['%'.$key.'%'] = $value;
-            }
+        foreach ($this->replacements as $key => $value) {
+            $replacements['%'.$key.'%'] = $value;
         }
 
         foreach ($config as $k => $v) {
-            $config[$k] = $this->doReplacements($v);
+            $config[$k] = $this->doReplacements($v, $replacements);
         }
 
         $this->config = $config;
     }
 
-    private function doReplacements($value) {
-        if (!$this->replacements) {
+    private function doReplacements($value, array $replacements = array()) {
+        if (!$replacements) {
             return $value;
         }
 
         if (is_array($value)) {
             foreach ($value as $k => $v) {
-                $value[$k] = $this->doReplacements($v);
+                $value[$k] = $this->doReplacements($v, $replacements);
             }
 
             return $value;
         }
 
         if (is_string($value)) {
-            return strtr($value, $this->replacements);
+            return strtr($value, $replacements);
         }
 
         return $value;
