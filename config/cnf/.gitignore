@@ -1,0 +1,7 @@
+env
+*.cnf
+!example-custom-cnf.cnf
+!default.cnf
+!dev.cnf
+!prod.cnf
+!beta.cnf
