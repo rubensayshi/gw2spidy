@@ -9,6 +9,7 @@ class Application extends \Silex\Application {
     protected $time;
     protected $homeActive = false;
     protected $gemActive = false;
+    protected $craftingActive = false;
     protected $displayTypes = null;
 
     protected static $instance;
@@ -85,8 +86,18 @@ class Application extends \Silex\Application {
         return $this->gemActive;
     }
 
+    public function setCraftingActive($bool = true) {
+        $this->craftingActive = $bool;
+
+        return $this;
+    }
+
+    public function isCraftingActive() {
+        return $this->craftingActive;
+    }
+
     public function isBrowseActive() {
-        return !$this->isHomeActive() && !$this->isGemActive();
+        return !$this->isHomeActive() && !$this->isGemActive() && !$this->isCraftingActive();
     }
 
     public function getDisplayTypes() {
