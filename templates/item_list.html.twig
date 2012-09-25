@@ -100,10 +100,10 @@
             {{ _self.th_sortable('Name', 'name', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Level', 'restriction_level', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Rarity', 'rarity', current_sort, current_sort_order, _context) }}
-            <th class="type hidden-phone">Type</th>
+            <th class="type">Type</th>
             {{ _self.th_sortable('Min Sale Offer', 'min_sale_unit_price', current_sort, current_sort_order, _context) }}
-            {{ _self.th_sortable('Max Buy Offer', 'max_offer_unit_price', current_sort, current_sort_order, _context, 'hidden-phone') }}
-            {{ _self.th_sortable('Margin', 'margin', current_sort, current_sort_order, _context, 'hidden-phone') }}
+            {{ _self.th_sortable('Max Buy Offer', 'max_offer_unit_price', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Margin', 'margin', current_sort, current_sort_order, _context) }}
         </thead>
         {% for item in items %}
             <tr class="item">
@@ -114,7 +114,7 @@
                 </td>
                 <td class="restriction_level">{% if item.restrictionLevel %}{{ item.restrictionLevel }}{% endif %}</td>
                 <td class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</td>
-                <td class="type hidden-phone">
+                <td class="type">
                     {% if item.itemType %}
                         <span class="item-type">{{ item.itemType.title }}</span>
                     {% endif %}
@@ -124,8 +124,8 @@
                     {% endif %}
                 </td>
                 <td class="min_sale_unit_price" title="{{ item.saleAvailability }} sales available">{{ item.minSaleUnitPrice | gw2money }}</td>
-                <td class="max_offer_unit_price hidden-phone" title="{{ item.offerAvailability }} offers available">{{ item.maxOfferUnitPrice | gw2money }}</td>
-                <td class="margin hidden-phone">{{ item.margin | gw2money }}</td>
+                <td class="max_offer_unit_price" title="{{ item.offerAvailability }} offers available">{{ item.maxOfferUnitPrice | gw2money }}</td>
+                <td class="margin">{{ item.margin | gw2money }}</td>
             </tr>
         {% endfor %}
     </table>

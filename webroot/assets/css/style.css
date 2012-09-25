@@ -47,21 +47,21 @@ h1 {
     position: absolute;
     top: 8px;
     left: 50%;
-    margin-left: -100px; 
+    margin-left: -100px;
     min-width: 200px;
     text-align: center;
-    
+
     background-color: rgba(249, 249, 249, 0.6);
     padding: 3px 10px;
     -webkit-border-radius: 5px;
        -moz-border-radius: 5px;
             border-radius: 5px;
-            
+
     cursor: pointer;
 }
 
 #chart_wrapper #legend .btn {
-    margin-top: 5px;    
+    margin-top: 5px;
 }
 
 #chart_wrapper #legend.alt {
@@ -121,7 +121,7 @@ h1 {
 
 .item-list-table .info {
     min-width: 200px;
-    width: 35%;    
+    width: 35%;
 }
 .item-list-table .min_sale_unit_price,
 .item-list-table .max_offer_unit_price,
@@ -151,6 +151,29 @@ h1 {
     min-width: 140px;
     width: 20%;
     text-align: center;
+}
+
+/*
+ * some responsive hiding of columns for smaller screens
+ *  because all the columns have a min-width ;-)
+ */
+@media (max-width: 1300px) {
+    .sidebar .form-horizontal .control-label {
+        width: 100px;
+    }
+    .sidebar .form-horizontal .controls {
+        margin-left: 120px;
+    }
+
+    .item-list-table .type {
+        display: none;
+    }
+}
+
+@media (max-width: 1100px) {
+    .item-list-table .margin {
+        display: none;
+    }
 }
 
 .navbar .nav > li > a {
@@ -322,4 +345,3 @@ h1 {
 /* ----------------
  * [END] tweet plugin style
    ---------------- */
-   
