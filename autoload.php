@@ -20,8 +20,12 @@ if ($classMap) {
 
 $loader->add('GW2Spidy', __DIR__.'/src');
 $loader->add('Predis',   __DIR__.'/vendor/nrk-predis/lib');
+$loader->add('Igorw',    __DIR__.'/vendor/igorw/src');
 
 $loader->register();
+
+$env = new \Igorw\Silex\Env(__DIR__ . "/config/env");
+$cnf = new \Igorw\Silex\Config(__DIR__ . "/config/{$env->getEnv()}.cnf.json");
 
 // Include the main Propel script
 require_once __DIR__ . '/vendor/propel/runtime/lib/Propel.php';

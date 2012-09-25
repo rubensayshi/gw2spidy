@@ -1,1 +1,4 @@
 config.inc.php
+*.cnf.json
+!example-dev.cnf.json
+env
