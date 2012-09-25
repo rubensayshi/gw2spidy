@@ -663,6 +663,8 @@ $app->get("/profit", function(Request $request) use($app) {
         $where .= " AND item_type_id = {$type}";
     }
 
+    $offset = intval($request->get('offset')) ?: 0;
+
     $stmt = Propel::getConnection()->prepare("
     SELECT
         data_id,
@@ -678,15 +680,25 @@ $app->get("/profit", function(Request $request) use($app) {
     AND   ((min_sale_unit_price - max_offer_unit_price) / max_offer_unit_price) * 100 < {$margin}
     {$where}
     ORDER BY margin DESC
-    LIMIT 50");
+    LIMIT {$offset}, 50");
 
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    return $app['twig']->render('quick_table.html.twig', array(
-        'headers' => array_keys(reset($data)),
-        'data'    => $data,
-    ));
+    if ($request->get('asJson')) {
+        $json = array();
+
+        foreach ($data as $row) {
+            $json[] = $row['data_id'];
+        }
+
+        return json_encode($json);
+    } else {
+        return $app['twig']->render('quick_table.html.twig', array(
+            'headers' => array_keys(reset($data)),
+            'data'    => $data,
+        ));
+    }
 });
 
 // bootstrap the app
