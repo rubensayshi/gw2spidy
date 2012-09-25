@@ -25,10 +25,7 @@ $loader->add('Igorw',    __DIR__.'/vendor/igorw/src');
 $loader->register();
 
 $env = new \Igorw\Silex\Env(__DIR__ . "/config/cnf/env");
-
-var_dump($env->getEnvs());
-
-$cnf = new \Igorw\Silex\Config($env, __DIR__ . "/config/cnf");
+$cnf = new \Igorw\Silex\Config($env);
 
 // Include the main Propel script
 require_once __DIR__ . '/vendor/propel/runtime/lib/Propel.php';
