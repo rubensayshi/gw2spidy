@@ -703,6 +703,40 @@ $app->get("/profit", function(Request $request) use($app) {
     }
 });
 
+/**
+ * ----------------------
+ *  route /crafting
+ * ----------------------
+ */
+$app->get("/crafting/{discipline}/{page}", function(Request $request, $discipline, $page) use($app) {
+    $page = $page > 0 ? $page : 1;
+
+
+})
+->assert('discipline', '-?\d+')
+->assert('page',       '-?\d+')
+->value('page', 1)
+->bind('crafting');
+
+/**
+ * ----------------------
+ *  route /crafting
+ * ----------------------
+ */
+$app->get("/recipe/{dataId}", function(Request $request, $dataId) use($app) {
+    $recipe = ItemQuery::create()->findPK($dataId);
+
+    if (!$recipe) {
+        return $app->abort(404, "Page does not exist.");
+    }
+
+    return $app['twig']->render('dump.html.twig', array(
+        'dump' => var_export($recipe, true),
+    ));
+})
+->assert('recipe', '-?\d+')
+->bind('recipe');
+
 // bootstrap the app
 $app->run();
 

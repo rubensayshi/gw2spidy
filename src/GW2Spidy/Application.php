@@ -2,6 +2,8 @@
 
 namespace GW2Spidy;
 
+use GW2Spidy\DB\DisciplineQuery;
+
 use GW2Spidy\DB\ItemTypeQuery;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -11,6 +13,7 @@ class Application extends \Silex\Application {
     protected $gemActive = false;
     protected $craftingActive = false;
     protected $displayTypes = null;
+    protected $disciplines = null;
 
     protected static $instance;
 
@@ -112,6 +115,14 @@ class Application extends \Silex\Application {
         }
 
         return $this->displayTypes;
+    }
+
+    public function getDisciplines() {
+        if (is_null($this->disciplines)) {
+            $this->disciplines = DisciplineQuery::getAllDisciplines();
+        }
+
+        return $this->disciplines;
     }
 }
 

@@ -79,20 +79,9 @@
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#" data-target="#">Crafting <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 {% for discipline in app.disciplines %}
-                                    {% if type.title %}
-                                        <li class="dropdown">
-                                            <a href="{{ path('type', {type: type.id}) }}">{{ type }} {% if not type.displaySubTypes.isEmpty %}<i class="icon-arrow-right"></i>{% endif %}</a>
-                                            {% if not type.displaySubTypes.isEmpty %}
-                                                <ul class="dropdown-menu sub-menu">
-                                                    {% for subtype in type.displaySubTypes %}
-                                                        {% if subtype.title %}
-                                                        <li><a href="{{ path('type', {type: type.id, subtype: subtype.id}) }}">{{ subtype }}</a></li>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </ul>
-                                            {% endif %}
-                                        </li>
-                                    {% endif %}
+                                    <li>
+                                        <a href="{{ path('crafting', {discipline: discipline.id}) }}">{{ discipline.name }}</a>
+                                    </li>
                                 {% endfor %}
                             </ul>
                         </li>
