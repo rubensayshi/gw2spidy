@@ -4,6 +4,7 @@ namespace GW2Spidy\DB;
 
 use GW2Spidy\Util\ApplicationCache;
 use GW2Spidy\DB\om\BaseItem;
+use GW2Spidy\Util\CacheHandler;
 
 
 /**
@@ -36,6 +37,31 @@ class Item extends BaseItem {
             case self::RARITY_LEGENDARY:  return "Legendary";
             default:                      return $this->getRarityName() ?: "Rarity [{$this->getRarity()}]";
         }
+    }
+
+    public function getGW2DBTooltip() {
+        $cache = CacheHandler::getInstance('item_gw2db_tooltips');
+
+        if (!($tooltip = $cache->get($this->getDataId()))) {
+            $tooltip = $this->getGW2DBTooltipFromGW2DB();
+
+            $cache->set($this->getDataId(), $tooltip);
+        }
+
+        return $tooltip;
+    }
+
+    public function getGW2DBTooltipFromGW2DB() {
+        $js = file_get_contents("http://www.gw2db.com/items/{$this->getGW2DBExternalId()}/tooltip?x&advanced=1&callback=WP_OnTooltipLoaded&_=1348564347696");
+
+
+        $js = preg_replace("/^WP_OnTooltipLoaded\(/", '', $js);
+        $js = preg_replace("/\)$/", '', $js);
+
+        $data = json_decode($js, true);
+        $html = $data['Tooltip'];
+
+        return stripslashes($html);
     }
 
     public function getMargin() {

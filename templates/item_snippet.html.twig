@@ -1,27 +1,36 @@
+{% set href %}
+    {% if href is defined %}
+        {{ href }}
+    {% elseif item.gw2dbExternalId %}
+        http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}
+    {% endif %}
+{% endset %}
+
 <{{ tag }} class="item clearfix" id="item-snippet-{{ item.dataId }}">
-    <div class="image clearfix">
-        {% if href is defined %}<a href="{{ href }}">{% endif %}
-            <img src="{{ item.img }}" width="64" height="64" />
-        {% if href is defined %}</a>{% endif %}
-    </div>
-    <div class="stats">
-        <div class="name {{ item.rarityCssClass }}">
-            {% if href is defined %}<a href="{{ href }}">{% endif %}
+    {% if item.getGW2DBTooltip %}
+        {{ item.getGW2DBTooltip | raw }}
+    {% else %}
+        <div class="image clearfix">
+            {% if href %}<a href="{{ href }}">{% endif %}
+                <img src="{{ item.img }}" width="64" height="64" />
+            {% if href %}</a>{% endif %}
+        </div>
+        <div class="stats">
+            <div class="name {{ item.rarityCssClass }}">
+                {% if href %}<a href="{{ href }}">{% endif %}
                 {{- item.name -}}
-            {% if href is defined %}</a>{% endif %}
-            {% if item.gw2dbExternalId %}
-        	   &nbsp;<a href="http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}" target="_blank" title="Show this item on GW2DB.com"><i class="icon-search"></i></a>
+                {% if href %}</a>{% endif %}
+            </div>
+            {% if item.itemType %}
+                <div class="item-type">{{ item.itemType.title }}</div>
+            {% endif %}
+            {% if item.itemSubType %}
+                <div class="item-sub-type">{{ item.itemSubType.title }}</div>
+            {% endif %}
+            <div class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</div>
+            {% if item.restrictionLevel %}
+                <div class="restriction-level">Required Level: {{ item.restrictionLevel }}</div>
             {% endif %}
         </div>
-        {% if item.itemType %}
-            <div class="item-type">{{ item.itemType.title }}</div>
-        {% endif %}
-        {% if item.itemSubType %}
-            <div class="item-sub-type">{{ item.itemSubType.title }}</div>
-        {% endif %}
-        <div class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</div>
-        {% if item.restrictionLevel %}
-            <div class="restriction-level">Required Level: {{ item.restrictionLevel }}</div>
-        {% endif %}
-    </div>
+    {% endif %}
 </{{ tag }}>
