@@ -120,7 +120,7 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
     $q->addSelectColumn("*");
 
     $q->offset($itemsperpage * ($page-1))
-    ->limit($itemsperpage);
+      ->limit($itemsperpage);
 
     if ($sortOrder == 'asc') {
         $q->addAscendingOrderByColumn($sortBy);
