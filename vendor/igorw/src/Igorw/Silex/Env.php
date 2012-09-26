@@ -3,8 +3,9 @@
 namespace Igorw\Silex;
 
 class Env {
-    protected $cnfdir  = null;
-    protected $envs    = null;
+    protected $cnfdir = null;
+    protected $env    = null;
+    protected $envs   = null;
 
     public function __construct($cnfdir = null) {
         $this->cnfdir  = $cnfdir;
@@ -16,6 +17,10 @@ class Env {
 
     public function getEnvFile() {
         return "{$this->getCnfDir()}/env";
+    }
+
+    public function getEnv() {
+        return end($this->getEnvs());
     }
 
     public function getEnvs() {
