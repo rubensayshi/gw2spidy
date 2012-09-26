@@ -23,7 +23,7 @@ If you want a dump of the database, since that's a lot easier to work with, then
 Date/time data
 ==============
 As usual I didn't really think about timezones when I started this project, but now that multiple people forked the project and that I'm exporting data to some people it suddently matters ... 
-so I'll refactor the code soon to ensure all date/time data is stored as UTC ... atm all data is stored in the server's timezone, in my case Europe/Amsterdam!
+All data is stored in the server's timezone, however I've made sure that data going out (charts and API) are converted to UTC (and Highcharts converts it to the browsers timezone).
 
 
 Environment setup
