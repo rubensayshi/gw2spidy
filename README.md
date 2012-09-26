@@ -93,14 +93,11 @@ RequestSlots
 ------------
 ArenaNet is okay with me doing this, but nonetheless I want to limit the amount of requests I'm shooting at their website or at least spread them out a bit.  
 I came up with this concept of 'request slots', I setup an x amount of slots, claim one when I do a request and then give it a cooldown before I can use it again.  
-That way I can control the flood a bit better.
-
-This is done using Redis sorted sets.
+That way I can control the flood a bit better, from the technicaly side this is done using Redis sorted sets.
 
 WorkerQueue
 -----------
 All spidering work is done through the worker queue, the queue process also handles the previously mentioned request slots.
-
 This is also done using Redis sorted sets.
 
 Config / Env
@@ -108,8 +105,7 @@ Config / Env
 Copy `config/cnf/example-env` to `config/cnf/env` and edit it, it contains a line for each config file it should load from `config/cnf/<name>.json`  
 Replace the first line (ruben-vm1) with something representive of your env and create a file with a matching name and .json (for ruben-vm1 that would be `config/cnf/ruben-vm1.json`)  
 
-The config files in `config/cnf/env` will be loaded (in reverse order), overwriting the previous ones.
-
+The config files you specify `config/cnf/env` will be loaded (in reverse order), overwriting the previous ones.
 You should at least replace the values for *auth_email* and *auth_password*, for overloading other config values, check `config/cnf/default.json` for all options 
 This way you can also set other database settings etc.
 
