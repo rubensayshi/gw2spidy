@@ -20,6 +20,11 @@ If you need any help with setup of the project or using git(hub) then just conta
 If you want a dump of the database, since that's a lot easier to work with, then just contact me ;)
 
 
+Feedback / Help
+===============
+If you need help or have any feedback, you can contact me on gw2spidy@rubensayshi.com or join me on irc.gamesurge.net #gw2spidy Drakie
+
+
 Date/time data
 ==============
 As usual I didn't really think about timezones when I started this project, but now that multiple people forked the project and that I'm exporting data to some people it suddently matters ... 
