@@ -26,6 +26,13 @@ class Config {
         }
     }
 
+    /**
+     * retrieve config value by key
+     *  since we mimic / mirror the behavory of Silex\Application we throw on miss
+     *
+     * @param  string    $key
+     * @return mixed
+     */
     public function getConfigByKey($key) {
         if (array_key_exists($key, $this->config)) {
             return $this->config[$key];
@@ -47,6 +54,8 @@ class Config {
                 return $config;
             }
         }
+
+        throw new \Exception("Failed to retrieve config value for [{$key}]");
 
         return null;
     }
