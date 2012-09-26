@@ -22,13 +22,6 @@ cnf = {
         "api_secrets"     : {},
 
         "admin_secret"    : null
-
-        /*
-         * account settings
-         *
-        "auth_email"      : "mail@example.com",
-        "auth_password"   : "3x@mpl3",
-         */
     },
 
     /*
