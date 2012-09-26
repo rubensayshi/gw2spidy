@@ -107,12 +107,14 @@ This is also done using Redis sorted sets.
 
 Config / Env
 ------------
+Think of a name that represents your machine / evn, eg *ruben-vm1* or *gw2spidy-prod-vps2*.  
+Copy the `config/cnf/example-custom-cnf.json` to `config/cnf/<your-chosen-name>.json` an edit it to set the values for *auth_email* and *auth_password*.
+
 Copy `config/cnf/example-env` to `config/cnf/env` and edit it, it contains a line for each config file it should load from `config/cnf/<name>.json`  
-Replace the first line (ruben-vm1) with something representive of your env and create a file with a matching name and .json (for ruben-vm1 that would be `config/cnf/ruben-vm1.json`)  
+Replace the first line (*ruben-vm1*) with the name you had previously chosen, leave the *dev* and *default*, those are other config files it should load too (or change *dev* to *prod* if you don't want debug mode.
 
 The config files you specify `config/cnf/env` will be loaded (in reverse order), overwriting the previous ones.
-You should at least replace the values for *auth_email* and *auth_password*, for overloading other config values, check `config/cnf/default.json` for all options 
-This way you can also set other database settings etc.
+For overloading other config values (like database login etc.), check `config/cnf/default.json` for all options which you could also se in your custom config file.
 
 ### The `config/cnf/env` and any `config/cnf/*.json` other then `default.json`, `dev.json` and `prod.json` are on .gitignore so they won't be versioned controlled 
 
