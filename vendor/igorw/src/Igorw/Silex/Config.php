@@ -27,7 +27,7 @@ class Config {
         $replacements = array();
 
         foreach ($this->env->getEnvs() as $env) {
-            $config += $this->readConfig("{$this->env->getCnfDir()}/{$env}.json");
+            $config += (array)$this->readConfig("{$this->env->getCnfDir()}/{$env}.json");
         }
 
         foreach ($this->replacements as $key => $value) {
@@ -81,7 +81,19 @@ class Config {
         }
 
         if ('json' === $format) {
-            return json_decode(file_get_contents($filename), true);
+            $s = file_get_contents($filename);
+
+            // strip posible js-style comments
+            $s = preg_replace('!/\*.*?\*/!s', '', $s);
+            $s = preg_replace('!^//!s', '', $s);
+            $s = preg_replace('!^#!s', '', $s);
+            $s = preg_replace('/\n\s*\n/', "\n", $s);
+
+            if (($r = json_decode($s, true)) === null) {
+                throw new \RuntimeException("Parsing JSON resulted in NULL [{$filename}]");
+            }
+
+            return $r;
         }
 
         throw new \InvalidArgumentException(

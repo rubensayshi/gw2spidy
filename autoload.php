@@ -30,8 +30,13 @@ $cnf = new \Igorw\Silex\Config($env);
 // Include the main Propel script
 require_once __DIR__ . '/vendor/propel/runtime/lib/Propel.php';
 
+
 // Initialize Propel with the runtime configuration
-Propel::init(__DIR__ . "/config/gw2spidy-conf.php");
+$propelcnf = $cnf->getConfig();
+$propelcnf = $propelcnf['propel'];
+$propelcnf['classmap'] = include(__DIR__ . '/config/classmap-gw2spidy-conf.php');
+Propel::setConfiguration($propelcnf);
+Propel::initialize();
 
 // set newrelic_background_job if on CLI and newrelic is enabled
 if (function_exists('newrelic_background_job') && php_sapi_name() == 'cli') {
