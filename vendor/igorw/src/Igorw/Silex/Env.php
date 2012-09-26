@@ -31,7 +31,7 @@ class Env {
 
                 if (!$this->envs && file_exists($this->getEnvFile())) {
                     if (!is_readable($this->getEnvFile())) {
-                        throw new Exception("Env file is there but not readable.");
+                        throw new \Exception("Env file is there but not readable.");
                     }
 
                     if ($envs = file_get_contents($this->getEnvFile())) {
@@ -41,6 +41,8 @@ class Env {
                             $this->atemptStoreInCache($this->envs);
                         }
                     }
+                } else {
+                    throw new \Exception("No `env` file found, read the README on how to setup the (new style) config!");
                 }
             }
         }
