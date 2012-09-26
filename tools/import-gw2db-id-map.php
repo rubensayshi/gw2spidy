@@ -2,7 +2,7 @@
 
 ini_set('memory_limit', '1G');
 
-require dirname(__FILE__) . '/../config/config.inc.php';
+
 require dirname(__FILE__) . '/../autoload.php';
 
 if (!isset($argv[1]) || !($mapfilename = $argv[1])) {

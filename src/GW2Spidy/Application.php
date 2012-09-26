@@ -39,11 +39,11 @@ class Application extends \Silex\Application {
     }
 
     public function isDevMode() {
-        return $this['dev_mode'];
+        return \getAppConfig('dev_mode');
     }
 
     public function isMemcachedEnabled() {
-        return $this['memcached_enabled'];
+        return \getAppConfig('memcached_enabled');
     }
 
     public function enableSQLLogging() {
