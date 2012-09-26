@@ -35,7 +35,7 @@ class Env {
                     }
 
                     if ($envs = file_get_contents($this->getEnvFile())) {
-                        if ($envs = array_filter(array_map('trim', explode("\n", $envs)))) {
+                        if ($envs = array_reverse(array_filter(array_map('trim', explode("\n", $envs))))) {
                             $this->envs = $envs;
 
                             $this->atemptStoreInCache($this->envs);

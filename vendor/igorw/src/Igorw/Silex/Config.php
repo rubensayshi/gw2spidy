@@ -14,12 +14,41 @@ class Config {
         $this->replacements = $replacements;
     }
 
-    public function getConfig() {
+    public function getConfig($key = null) {
         if (is_null($this->config)) {
             $this->buildConfig();
         }
 
-        return $this->config;
+        if (!is_null($key)) {
+            return $this->getConfigByKey($key);
+        } else {
+            return $this->config;
+        }
+    }
+
+    public function getConfigByKey($key) {
+        if (array_key_exists($key, $this->config)) {
+            return $this->config[$key];
+        }
+
+        if (strstr($key, ".")) {
+            $split = explode(".", $key);
+
+            $config = $this->config;
+            foreach ($split as $k) {
+                $ok = false;
+                if (array_key_exists($k, $config)) {
+                    $config = $config[$k];
+                    $ok = true;
+                }
+            }
+
+            if ($ok) {
+                return $config;
+            }
+        }
+
+        return null;
     }
 
     private function buildConfig() {
@@ -27,7 +56,7 @@ class Config {
         $replacements = array();
 
         foreach ($this->env->getEnvs() as $env) {
-            $config += (array)$this->readConfig("{$this->env->getCnfDir()}/{$env}.json");
+            $config = self::array_3d_merge($config, (array)$this->readConfig("{$this->env->getCnfDir()}/{$env}.json"));
         }
 
         foreach ($this->replacements as $key => $value) {
@@ -83,11 +112,12 @@ class Config {
         if ('json' === $format) {
             $s = file_get_contents($filename);
 
-            // strip posible js-style comments
+            // strip posible /**/ comments
             $s = preg_replace('!/\*.*?\*/!s', '', $s);
-            $s = preg_replace('!^//!s', '', $s);
-            $s = preg_replace('!^#!s', '', $s);
-            $s = preg_replace('/\n\s*\n/', "\n", $s);
+
+            // strip `cnf = {};` wrapper (to satisfy editors
+            $s = preg_replace('!^cnf = \{!', '{', $s);
+            $s = preg_replace('!\};$!', '}', $s);
 
             if (($r = json_decode($s, true)) === null) {
                 throw new \RuntimeException("Parsing JSON resulted in NULL [{$filename}]");
@@ -100,7 +130,7 @@ class Config {
                 sprintf("The config file '%s' appears has invalid format '%s'.", $filename, $format));
     }
 
-    public function getFileFormat($filename) {
+    protected function getFileFormat($filename) {
         if (preg_match('#.ya?ml(.dist)?$#i', $filename)) {
             return 'yaml';
         }
@@ -110,5 +140,24 @@ class Config {
         }
 
         return pathinfo($filename, PATHINFO_EXTENSION);
+    }
+
+
+    protected function array_3d_merge($a, $b) {
+        foreach ($b as $k => $v) {
+            if (!array_key_exists($k, $a)) {
+                $a[$k] = $v;
+            } else if (is_array($v)) {
+                if (!is_array($a[$k])) {
+                    throw new \Exception("Trying to merge array into non array");
+                }
+
+                $a[$k] = self::array_3d_merge($a[$k], $v);
+            } else {
+                $a[$k] = $v;
+            }
+        }
+
+        return $a;
     }
 }

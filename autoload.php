@@ -24,16 +24,41 @@ $loader->add('Igorw',    __DIR__.'/vendor/igorw/src');
 
 $loader->register();
 
-$env = new \Igorw\Silex\Env(__DIR__ . "/config/cnf");
-$cnf = new \Igorw\Silex\Config($env);
+/**
+ * @return \Igorw\Silex\Env
+ */
+function getAppEnv() {
+    static $env = null;
+
+    if (is_null($env)) {
+        $env = new \Igorw\Silex\Env(__DIR__ . "/config/cnf");
+    }
+
+    return $env;
+}
+
+/**
+ * @return \Igorw\Silex\Config
+ */
+function getAppConfig($key = null) {
+    static $cnf = null;
+
+    if (is_null($cnf)) {
+        $cnf = new \Igorw\Silex\Config(getAppEnv());
+    }
+
+    if (!is_null($key)) {
+        return $cnf->getConfig($key);
+    }
+
+    return $cnf;
+}
 
 // Include the main Propel script
 require_once __DIR__ . '/vendor/propel/runtime/lib/Propel.php';
 
-
 // Initialize Propel with the runtime configuration
-$propelcnf = $cnf->getConfig();
-$propelcnf = $propelcnf['propel'];
+$propelcnf = (array)getAppConfig('propel');
 $propelcnf['classmap'] = include(__DIR__ . '/config/classmap-gw2spidy-conf.php');
 Propel::setConfiguration($propelcnf);
 Propel::initialize();

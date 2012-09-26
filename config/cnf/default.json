@@ -1,4 +1,4 @@
-{
+cnf = {
     /*
      * debug settings
      */
@@ -8,19 +8,28 @@
     /*
      * application settings
      */
-    "tradingpost_url" : "https://tradingpost-live.ncplatform.net",
-    "gemexchange_url" : "https://exchange-live.ncplatform.net",
-    "auth_url"        : "https://account.guildwars2.com",
-
-    "api_secrets"     : {},
+    "version_string"     : "dev",
+    "memcached_enabled"  : true,
 
     /*
-     * account settings
+     * gw2spidy settings
      */
-    /*
-    "auth_email"      : "mail@example.com",
-    "auth_password"   : "3x@mpl3",
-    */
+    "gw2spidy" : {
+        "tradingpost_url" : "https://tradingpost-live.ncplatform.net",
+        "gemexchange_url" : "https://exchange-live.ncplatform.net",
+        "auth_url"        : "https://account.guildwars2.com",
+
+        "api_secrets"     : {},
+
+        "admin_secret"    : null
+
+        /*
+         * account settings
+         *
+        "auth_email"      : "mail@example.com",
+        "auth_password"   : "3x@mpl3",
+         */
+    },
 
     /*
      * database settings

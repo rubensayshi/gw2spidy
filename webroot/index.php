@@ -35,17 +35,13 @@ use GW2Spidy\Twig\GW2MoneyExtension;
 use GW2Spidy\Queue\RequestSlotManager;
 use GW2Spidy\Queue\WorkerQueueManager;
 
-require dirname(__FILE__) . '/../config/config.inc.php';
-
-/* @var Igorw\Silex\Config $cnf */
-/* @var Igorw\Silex\Env $env */
 require dirname(__FILE__) . '/../autoload.php';
 
 // initiate the application, check config to enable debug / sql logging when needed
 $app = Application::getInstance();
 
 // register config provider
-$app->register(new Igorw\Silex\ConfigServiceProvider($cnf));
+$app->register(new Igorw\Silex\ConfigServiceProvider(getAppConfig()));
 
 // setup dev mode related stuff based on config
 $app['sql_logging'] && $app->enableSQLLogging();

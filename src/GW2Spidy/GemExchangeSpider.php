@@ -15,7 +15,7 @@ class GemExchangeSpider extends BaseSpider {
         $gems  = 100000;
         $coins = 10000000;
 
-        $curl = CurlRequest::newInstance(GEMEXCHANGE_URL . "/ws/rates.json?gems=100000&coins=10000000")
+        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.gemexchange_url') . "/ws/rates.json?gems=100000&coins=10000000")
                     ->setCookie("s={$this->getSession()->getSessionKey()}")
                     ->setHeader("X-Requested-With: XMLHttpRequest")
                     ->exec()
@@ -38,7 +38,7 @@ class GemExchangeSpider extends BaseSpider {
             throw new Exception("Trying to get gem exchange volume with a non-game-session.");
         }
 
-        $curl = CurlRequest::newInstance(GEMEXCHANGE_URL . "/ws/rates.json?gems=10000000000000000&coins=10000000000000000")
+        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.gemexchange_url') . "/ws/rates.json?gems=10000000000000000&coins=10000000000000000")
                     ->setCookie("s={$this->getSession()->getSessionKey()}")
                     ->setHeader("X-Requested-With: XMLHttpRequest")
                     ->exec()

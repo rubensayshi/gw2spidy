@@ -39,7 +39,7 @@ class GW2SessionManager extends Singleton {
     }
 
     public function checkSessionAlive(GW2Session $gw2session) {
-        $curl = CurlRequest::newInstance(TRADINGPOST_URL)
+        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url'))
                     ->setCookie("s={$gw2session->getSessionKey()}")
                     ->setThrowOnError(false)
                     ->exec()
@@ -57,9 +57,9 @@ class GW2SessionManager extends Singleton {
     }
 
     protected function getNewSession() {
-        $curl = CurlRequest::newInstance(AUTH_URL . "/login")
+        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.auth_url') . "/login")
                     ->setOption(CURLOPT_POST, true)
-                    ->setOption(CURLOPT_POSTFIELDS, http_build_query(array('email' => LOGIN_EMAIL, 'password' => LOGIN_PASSWORD)))
+                    ->setOption(CURLOPT_POSTFIELDS, http_build_query(array('email' => getAppConfig('gw2spidy.auth_email'), 'password' => getAppConfig('gw2spidy.auth_password'))))
                     ->exec()
                     ;
 
