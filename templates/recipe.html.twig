@@ -1,13 +1,34 @@
 {% extends "content_sidebar.html.twig" %}
 
 {% block content %}
-<h2>Recipe: {{ recipe.name }}</h2>
+<h1>Recipe: {{ recipe.name }}</h1>
 
 <h3>Result</h3>
-{% include "item_snippet.html.twig" with {'item': recipe.resultitem, 'tag': 'div'} %}
+<p>
+    {% set resultprice = recipe.count * recipe.resultitem.minSaleUnitPrice %}
+    <div class="clearfix">
+        <div style="float: left; font-size: 16px; font-weight: bold; padding-top: 20px; padding-right: 20px;">{{ recipe.count }} x </div>
+        <div style="float: left;">{% include "item_snippet.html.twig" with {'item': recipe.resultitem, 'tag': 'div'} %}</div>
+    </div>
+    <h4>sells on TP for: {{ recipe.count }} x {{ recipe.resultitem.minSaleUnitPrice | gw2money }} = {{ resultprice | gw2money }}</h4>
+</p>
+
+<h3>Ingredients</h3>
+<p>
+    {% set totalcost = 0 %}
+    {% for ingredient in recipe.ingredients %}
+        {% set ingredientcost = ingredient.count * ingredient.item.maxOfferUnitPrice %}
+        {% set totalcost = totalcost + ingredientcost %}
+        <div class="clearfix">
+            <div style="float: left; font-size: 16px; font-weight: bold; padding-top: 20px; padding-right: 20px;">{{ ingredient.count }} x </div>
+            <div style="float: left;">{% include "item_snippet.html.twig" with {'item': ingredient.item, 'tag': 'div'} %}</div>
+        </div>
+        <h4>cost on TP: {{ ingredient.count }} x {{ ingredient.item.maxOfferUnitPrice | gw2money }} = {{ ingredientcost | gw2money }}</h4>
+    {% endfor %}
+</p>
 
 
-{% for item in recipe.items %}
-    {{ item.name }}
-{% endfor %}
+<h3>Total cost: {{ totalcost | gw2money }}</h3>
+<h3>TP listing + transaction fee: {{ (resultprice * 0.2) | gw2money }}</h3>
+<h3>Profit: {{ ((resultprice * 0.8) - totalcost) | gw2money }}</h3>
 {% endblock %}
