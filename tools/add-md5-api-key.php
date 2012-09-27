@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\Util\CLIColors;
+
 use GW2Spidy\Util\Functions;
 
 use Igorw\Silex\Config;
@@ -19,31 +21,31 @@ $md5  = md5($name);
 // cnf file based on env
 $cnffile = __DIR__ . "/../config/cnf/{$env}.json";
 
-echo "adding md5 [[ {$md5} ]] for [[ {$name} ]] to [[ {$env} ]] ... \n";
+echo CLIColors::getColoredString("adding md5 [[ {$md5} ]] for [[ {$name} ]] to [[ {$env} ]] ... \n", "light_blue");
 
 if (in_array($env, array('dev', 'prod', 'default'))) {
-    die("Can't add API keys to [[ {$env} ]] cnf file, protected.\n");
+    die(CLIColors::getColoredString("Can't add API keys to [[ {$env} ]] cnf file, protected.\n", "red"));
 }
 
 
 if (!file_exists($cnffile)) {
-    die("Config file [[ {$cnffile} ]] doesn't exist.\n");
+    die(CLIColors::getColoredString("Config file [[ {$cnffile} ]] doesn't exist.\n", "red"));
 }
 
 $cnf = Config::readConfig($cnffile);
 
 if (!$cnf) {
-    die("Parsing cnf failed.\n");
+    die(CLIColors::getColoredString("Parsing cnf failed.\n", "red"));
 }
 
 if (!isset($cnf['gw2spidy']['api_secrets'])) {
-    die("Please create the initial 'api_secrets' entry yourself.\n");
+    die(CLIColors::getColoredString("Please create the initial 'api_secrets' entry yourself.\n", "red"));
 }
 
 $md5 = md5($name);
 
 if ($check && $check != $md5) {
-    die("md5[[ {$md5} ]] didn't match the check[[ {$check} ]]\n");
+    die(CLIColors::getColoredString("md5 [[ {$md5} ]] didn't match the check [[ {$check} ]].\n", "red"));
 }
 
 $cnf['gw2spidy']['api_secrets'][$name] = $md5;
@@ -51,10 +53,10 @@ $cnf['gw2spidy']['api_secrets'][$name] = $md5;
 $ok = file_put_contents($cnffile, "cnf = ".Functions::indent(json_encode($cnf)).";");
 
 if (!$ok) {
-    die("Failed writing to file [[ {$cnffile} ]]\n");
+    die(CLIColors::getColoredString("Failed writing to file [[ {$cnffile} ]].\n", "red"));
 }
 
-echo "Added md5[[ {$md5} ]] for [[ {$name} ]]\n";
+echo CLIColors::getColoredString("Added md5 [[ {$md5} ]] for [[ {$name} ]]\n", "green");
 
 
 
