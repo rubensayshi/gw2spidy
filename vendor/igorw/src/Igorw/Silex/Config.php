@@ -65,7 +65,7 @@ class Config {
         $replacements = array();
 
         foreach ($this->env->getEnvs() as $env) {
-            $config = self::array_3d_merge($config, (array)$this->readConfig("{$this->env->getCnfDir()}/{$env}.json"));
+            $config = self::array_3d_merge($config, (array)self::readConfig("{$this->env->getCnfDir()}/{$env}.json"));
         }
 
         foreach ($this->replacements as $key => $value) {
@@ -99,8 +99,8 @@ class Config {
         return $value;
     }
 
-    private function readConfig($filename) {
-        $format = $this->getFileFormat($filename);
+    public static function readConfig($filename) {
+        $format = self::getFileFormat($filename);
 
         if (!$filename || !$format) {
             throw new \RuntimeException('A valid configuration file must be passed before reading the config.');
@@ -139,7 +139,7 @@ class Config {
                 sprintf("The config file '%s' appears has invalid format '%s'.", $filename, $format));
     }
 
-    protected function getFileFormat($filename) {
+    protected static function getFileFormat($filename) {
         if (preg_match('#.ya?ml(.dist)?$#i', $filename)) {
             return 'yaml';
         }
