@@ -35,7 +35,7 @@ class Item extends BaseItem {
             case self::RARITY_RARE:       return "Rare";
             case self::RARITY_EXOTIC:     return "Exotic";
             case self::RARITY_LEGENDARY:  return "Legendary";
-            default:                      return $this->getRarityName() ?: "Rarity [{$this->getRarity()}]";
+            default:                      return "Rarity [{$this->getRarity()}]";
         }
     }
 

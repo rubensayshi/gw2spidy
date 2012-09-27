@@ -35,23 +35,19 @@ class Application extends \Silex\Application {
     }
 
     public function getAdminSecret() {
-        return defined('ADMIN_SECRET') ? ADMIN_SECRET : null;
+        return $this['admin_secret'];
     }
 
     public function getVersionString() {
-        return defined('VERSION_STRING') ? VERSION_STRING : null;
+        return $this['version_string'] != 'dev' ? $this['version_string'] : null;
     }
 
     public function isDevMode() {
-        return defined('DEV_MODE') && DEV_MODE;
-    }
-
-    public function isSQLLogMode() {
-        return defined('SQL_LOG_MODE') && SQL_LOG_MODE;
+        return \getAppConfig('dev_mode');
     }
 
     public function isMemcachedEnabled() {
-        return !defined('MEMCACHED_DISABLED') || !MEMCACHED_DISABLED;
+        return \getAppConfig('memcached_enabled');
     }
 
     public function enableSQLLogging() {

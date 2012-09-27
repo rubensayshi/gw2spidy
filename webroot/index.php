@@ -35,17 +35,18 @@ use GW2Spidy\Twig\GW2MoneyExtension;
 use GW2Spidy\Queue\RequestSlotManager;
 use GW2Spidy\Queue\WorkerQueueManager;
 
-require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
 
 // initiate the application, check config to enable debug / sql logging when needed
 $app = Application::getInstance();
-$app->isSQLLogMode() && $app->enableSQLLogging();
-$app->isDevMode()    && $app['debug'] = true;
 
-/*
- * register providers
- */
+// register config provider
+$app->register(new Igorw\Silex\ConfigServiceProvider(getAppConfig()));
+
+// setup dev mode related stuff based on config
+$app['sql_logging'] && $app->enableSQLLogging();
+
+// register providers
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path'    => dirname(__FILE__) . '/../templates',
@@ -54,9 +55,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     ),
 ));
 
-/*
- * register custom extensions
- */
+// register custom twig extensions
 $app['twig']->addExtension(new GenericHelpersExtension());
 $app['twig']->addExtension(new VersionedAssetsRoutingExtension());
 $app['twig']->addExtension(new GW2MoneyExtension());
@@ -117,7 +116,7 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
     $q->addSelectColumn("*");
 
     $q->offset($itemsperpage * ($page-1))
-    ->limit($itemsperpage);
+      ->limit($itemsperpage);
 
     if ($sortOrder == 'asc') {
         $q->addAscendingOrderByColumn($sortBy);
@@ -470,7 +469,7 @@ $app->get("/searchform", function() use($app) {
  */
 $app->get("/api/{format}/{secret}", function($format, $secret) use($app) {
     // check if the secret is in the configured allowed api_secrets
-    if (!(isset($GLOBALS['api_secrets']) && in_array($secret, $GLOBALS['api_secrets'])) && !$app['debug']) {
+    if (!in_array($secret, $app['gw2spidy']['api_secrets']) && !$app['debug']) {
         return $app->redirect("/");
     }
 
@@ -513,7 +512,7 @@ $app->get("/api/{format}/{secret}", function($format, $secret) use($app) {
  */
 $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $type, $format, $secret) use($app) {
     // check if the secret is in the configured allowed api_secrets
-    if (!(isset($GLOBALS['api_secrets']) && in_array($secret, $GLOBALS['api_secrets'])) && !$app['debug']) {
+    if (!in_array($secret, $app['gw2spidy']['api_secrets']) && !$app['debug']) {
         return $app->redirect("/");
     }
 
@@ -646,7 +645,7 @@ $app->get("/profit", function(Request $request) use($app) {
     $where = "";
 
     if ($minlevel = intval($request->get('minlevel'))) {
-        $where .= " AND restriction_level >= {$minlevel}";
+        $where .= " AND (restriction_level = 0 OR restriction_level >= {$minlevel})";
     }
 
     $margin     = intval($request->get('margin')) ?: 500;
@@ -664,7 +663,17 @@ $app->get("/profit", function(Request $request) use($app) {
         $where .= " AND item_type_id = {$type}";
     }
 
+    if ($blacklist = $request->get('blacklist')) {
+        foreach (explode(",", $blacklist) as $blacklist) {
+            $blacklist = Propel::getConnection()->quote("%{$blacklist}%", PDO::PARAM_STR);
+            $where .= " AND name NOT LIKE {$blacklist}";
+        }
+    }
+
     $offset = intval($request->get('offset')) ?: 0;
+    $limit  = intval($request->get('limit'))  ?: 50;
+    $mmod   = intval($request->get('mmod')) ?: 0;
+    $mnum   = intval($request->get('mnum')) ?: 0;
 
     $stmt = Propel::getConnection()->prepare("
     SELECT
@@ -678,14 +687,26 @@ $app->get("/profit", function(Request $request) use($app) {
     FROM item
     WHERE offer_availability > 1
     AND   sale_availability > 5
+    AND   max_offer_unit_price > 0
     AND   ((min_sale_unit_price*0.75 - max_offer_unit_price) / max_offer_unit_price) * 100 < {$max_margin}
-    AND   ((min_sale_unit_price*0.75 - max_offer_unit_price) > {$margin}
+    AND   (min_sale_unit_price*0.75 - max_offer_unit_price) > {$margin}
     {$where}
     ORDER BY margin DESC
-    LIMIT {$offset}, 50");
+    LIMIT {$offset}, {$limit}");
 
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if ($mmod) {
+        $i = 0;
+        foreach ($data as $k => $v) {
+            if ($i % $mmod != $mnum) {
+                unset($data[$k]);
+            }
+
+            $i ++;
+        }
+    }
 
     if ($request->get('asJson')) {
         $json = array();

@@ -1,0 +1,50 @@
+cnf = {
+    /*
+     * debug settings
+     */
+    "sql_logging": false,
+    "debug"      : false,
+
+    /*
+     * application settings
+     */
+    "version_string"     : "dev",
+    "memcached_enabled"  : true,
+
+    /*
+     * gw2spidy settings
+     */
+    "gw2spidy" : {
+        "tradingpost_url" : "https://tradingpost-live.ncplatform.net",
+        "gemexchange_url" : "https://exchange-live.ncplatform.net",
+        "auth_url"        : "https://account.guildwars2.com",
+
+        "api_secrets"     : {},
+
+        "admin_secret"    : null
+    },
+
+    /*
+     * database settings
+     */
+    "propel"     : {
+        "datasources" : {
+            "gw2spidy" : {
+                "adapter" : "mysql",
+                "connection" : {
+                    "dsn"      : "mysql:host=localhost;dbname=gw2spidy",
+                    "user"     : "root",
+                    "password" : "root"
+                }
+            },
+            "default" : "gw2spidy"
+        },
+        "log" : {
+            "type"  : "file",
+            "name"  : "/var/log/propel/gw2spidy.log",
+            "ident" : "propel-gw2spidy",
+            "level" : "7"
+        },
+        "generator_version" : "1.6.7-dev"
+    }
+};

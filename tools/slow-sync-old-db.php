@@ -8,7 +8,7 @@ use GW2Spidy\DB\ItemQuery;
 
 use GW2Spidy\WorkerQueue\ItemDBWorker;
 
-require dirname(__FILE__) . '/../config/config.inc.php';
+
 require dirname(__FILE__) . '/../autoload.php';
 
 $con = Propel::getConnection();

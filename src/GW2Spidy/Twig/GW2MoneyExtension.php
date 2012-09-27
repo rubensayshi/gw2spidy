@@ -2,7 +2,6 @@
 
 namespace GW2Spidy\Twig;
 
-use GW2Spidy\Application;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 

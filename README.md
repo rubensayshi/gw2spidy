@@ -20,41 +20,49 @@ If you need any help with setup of the project or using git(hub) then just conta
 If you want a dump of the database, since that's a lot easier to work with, then just contact me ;)
 
 
+Feedback / Help
+===============
+If you need help or have any feedback, you can contact me on gw2spidy@rubensayshi.com or join me on irc.gamesurge.net #gw2spidy Drakie
+
+
 Date/time data
 ==============
 As usual I didn't really think about timezones when I started this project, but now that multiple people forked the project and that I'm exporting data to some people it suddently matters ... 
-so I'll refactor the code soon to ensure all date/time data is stored as UTC ... atm all data is stored in the server's timezone, in my case Europe/Amsterdam!
+All data is stored in the server's timezone, however I've made sure that data going out (charts and API) are converted to UTC (and Highcharts converts it to the browsers timezone).
 
 
-Project setup
-=============
+Environment setup
+=================
 I'll provide you with some short setup instructions to make your life easier if you want to run the code for yourself or contribute.
 There's also a INSTALL file which contains a snippet I copy paste when I setup my VM, it should suffice ;-)
 
-Environment
------------
-### Linux
+Linux
+-----
 I run the project on a linux server and many of the requirements might not be available on windows and I have only (a tiny bit) of (negative) experience with windows.  
 If you want to run this on a windows machine, for development purposes, then I strongly sugest you just run a virtual machine with linux (virtualbox is free and works pretty nice).
 
-### PHP 5.3
+PHP 5.3
+-------
 You'll need PHP5.3 or higher for the namespace support etc.  
 You'll need the following extensions installed:  
  * php5-curl
  * php5-mysql
  * php5-memcache 
 
-### MySQL / Propel
+MySQL / Propel
+--------------
 I think 4.x will suffice, though I run 5.x.  
 On the PHP side of things I'm using PropelORM, thanks to that you could probally switch to PostgreSQL or MSSQL easily if you have to ;) 
 
-### Apache / Nginx / CLI
+Apache / Nginx / CLI
+--------------------
 The project will work fine with both Apache or Nginx (I actually run apache on my dev machine and nginx in production), you can find example configs in the `docs` folder of this project.  
 If you want to run the code that spiders through the trade market then you'll need command line access, if you just want to run the frontend code (and get a database dump from me) then you can live without ;)
 
 On a clean install you might need to enable apache rewrite with the command: `a2enmod rewrite` 
 
-### Memcache
+Memcache
+--------
 Using memcache daemon and PHP Memcache lib to easily cache some stuff in memory (item and type data).  
 However, everything will work fine without memcache, if you have memcache installed but don't want the project to use it then define MEMCACHED_DISABLED in your config.inc.php and set it to true.  
 You DO need the php5-memcache library, but it won't use memcache for anything ;)
@@ -62,48 +70,58 @@ You DO need the php5-memcache library, but it won't use memcache for anything ;)
 **Note** that you need `php5-memcache` not `php5-memcached`  
 **Note** that you need to have the memcache extension, even if you don't want to use it!  
 
-### Redis
+Redis
+-----
 The spidering code uses a custom brew queue and some custom brew system to make sure we don't do more then x amount of requests.  
 Both the queue and the slots are build using Redis (Predis library is already included in the `vendor` folder).  
 Previously I was using MySQL for this, but using MySQL was a lot heavier on load and using Redis it's also slightly faster!  
 
-### Silex / Twig / Predis
+Silex / Twig / Predis
+---------------------
 Just some PHP libs, already included in the `vendor` folder.
 
-### jQuery / Highcharts / Twitter Bootstrap
+jQuery / Highcharts / Twitter Bootstrap
+---------------------------------------
 Just some HTML / JS / CSS libs, already included in `webroot/assets/vendor` folder.
 
-### You will need a pear library Log
+You will need the pear library Log
+----------------------------------
 pear channel-discover pear.phing.info
 pear install phing/phing
 pear install Log
+
+
+Project Setup
+=============
 
 RequestSlots
 ------------
 ArenaNet is okay with me doing this, but nonetheless I want to limit the amount of requests I'm shooting at their website or at least spread them out a bit.  
 I came up with this concept of 'request slots', I setup an x amount of slots, claim one when I do a request and then give it a cooldown before I can use it again.  
-That way I can control the flood a bit better.
-
-This is done using Redis sorted sets.
+That way I can control the flood a bit better, from the technicaly side this is done using Redis sorted sets.
 
 WorkerQueue
 -----------
 All spidering work is done through the worker queue, the queue process also handles the previously mentioned request slots.
-
 This is also done using Redis sorted sets.
+
+Config / Env
+------------
+Think of a name that represents your machine / evn, eg *ruben-vm1* or *gw2spidy-prod-vps2*.  
+Copy the `config/cnf/example-custom-cnf.json` to `config/cnf/<your-chosen-name>.json` an edit it to set the values for *auth_email* and *auth_password*.
+
+Copy `config/cnf/example-env` to `config/cnf/env` and edit it, it contains a line for each config file it should load from `config/cnf/<name>.json`  
+Replace the first line (*ruben-vm1*) with the name you had previously chosen, leave the *dev* and *default*, those are other config files it should load too (or change *dev* to *prod* if you don't want debug mode.
+
+The config files you specify `config/cnf/env` will be loaded (in reverse order), overwriting the previous ones.
+For overloading other config values (like database login etc.), check `config/cnf/default.json` for all options which you could also se in your custom config file.
+
+### The `config/cnf/env` and any `config/cnf/*.json` other then `default.json`, `dev.json` and `prod.json` are on .gitignore so they won't be versioned controlled 
 
 Database Setup
 --------------
 In the `config` folder there's a `config/schema.sql` (generated by propel based of `config/schema.xml`, so database changes should be made to the XML and then generating the SQL file!).  
 You should create a database called 'gw2spidy' and load the `config/schema.sql` in.
-
-The `config/runtime-conf.xml` contains the database credentials, be careful that it's not on .gitignore, so don't commit your info!!  
-The `config/gw2spidy-conf.php` is generated from that XML, you should manually change the info in there for now, again be careful not to commit it!!  
-If you do by excident, backup your code and delete your whole repo from github xD - I'll come up with a better way soon...
-
-Spider Config Setup
--------------------
-Copy the `config/config.inc.example.php` to `config/config.inc.php` and change the account info, this file is on .gitignore so you can't commit it by excident ;)
 
 RequestSlots Setup
 ------------------

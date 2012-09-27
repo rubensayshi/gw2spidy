@@ -12,8 +12,7 @@ use \Memcache;
  *  when there are no connections (if we've disabled memcache), it's half decent workaround for now ... but would be better to check for it ...
  *
  */
-class CacheHandler extends Memcache implements MemcacheReplacement
-{
+class CacheHandler extends Memcache implements MemcacheReplacement {
     static protected $instances = array();
     protected $enabled = true;
     protected $baseKey = null;
@@ -37,7 +36,7 @@ class CacheHandler extends Memcache implements MemcacheReplacement
     }
 
     protected function __construct($key) {
-        $this->baseKey = $key;
+        $this->baseKey = substr(md5(getAppEnv()->getEnv(), $key), 0, 10);
     }
 
     protected function generateKey($key) {

@@ -1,0 +1,7 @@
+env
+*.json
+!example-custom-cnf.json
+!default.json
+!dev.json
+!prod.json
+!beta.json
