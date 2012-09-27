@@ -54,28 +54,56 @@ var gun = {
     }
 };
 
+var CraftEntry = function(item, count, parent, path) {
+    var self;
+    var item   = item;
+    var parent = parent || null;
+    var count  = count || 1;
+    var price  = count * item.price;
+    var path   = path || [];
+        path.push(item.name);
+    var boxid  = path.join("-");
 
-$(document).ready(function() {
-    var $container = null;
+    var craftprice = 0;
+    var children = [];
 
-    var init = function() {
-        $container = $("#recipe_container");
+    var $item;
+    var $craftcost;
 
-        var $list = $("<div />");
-        $list.append(renderEntry(gun));
+    var TP = 'TP', CRAFT = 'CRAFT';
 
-        $container.append($list);
-    }
+    var calculateCraftPrice = function() {
+        var craftprice = 0;
 
-    var renderEntry = function(item, count, path) {
-        var count = count || 1;
-        var price = count * item.price;
-        var path  = path || [];
-            path.push(item.name);
-        var boxid = path.join("-");
+        $.each(children, function(k, child) {
+            craftprice += child.price();
+        });
 
+        return craftprice;
+    };
+
+    var calculatePrice = function() {
+        var selectedPrice = 0;
+        if ($item.find('input:checked').val() == CRAFT) {
+            selectedPrice = calculateCraftPrice();
+        } else {
+            selectedPrice = price;
+        }
+
+        return selectedPrice;
+    };
+
+    var update = function() {
+        if ($craftcost) {
+            $craftcost.html(formatGW2Money(calculateCraftPrice()));
+        }
+
+        if (parent) parent.update();
+    };
+
+    var render = function() {
         var $entry     = $("<div class='well' />");
-        var $item      = $("<div />").addClass('clearfix');
+        $item          = $("<div />").addClass('clearfix');
         var $childList = $("<div />");
 
         var $title = $("<div />")
@@ -91,17 +119,18 @@ $(document).ready(function() {
         var $tpcost = $("<div />")
                         .html(" (" + formatGW2Money(item.price) + " x " + count + " = " + formatGW2Money(price) + ")")
                         .prepend($("<label> TP </label>").css('display', 'inline'))
-                        .prepend($("<input name='" + boxid + "' type='radio' />").click(pathChange));
+                        .prepend($('<input name="' + boxid + '" value="' + TP + '" type="radio" />').click(update));
 
         $price.append($tpcost);
 
         if (item.recipe) {
             var crafts     = Math.ceil(count / item.recipe.count);
-            var craftprice = 0;
-            var $craftcost = $("<div />")
+            var $ccwrapper = $("<div />")
                                 .prepend($("<label> CRAFT </label>").css('display', 'inline'))
-                                .prepend($("<input name='" + boxid + "' type='radio' />").click(pathChange))
-                                .append("(");
+                                .prepend($('<input name="' + boxid + '" value="' + CRAFT + '" type="radio" />').click(update));
+
+            $craftcost = $('<div style="display: inline-block;" />');
+            $ccwrapper.append("( ", $craftcost, " )");
 
             $.each(item.recipe.ingredients, function(k, ingredient) {
                 var item  = ingredient[0];
@@ -110,17 +139,20 @@ $(document).ready(function() {
 
                 craftprice += price;
 
-                $childList.append(renderEntry(item, count));
+                var entry = CraftEntry(item, count, self, path);
+                children.push(entry);
+
+                $childList.append(entry.render());
                 $craftcost.append(formatGW2Money(price) + " + ");
             });
 
-            $craftcost.append(" = " + formatGW2Money(craftprice) + ")");
+            $craftcost.append(" = " + formatGW2Money(craftprice));
 
-            $price.append($craftcost);
+            $price.append($ccwrapper);
         }
 
-        if (craftprice < price) {
-            $craftcost.find('input').attr('checked', true);
+        if (craftprice != 0 && craftprice < price) {
+            $ccwrapper.find('input').attr('checked', true);
         } else {
             $tpcost.find('input').attr('checked', true);
         }
@@ -131,8 +163,33 @@ $(document).ready(function() {
             $entry.append($childList);
         }
 
+        update();
+
         return $entry;
     }
+
+    self = {
+        render : render,
+        price  : calculatePrice,
+        update : update
+    };
+
+    return self;
+}
+
+$(document).ready(function() {
+    var $container = null;
+
+    var init = function() {
+        $container = $("#recipe_container");
+
+        var $list = $("<div />");
+        var entry = new CraftEntry(gun);
+
+        $list.append(entry.render());
+
+        $container.append($list);
+    };
 
     init();
 });
