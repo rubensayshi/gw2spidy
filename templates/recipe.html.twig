@@ -1,6 +1,179 @@
 {% extends "content_sidebar.html.twig" %}
 
 {% block content %}
+
+<script type="text/javascript">
+
+var ore = {
+    name : 'Ore',
+    price : 2
+};
+
+var tin = {
+    name : 'Tin',
+    price : 6
+};
+
+var log = {
+    name : 'Log',
+    price : 10
+};
+
+var ingot = {
+    name : 'Ingot',
+    price : 12,
+    recipe : {
+        count : 5,
+        ingredients : [
+            [ore, 10],
+            [tin, 1]
+        ]
+    }
+};
+
+var plank = {
+    name : 'Plank',
+    price : 13,
+    recipe : {
+        count : 1,
+        ingredients : [
+            [log, 2]
+        ]
+    }
+}
+
+var gun = {
+    name : 'Gun',
+    price : 500,
+    recipe : {
+        count : 1,
+        ingredients : [
+            [ingot, 10],
+            [plank, 3]
+        ]
+    }
+};
+
+
+$(document).ready(function() {
+    var $container = null;
+
+    var init = function() {
+        $container = $("#recipe_container");
+
+        var $list = $("<div />");
+        $list.append(renderEntry(gun));
+
+        $container.append($list);
+    }
+
+    var renderEntry = function(item, count, path) {
+        var count = count || 1;
+        var price = count * item.price;
+        var path  = path || [];
+            path.push(item.name);
+        var boxid = path.join("-");
+
+        var $entry     = $("<div class='well' />");
+        var $item      = $("<div />").addClass('clearfix');
+        var $childList = $("<div />");
+
+        var $title = $("<div />")
+                        .html(count + " x " + item.name)
+                        .css('float', 'left')
+                        .appendTo($item);
+
+        var $price = $("<div />")
+                        .css('float', 'left')
+                        .css('margin-left', '10px')
+                        .appendTo($item);
+
+        var $tpcost = $("<div />")
+                        .html(" (" + formatGW2Money(item.price) + " x " + count + " = " + formatGW2Money(price) + ")")
+                        .prepend($("<label> TP </label>").css('display', 'inline'))
+                        .prepend($("<input name='" + boxid + "' type='radio' />").click(pathChange));
+
+        $price.append($tpcost);
+
+        if (item.recipe) {
+            var crafts     = Math.ceil(count / item.recipe.count);
+            var craftprice = 0;
+            var $craftcost = $("<div />")
+                                .prepend($("<label> CRAFT </label>").css('display', 'inline'))
+                                .prepend($("<input name='" + boxid + "' type='radio' />").click(pathChange))
+                                .append("(");
+
+            $.each(item.recipe.ingredients, function(k, ingredient) {
+                var item  = ingredient[0];
+                var count = crafts * ingredient[1];
+                var price = item.price * count;
+
+                craftprice += price;
+
+                $childList.append(renderEntry(item, count));
+                $craftcost.append(formatGW2Money(price) + " + ");
+            });
+
+            $craftcost.append(" = " + formatGW2Money(craftprice) + ")");
+
+            $price.append($craftcost);
+        }
+
+        if (craftprice < price) {
+            $craftcost.find('input').attr('checked', true);
+        } else {
+            $tpcost.find('input').attr('checked', true);
+        }
+
+        $entry.append($item);
+        if ($childList.children().length) {
+            console.log($childList);
+            $entry.append($childList);
+        }
+
+        return $entry;
+    }
+
+    init();
+});
+
+var formatGW2Money = function(copper) {
+    var string = "";
+
+    var gold = Math.floor(copper / 10000);
+    if (gold) {
+        copper = copper % (gold * 10000);
+        string += gold + "g ";
+    }
+
+    var silver = Math.floor(copper / 100);
+    if (silver) {
+        copper = copper % (silver * 100);
+        if (silver) string += silver + "s ";
+    }
+
+    if (copper) {
+        // round by 2 digits
+        copper = Math.round(copper * 100) / 100;
+
+        string += copper + "c ";
+    }
+
+    string = string.replace(/( )+$/, '');
+
+    if (!string) {
+        return "0c";
+    } else {
+        return string;
+    }
+};
+
+</script>
+
+<div id="recipe_container"></div>
+
+{#
+
 <h1>Recipe: {{ recipe.name }}</h1>
 
 <h3>Result</h3>
@@ -24,6 +197,9 @@
             <div style="float: left;">{% include "item_snippet.html.twig" with {'item': ingredient.item, 'tag': 'div'} %}</div>
         </div>
         <h4>cost on TP: {{ ingredient.count }} x {{ ingredient.item.maxOfferUnitPrice | gw2money }} = {{ ingredientcost | gw2money }}</h4>
+        {% for item_recipe in ingredient.item.resultOfRecipes %}
+            {{ item_recipe.name }}
+        {% endfor %}
     {% endfor %}
 </p>
 
@@ -31,4 +207,6 @@
 <h3>Total cost: {{ totalcost | gw2money }}</h3>
 <h3>TP listing + transaction fee: {{ (resultprice * 0.2) | gw2money }}</h3>
 <h3>Profit: {{ ((resultprice * 0.8) - totalcost) | gw2money }}</h3>
+
+#}
 {% endblock %}
