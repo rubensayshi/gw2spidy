@@ -5,6 +5,8 @@
  *  this file contains all routing and the 'controllers' using lambda functions
  */
 
+use GW2Spidy\DB\RecipeQuery;
+
 use GW2Spidy\Twig\GenericHelpersExtension;
 
 use GW2Spidy\GW2SessionManager;
@@ -745,14 +747,14 @@ $app->get("/crafting/{discipline}/{page}", function(Request $request, $disciplin
  * ----------------------
  */
 $app->get("/recipe/{dataId}", function(Request $request, $dataId) use($app) {
-    $recipe = ItemQuery::create()->findPK($dataId);
+    $recipe = RecipeQuery::create()->findPK($dataId);
 
     if (!$recipe) {
         return $app->abort(404, "Page does not exist.");
     }
 
-    return $app['twig']->render('dump.html.twig', array(
-        'dump' => var_export($recipe, true),
+    return $app['twig']->render('recipe.html.twig', array(
+        'recipe' => $recipe,
     ));
 })
 ->assert('recipe', '-?\d+')

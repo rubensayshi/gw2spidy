@@ -1,0 +1,13 @@
+{% extends "content_sidebar.html.twig" %}
+
+{% block content %}
+<h2>Recipe: {{ recipe.name }}</h2>
+
+<h3>Result</h3>
+{% include "item_snippet.html.twig" with {'item': recipe.resultitem, 'tag': 'div'} %}
+
+
+{% for item in recipe.items %}
+    {{ item.name }}
+{% endfor %}
+{% endblock %}
