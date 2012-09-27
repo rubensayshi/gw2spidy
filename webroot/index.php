@@ -469,7 +469,7 @@ $app->get("/searchform", function() use($app) {
  */
 $app->get("/api/{format}/{secret}", function($format, $secret) use($app) {
     // check if the secret is in the configured allowed api_secrets
-    if (!(isset($GLOBALS['api_secrets']) && in_array($secret, $GLOBALS['api_secrets'])) && !$app['debug']) {
+    if (!in_array($secret, $app['gw2spidy']['api_secrets']) && !$app['debug']) {
         return $app->redirect("/");
     }
 
@@ -512,7 +512,7 @@ $app->get("/api/{format}/{secret}", function($format, $secret) use($app) {
  */
 $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $type, $format, $secret) use($app) {
     // check if the secret is in the configured allowed api_secrets
-    if (!(isset($GLOBALS['api_secrets']) && in_array($secret, $GLOBALS['api_secrets'])) && !$app['debug']) {
+    if (!in_array($secret, $app['gw2spidy']['api_secrets']) && !$app['debug']) {
         return $app->redirect("/");
     }
 
