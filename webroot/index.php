@@ -747,6 +747,10 @@ $app->get("/crafting/{discipline}/{page}", function(Request $request, $disciplin
  * ----------------------
  */
 $app->get("/recipe/{dataId}", function(Request $request, $dataId) use($app) {
+
+    // debug
+    return $app['twig']->render('recipe.html.twig');
+
     $recipe = RecipeQuery::create()->findPK($dataId);
 
     if (!$recipe) {
