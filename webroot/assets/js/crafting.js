@@ -1,25 +1,30 @@
 var ore = {
     name : 'Ore',
+    img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 2
 };
 
 var tin = {
     name : 'Tin',
+    img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 6
 };
 
 var log = {
     name : 'Log',
+    img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 10
 };
 
 var claw = {
     name : 'Claw',
+    img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 20
 };
 
 var ingot = {
     name : 'Ingot',
+    img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 12,
     recipe : {
         count : 5,
@@ -32,6 +37,7 @@ var ingot = {
 
 var plank = {
     name : 'Plank',
+    img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 13,
     recipe : {
         count : 1,
@@ -43,6 +49,7 @@ var plank = {
 
 var dowel = {
     name : 'Dowel',
+    img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 20,
     recipe : {
         count : 1,
@@ -54,6 +61,7 @@ var dowel = {
 
 var inscription = {
     name : 'Inscription',
+    img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 40,
     recipe : {
         count : 1,
@@ -66,6 +74,7 @@ var inscription = {
 
 var gun = {
     name : 'Gun',
+    img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 500,
     recipe : {
         count : 1,
