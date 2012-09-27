@@ -13,6 +13,11 @@ var log = {
     price : 10
 };
 
+var claw = {
+    name : 'Claw',
+    price : 20
+};
+
 var ingot = {
     name : 'Ingot',
     price : 12,
@@ -47,12 +52,6 @@ var dowel = {
     }
 };
 
-var claw = {
-    name : 'Claw',
-    price : 20
-}
-
-
 var inscription = {
     name : 'Inscription',
     price : 40,
@@ -63,7 +62,7 @@ var inscription = {
             [claw, 4]
         ]
     }        
-}
+};
 
 var gun = {
     name : 'Gun',
@@ -79,8 +78,8 @@ var gun = {
 };
 
 var CraftEntry = function(item, count, parent, path) {
-    var self;
-    var item   = item;
+    var self   = this;   
+    var item   = item;    
     var parent = parent || null;
     var count  = count || 1;
     var price  = count * item.price;
@@ -122,7 +121,9 @@ var CraftEntry = function(item, count, parent, path) {
             $craftcost.html(formatGW2Money(calculateCraftPrice()));
         }
 
-        if (parent) parent.update();
+        if (parent) {
+            parent.update();
+        }
     };
 
     var render = function() {
@@ -163,7 +164,7 @@ var CraftEntry = function(item, count, parent, path) {
 
                 craftprice += price;
 
-                var entry = CraftEntry(item, count, self, path);
+                var entry = new CraftEntry(item, count, self, path);
                 children.push(entry);
 
                 $childList.append(entry.render());
@@ -182,7 +183,6 @@ var CraftEntry = function(item, count, parent, path) {
 
         $entry.append($item);
         if ($childList.children().length) {
-            console.log($childList);
             $entry.append($childList);
         }
 
@@ -190,14 +190,13 @@ var CraftEntry = function(item, count, parent, path) {
 
         return $entry;
     };
-
-    self = {
-        render : render,
-        price  : calculatePrice,
-        update : update
-    };
-
-    return self;
+    
+    /*
+     * expose some methods
+     */    
+    this.render = render;
+    this.price  = calculatePrice;
+    this.update = update;
 };
 
 $(document).ready(function() {
