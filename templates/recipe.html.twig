@@ -5,9 +5,7 @@
 <script type="text/javascript" src="{{ versioned_asset('/assets/js/crafting.js') }}"></script>
 
 <style>
-    .recipe-wrapper {
-        max-width: 700px;
-    }
+    .recipe-wrapper {}
 
     .recipe-row {
     }
@@ -94,21 +92,24 @@
                     	</div>
                         </div><div class="children children-disabled">
                             <div class="recipe-row">
-                                <div class="item-row clearfix"><div class="item">
-                                    <img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-common">Plank</a>
+                                <div class="item-row clearfix">
+                                    <div class="item">
+                                        <img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-common">Plank</a>
+                                    </div>
+                                    <div class="options">
+                                        <span class="label label-important"><input type="radio" /> BUY ( {{ 12 | gw2money }} )</span>
+                                        <span class="label label-success"><input type="radio" checked="true" /> CRAFT ( {{ 14 | gw2money }} )</span>
+                                    </div>
                                 </div>
-                                <div class="options">
-                                    <span class="label label-important"><input type="radio" /> BUY ( {{ 12 | gw2money }} )</span>
-                                    <span class="label label-success"><input type="radio" checked="true" /> CRAFT ( {{ 14 | gw2money }} )</span>
-                                </div>
-                                </div><div class="children">
+                                <div class="children">
                                     <div class="recipe-row">
-                                        <div class="item-row clearfix"><div class="item">
-                                            <img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-common">Log</a>
-                                        </div>
-                                        <div class="options">
-                                            <span class="label label-inverse label-not-craftable"><input type="radio" checked="true" disabled="true" /> NOT CRAFTABLE ( {{ 19 | gw2money }} ) </span>
-                                        </div>
+                                        <div class="item-row clearfix">
+                                            <div class="item">
+                                                <img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-common">Log</a>
+                                            </div>
+                                            <div class="options">
+                                                <span class="label label-inverse label-not-craftable"><input type="radio" checked="true" disabled="true" /> NOT CRAFTABLE ( {{ 19 | gw2money }} ) </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
