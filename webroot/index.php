@@ -599,8 +599,8 @@ $app->get("/admin/session", function(Request $request) use($app) {
  * ----------------------
  */
 $app->post("/admin/session", function(Request $request) use($app) {
-    $secret = $request->get('admin_secret');
-    if (!$secret || !defined('ADMIN_SECRET') || $secret !== ADMIN_SECRET) {
+    $secret = trim($request->get('admin_secret', ''));
+    if (!$secret || !getAppConfig('gw2spidy.admin_secret') || $secret !== getAppConfig('gw2spidy.admin_secret')) {
         return '';
     }
 
