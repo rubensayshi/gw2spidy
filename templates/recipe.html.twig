@@ -28,11 +28,13 @@
         float: left;
         height: 24px;
         width: 200px;
+        font-weight: bold;
     }
 
     .recipe-row .options {
         float: left;
         height: 24px;
+        width: 284px;
     }
 
     .recipe-row .options span {
@@ -55,6 +57,10 @@
         width: 264px !important;
         opacity: 0.5;
     }
+
+     .children-disabled {
+         opacity: 0.5;
+     }
 
 </style>
 
@@ -86,7 +92,7 @@
                     		<span class="label label-success"><input type="radio" checked="true" /> BUY ( {{ 234 | gw2money }} )</span>
                     		<span class="label label-important"><input type="radio" /> CRAFT {{ 123 | gw2money }} )</span>
                     	</div>
-                        </div><div class="children">
+                        </div><div class="children children-disabled">
                             <div class="recipe-row">
                                 <div class="item-row clearfix"><div class="item">
                                     <img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-common">Plank</a>
