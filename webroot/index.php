@@ -578,6 +578,54 @@ $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $
 ->convert('dataId', $toInt)
 ->bind('api_item');
 
+
+/**
+ * ----------------------
+ *  route /api/price
+ * ----------------------
+ */
+$app->get("/api/price/{format}/{secret}", function(Request $request, $format, $secret) use($app) {
+    // check if the secret is in the configured allowed api_secrets
+    if (!in_array($secret, $app['gw2spidy']['api_secrets']) && !$app['debug']) {
+        return $app->redirect("/");
+    }
+
+    if (!($search = $request->get('search'))) {
+        return $app->redirect("/");
+    }
+
+    $item = ItemQuery::create()->filterByName($search)->findOne();
+
+    if (!$item) {
+        return $app->abort(404, "Item does not exist.");
+    }
+
+    if ($format == 'csv') {
+        header('Content-type: text/csv');
+        header('Content-disposition: attachment; filename=item_price_' . $item->getDataId() . '_' . date('Ymd-His') . '.csv');
+
+        ob_start();
+
+        echo implode(",", array('min_sale_unit_price', 'max_offer_unit_price')) . "\n";
+        echo implode(",", array($item->getMinSaleUnitPrice(), $item->getMaxOfferUnitPrice())) . "\n";
+
+        return ob_get_clean();
+    } else if ($format == 'json') {
+        header('Content-type: application/json');
+        header('Content-disposition: attachment; filename=item_price' . $item->getDataId() . '_' . date('Ymd-His') . '.json');
+
+        $json = array(
+            'min_sale_unit_price'  => $item->getMinSaleUnitPrice(),
+            'max_offer_unit_price' => $item->getMaxOfferUnitPrice(),
+        );
+
+        return json_encode($json);
+    }
+})
+->assert('format', 'csv|json')
+->assert('type',   'sell|buy')
+->bind('api_price');
+
 /**
  * ----------------------
  *  route /admin/session
