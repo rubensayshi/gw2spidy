@@ -683,13 +683,13 @@ $app->get("/profit", function(Request $request) use($app) {
         max_offer_unit_price,
         sale_availability,
         offer_availability,
-        ((min_sale_unit_price*0.75 - max_offer_unit_price) / max_offer_unit_price) * 100 as margin
+        ((min_sale_unit_price*0.85 - max_offer_unit_price) / max_offer_unit_price) * 100 as margin
     FROM item
     WHERE offer_availability > 1
     AND   sale_availability > 5
     AND   max_offer_unit_price > 0
-    AND   ((min_sale_unit_price*0.75 - max_offer_unit_price) / max_offer_unit_price) * 100 < {$max_margin}
-    AND   (min_sale_unit_price*0.75 - max_offer_unit_price) > {$margin}
+    AND   ((min_sale_unit_price*0.85 - max_offer_unit_price) / max_offer_unit_price) * 100 < {$max_margin}
+    AND   (min_sale_unit_price*0.85 - max_offer_unit_price) > {$margin}
     {$where}
     ORDER BY margin DESC
     LIMIT {$offset}, {$limit}");
