@@ -10,8 +10,17 @@
     }
 
     .recipe-row {
-        margin-bottom: 5px;
+    }
 
+    .recipe-row .item-row {
+        border: 1px solid black;
+        -webkit-border-radius: 3px;
+           -moz-border-radius: 3px;
+                border-radius: 3px;
+
+        margin-bottom: 5px;
+        padding: 1px;
+        height: 24px;
     }
 
     .recipe-row .item {
@@ -26,8 +35,9 @@
 
     .recipe-row .options span {
         display: inline-block;
-        padding: 1px 10px;
+        padding: 3px 10px 2px;
         width: 120px;
+        height: 19px;
     }
 
     .recipe-row .options span input {
@@ -43,66 +53,87 @@
 
 <div class="recipe-wrapper">
     <div class="recipe-row">
-    	<div class="item">
+        <div class="icon"><i class="icon-arrow-right"></i></div>
+    	<div class="item-row clearfix"><div class="item">
     		<img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-rare">Gun</a>
     	</div>
     	<div class="options">
-    		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> TP ( {{ 237436 | gw2money }} )</span>
-    		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> CRAFT ( {{ ((random(12)+1) * 10) | gw2money }} )</span>
+    		<span class="label label-important"><input type="radio" /> TP ( {{ 237436 | gw2money }} )</span>
+    		<span class="label label-success"><input type="radio" /> CRAFT ( {{ 3266  | gw2money }} )</span>
     	</div>
-    	<div class="children">
+    	</div><div class="children">
     		<div class="recipe-row">
-            	<div class="item">
+            	<div class="item-row clearfix"><div class="item">
             		<img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-exotic">Inscription</a>
             	</div>
             	<div class="options">
-            		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> TP ( {{ ((random(12)+1) * 10) | gw2money }} )</span>
-            		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> CRAFT ( {{ ((random(12)+1) * 10) | gw2money }} )</span>
+            		<span class="label label-important"><input type="radio" /> TP ( {{ 700 | gw2money }} )</span>
+            		<span class="label label-success"><input type="radio" /> CRAFT ( {{ 665 | gw2money }} )</span>
             	</div>
-            	<div class="children">
+            	</div><div class="children">
             		<div class="recipe-row">
-                    	<div class="item">
+                    	<div class="item-row clearfix"><div class="item">
                     		<img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-fine">Dowel</a>
                     	</div>
                     	<div class="options">
-                    		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> TP ( {{ ((random(12)+1) * 10) | gw2money }} )</span>
-                    		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> CRAFT ( {{ ((random(12)+1) * 10) | gw2money }} )</span>
+                    		<span class="label label-success"><input type="radio" /> TP ( {{ 234 | gw2money }} )</span>
+                    		<span class="label label-important"><input type="radio" /> CRAFT {{ 123 | gw2money }} )</span>
                     	</div>
+                        </div><div class="children">
+                            <div class="recipe-row">
+                                <div class="item-row clearfix"><div class="item">
+                                    <img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-common">Plank</a>
+                                </div>
+                                <div class="options">
+                                    <span class="label label-important"><input type="radio" /> TP ( {{ 12 | gw2money }} )</span>
+                                    <span class="label label-success"><input type="radio" /> CRAFT ( {{ 14 | gw2money }} )</span>
+                                </div>
+                                </div><div class="children">
+                                    <div class="recipe-row">
+                                        <div class="item-row clearfix"><div class="item">
+                                            <img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-common">Log</a>
+                                        </div>
+                                        <div class="options">
+                                            <span class="label label-success"><input type="radio" /> TP ( {{ 7 | gw2money }} )</span>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
             		</div>
             		<div class="recipe-row">
-                    	<div class="item">
+                    	<div class="item-row clearfix"><div class="item">
                     		<img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-masterwork">Claw</a>
                     	</div>
                     	<div class="options">
-                    		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> TP ( {{ ((random(12)+1) * 10) | gw2money }} )</span>
-                    		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> CRAFT ( {{ ((random(12)+1) * 10) | gw2money }} )</span>
+                    		<span class="label label-success"><input type="radio" /> TP ( {{ 19 | gw2money }} )</span>
+                    		<span class="label label-important"><input type="radio" /> CRAFT ( {{ 23 | gw2money }} )</span>
                     	</div>
+                        </div>
             		</div>
             	</div>
         	</div>
-    		<div class="recipe-row">
-            	<div class="item">
-            		<img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-common">Plank</a>
-            	</div>
-            	<div class="options">
-            		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> TP ( {{ ((random(12)+1) * 10) | gw2money }} )</span>
-            		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> CRAFT ( {{ ((random(12)+1) * 10) | gw2money }} )</span>
-            	</div>
-            	<div class="children">
-            		<div class="recipe-row">
-                    	<div class="item">
-                    		<img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-common">Log</a>
-                    	</div>
-                    	<div class="options">
-                    		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> TP ( {{ ((random(12)+1) * 10) | gw2money }} )</span>
-                    		<span class="label {{random(1) ? 'label-success' : 'label-important' }}"><input type="radio" /> CRAFT ( {{ ((random(12)+1) * 10) | gw2money }} )</span>
-                    	</div>
-                    	<div class="children">
-
-                    	</div>
-                	</div>
-            	</div>
-        	</div>
+            <div class="recipe-row">
+                <div class="item-row clearfix"><div class="item">
+                    <img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-common">Plank</a>
+                </div>
+                <div class="options">
+                    <span class="label label-important"><input type="radio" /> TP ( {{ 12 | gw2money }} )</span>
+                    <span class="label label-success"><input type="radio" /> CRAFT ( {{ 14 | gw2money }} )</span>
+                </div>
+                </div><div class="children">
+                    <div class="recipe-row">
+                        <div class="item-row clearfix"><div class="item">
+                            <img width="24" src="https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png" /> <a href="" class="rarity-common">Log</a>
+                        </div>
+                        <div class="options">
+                            <span class="label label-success"><input type="radio" /> TP ( {{ 7 | gw2money }} )</span>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
     	</div>
     </div>
 </div>
