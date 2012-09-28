@@ -1,29 +1,39 @@
 var ore = {
     name : 'Ore',
+    href : '#click',
+    rarity : 'fine',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 2
 };
 
 var tin = {
     name : 'Tin',
+    href : '#click',
+    rarity : 'fine',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 6
 };
 
 var log = {
     name : 'Log',
+    href : '#click',
+    rarity : 'fine',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 10
 };
 
 var claw = {
     name : 'Claw',
+    href : '#click',
+    rarity : 'fine',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 20
 };
 
 var ingot = {
     name : 'Ingot',
+    href : '#click',
+    rarity : 'fine',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 12,
     recipe : {
@@ -37,6 +47,8 @@ var ingot = {
 
 var plank = {
     name : 'Plank',
+    href : '#click',
+    rarity : 'fine',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 13,
     recipe : {
@@ -49,6 +61,8 @@ var plank = {
 
 var dowel = {
     name : 'Dowel',
+    href : '#click',
+    rarity : 'fine',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 20,
     recipe : {
@@ -61,6 +75,8 @@ var dowel = {
 
 var inscription = {
     name : 'Inscription',
+    href : '#click',
+    rarity : 'fine',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 40,
     recipe : {
@@ -69,11 +85,13 @@ var inscription = {
             [dowel, 1],
             [claw, 4]
         ]
-    }        
+    }
 };
 
 var gun = {
     name : 'Gun',
+    href : '#click',
+    rarity : 'fine',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 500,
     recipe : {
@@ -87,8 +105,8 @@ var gun = {
 };
 
 var CraftEntry = function(item, count, parent, path) {
-    var self   = this;   
-    var item   = item;    
+    var self   = this;
+    var item   = item;
     var parent = parent || null;
     var count  = count || 1;
     var price  = count * item.price;
@@ -101,6 +119,7 @@ var CraftEntry = function(item, count, parent, path) {
 
     var $item;
     var $craftcost;
+    var $childList;
 
     var TP = 'TP', CRAFT = 'CRAFT';
 
@@ -130,41 +149,54 @@ var CraftEntry = function(item, count, parent, path) {
             $craftcost.html(formatGW2Money(calculateCraftPrice()));
         }
 
+        if ($item.find('input:checked').val() == TP) {
+            $childList.addClass('children-disabled');
+        } else {
+            $childList.removeClass('children-disabled');
+        }
+
         if (parent) {
             parent.update();
         }
     };
 
     var render = function() {
-        var $entry     = $("<div class='well' />");
-        $item          = $("<div />").addClass('clearfix');
-        var $childList = $("<div />");
+        var $entry     = $('<div class="recipe-row">');
+        $item          = $('<div class="item-row clearfix">');
+        $childList     = $('<div class="children" />');
 
-        var $title = $("<div />")
-                        .html(count + " x " + item.name)
-                        .css('float', 'left')
+        var $title = $('<div class="item">')
+                        .html('<img width="24" src="'+item.img+'" /> '+count+'x <a href="'+item.href+'" class="rarity-'+item.rarity+'">'+item.name+'</a>')
                         .appendTo($item);
 
-        var $price = $("<div />")
-                        .css('float', 'left')
-                        .css('margin-left', '10px')
+        var $price = $('<div class="options">')
                         .appendTo($item);
 
-        var $tpcost = $("<div />")
-                        .html(" ( " + formatGW2Money(item.price) + " x " + count + " = " + formatGW2Money(price) + " )")
-                        .prepend($("<label> TP </label>").css('display', 'inline'))
-                        .prepend($('<input name="' + boxid + '" value="' + TP + '" type="radio" />').click(update));
+        /*
+        <span class="label label-important"><input type="radio" /> BUY ( {{ 237436 | gw2money }} )</span>
+        <span class="label label-success"><input type="radio" checked="true" /> CRAFT ( {{ 3266  | gw2money }} )</span>
+       */
+
+        var renderOption = function(text, price, val, checked, optimal) {
+            var $span  = $('<span class="label" />'),
+                $label = $('<label>&nbsp;<span class="label-text">' + text + '</span> ( <span class="price">' + formatGW2Money(price) + '</span> ) </label>'),
+                $input = $('<input name="' + boxid + '" value="' + val + '" type="radio" />');
+
+            $span.append($input).append($label);
+
+            $span.click(update);
+
+            return $span;
+        };
+
+        var $tpcost = renderOption('BUY', price, TP);
 
         $price.append($tpcost);
 
         if (item.recipe) {
             var crafts     = Math.ceil(count / item.recipe.count);
-            var $ccwrapper = $("<div />")
-                                .prepend($("<label> CRAFT </label>").css('display', 'inline'))
-                                .prepend($('<input name="' + boxid + '" value="' + CRAFT + '" type="radio" />').click(update));
-
-            $craftcost = $('<div style="display: inline-block;" />');
-            $ccwrapper.append("( ", $craftcost, " )");
+            var $ccwrapper = renderOption('CRAFT', 0, CRAFT);
+            $craftcost     = $ccwrapper.find('span.price');
 
             $.each(item.recipe.ingredients, function(k, ingredient) {
                 var item  = ingredient[0];
@@ -179,15 +211,22 @@ var CraftEntry = function(item, count, parent, path) {
                 $childList.append(entry.render());
             });
 
-            $craftcost.append(" = " + formatGW2Money(craftprice));
-
             $price.append($ccwrapper);
         }
 
-        if (craftprice != 0 && craftprice < price) {
-            $ccwrapper.find('input').attr('checked', true);
+        if (!$ccwrapper) {
+            $tpcost.addClass('label-not-craftable');
+            $tpcost.find('label .label-text').html('NOT CRAFTABLE');
         } else {
-            $tpcost.find('input').attr('checked', true);
+            if (craftprice != 0 && craftprice < price) {
+                $ccwrapper.find('input').attr('checked', true);
+                $ccwrapper.addClass('label-success');
+                $tpcost.addClass('label-important');
+            } else {
+                $tpcost.find('input').attr('checked', true);
+                $ccwrapper.addClass('label-important');
+                $tpcost.addClass('label-success');
+            }
         }
 
         $entry.append($item);
@@ -199,10 +238,10 @@ var CraftEntry = function(item, count, parent, path) {
 
         return $entry;
     };
-    
+
     /*
      * expose some methods
-     */    
+     */
     this.render = render;
     this.price  = calculatePrice;
     this.update = update;
