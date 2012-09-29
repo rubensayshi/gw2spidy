@@ -319,10 +319,6 @@ var CraftEntry = function(item, count, parent, path) {
     this.update      = update;
 };
 
-$(document).ready(function() {
-    new Crafting($("#recipe_container"), $("#recipe_summary"), $("#recipe_summary_total"), gun);
-});
-
 var formatGW2Money = function(copper) {
     var string = "";
 
