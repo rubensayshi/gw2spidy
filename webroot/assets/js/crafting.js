@@ -1,4 +1,5 @@
 var ore = {
+    id : 1,
     name : 'Ore',
     href : '#click',
     rarity : 'common',
@@ -7,6 +8,7 @@ var ore = {
 };
 
 var tin = {
+    id : 2,
     name : 'Tin',
     href : '#click',
     rarity : 'common',
@@ -15,6 +17,7 @@ var tin = {
 };
 
 var log = {
+    id : 3,
     name : 'Log',
     href : '#click',
     rarity : 'common',
@@ -23,6 +26,7 @@ var log = {
 };
 
 var claw = {
+    id : 4,
     name : 'Claw',
     href : '#click',
     rarity : 'fine',
@@ -31,6 +35,7 @@ var claw = {
 };
 
 var ingot = {
+    id : 5,
     name : 'Ingot',
     href : '#click',
     rarity : 'masterwork',
@@ -46,6 +51,7 @@ var ingot = {
 };
 
 var plank = {
+    id : 6,
     name : 'Plank',
     href : '#click',
     rarity : 'fine',
@@ -60,6 +66,7 @@ var plank = {
 };
 
 var dowel = {
+    id : 7,
     name : 'Dowel',
     href : '#click',
     rarity : 'rare',
@@ -74,6 +81,7 @@ var dowel = {
 };
 
 var inscription = {
+    id : 8,
     name : 'Inscription',
     href : '#click',
     rarity : 'exotic',
@@ -89,6 +97,7 @@ var inscription = {
 };
 
 var gun = {
+    id : 9,
     name : 'Gun',
     href : '#click',
     rarity : 'legendary',
@@ -102,6 +111,55 @@ var gun = {
             [plank, 3]
         ]
     }
+};
+
+var Crafting = function(container, summary, total, item) {
+    var self       = this;
+    var topentry   = null; 
+    var $container = $(container);
+    var $summary   = $(summary);
+    var $total     = $(total);
+    
+    var update = function() {
+        $summary.html("");
+        
+        ingredients = {};
+        $.each(topentry.ingredients(), function(k, ingredient) {
+            if (ingredients[ingredient[1].id] == undefined) {
+                ingredients[ingredient[1].id] = ingredient;
+            } else {
+                ingredients[ingredient[1].id][0] += ingredient[0];
+            }
+        });
+        
+        var total = 0;
+        $.each(ingredients, function(id, ingredient) {            
+            var $row = $("<tr />");
+
+            $row.append($("<td />").html(ingredient[0]));
+            $row.append($("<td />").html(ingredient[1].name).css('font-weight', 'bold').addClass('rarity-' + ingredient[1].rarity));
+            $row.append($("<td />").html(formatGW2Money(ingredient[1].price)));
+            $row.append($("<td />").html(formatGW2Money(ingredient[1].price * ingredient[0])));
+            
+            total += (ingredient[1].price * ingredient[0]);
+            
+            $summary.append($row);
+        });
+        
+        $total.html(formatGW2Money(total));
+    };
+    
+    var init = function() {
+        topentry = new CraftEntry(item, 1, self);
+                
+        $container.append(topentry.render());
+        
+        update();
+    };
+    
+    this.update = update;
+    
+    init();
 };
 
 var CraftEntry = function(item, count, parent, path) {
@@ -123,7 +181,7 @@ var CraftEntry = function(item, count, parent, path) {
 
     var TP = 'TP', CRAFT = 'CRAFT';
 
-    var calculateCraftPrice = function() {
+    function calculateCraftPrice() {
         var craftprice = 0;
 
         $.each(children, function(k, child) {
@@ -133,7 +191,7 @@ var CraftEntry = function(item, count, parent, path) {
         return craftprice;
     };
 
-    var calculatePrice = function() {
+    function calculatePrice() {
         var selectedPrice = 0;
         if ($item.find('input:checked').val() == CRAFT) {
             selectedPrice = calculateCraftPrice();
@@ -144,23 +202,39 @@ var CraftEntry = function(item, count, parent, path) {
         return selectedPrice;
     };
 
-    var update = function() {
+    function update(propegate) {
         if ($craftcost) {
             $craftcost.html(formatGW2Money(calculateCraftPrice()));
         }
-
+        
         if ($item.find('input:checked').val() == TP) {
             $childList.addClass('children-disabled');
         } else {
             $childList.removeClass('children-disabled');
         }
-
-        if (parent) {
-            parent.update();
+        
+        if (propegate && parent) {
+            parent.update(true);
         }
     };
 
-    var render = function() {
+    function getIngredients() {
+        var ingredients = [];
+        
+        if ($item.find('input:checked').val() == TP) {
+            ingredients.push([count, item]);
+        } else {
+            $.each(children, function(k, entry) {
+                $.each(entry.ingredients(), function(k, ingredient) {
+                    ingredients.push(ingredient);                    
+                });
+            });
+        }
+        
+        return ingredients;        
+    };
+    
+    function render() {
         var $entry     = $('<div class="recipe-row">');
         $item          = $('<div class="item-row clearfix">');
         $childList     = $('<div class="children" />');
@@ -179,7 +253,7 @@ var CraftEntry = function(item, count, parent, path) {
 
             $span.append($input).append($label);
 
-            $span.click(update);
+            $span.click(function() { update(true); });
 
             return $span;
         };
@@ -230,8 +304,8 @@ var CraftEntry = function(item, count, parent, path) {
         if ($childList.children().length) {
             $entry.append($childList);
         }
-
-        update();
+        
+        update(false);
 
         return $entry;
     };
@@ -239,26 +313,14 @@ var CraftEntry = function(item, count, parent, path) {
     /*
      * expose some methods
      */
-    this.render = render;
-    this.price  = calculatePrice;
-    this.update = update;
+    this.render      = render;
+    this.ingredients = getIngredients;
+    this.price       = calculatePrice;
+    this.update      = update;
 };
 
 $(document).ready(function() {
-    var $container = null;
-
-    var init = function() {
-        $container = $("#recipe_container");
-
-        var $list = $("<div />");
-        var entry = new CraftEntry(gun);
-
-        $list.append(entry.render());
-
-        $container.append($list);
-    };
-
-    init();
+    new Crafting($("#recipe_container"), $("#recipe_summary"), $("#recipe_summary_total"), gun);
 });
 
 var formatGW2Money = function(copper) {
