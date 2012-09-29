@@ -150,7 +150,7 @@ var Crafting = function(container, summary, total, item) {
     };
     
     var init = function() {
-        topentry = new CraftEntry(item, 1, self);
+        topentry = new CraftEntry(item, 1, self, [], false);
                 
         $container.append(topentry.render());
         
@@ -162,13 +162,14 @@ var Crafting = function(container, summary, total, item) {
     init();
 };
 
-var CraftEntry = function(item, count, parent, path) {
+var CraftEntry = function(item, count, parent, path, last) {
     var self   = this;
     var item   = item;
     var parent = parent || null;
     var count  = count || 1;
     var price  = count * item.price;
-    var path   = path || [];
+    var last   = last || false;
+    var path   = path ? path.slice() : [];
         path.push(item.name);
     var boxid  = path.join("-");
 
@@ -238,6 +239,9 @@ var CraftEntry = function(item, count, parent, path) {
         var $entry     = $('<div class="recipe-row">');
         $item          = $('<div class="item-row clearfix">');
         $childList     = $('<div class="children" />');
+        
+        var $struct = $('<div style="position: absolute; left: 0px;"></div>')
+                        .appendTo($item);
 
         var $title = $('<div class="item" title="' + item.name + '">')
                         .html('<img width="24" src="'+item.img+'" /> '+count+'x <a href="'+item.href+'" class="rarity-'+item.rarity+'">'+item.name+'</a>')
@@ -268,13 +272,13 @@ var CraftEntry = function(item, count, parent, path) {
             $craftcost     = $ccwrapper.find('span.price');
 
             $.each(item.recipe.ingredients, function(k, ingredient) {
-                var item  = ingredient[0];
+                var ingre = ingredient[0];
                 var count = crafts * ingredient[1];
-                var price = item.price * count;
+                var price = ingre.price * count;
 
                 craftprice += price;
-
-                var entry = new CraftEntry(item, count, self, path);
+                
+                var entry = new CraftEntry(ingre, count, self, path, (k == item.recipe.ingredients.length-1));
                 children.push(entry);
 
                 $childList.append(entry.render());
@@ -299,6 +303,35 @@ var CraftEntry = function(item, count, parent, path) {
                 $tpcost.addClass('label-success');
             }
         }
+        
+        $struct.css('left', -1 * ((path.length-1) * 25));
+        
+        var step = self;
+        for (var i = 1; i < path.length; i++) {
+            var icon = '';
+            
+            // deepest step, either K or L
+            if (step == self) {
+                if (step.last) {
+                    icon = 'L';
+                } else {
+                    icon = 'K';
+                }
+            } else {            
+                if (step.last) {
+                    icon = '';
+                } else {
+                    icon = '|'; 
+                }
+            }
+            
+            $struct.prepend($('<div style="width: 25px; height: 25px; float: left;" />').html(icon));
+                                
+            step = step.parent;
+        }
+        
+        $.each(path, function(k, p) {         
+        });
 
         $entry.append($item);
         if ($childList.children().length) {
@@ -313,6 +346,8 @@ var CraftEntry = function(item, count, parent, path) {
     /*
      * expose some methods
      */
+    this.parent      = parent;
+    this.last        = last;
     this.render      = render;
     this.ingredients = getIngredients;
     this.price       = calculatePrice;
