@@ -308,24 +308,30 @@ var CraftEntry = function(item, count, parent, path, last) {
         
         var step = self;
         for (var i = 1; i < path.length; i++) {
-            var icon = '';
+            var icon     = 'empty';
+            var icontext = '';
             
             // deepest step, either K or L
             if (step == self) {
                 if (step.last) {
-                    icon = 'L';
+                    icon     = 'last';
+                    icontext = '└';
                 } else {
-                    icon = 'K';
+                    icon     = 'split';
+                    icontext = '├';
                 }
             } else {            
                 if (step.last) {
-                    icon = '';
+                    icon     = 'empty';
+                    icontext = '';
                 } else {
-                    icon = '|'; 
+                    icon     = 'cont'; 
+                    icontext = '│';
                 }
             }
             
-            $struct.prepend($('<div style="width: 25px; height: 25px; float: left;" />').html(icon));
+            
+            $struct.prepend($('<div class="folder-structure-icon folder-structure-icon-'+icon+'" />').html(icontext));
                                 
             step = step.parent;
         }
