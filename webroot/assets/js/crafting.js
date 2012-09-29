@@ -1,7 +1,7 @@
 var ore = {
     name : 'Ore',
     href : '#click',
-    rarity : 'fine',
+    rarity : 'common',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 2
 };
@@ -9,7 +9,7 @@ var ore = {
 var tin = {
     name : 'Tin',
     href : '#click',
-    rarity : 'fine',
+    rarity : 'common',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 6
 };
@@ -17,7 +17,7 @@ var tin = {
 var log = {
     name : 'Log',
     href : '#click',
-    rarity : 'fine',
+    rarity : 'common',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 10
 };
@@ -33,7 +33,7 @@ var claw = {
 var ingot = {
     name : 'Ingot',
     href : '#click',
-    rarity : 'fine',
+    rarity : 'masterwork',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 12,
     recipe : {
@@ -62,7 +62,7 @@ var plank = {
 var dowel = {
     name : 'Dowel',
     href : '#click',
-    rarity : 'fine',
+    rarity : 'rare',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 20,
     recipe : {
@@ -76,7 +76,7 @@ var dowel = {
 var inscription = {
     name : 'Inscription',
     href : '#click',
-    rarity : 'fine',
+    rarity : 'exotic',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 40,
     recipe : {
@@ -91,7 +91,7 @@ var inscription = {
 var gun = {
     name : 'Gun',
     href : '#click',
-    rarity : 'fine',
+    rarity : 'legendary',
     img : 'https://dfach8bufmqqv.cloudfront.net/gw2/img/content/675da461.png',
     price : 500,
     recipe : {
@@ -172,11 +172,6 @@ var CraftEntry = function(item, count, parent, path) {
         var $price = $('<div class="options">')
                         .appendTo($item);
 
-        /*
-        <span class="label label-important"><input type="radio" /> BUY ( {{ 237436 | gw2money }} )</span>
-        <span class="label label-success"><input type="radio" checked="true" /> CRAFT ( {{ 3266  | gw2money }} )</span>
-       */
-
         var renderOption = function(text, price, val, checked, optimal) {
             var $span  = $('<span class="label" />'),
                 $label = $('<label>&nbsp;<span class="label-text">' + text + '</span> ( <span class="price">' + formatGW2Money(price) + '</span> ) </label>'),
@@ -215,8 +210,10 @@ var CraftEntry = function(item, count, parent, path) {
         }
 
         if (!$ccwrapper) {
-            $tpcost.addClass('label-not-craftable');
+            $tpcost.addClass('label-inverse label-not-craftable');
             $tpcost.find('label .label-text').html('NOT CRAFTABLE');
+            $tpcost.find('input').attr('checked', true);
+            $tpcost.find('input').attr('readonly', true);
         } else {
             if (craftprice != 0 && craftprice < price) {
                 $ccwrapper.find('input').attr('checked', true);
