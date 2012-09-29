@@ -239,7 +239,7 @@ var CraftEntry = function(item, count, parent, path) {
         $item          = $('<div class="item-row clearfix">');
         $childList     = $('<div class="children" />');
 
-        var $title = $('<div class="item">')
+        var $title = $('<div class="item" title="' + item.name + '">')
                         .html('<img width="24" src="'+item.img+'" /> '+count+'x <a href="'+item.href+'" class="rarity-'+item.rarity+'">'+item.name+'</a>')
                         .appendTo($item);
 
@@ -248,7 +248,7 @@ var CraftEntry = function(item, count, parent, path) {
 
         var renderOption = function(text, price, val, checked, optimal) {
             var $span  = $('<span class="label" />'),
-                $label = $('<label>&nbsp;<span class="label-text">' + text + '</span> ( <span class="price">' + formatGW2Money(price) + '</span> ) </label>'),
+                $label = $('<label>&nbsp;<span class="label-text">' + text + '</span> (<span class="price">' + formatGW2Money(price) + '</span>)</label>'),
                 $input = $('<input name="' + boxid + '" value="' + val + '" type="radio" />');
 
             $span.append($input).append($label);

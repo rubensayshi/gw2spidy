@@ -23,14 +23,15 @@
         margin-bottom: 5px;
         padding: 1px;
         height: 24px;
-        width: 490px;
+        width: 580px;
         float: left;
     }
 
     .recipe-row .item {
         float: left;
         height: 24px;
-        width: 200px;
+        width: 270px;
+        overflow: hidden;
         font-weight: bold;
     }
 
@@ -42,7 +43,7 @@
     .recipe-row .options > span {
         display: inline-block;
         padding: 3px 10px 2px;
-        width: 120px;
+        width: 130px;
         height: 19px;
         margin-left: 3px;
     }
@@ -52,11 +53,11 @@
     }
     .recipe-row .options span input {
         position: relative;
-        top: -1px;
+        top: -2px;
     }
 
     .recipe-row .children {
-        padding-left: 40px;
+        padding-left: 25px;
     }
 
     .label-not-craftable {
@@ -69,7 +70,7 @@
     }
 </style>
 
-<h1>Crafting "Gun"</h1>
+<h1>Crafting "{{ recipe.name }}"</h1>
 <div id="recipe_container" class="well recipe-wrapper clearfix"></div>
 <div id="recipe_summary_container">
     <h2 style="border-bottom: 1px solid black;">Summary</h2>
@@ -87,7 +88,7 @@
 
         	</tbody>
         	<tfoot>
-        		<tr>
+        		<tr style="border-top: 2px solid black;">
         			<td colspan="3"></td>
         			<td id="recipe_summary_total"></td>
         		</tr>
@@ -98,11 +99,13 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+		var item = {{ tree | raw }};
+
 		if ($(window).width() > 1400) {
 			$("#recipe_summary_container").appendTo($("#recipe_summary_sidebar"));
 		}
 
-        new Crafting($("#recipe_container"), $("#recipe_summary"), $("#recipe_summary_total"), gun);
+        new Crafting($("#recipe_container"), $("#recipe_summary"), $("#recipe_summary_total"), item);
     });
 </script>
 

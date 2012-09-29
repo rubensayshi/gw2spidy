@@ -747,22 +747,59 @@ $app->get("/crafting/{discipline}/{page}", function(Request $request, $disciplin
  * ----------------------
  */
 $app->get("/recipe/{dataId}", function(Request $request, $dataId) use($app) {
-
-    // debug
-    return $app['twig']->render('recipe.html.twig');
-
     $recipe = RecipeQuery::create()->findPK($dataId);
 
     if (!$recipe) {
         return $app->abort(404, "Page does not exist.");
     }
 
+    $item = $recipe->getResultItem();
+    if(!$item) {
+        return $app->abort(404, "Recipe not supported yet, we don't have the resulting item in the database yet [[ {$recipe->getName()} ]] [[ {$recipe->getResultItemId()} ]] ");
+    }
+
+
+    $tree = buildRecipeTree($item, $recipe, $app);
+
     return $app['twig']->render('recipe.html.twig', array(
         'recipe' => $recipe,
+        'tree' => json_encode($tree),
     ));
 })
 ->assert('recipe', '-?\d+')
 ->bind('recipe');
+
+function buildRecipeTree($item, $recipe = null, $app) {
+    $tree = array(
+        'id' => $item->getDataId(),
+        'name' => $item->getName(),
+        'href' => $app['url_generator']->generate('item', array('dataId' => $item->getDataId())),
+        'rarity' => $item->getRarityName(),
+        'img'	=> $item->getImg(),
+        'price' => $item->getMinSaleUnitPrice()
+    );
+
+    if ($recipe) {
+        $recipeTree = array();
+
+        foreach ($recipe->getIngredients() as $ingredient) {
+            $ingredientItem   = $ingredient->getItem();
+            $ingredientRecipe = null;
+
+            $ingredientRecipes = $ingredientItem->getResultOfRecipes();
+
+            if (count($ingredientRecipes)) {
+                $ingredientRecipe = $ingredientRecipes[0];
+            }
+
+            $recipeTree[] = array(buildRecipeTree($ingredientItem, $ingredientRecipe, $app), $ingredient->getCount());
+        }
+
+        $tree['recipe'] = array('count' => $recipe->getCount(), 'ingredients' => $recipeTree);
+    }
+
+    return $tree;
+}
 
 // bootstrap the app
 $app->run();
