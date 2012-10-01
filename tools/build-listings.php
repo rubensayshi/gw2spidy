@@ -14,9 +14,8 @@ unset($args[0]);
 
 $worker = new ItemDBWorker();
 
-foreach ($args as $id) {
-    $item = ItemQuery::create()->findPK($id);
-    $itemData = TradingPostSpider::getInstance()->getItemById($item->getDataId());
+$items = TradingPostSpider::getInstance()->getItemsByIds($args);
 
-    $worker->storeItemData($itemData, $item->getItemType(), $item->getItemSubType());
+foreach ($item as $itemData) {
+    $worker->storeItemData($itemData);
 }
