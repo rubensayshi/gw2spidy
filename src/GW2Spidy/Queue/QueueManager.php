@@ -19,7 +19,7 @@ class QueueManager {
     }
 
     public function buildItemDB($full = true) {
-        foreach (ItemTypeQuery::create()->find() as $type) {
+        foreach (ItemTypeQuery::getAllTypes() as $type) {
             foreach ($type->getSubTypes() as $subtype) {
                 ItemDBWorker::enqueueWorker($type, $subtype, $full);
             }
@@ -37,6 +37,8 @@ class QueueManager {
             $q->filterByType($type);
         } else if (is_numeric($type)) {
             $q->filterByTypeId($type);
+        } else {
+            $q->filterByTypeId(999, \Criteria::NOT_EQUAL);
         }
 
         $items = array();
