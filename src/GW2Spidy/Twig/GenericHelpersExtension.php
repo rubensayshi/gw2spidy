@@ -13,6 +13,15 @@ class GenericHelpersExtension extends \Twig_Extension {
             'slugify' => new \Twig_Filter_Method($this, 'slugify'),
         );
     }
+    public function getFunctions() {
+        return array(
+            'gw2db' => new \Twig_Function_Method($this, 'gw2db'),
+        );
+    }
+
+    public function gw2db($item) {
+        return Functions::getGW2DBLink($item);
+    }
 
     public function slugify($str) {
         return Functions::slugify($str);

@@ -108,11 +108,9 @@
         {% for item in items %}
             <tr class="item">
                 <td class="info">
-                    <span data-tooltip-href="http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}">
-                        <a href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
-                            <img class="image" src="{{ item.img }}" width="32" height="32" /> {{ item.name }}
-                        </a>
-                    </span>
+                    <a data-tooltip-href="http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}" href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
+                        <img class="image" src="{{ item.img }}" width="32" height="32" /> {{ item.name }}
+                    </a>
                 </td>
                 <td class="restriction_level">{% if item.restrictionLevel %}{{ item.restrictionLevel }}{% endif %}</td>
                 <td class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</td>

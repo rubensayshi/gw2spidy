@@ -44,36 +44,30 @@ class Item extends BaseItem {
     }
 
     public function getGW2DBTooltip($href = null) {
-        $cache = CacheHandler::getInstance('item_gw2db_tooltips');
+        $cache    = CacheHandler::getInstance('item_gw2db_tooltips');
+        $cacheKey = $this->getDataId() . "::" . substr(md5($href),0,10);
 
-        if (true || !($tooltip = $cache->get($this->getDataId() . "::" . md5($href)))) {
-            require_once '/work/gw2spider/vendor/simple_html_dom/simple_html_dom.php';
+        if (true || !($tooltip = $cache->get($cacheKey))) {
 
-            $tooltip = $this->getGW2DBTooltipFromGW2DB();
-
-            $html = str_get_html($tooltip);
-
-            foreach ($html->find('div.p-tooltip-description') as $div) {
-                $gw2dbhref = Functions::getGW2DBLink($this);
-                $div->style = "position: relative; z-index: 1;";
-                $div->innertext .= <<<HTML
-<a href="{$gw2dbhref}" target="_blank" title="View this item on GW2DB" data-notooltip="true">
-    <img src="/assets/img/powered_gw2db_onDark.png" width="80" style="position: absolute; bottom: 0px; right: 0px;" />
-</a>
-HTML;
-            }
+            $tooltip   = $this->getGW2DBTooltipFromGW2DB();
+            $html      = str_get_html($tooltip);
+            $gw2dbhref = Functions::getGW2DBLink($this);
 
             if ($href) {
-                foreach ($html->find('dt.db-title') as $dt) {
-                    $dt->innertext = <<<HTML
-<a href="{$href}">{$dt->innertext}</a>
+                $html->find('dt.db-title', 0)->innertext = <<<HTML
+<a href="{$href}">{$html->find('dt.db-title', 0)->innertext}</a>
 HTML;
-                }
             }
 
+            $html->find('div.p-tooltip-description', 0)->style = "position: relative; z-index: 1;";
+            $html->find('div.p-tooltip-description', 0)->innertext .= <<<HTML
+<a href="{$gw2dbhref}" target="_blank" title="View this item on GW2DB" data-notooltip="true">
+    <img src="/assets/img/powered_gw2db_onDark.png" width="80" style="position: absolute; bottom: 0px; right: 0px; opacity: 0.7;" />
+</a>
+HTML;
             $tooltip = (string)$html;
 
-            $cache->set($this->getDataId(), $tooltip, MEMCACHE_COMPRESSED, 86400);
+            $cache->set($cacheKey, $tooltip, MEMCACHE_COMPRESSED, 86400);
         }
 
         return $tooltip;

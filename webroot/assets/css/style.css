@@ -351,3 +351,21 @@ h1 {
 /* ----------------
  * [END] tweet plugin style
    ---------------- */
+
+.sidebar .p-tooltip-description {
+    width: 266px !important;
+}
+
+.sidebar .item-history-list li {
+    margin-bottom: 5px;   
+}
+
+.sidebar .p-tooltip-description .db-summary > *,
+.sidebar .p-tooltip-description .db-summary > .db-weaponInfo .db-weaponRarity {
+    display: none;
+}
+.sidebar .p-tooltip-description .db-summary > .db-title,
+.sidebar .p-tooltip-description .db-summary > .db-armorType,
+.sidebar .p-tooltip-description .db-summary > .db-weaponInfo {
+    display: block;
+}

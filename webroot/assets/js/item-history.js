@@ -24,7 +24,7 @@ var GW2SpidyItemHistory = (function() {
         $container = $("#item-history-placeholder");
 
         $('<h3>Item history</h3>').appendTo($container);
-        $ul = $('<ul class="nav nav-pills nav-stacked item-history-list">').appendTo($container);
+        $ul = $('<ul class="nav nav-stacked item-history-list">').appendTo($container);
 
         buildList();
     };

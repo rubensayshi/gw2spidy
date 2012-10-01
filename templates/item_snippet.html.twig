@@ -1,10 +1,4 @@
-{% set href %}
-    {% if href is defined %}
-        {{ href }}
-    {% elseif item.gw2dbExternalId %}
-        http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}
-    {% endif %}
-{% endset %}
+{% set href = href is defined ? href : null %}
 
 <{{ tag }} class="item clearfix" id="item-snippet-{{ item.dataId }}">
     {% if item.getGW2DBTooltip(href) %}

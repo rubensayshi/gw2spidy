@@ -67,3 +67,5 @@ Propel::initialize();
 if (function_exists('newrelic_background_job') && php_sapi_name() == 'cli') {
     newrelic_background_job(true);
 }
+
+require_once __DIR__ . '/vendor/simple_html_dom/simple_html_dom.php';

@@ -4,7 +4,15 @@
 {% extends not included ? "content_sidebar.html.twig" : "empty_shell.html.twig" %}
 
 {% block content %}
-{% include "item_snippet.html.twig" with {'item': item, 'tag': 'div'} %}
+<div class="clearfix">
+	<div style="float: left;">
+		{% include "item_snippet.html.twig" with {'item': item, 'tag': 'div'} %}
+	</div>
+    <a title="View this item on GW2DB" data-notooltip="true" style="display: block; float: right; text-align: center;" href="{{ gw2db(item) }}">
+    	<img src="{{ versioned_asset('/assets/img/powered_gw2db_onLight.png') }}" /><br />
+    	<small style="font-size: 9px;">click to open gw2db</small>
+    </a>
+</div>
 <div class="clearfix">&nbsp;</div>
 {% include "chart_placeholder.html.twig" with {'item': item, 'hideLegend': hideLegend} %}
 
@@ -16,4 +24,5 @@
 {% endset %}
     window.GW2SpidyItemHistory.addItem({{ item.dataId }}, '{{- historySnippet | e('js') -}}');
 </script>
+
 {% endblock %}
