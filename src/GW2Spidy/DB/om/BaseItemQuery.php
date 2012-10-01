@@ -1014,7 +1014,7 @@ abstract class BaseItemQuery extends ModelCriteria
      *
      * @return ItemQuery The current query, for fluid interface
      */
-    public function joinItemType($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinItemType($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('ItemType');
@@ -1049,7 +1049,7 @@ abstract class BaseItemQuery extends ModelCriteria
      *
      * @return   \GW2Spidy\DB\ItemTypeQuery A secondary query class using the current class as primary query
      */
-    public function useItemTypeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useItemTypeQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinItemType($relationAlias, $joinType)
@@ -1090,7 +1090,7 @@ abstract class BaseItemQuery extends ModelCriteria
      *
      * @return ItemQuery The current query, for fluid interface
      */
-    public function joinItemSubType($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinItemSubType($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('ItemSubType');
@@ -1125,7 +1125,7 @@ abstract class BaseItemQuery extends ModelCriteria
      *
      * @return   \GW2Spidy\DB\ItemSubTypeQuery A secondary query class using the current class as primary query
      */
-    public function useItemSubTypeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useItemSubTypeQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinItemSubType($relationAlias, $joinType)

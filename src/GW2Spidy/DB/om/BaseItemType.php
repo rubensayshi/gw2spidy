@@ -415,9 +415,10 @@ abstract class BaseItemType extends BaseObject implements Persistent
 
             if ($this->itemsScheduledForDeletion !== null) {
                 if (!$this->itemsScheduledForDeletion->isEmpty()) {
-                    ItemQuery::create()
-                        ->filterByPrimaryKeys($this->itemsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
+                    foreach ($this->itemsScheduledForDeletion as $item) {
+                        // need to save related object because we set the relation to null
+                        $item->save($con);
+                    }
                     $this->itemsScheduledForDeletion = null;
                 }
             }

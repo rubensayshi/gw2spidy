@@ -52,8 +52,8 @@ class ItemTableMap extends TableMap
         $this->addColumn('VENDOR_SELL_PRICE', 'VendorSellPrice', 'INTEGER', true, null, null);
         $this->addColumn('IMG', 'Img', 'VARCHAR', true, 255, null);
         $this->addColumn('RARITY_WORD', 'RarityWord', 'VARCHAR', true, 255, null);
-        $this->addForeignKey('ITEM_TYPE_ID', 'ItemTypeId', 'INTEGER', 'item_type', 'ID', true, null, null);
-        $this->addForeignKey('ITEM_SUB_TYPE_ID', 'ItemSubTypeId', 'INTEGER', 'item_sub_type', 'ID', true, null, null);
+        $this->addForeignKey('ITEM_TYPE_ID', 'ItemTypeId', 'INTEGER', 'item_type', 'ID', false, null, null);
+        $this->addForeignKey('ITEM_SUB_TYPE_ID', 'ItemSubTypeId', 'INTEGER', 'item_sub_type', 'ID', false, null, null);
         $this->addColumn('MAX_OFFER_UNIT_PRICE', 'MaxOfferUnitPrice', 'INTEGER', true, null, null);
         $this->addColumn('MIN_SALE_UNIT_PRICE', 'MinSaleUnitPrice', 'INTEGER', true, null, null);
         $this->addColumn('OFFER_AVAILABILITY', 'OfferAvailability', 'INTEGER', true, null, 0);
