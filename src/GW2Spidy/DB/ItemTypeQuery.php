@@ -27,7 +27,6 @@ class ItemTypeQuery extends BaseItemTypeQuery {
 
         if (!$types) {
             $types = self::create()
-                ->filterById(999, \Criteria::NOT_EQUAL)
                 ->orderByTitle()
                 ->find();
 
