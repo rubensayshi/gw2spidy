@@ -9,8 +9,14 @@ use GW2Spidy\WorkerQueue\ItemDBWorker;
 
 require dirname(__FILE__) . '/../autoload.php';
 
-$item = ItemQuery::create()->findPK($argv[1]);
-$itemData = TradingPostSpider::getInstance()->getItemById($item->getDataId());
+$args = $argv;
+unset($args[0]);
 
 $worker = new ItemDBWorker();
-$worker->storeItemData($itemData, $item->getItemType(), $item->getItemSubType());
+
+foreach ($args as $id) {
+    $item = ItemQuery::create()->findPK($id);
+    $itemData = TradingPostSpider::getInstance()->getItemById($item->getDataId());
+
+    $worker->storeItemData($itemData, $item->getItemType(), $item->getItemSubType());
+}
