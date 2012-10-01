@@ -14,6 +14,20 @@ abstract class Functions {
         return $p;
     }
 
+    public static function slugify($str) {
+        $str = preg_replace('/^\s+|\s+$/', '', $str);
+        $str = strtolower($str);
+
+        $str = str_replace(str_split('ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;'), str_split('aaaaaeeeeeiiiiooooouuuunc------'), $str);
+
+        $str = preg_replace('/[^a-z0-9 -]/', '', $str);
+        $str = preg_replace('/\s+/', '-', $str);
+        $str = preg_replace('/-+/', '-', $str);
+        $str = preg_replace('/-+$/', '', $str);
+
+        return $str;
+    }
+
     /**
      * Indents a flat JSON string to make it more human-readable.
      *

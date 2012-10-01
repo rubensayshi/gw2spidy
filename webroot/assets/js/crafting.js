@@ -155,6 +155,7 @@ var Crafting = function(container, summary, total, item) {
         $container.append(topentry.render());
 
         update();
+        WP_LoadTooltips($container);
     };
 
     this.update = update;
@@ -245,7 +246,7 @@ var CraftEntry = function(item, count, parent, path, last) {
         var $struct = $('<div style="position: absolute; top: 0px; left: 0px;"></div>')
                         .appendTo($itemWrap);
 
-        var $title = $('<div class="item" title="' + item.name + '">')
+        var $title = $('<div data-tooltip-href="'+item.gw2db_href+'" class="item" title="' + item.name + '">')
                         .html('<img width="24" src="'+item.img+'" /> '+count+'x <a href="'+item.href+'" class="rarity-'+item.rarity+'">'+item.name+'</a>')
                         .appendTo($item);
 

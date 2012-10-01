@@ -25,6 +25,8 @@ use GW2Spidy\DB\BuyListingPeer;
 use GW2Spidy\DB\SellListingPeer;
 use GW2Spidy\DB\BuyListingQuery;
 
+use GW2Spidy\Util\Functions;
+
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -774,6 +776,7 @@ function buildRecipeTree($item, $recipe = null, $app) {
         'id' => $item->getDataId(),
         'name' => $item->getName(),
         'href' => $app['url_generator']->generate('item', array('dataId' => $item->getDataId())),
+        'gw2db_href' => "http://www.gw2db.com/items/{$item->getGw2dbExternalId()}-" . Functions::slugify($item->getName()),
         'rarity' => $item->getRarityName(),
         'img'	=> $item->getImg(),
         'price' => $item->getMinSaleUnitPrice()
