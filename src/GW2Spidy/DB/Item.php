@@ -55,7 +55,7 @@ class Item extends BaseItem {
 
             foreach ($html->find('div.p-tooltip-description') as $div) {
                 $gw2dbhref = Functions::getGW2DBLink($this);
-                $div->style = "position: relative";
+                $div->style = "position: relative; z-index: 1;";
                 $div->innertext .= <<<HTML
 <a href="{$gw2dbhref}" target="_blank" title="View this item on GW2DB" data-notooltip="true">
     <img src="/assets/img/powered_gw2db_onDark.png" width="80" style="position: absolute; bottom: 0px; right: 0px;" />
