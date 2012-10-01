@@ -89,6 +89,23 @@
         width: 20px;
     }
 
+    .crafting-summary-table .num {
+        min-width: 20px;
+        width: 10%;
+    }
+    .crafting-summary-table .ingredient {
+        min-width: 150px;
+        width: 55%;
+    }
+    .crafting-summary-table .ea {
+        min-width: 75px;
+        width: 15%;
+    }
+    .crafting-summary-table .total {
+        min-width: 75px;
+        width: 20%;
+    }
+
 </style>
 
 <h1>Crafting "{{ recipe.name }}"</h1>
@@ -96,13 +113,13 @@
 <div id="recipe_summary_container">
     <h2 style="border-bottom: 1px solid black;">Summary</h2>
     <div class="well clearfix">
-        <table class="table table-striped table-condensed">
+        <table class="crafting-summary-table table table-striped table-condensed">
         	<thead>
         		<tr>
-        			<th>#</th>
-        			<th>Ingredient</th>
-        			<th>ea</th>
-        			<th>total</th>
+        			<th class="num">#</th>
+        			<th class="ingredient">Ingredient</th>
+        			<th class="ea">ea</th>
+        			<th class="total">total</th>
         		</tr>
         	</thead>
         	<tbody id="recipe_summary">
