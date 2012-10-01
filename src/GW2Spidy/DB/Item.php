@@ -47,7 +47,7 @@ class Item extends BaseItem {
         $cache    = CacheHandler::getInstance('item_gw2db_tooltips');
         $cacheKey = $this->getDataId() . "::" . substr(md5($href),0,10);
 
-        if (true || !($tooltip = $cache->get($cacheKey))) {
+        if (!($tooltip = $cache->get($cacheKey))) {
 
             $tooltip   = $this->getGW2DBTooltipFromGW2DB();
             $html      = str_get_html($tooltip);
@@ -62,7 +62,7 @@ HTML;
             $html->find('div.p-tooltip-description', 0)->style = "position: relative; z-index: 1;";
             $html->find('div.p-tooltip-description', 0)->innertext .= <<<HTML
 <a href="{$gw2dbhref}" target="_blank" title="View this item on GW2DB" data-notooltip="true">
-    <img src="/assets/img/powered_gw2db_onDark.png" width="80" style="position: absolute; bottom: 0px; right: 0px; opacity: 0.7;" />
+    <img src="/assets/img/powered_gw2db_onDark.png" width="80" style="position: absolute; bottom: 0px; right: 0px; opacity: 0.2;" />
 </a>
 HTML;
             $tooltip = (string)$html;
