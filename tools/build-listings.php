@@ -16,6 +16,6 @@ $worker = new ItemDBWorker();
 
 $items = TradingPostSpider::getInstance()->getItemsByIds($args);
 
-foreach ($item as $itemData) {
+foreach ($items as $itemData) {
     $worker->storeItemData($itemData);
 }
