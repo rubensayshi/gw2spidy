@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\Util;
 
+use GW2Spidy\DB\Item;
+
 abstract class Functions {
     public static function almostEqualCompare($left, $right) {
         if (trim(strtolower($left)) == trim(strtolower($right))) {
@@ -26,6 +28,13 @@ abstract class Functions {
         $str = preg_replace('/-+$/', '', $str);
 
         return $str;
+    }
+
+    public static function getGW2DBLink(Item $item) {
+        $id   = urlencode($item->getGw2dbExternalId());
+        $slug = urlencode(self::slugify($item->getName()));
+
+        return "http://www.gw2db.com/items/{$id}-{$slug}";
     }
 
     /**

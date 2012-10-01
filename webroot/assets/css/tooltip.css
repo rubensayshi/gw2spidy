@@ -1,0 +1,95 @@
+/* C:\Projects\Cobalt\Source\Curse.Ascalon.Web\Content\Skins\Ascalon\css\tooltip.css */
+.hide{display:none!important;visibility:hidden!important;}
+.db-tooltip .db-image{display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;-webkit-box-shadow:black 0 0 2px;-moz-box-shadow:black 0 0 2px;-ms-box-shadow:black 0 0 2px;-o-box-shadow:black 0 0 2px;box-shadow:black 0 0 2px;-webkit-border-radius:2px;-moz-border-radius:2px;-ms-border-radius:2px;-o-border-radius:2px;border-radius:2px;border:1px solid black;background:#112 url("../images/theme/bg_tooltip2.png");overflow:hidden;width:56px;height:56px;}
+.ie7 .db-tooltip .db-image{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-image>img{width:56px;height:56px;}
+.db-tooltip .db-description{display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;-webkit-box-shadow:black 0 0 2px;-moz-box-shadow:black 0 0 2px;-ms-box-shadow:black 0 0 2px;-o-box-shadow:black 0 0 2px;box-shadow:black 0 0 2px;-webkit-border-radius:2px;-moz-border-radius:2px;-ms-border-radius:2px;-o-border-radius:2px;border-radius:2px;background:#112 url("../images/theme/bg_tooltip2.png");border:1px solid black;color:white;padding:10px;text-align:left;z-index:9999;font:normal 12px/1.5 Verdana,sans-serif;width:345px;height:auto;vertical-align:top;}
+.ie7 .db-tooltip .db-description{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-description .db-title,.db-tooltip .db-description .db-aura-title,.db-tooltip .db-description h2{font-size:14px;line-height:19px;font-weight:normal;margin-right:10px;float:left;}
+.db-tooltip .db-description table{font:normal 12px/1.5 Verdana,sans-serif;color:white;}
+.db-tooltip .db-description table td{padding:0;}
+.db-tooltip .db-description dl{margin:0;}
+.db-tooltip .db-description dd,.db-tooltip .db-description p{clear:both;margin:0!important;}
+.db-tooltip .db-description a{text-decoration:none!important;}
+.db-tooltip .db-description a:hover{text-decoration:none!important;}
+.db-tooltip .db-description ul,.db-tooltip .db-description li{list-style-type:disc;}
+.db-tooltip .db-description li{margin-left:20px;}
+.db-tooltip .db-description .tooltip-table{width:100%;border-collapse:collapse;}
+.db-tooltip .db-description .right{text-align:right;}
+.db-tooltip .db-description .db-left{float:left;clear:right;}
+.db-tooltip .db-description .db-right{float:right;clear:none;}
+.db-tooltip .db-description .new-build,.db-tooltip .db-description .old-build{font-size:11px;font-weight:bold;}
+.db-tooltip .db-description .new-build{color:#0f0;}
+.db-tooltip .db-description .old-build{color:#ff4040;}
+.db-tooltip .db-description ins{color:#000;font-weight:bold;}
+.old .db-tooltip .db-description ins{background-color:#faa;}
+.new .db-tooltip .db-description ins{background-color:#afa;}
+div#db-tooltip-container{position:absolute;z-index:9999;}
+.db-tooltip .db-description,.db-tooltip .db-image{-webkit-box-shadow:inset -1px 1px 1px #465f6e,inset 1px 1px 1px #465f6e;-moz-box-shadow:inset -1px 1px 1px #465f6e,inset 1px 1px 1px #465f6e;-ms-box-shadow:inset -1px 1px 1px #465f6e,inset 1px 1px 1px #465f6e;-o-box-shadow:inset -1px 1px 1px #465f6e,inset 1px 1px 1px #465f6e;box-shadow:inset -1px 1px 1px #465f6e,inset 1px 1px 1px #465f6e;}
+.db-tooltip .db-summary{line-height:16px;}
+.db-tooltip dd{padding-left:8px;word-wrap:break-word;}
+.db-tooltip .db-stat{color:#29fd2e;padding-left:16px;}
+.db-tooltip .db-stat:last-child{padding-bottom:12px;}
+.db-tooltip .db-bind-type,.db-tooltip .db-itemCreate,.db-tooltip .db-weaponInfo,.db-tooltip .db-achievement-progress,.db-tooltip .db-ingredient-info{padding-top:12px;}
+.db-tooltip .db-bind-type,.db-tooltip .color-reminder,.db-tooltip .db-achievement-progress,.db-tooltip .db-ingredient-info{color:#a0cde7;}
+.db-tooltip .db-damageType{color:#bbb;}
+.db-tooltip .db-weaponRarity{float:right;}
+.db-tooltip .db-title,.db-tooltip .db-aura-title,.db-tooltip h2{margin-bottom:12px;color:#FFCC69;}
+.db-tooltip.db-tooltip-recipe .db-damageType{margin-top:12px!important;}
+.db-tooltip .db-skill-detail{font-size:11px;}
+.db-tooltip .db-skill-cooldown{padding-top:1px;padding-left:20px;display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;height:20px;background:url("../images/recharge.png") no-repeat top left;}
+.ie7 .db-tooltip .db-skill-cooldown{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-skill-point{padding-top:1px;padding-left:20px;background:transparent url("../images/skill_point.png") no-repeat top left;}
+.db-tooltip .db-skill-resource-thief{padding-top:1px;padding-left:20px;background:transparent url("../images/thief_resource.png") no-repeat top left;}
+.db-tooltip .db-skill-info,.db-tooltip .db-weaponStrength,.db-tooltip .db-defense{color:#29fd2e;}
+.db-tooltip .db-skill-info .db-skill-label,.db-tooltip .db-skill-info>span,.db-tooltip .db-weaponStrength .db-skill-label,.db-tooltip .db-weaponStrength>span,.db-tooltip .db-defense .db-skill-label,.db-tooltip .db-defense>span{color:#fff;}
+.db-tooltip dd.db-right-container{float:right;position:relative;margin:-30px 0 0 0!important;}
+.db-tooltip .db-skill-detail{color:#ccc;margin-bottom:5px;}
+.db-tooltip .db-skill-info{margin-right:5px;}
+.db-tooltip .db-skill-label{margin-right:5px;}
+.db-tooltip dd.db-skill-description{margin:5px 0 12px 0!important;}
+.db-tooltip .db-detail-icon{vertical-align:middle;width:32px;height:32px;margin-bottom:4px;margin-right:10px;float:left;}
+.db-tooltip .db-detail-icon-ph{background-color:#112;display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-detail-icon-ph{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-aoe-120 .db-detail-icon,.db-tooltip .db-skill-aoe-240 .db-detail-icon,.db-tooltip .db-skill-radius .db-detail-icon{background-image:url("../images/icons/radius.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-aoe-120 .db-detail-icon,.ie7 .db-tooltip .db-skill-aoe-240 .db-detail-icon,.ie7 .db-tooltip .db-skill-radius .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-daze .db-detail-icon{background-image:url("../images/icons/daze.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-daze .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-stun .db-detail-icon{background-image:url("../images/icons/103047.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-stun .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-sink .db-detail-icon{background-image:url("../images/icons/103046.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-sink .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-strikedamage .db-detail-icon{background-image:url("../images/icons/damage.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-strikedamage .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-stealth-duration .db-detail-icon,.db-tooltip .db-skill-timeduration .db-detail-icon{background-image:url("../images/icons/duration.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-stealth-duration .db-detail-icon,.ie7 .db-tooltip .db-skill-timeduration .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-maximum-targets .db-detail-icon,.db-tooltip .db-skill-number-of-bounces .db-detail-icon,.db-tooltip .db-skill-range .db-detail-icon{background-image:url("../images/icons/range.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-maximum-targets .db-detail-icon,.ie7 .db-tooltip .db-skill-number-of-bounces .db-detail-icon,.ie7 .db-tooltip .db-skill-range .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-finishtype .db-detail-icon{background-image:url("../images/icons/combo.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-finishtype .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-combotype .db-detail-icon{background-image:url("../images/icons/combo.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-combotype .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-lifeforceadjust .db-detail-icon,.db-tooltip .db-skill-adjustbyattributeandlevelhealing .db-detail-icon,.db-tooltip .db-skill-healthadjusthealing .db-detail-icon{background-image:url("../images/icons/healing.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-lifeforceadjust .db-detail-icon,.ie7 .db-tooltip .db-skill-adjustbyattributeandlevelhealing .db-detail-icon,.ie7 .db-tooltip .db-skill-healthadjusthealing .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-knockback-distance .db-detail-icon,.db-tooltip .db-skill-distanceknockback .db-detail-icon,.db-tooltip .db-skill-knockdown .db-detail-icon{background-image:url("../images/icons/knockdown.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-knockback-distance .db-detail-icon,.ie7 .db-tooltip .db-skill-distanceknockback .db-detail-icon,.ie7 .db-tooltip .db-skill-knockdown .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-stunbreak .db-detail-icon{background-image:url("../images/icons/breaksstun.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-stunbreak .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-timestun .db-detail-icon,.db-tooltip .db-skill-timedaze .db-detail-icon{background-image:url("../images/icons/daze.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-timestun .db-detail-icon,.ie7 .db-tooltip .db-skill-timedaze .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-distanceblowout .db-detail-icon{background-image:url("../images/icons/launch.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-distanceblowout .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .db-skill-timefloat .db-detail-icon{background-image:url("../images/icons/float.png");display:-moz-inline-box;-moz-box-orient:vertical;display:inline-block;vertical-align:middle;}
+.ie7 .db-tooltip .db-skill-timefloat .db-detail-icon{display:inline;vertical-align:auto;zoom:1;}
+.db-tooltip .skill-chain{clear:both;padding-top:12px;}
+.db-tooltip .skill-chain h3{color:#fff;font-size:12px;}
+.db-tooltip .chainSkillWrapper{float:left;margin-top:8px;height:60px;min-width:60px;max-width:85px;text-align:center;}
+.db-tooltip .chainSkillSeparator{background:url("../images/arrow-right.png");float:left;margin-top:20px;height:16px;width:16px;}
+.db-tooltip .chainSkillIcon{margin:0 auto;}
+.db-tooltip .chainSkillTitle{color:#FFCC69;}
+.db-tooltip .gwitem-masterwork,.db-tooltip .gwitem-masterwork a{color:#2DC50E!important;}
+.db-tooltip .gwitem-fine,.db-tooltip .gwitem-fine a{color:#4F9DFE!important;}
+.db-tooltip .gwitem-exotic,.db-tooltip .gwitem-exotic a{color:#FDA500!important;}
+.db-tooltip .gwitem-rare,.db-tooltip .gwitem-rare a{color:#c60!important;}
+.db-tooltip .gwitem-legendary,.db-tooltip .gwitem-legendary a{color:#D22!important;}
+.db-tooltip .gwitem-common,.db-tooltip .gwitem-common a{color:#ddd!important;}

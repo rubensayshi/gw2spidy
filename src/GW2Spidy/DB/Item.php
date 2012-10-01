@@ -2,6 +2,10 @@
 
 namespace GW2Spidy\DB;
 
+use GW2Spidy\Application;
+
+use GW2Spidy\Util\Functions;
+
 use GW2Spidy\Util\ApplicationCache;
 use GW2Spidy\DB\om\BaseItem;
 use GW2Spidy\Util\CacheHandler;
@@ -39,13 +43,37 @@ class Item extends BaseItem {
         }
     }
 
-    public function getGW2DBTooltip() {
+    public function getGW2DBTooltip($href = null) {
         $cache = CacheHandler::getInstance('item_gw2db_tooltips');
 
-        if (!($tooltip = $cache->get($this->getDataId()))) {
+        if (true || !($tooltip = $cache->get($this->getDataId() . "::" . md5($href)))) {
+            require_once '/work/gw2spider/vendor/simple_html_dom/simple_html_dom.php';
+
             $tooltip = $this->getGW2DBTooltipFromGW2DB();
 
-            $cache->set($this->getDataId(), $tooltip);
+            $html = str_get_html($tooltip);
+
+            foreach ($html->find('div.p-tooltip-description') as $div) {
+                $gw2dbhref = Functions::getGW2DBLink($this);
+                $div->style = "position: relative";
+                $div->innertext .= <<<HTML
+<a href="{$gw2dbhref}" target="_blank" title="View this item on GW2DB" data-notooltip="true">
+    <img src="/assets/img/powered_gw2db_onDark.png" width="80" style="position: absolute; bottom: 0px; right: 0px;" />
+</a>
+HTML;
+            }
+
+            if ($href) {
+                foreach ($html->find('dt.db-title') as $dt) {
+                    $dt->innertext = <<<HTML
+<a href="{$href}">{$dt->innertext}</a>
+HTML;
+                }
+            }
+
+            $tooltip = (string)$html;
+
+            $cache->set($this->getDataId(), $tooltip, MEMCACHE_COMPRESSED, 86400);
         }
 
         return $tooltip;
