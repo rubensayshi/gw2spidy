@@ -115,14 +115,14 @@ var gun = {
 
 var Crafting = function(container, summary, total, item) {
     var self       = this;
-    var topentry   = null; 
+    var topentry   = null;
     var $container = $(container);
     var $summary   = $(summary);
     var $total     = $(total);
-    
+
     var update = function() {
         $summary.html("");
-        
+
         ingredients = {};
         $.each(topentry.ingredients(), function(k, ingredient) {
             if (ingredients[ingredient[1].id] == undefined) {
@@ -131,34 +131,34 @@ var Crafting = function(container, summary, total, item) {
                 ingredients[ingredient[1].id][0] += ingredient[0];
             }
         });
-        
+
         var total = 0;
-        $.each(ingredients, function(id, ingredient) {            
+        $.each(ingredients, function(id, ingredient) {
             var $row = $("<tr />");
 
             $row.append($("<td />").html(ingredient[0]));
             $row.append($("<td />").html(ingredient[1].name).css('font-weight', 'bold').addClass('rarity-' + ingredient[1].rarity));
             $row.append($("<td />").html(formatGW2Money(ingredient[1].price)));
             $row.append($("<td />").html(formatGW2Money(ingredient[1].price * ingredient[0])));
-            
+
             total += (ingredient[1].price * ingredient[0]);
-            
+
             $summary.append($row);
         });
-        
+
         $total.html(formatGW2Money(total));
     };
-    
+
     var init = function() {
         topentry = new CraftEntry(item, 1, self, [], false);
-                
+
         $container.append(topentry.render());
-        
+
         update();
     };
-    
+
     this.update = update;
-    
+
     init();
 };
 
@@ -207,13 +207,13 @@ var CraftEntry = function(item, count, parent, path, last) {
         if ($craftcost) {
             $craftcost.html(formatGW2Money(calculateCraftPrice()));
         }
-        
+
         if ($item.find('input:checked').val() == TP) {
             $childList.addClass('children-disabled');
         } else {
             $childList.removeClass('children-disabled');
         }
-        
+
         if (propegate && parent) {
             parent.update(true);
         }
@@ -221,27 +221,29 @@ var CraftEntry = function(item, count, parent, path, last) {
 
     function getIngredients() {
         var ingredients = [];
-        
+
         if ($item.find('input:checked').val() == TP) {
             ingredients.push([count, item]);
         } else {
             $.each(children, function(k, entry) {
                 $.each(entry.ingredients(), function(k, ingredient) {
-                    ingredients.push(ingredient);                    
+                    ingredients.push(ingredient);
                 });
             });
         }
-        
-        return ingredients;        
+
+        return ingredients;
     };
-    
+
     function render() {
         var $entry     = $('<div class="recipe-row">');
+        var $itemWrap  = $('<div class="item-row-wrapper" />');
         $item          = $('<div class="item-row clearfix">');
         $childList     = $('<div class="children" />');
-        
-        var $struct = $('<div style="position: absolute; left: 0px;"></div>')
-                        .appendTo($item);
+
+        $entry.append($itemWrap.append($item));
+        var $struct = $('<div style="position: absolute; top: 0px; left: 0px;"></div>')
+                        .appendTo($itemWrap);
 
         var $title = $('<div class="item" title="' + item.name + '">')
                         .html('<img width="24" src="'+item.img+'" /> '+count+'x <a href="'+item.href+'" class="rarity-'+item.rarity+'">'+item.name+'</a>')
@@ -277,7 +279,7 @@ var CraftEntry = function(item, count, parent, path, last) {
                 var price = ingre.price * count;
 
                 craftprice += price;
-                
+
                 var entry = new CraftEntry(ingre, count, self, path, (k == item.recipe.ingredients.length-1));
                 children.push(entry);
 
@@ -303,14 +305,14 @@ var CraftEntry = function(item, count, parent, path, last) {
                 $tpcost.addClass('label-success');
             }
         }
-        
+
         $struct.css('left', -1 * ((path.length-1) * 25));
-        
+
         var step = self;
         for (var i = 1; i < path.length; i++) {
             var icon     = 'empty';
             var icontext = '';
-            
+
             // deepest step, either K or L
             if (step == self) {
                 if (step.last) {
@@ -320,30 +322,26 @@ var CraftEntry = function(item, count, parent, path, last) {
                     icon     = 'split';
                     icontext = '├';
                 }
-            } else {            
+            } else {
                 if (step.last) {
                     icon     = 'empty';
                     icontext = '';
                 } else {
-                    icon     = 'cont'; 
+                    icon     = 'cont';
                     icontext = '│';
                 }
             }
-            
-            
+
+
             $struct.prepend($('<div class="folder-structure-icon folder-structure-icon-'+icon+'" />').html(icontext));
-                                
+
             step = step.parent;
         }
-        
-        $.each(path, function(k, p) {         
-        });
 
-        $entry.append($item);
         if ($childList.children().length) {
             $entry.append($childList);
         }
-        
+
         update(false);
 
         return $entry;
