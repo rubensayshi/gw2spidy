@@ -38,7 +38,7 @@ class QueueManager {
         } else if (is_numeric($type)) {
             $q->filterByTypeId($type);
         } else {
-            $q->where('type_id IS NOT NULL');
+            $q->filterByTypeId(NULL, \Criteria::ISNOTNULL);
         }
 
         $items = array();
