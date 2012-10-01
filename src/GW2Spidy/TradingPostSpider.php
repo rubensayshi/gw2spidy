@@ -24,7 +24,7 @@ class TradingPostSpider extends BaseSpider {
     public function getItemsByIds(array $ids) {
         $ids = array_map('urlencode', $ids);
 
-        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/search.json?ids=".implode(",", $ids))
+        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/search.json?ids=".implode(",", $ids)."&no_cache=1")
              ->setCookie("s={$this->getSession()->getSessionKey()}")
              ->setHeader("X-Requested-With: XMLHttpRequest")
              ->exec()
@@ -36,7 +36,7 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getItemByExactName($name) {
-        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . " /ws/search.json?text=".urlencode($name)."&levelmin=0&levelmax=80")
+        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . " /ws/search.json?text=".urlencode($name)."&levelmin=0&levelmax=80&no_cache=1")
                     ->setCookie("s={$this->getSession()->getSessionKey()}")
                     ->setHeader("X-Requested-With: XMLHttpRequest")
                     ->exec()
@@ -101,7 +101,7 @@ class TradingPostSpider extends BaseSpider {
         $typeId    = ($type instanceof ItemType)       ? $type->getId()    : $type;
         $subTypeId = ($subType instanceof ItemSubType) ? $subType->getId() : $subType;
 
-        $url = getAppConfig('gw2spidy.tradingpost_url') . "/ws/search.json?text=&levelmin=0&levelmax=80&offset={$offset}";
+        $url = getAppConfig('gw2spidy.tradingpost_url') . "/ws/search.json?text=&levelmin=0&levelmax=80&offset={$offset}&no_cache=1";
 
         if ($typeId !== null) {
             $url = "{$url}&type={$typeId}";
