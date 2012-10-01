@@ -136,10 +136,10 @@ var Crafting = function(container, summary, total, item) {
         $.each(ingredients, function(id, ingredient) {
             var $row = $("<tr />");
 
-            $row.append($("<td />").html(ingredient[0]));
-            $row.append($("<td />").html(ingredient[1].name).css('font-weight', 'bold').addClass('rarity-' + ingredient[1].rarity));
-            $row.append($("<td />").html(formatGW2Money(ingredient[1].price)));
-            $row.append($("<td />").html(formatGW2Money(ingredient[1].price * ingredient[0])));
+            $row.append($('<td />').html(ingredient[0]));
+            $row.append($('<td data-tooltip-href="'+ingredient[1].gw2db_href+'" />').html(ingredient[1].name).css('font-weight', 'bold').addClass('rarity-' + ingredient[1].rarity));
+            $row.append($('<td />').html(formatGW2Money(ingredient[1].price)));
+            $row.append($('<td />').html(formatGW2Money(ingredient[1].price * ingredient[0])));
 
             total += (ingredient[1].price * ingredient[0]);
 
@@ -156,6 +156,7 @@ var Crafting = function(container, summary, total, item) {
 
         update();
         WP_LoadTooltips($container);
+        WP_LoadTooltips($summary);
     };
 
     this.update = update;
