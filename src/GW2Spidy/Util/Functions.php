@@ -3,6 +3,7 @@
 namespace GW2Spidy\Util;
 
 use GW2Spidy\DB\Item;
+use GW2Spidy\DB\Recipe;
 
 abstract class Functions {
     public static function almostEqualCompare($left, $right) {
@@ -35,6 +36,13 @@ abstract class Functions {
         $slug = urlencode(self::slugify($item->getName()));
 
         return "http://www.gw2db.com/items/{$id}-{$slug}";
+    }
+
+    public static function getGW2DBLinkRecipe(Recipe $recipe) {
+        $id   = urlencode($recipe->getGw2dbExternalId());
+        $slug = urlencode(self::slugify($recipe->getName()));
+
+        return "http://www.gw2db.com/recipes/{$id}-{$slug}";
     }
 
     /**

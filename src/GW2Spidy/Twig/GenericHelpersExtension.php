@@ -15,12 +15,18 @@ class GenericHelpersExtension extends \Twig_Extension {
     }
     public function getFunctions() {
         return array(
-            'gw2db' => new \Twig_Function_Method($this, 'gw2db'),
+            'gw2db' => new \Twig_Function_Method($this, 'gw2db_item'),
+            'gw2db_item' => new \Twig_Function_Method($this, 'gw2db_item'),
+            'gw2db_recipe' => new \Twig_Function_Method($this, 'gw2db_recipe'),
         );
     }
 
-    public function gw2db($item) {
+    public function gw2db_item($item) {
         return Functions::getGW2DBLink($item);
+    }
+
+    public function gw2db_recipe($recipe) {
+        return Functions::getGW2DBLinkRecipe($recipe);
     }
 
     public function slugify($str) {
