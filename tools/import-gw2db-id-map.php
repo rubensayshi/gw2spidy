@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\Util\CacheHandler;
+
 use GW2Spidy\DB\GW2DBItemArchive;
 
 use GW2Spidy\DB\Item;
@@ -18,6 +20,9 @@ if (!isset($argv[1]) || !($mapfilename = $argv[1])) {
 if (!file_exists($mapfilename)) {
     die('map file does not exist.');
 }
+
+// ensure purged cache, otherwise everything goes to hell
+CacheHandler::getInstance("purge")->purge();
 
 $data = json_decode(file_get_contents($mapfilename), true);
 $cnt  = count($data);

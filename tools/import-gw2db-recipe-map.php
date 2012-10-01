@@ -1,5 +1,21 @@
 <?php
 
+use GW2Spidy\Queue\RequestSlotManager;
+
+use GW2Spidy\Util\CacheHandler;
+
+use GW2Spidy\DB\GW2DBItemArchive;
+
+use GW2Spidy\DB\ItemTypeQuery;
+
+use GW2Spidy\DB\ItemType;
+
+use GW2Spidy\WorkerQueue\ItemDBWorker;
+
+use GW2Spidy\TradingPostSpider;
+
+use GW2Spidy\DB\GW2DBItemArchiveQuery;
+
 use GW2Spidy\DB\RecipeQuery;
 
 use GW2Spidy\DB\RecipeIngredient;
@@ -14,7 +30,6 @@ class FailedImportException extends Exception {}
 class NoResultItemException extends FailedImportException {}
 class NoIngredientItemException extends FailedImportException {}
 
-require dirname(__FILE__) . '/../config/config.inc.php';
 require dirname(__FILE__) . '/../autoload.php';
 
 if (!isset($argv[1]) || !($mapfilename = $argv[1])) {
@@ -24,6 +39,9 @@ if (!isset($argv[1]) || !($mapfilename = $argv[1])) {
 if (!file_exists($mapfilename)) {
     die('map file does not exist.');
 }
+
+// ensure purged cache, otherwise everything goes to hell
+CacheHandler::getInstance("purge")->purge();
 
 if (DisciplineQuery::create()->count() == 0) {
     $disciplines = array(
@@ -63,6 +81,33 @@ $cnt  = count($data);
 */
 $failed = array();
 $max    = null;
+
+$tp = TradingPostSpider::getInstance();
+$slots = RequestSlotManager::getInstance();
+$worker = new ItemDBWorker();
+
+$getItemByGW2DBID = function($gw2dbID) use ($tp, $slots, $worker) {
+    $result = ItemQuery::create()->findOneByGw2dbId($gw2dbID);
+    if (!$result) {
+        if ($gw2dbItem = GW2DBItemArchiveQuery::create()->findOneById($gw2dbID)) {
+
+            // claim a slot if posible, if not just continue, this has prio over the slots xD
+            if ($slot = $slots->getAvailableSlot()) {
+                $slot->hold();
+            }
+
+            $itemData = $tp->getItemById($gw2dbItem->getDataid());
+            $itemData['name']              = $gw2dbItem->getName();
+            $itemData['gw2db_id']          = $gw2dbItem->getId();
+            $itemData['gw2db_external_id'] = $gw2dbItem->getExternalid();
+
+            $result = $worker->storeItemData($itemData, null, null);
+        }
+    }
+
+    return $result;
+};
+
 foreach ($data as $i => $row) {
     try {
         echo "[{$i} / {$cnt}] \n";
@@ -77,28 +122,23 @@ foreach ($data as $i => $row) {
             $r->setCount($row['Count']);
             $r->setDisciplineId($row['Type']);
 
-            $result = ItemQuery::create()->findByGw2dbId($row['CreatedItemId']);
-            if (!$result->count()) {
-                // throw new NoResultItemException();
+
+            if (!($result = $getItemByGW2DBID($row['CreatedItemId']))) {
+                throw new NoResultItemException("no result [[ {$row['CreatedItemId']} ]]");
             } else {
-                $result = $result[0];
                 $r->setResultItem($result);
             }
 
             foreach ($row['Ingredients'] as $ingrow) {
                 $ri = new RecipeIngredient();
-
                 $ri->setRecipe($r);
 
-                $item = ItemQuery::create()->findByGw2dbId($ingrow['ItemID']);
-                if (!$item->count()) {
-                    throw new NoIngredientItemException();
+
+                if (!($item = $getItemByGW2DBID($ingrow['ItemID']))) {
+                    throw new NoIngredientItemException("no ingredient [[ {$ingrow['ItemID']} ]]");
                 } else {
-                    $item = $item[0];
                     $ri->setItem($item);
                     $ri->setCount($ingrow['Count']);
-
-                    $ri->save();
                 }
             }
 
@@ -106,7 +146,7 @@ foreach ($data as $i => $row) {
         }
     } catch (FailedImportException $e) {
         $failed[] = $row;
-        echo "failed .. \n";
+        echo "failed [[ {$e->getMessage()} ]] .. \n";
     }
 
     if ($max && $i >= $max) {
