@@ -290,6 +290,10 @@ h1 {
     overflow: hidden;
 }
 
+.gw2db-icon {
+    display: inline-block;
+}
+
 .twitter-icon {
     display: inline-block;
     margin-top: 5px;
