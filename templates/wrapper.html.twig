@@ -137,7 +137,25 @@
 
             $(document.body).css('background-image', "url(" + image + ")");
             $('.container-fluid').each(function(k, o) { o.style.backgroundColor = "rgba(255, 255, 255, " + opacity + ")"; });
-    });
+        });
+
+        $(document).ready(function() {
+            $('.ingame-share').each(function(k, ingameshare) {
+                var $span  = $(ingameshare).find('span');
+                var $input = $(ingameshare).find('input');
+
+                $span.on('click', function() {
+                    $span.css('visibility', 'hidden');
+                    $input.css('display', 'inline-block').focus();
+                });
+
+                $input.on('blur', function() {
+                    $span.css('visibility', 'visible');
+                    $input.css('display', 'none');
+                });
+            });
+        });
+        </script>
     </script>
 
     <script type='text/javascript'>

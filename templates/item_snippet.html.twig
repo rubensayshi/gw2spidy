@@ -10,8 +10,14 @@
                 {{- item.name -}}
             {% if href is defined %}</a>{% endif %}
             {% if item.gw2dbExternalId %}
-        	   &nbsp;<a href="http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}" target="_blank" title="Show this item on GW2DB.com"><i class="icon-search"></i></a>
+        	   &nbsp;<a href="http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}" target="_blank" title="Show this item on GW2DB.com"><i class="icon-search"></i> gw2db.com</a>
             {% endif %}
+            &nbsp;<div class="ingame-share" style="display: inline-block; position: relative;">
+                <input value="{{ item.ingamecode }}" type="text" class="input-small" style="display: none; margin: 0px; position: absolute; top: 0px; left: 0px;" />
+                <span style="cursor: pointer;">
+                    <i class="icon icon-share"></i> ingame
+                </span>
+            </div>
         </div>
         {% if item.itemType %}
             <div class="item-type">{{ item.itemType.title }}</div>

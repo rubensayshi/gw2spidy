@@ -50,6 +50,17 @@ class Item extends BaseItem {
 
     }
 
+    public function getIngameCode() {
+
+        $code = chr(2);
+        $code .= chr(1);
+        $code .= chr($this->getDataId() % 256);
+        $code .= chr(floor($this->getDataId() / 256)) . chr(0) . chr(0);
+
+        $code = base64_encode($code);
+
+        return "[&{$code}]";
+    }
 
    public function getRarityCSSClass() {
         return strtolower("rarity-" . str_replace(" ", "-", $this->getRarityName()));
