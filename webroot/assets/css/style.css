@@ -357,19 +357,19 @@ h1 {
    ---------------- */
 
 .sidebar .p-tooltip-description {
-    width: 266px !important;
+    min-width: 266px !important;
 }
 
 .sidebar .item-history-list li {
     margin-bottom: 5px;   
 }
 
-.sidebar .p-tooltip-description .db-summary > *,
-.sidebar .p-tooltip-description .db-summary > .db-weaponInfo .db-weaponRarity {
+.sidebar .item-history-list .db-tooltip .db-summary > *,
+.sidebar .item-history-list .db-tooltip .db-summary > .db-weaponInfo .db-weaponRarity {
     display: none;
 }
-.sidebar .p-tooltip-description .db-summary > .db-title,
-.sidebar .p-tooltip-description .db-summary > .db-armorType,
-.sidebar .p-tooltip-description .db-summary > .db-weaponInfo {
+.sidebar .item-history-list .db-tooltip .db-summary > .db-title,
+.sidebar .item-history-list .db-tooltip .db-summary > .db-armorType,
+.sidebar .item-history-list .db-tooltip .db-summary > .db-weaponInfo {
     display: block;
 }

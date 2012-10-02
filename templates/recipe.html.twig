@@ -108,8 +108,14 @@
 
 </style>
 
-<h1>Crafting "{{ recipe.name }}"</h1>
-<div id="recipe_container" class="well recipe-wrapper clearfix"></div>
+<h1>{{ recipe.name }}</h1>
+<p class="alert alert-info">
+    Select which items you want to buy and which you want to craft. <br />
+    The cheapest path has been marked green and selected by default!
+</p>
+
+<div id="recipe_container" class="well recipe-wrapper clearfix">
+</div>
 <div id="recipe_summary_container">
     <h2 style="border-bottom: 1px solid black;">Summary</h2>
     <div class="well clearfix">
@@ -150,5 +156,6 @@
 {% endblock %}
 
 {% block sidebar %}
+    {{ recipe.GW2DBTooltip | raw }}
 	<div id="recipe_summary_sidebar"></div>
 {% endblock %}

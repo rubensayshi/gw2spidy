@@ -18,20 +18,24 @@
 		<table class="table" style="width: 440px;">
 			<tr>
 				<th>Created By</th>
+				{#
 				<th>Cost</th>
 				<th>Profit</th>
+				#}
 			</tr>
     		{% for recipe in item.resultOfRecipes %}
     			<tr>
     				<td style="width: 250px;">
     					<a href="{{ path('recipe', {dataId : recipe.dataId}) }}">{{ recipe.name }}</a>
     				</td>
+    				{#
     				<td style="width: 95px;">
 						{{ 23743 | gw2money }}
 					</td>
     				<td style="width: 95px;">
 						{{ 23743 | gw2money }}
 					</td>
+					#}
 				</tr>
     		{% endfor %}
 		</table>

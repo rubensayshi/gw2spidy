@@ -59,8 +59,8 @@ class Item extends BaseItem {
 HTML;
             }
 
-            $html->find('div.p-tooltip-description', 0)->style = "position: relative; z-index: 1;";
-            $html->find('div.p-tooltip-description', 0)->innertext .= <<<HTML
+            $html->find('div.db-description', 0)->style = "position: relative; z-index: 1;";
+            $html->find('div.db-description', 0)->innertext .= <<<HTML
 <a href="{$gw2dbhref}" target="_blank" title="View this item on GW2DB" data-notooltip="true">
     <img src="/assets/img/powered_gw2db_onDark.png" width="80" style="position: absolute; bottom: 0px; right: 0px; opacity: 0.2;" />
 </a>
@@ -74,10 +74,10 @@ HTML;
     }
 
     public function getGW2DBTooltipFromGW2DB() {
-        $js = file_get_contents("http://www.gw2db.com/items/{$this->getGW2DBExternalId()}/tooltip?x&advanced=1&callback=WP_OnTooltipLoaded&_=1348564347696");
+        $js = file_get_contents("http://www.gw2db.com/items/{$this->getGW2DBExternalId()}/tooltip");
 
 
-        $js = preg_replace("/^WP_OnTooltipLoaded\(/", '', $js);
+        $js = preg_replace("/^(WP_OnTooltipLoaded)?\(/", '', $js);
         $js = preg_replace("/\)$/", '', $js);
 
         $data = json_decode($js, true);
