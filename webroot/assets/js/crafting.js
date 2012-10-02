@@ -118,12 +118,12 @@ var Crafting = function(item, container, summarycontainer) {
     var topentry   = null;
     var $container = $(container);
     var $sumcont   = $(summarycontainer);
-    var $summary   = $sumcont.find("#recipe_summary");
+    var $summary   = $sumcont.find(".recipe_summary");
 
     var update = function() {
         var total = 0, sellprice = 0, listingfee = 0, transactionfee = 0, profit = 0;
 
-        sellprice      = $sumcont.find('#recipe_summary_sell_price').data('sell-price');
+        sellprice      = $sumcont.find('.recipe_summary_sell_price').data('sell-price');
         transactionfee = Math.round(sellprice * 0.05);
         listingfee     = Math.round(sellprice * 0.10);
 
@@ -153,11 +153,11 @@ var Crafting = function(item, container, summarycontainer) {
 
         profit = sellprice - total - transactionfee - listingfee;
 
-        $sumcont.find('#recipe_summary_total').html(formatGW2Money(total));
-        $sumcont.find('#recipe_summary_sell_price').html(formatGW2Money(sellprice));
-        $sumcont.find('#recipe_summary_profit').html(formatGW2Money(profit));
-        $sumcont.find('#recipe_summary_transaction_fee').html(formatGW2Money(transactionfee));
-        $sumcont.find('#recipe_summary_listing_fee').html(formatGW2Money(listingfee));
+        $sumcont.find('.recipe_summary_total').html(formatGW2Money(total));
+        $sumcont.find('.recipe_summary_sell_price').html(formatGW2Money(sellprice));
+        $sumcont.find('.recipe_summary_profit').html(formatGW2Money(profit));
+        $sumcont.find('.recipe_summary_transaction_fee').html(formatGW2Money(transactionfee));
+        $sumcont.find('.recipe_summary_listing_fee').html(formatGW2Money(listingfee));
     };
 
     var init = function() {
@@ -301,15 +301,23 @@ var CraftEntry = function(item, count, parent, path, last) {
 
         craftprice = calculateCraftPrice();
 
-        var buyable   = (price > 0);
         var craftable = (craftprice > 0);
+        var buyable   = (price > 0);
 
-        var buy   = (buyable && !craftable);
-        var craft = (craftable && !buyable);
+        var should_craft = (craftable && !buyable);
+        var should_buy   = (buyable && !craftable);
+                
+        if (!should_buy && !should_craft) {
+            should_craft = craftable && craftprice < price;
+            should_buy   = buyable && !should_craft;
+        }
+
+        var craft = craftable && should_craft; 
+        var buy   = buyable && !craft;
         
-        if (!buy && !craft) {
-            craft = craftable && craftprice < price;
-            buy   = buyable && !craft;
+        if (path.length == 1 && craftable) {
+            craft = true;
+            buy   = !craft;
         }
         
         if (!buyable && !craftable) {
@@ -327,17 +335,20 @@ var CraftEntry = function(item, count, parent, path, last) {
             $tpcost.addClass('label-inverse label-not-crafted');
             $tpcost.find('input').attr('disabled', true);
         }
-        
+        if (should_craft) { 
+            $ccwrapper.addClass('label-success');
+            $tpcost.addClass('label-important');
+        } else if(should_buy) {
+            $ccwrapper.addClass('label-important');
+            $tpcost.addClass('label-success');            
+        }
+                
         if (!craft && !buy) {
             $tpcost.find('input').attr('checked', true);
         } else if (craft) { 
             $ccwrapper.find('input').attr('checked', true);
-            $ccwrapper.addClass('label-success');
-            $tpcost.addClass('label-important');
-        } else {
-            $tpcost.find('input').attr('checked', true);
-            $ccwrapper.addClass('label-important');
-            $tpcost.addClass('label-success');            
+        } else if(buy) {
+            $tpcost.find('input').attr('checked', true);       
         }
 
         $struct.css('left', -1 * ((path.length-1) * 25));
