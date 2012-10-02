@@ -105,6 +105,6 @@ class CacheHandler extends Memcache implements MemcacheReplacement {
             return null;
         }
 
-        parent::flush();
+        return parent::flush();
     }
 }
