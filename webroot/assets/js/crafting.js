@@ -124,8 +124,8 @@ var Crafting = function(item, container, summarycontainer) {
         var total = 0, sellprice = 0, listingfee = 0, transactionfee = 0, profit = 0;
 
         sellprice      = $sumcont.find('#recipe_summary_sell_price').data('sell-price');
-        transactionfee = sellprice * 0.05;
-        listingfee     = sellprice * 0.10;
+        transactionfee = Math.round(sellprice * 0.05);
+        listingfee     = Math.round(sellprice * 0.10);
 
         $summary.html("");
 
@@ -301,37 +301,43 @@ var CraftEntry = function(item, count, parent, path, last) {
 
         craftprice = calculateCraftPrice();
 
-        if (craftprice == 0 && price == 0) {
+        var buyable   = (price > 0);
+        var craftable = (craftprice > 0);
+
+        var buy   = (buyable && !craftable);
+        var craft = (craftable && !buyable);
+        
+        if (!buy && !craft) {
+            craft = craftable && craftprice < price;
+            buy   = buyable && !craft;
+        }
+        
+        if (!buyable && !craftable) {
             $ccwrapper.remove();
 
             $tpcost.addClass('label-warning label-wide');
             $tpcost.find('label .label-text').html('NOT CRAFTED, NOT SOLD');
-            $tpcost.find('input').attr('checked', true);
             $tpcost.find('input').attr('disabled', true);
-        } else if (craftprice == 0) {
+        } else if (buyable && !craftable) {
             $ccwrapper.addClass('label-inverse label-not-crafted');
             $ccwrapper.find('label .label-text').html('NOT CRAFTED');
-            $ccwrapper.find('input').attr('checked', false);
             $ccwrapper.find('input').attr('disabled', true);
-
-            $tpcost.addClass('label-success');
-            $tpcost.find('input').attr('checked', true);
-        }  else if (price == 0) {
+        }  else if (craftable && !buyable) {
             $tpcost.find('label .label-text').html('NOT SOLD');
             $tpcost.addClass('label-inverse label-not-crafted');
             $tpcost.find('input').attr('disabled', true);
-            $ccwrapper.addClass('label-success');
+        }
+        
+        if (!craft && !buy) {
+            $tpcost.find('input').attr('checked', true);
+        } else if (craft) { 
             $ccwrapper.find('input').attr('checked', true);
+            $ccwrapper.addClass('label-success');
+            $tpcost.addClass('label-important');
         } else {
-            if (craftprice != 0 && (craftprice < price || price == 0)) {
-                $ccwrapper.find('input').attr('checked', true);
-                $ccwrapper.addClass('label-success');
-                $tpcost.addClass('label-important');
-            } else {
-                $tpcost.find('input').attr('checked', true);
-                $ccwrapper.addClass('label-important');
-                $tpcost.addClass('label-success');
-            }
+            $tpcost.find('input').attr('checked', true);
+            $ccwrapper.addClass('label-important');
+            $tpcost.addClass('label-success');            
         }
 
         $struct.css('left', -1 * ((path.length-1) * 25));

@@ -115,8 +115,6 @@
 </div>
 
 <h1>{{ recipe.name }}</h1>
-<div id="recipe_container" class="well recipe-wrapper clearfix">
-</div>
 <div id="recipe_summary_container">
     <h2 style="border-bottom: 1px solid black;">Summary</h2>
     <div class="well clearfix">
@@ -143,11 +141,11 @@
         		</tr>
         		<tr>
         			<td colspan="3" style="text-align: right;">listing fee:</td>
-        			<td id="recipe_summary_listing_fee">{{ (recipe.sellPrice * 0.05) | gw2money }}</td>
+        			<td id="recipe_summary_listing_fee">{{ (recipe.sellPrice * 0.05) | round | gw2money }}</td>
         		</tr>
         		<tr>
         			<td colspan="3" style="text-align: right;">transaction fee:</td>
-        			<td id="recipe_summary_transaction_fee">{{ (recipe.sellPrice * 0.10) | gw2money }}</td>
+        			<td id="recipe_summary_transaction_fee">{{ (recipe.sellPrice * 0.10) | round | gw2money }}</td>
         		</tr>
         		<tr>
         			<th colspan="3" style="text-align: right;">profit:</th>
@@ -157,6 +155,7 @@
         </table>
     </div>
 </div>
+<div id="recipe_container" class="well recipe-wrapper clearfix"></div>
 
 <div class="well">
     <a name="help"></a>
@@ -208,7 +207,7 @@
 		var item = {{ tree | raw }};
 
 		if ($(window).width() > 1400) {
-			$("#recipe_summary_container").appendTo($("#recipe_summary_sidebar"));
+			//$("#recipe_summary_container").appendTo($("#recipe_summary_sidebar"));
 		}
 
         new Crafting(item, $("#recipe_container"), $("#recipe_summary_container"));

@@ -7,6 +7,7 @@ use GW2Spidy\Util\Functions;
 class GenericHelpersExtension extends \Twig_Extension {
     public function getFilters() {
         return array(
+            'round' => new \Twig_Filter_Method($this, 'round'),
             'ceil' => new \Twig_Filter_Method($this, 'ceil'),
             'floor' => new \Twig_Filter_Method($this, 'floor'),
             'rarity_css_class' => new \Twig_Filter_Method($this, 'rarity_css_class'),
@@ -35,6 +36,10 @@ class GenericHelpersExtension extends \Twig_Extension {
 
     public function floor($num) {
         return floor($num);
+    }
+
+    public function round($num) {
+        return round($num);
     }
 
     public function ceil($num) {
