@@ -369,8 +369,9 @@ h1 {
  * [END] tweet plugin style
    ---------------- */
 
-.sidebar .p-tooltip-description {
-    width: 266px !important;
+.sidebar .db-description {
+    width: 260px !important;
+    min-height: 56px;
 }
 
 .sidebar .item-history-list li {
