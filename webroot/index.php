@@ -735,8 +735,61 @@ $app->get("/profit", function(Request $request) use($app) {
  */
 $app->get("/crafting/{discipline}/{page}", function(Request $request, $discipline, $page) use($app) {
     $page = $page > 0 ? $page : 1;
+    $itemsperpage = 50;
 
+    $q = RecipeQuery::create();
 
+    if (!is_null($discipline) && $discipline != -1) {
+        $q->filterByDisciplineId($discipline);
+    }
+
+    $sortByOptions = array('name', 'rating');
+
+    foreach ($sortByOptions as $sortByOption) {
+        if ($request->get("sort_{$sortByOption}", null)) {
+            $sortOrder = $request->get("sort_{$sortByOption}", 'asc');
+            $sortBy    = $sortByOption;
+        }
+    }
+
+    $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'rating';
+    $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'desc';
+
+    $count = $q->count();
+
+    if ($count > 0) {
+        $lastpage = ceil($count / $itemsperpage);
+        if ($page > $lastpage) {
+            $page = $lastpage;
+        }
+    } else {
+        $page     = 1;
+        $lastpage = 1;
+    }
+
+    $q->addSelectColumn("*");
+
+    $q->offset($itemsperpage * ($page-1))
+      ->limit($itemsperpage);
+
+    if ($sortOrder == 'asc') {
+        $q->addAscendingOrderByColumn($sortBy);
+    } else if ($sortOrder == 'desc') {
+        $q->addDescendingOrderByColumn($sortBy);
+    }
+
+    $recipes = $q->find();
+
+    return $app['twig']->render('recipe_list.html.twig', array(
+        'discipline' => $discipline,
+
+        'page'     => $page,
+        'lastpage' => $lastpage,
+        'recipes'  => $recipes,
+
+        'current_sort'       => $sortBy,
+        'current_sort_order' => $sortOrder,
+    ));
 })
 ->assert('discipline', '-?\d+')
 ->assert('page',       '-?\d+')
