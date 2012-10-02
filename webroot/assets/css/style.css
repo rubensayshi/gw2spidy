@@ -357,7 +357,7 @@ h1 {
    ---------------- */
 
 .sidebar .p-tooltip-description {
-    min-width: 266px !important;
+    width: 266px !important;
 }
 
 .sidebar .item-history-list li {
