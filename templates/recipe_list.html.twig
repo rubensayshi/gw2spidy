@@ -62,7 +62,7 @@
 {% block content %}
     {{ _self.pager(page, lastpage, _context) }}
 
-    <table class="item-list-table table table-striped table-condensed">
+    <table class="item-list-table recipe-list-table table table-striped table-condensed">
         <thead>
             {{ _self.th_sortable('Name', 'name', current_sort, current_sort_order, _context) }}
             <th class="type">Type</th>

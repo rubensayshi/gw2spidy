@@ -73,7 +73,8 @@ h1 {
     clear: both;
 }
 
-.item .image {
+.item .image,
+.recipe .image {
     float: left;
 }
 
@@ -82,7 +83,8 @@ h1 {
     margin-left: 5px;
 }
 
-.item .stats .name {
+.item .stats .name,
+.recipe .stats .name {
     font-weight: bold;
 }
 
@@ -147,7 +149,8 @@ h1 {
     text-align: center;
 }
 
-.item-list-table .rarity {
+.item-list-table .rarity,
+.item-list-table .rating {
     min-width: 75px;
     width: 10%;
     text-align: center;
@@ -157,6 +160,16 @@ h1 {
     min-width: 140px;
     width: 20%;
     text-align: center;
+}
+
+.recipe-list-table .info {
+    width: 40%;
+}
+.recipe-list-table .rating {
+    width: 20%;
+}
+.recipe-list-table .type {
+    width: 40%;
 }
 
 /*
