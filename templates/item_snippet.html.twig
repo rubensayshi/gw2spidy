@@ -12,7 +12,7 @@
             {% if item.gw2dbExternalId %}
         	   &nbsp;<a href="http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}" target="_blank" title="Show this item on GW2DB.com"><i class="icon-search"></i> gw2db.com</a>
             {% endif %}
-            &nbsp;<div class="ingame-share" style="display: inline-block; position: relative;">
+            &nbsp;<div title="click and copy the code to link this item ingame" class="ingame-share" style="display: inline-block; position: relative;">
                 <input value="{{ item.ingamecode }}" type="text" class="input-small" style="display: none; margin: 0px; position: absolute; top: 0px; left: 0px;" />
                 <span style="cursor: pointer;">
                     <i class="icon icon-share"></i> ingame
