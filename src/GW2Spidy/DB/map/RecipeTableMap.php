@@ -48,6 +48,10 @@ class RecipeTableMap extends TableMap
         $this->addColumn('RATING', 'Rating', 'INTEGER', false, 4, 0);
         $this->addForeignKey('RESULT_ITEM_ID', 'ResultItemId', 'INTEGER', 'item', 'DATA_ID', false, null, null);
         $this->addColumn('COUNT', 'Count', 'INTEGER', false, 4, 1);
+        $this->addColumn('COST', 'Cost', 'INTEGER', false, null, null);
+        $this->addColumn('SELL_PRICE', 'SellPrice', 'INTEGER', false, null, null);
+        $this->addColumn('PROFIT', 'Profit', 'INTEGER', false, null, null);
+        $this->addColumn('UPDATED', 'Updated', 'TIMESTAMP', false, null, null);
         $this->addColumn('GW2DB_ID', 'Gw2dbId', 'INTEGER', false, null, null);
         $this->addColumn('GW2DB_EXTERNAL_ID', 'Gw2dbExternalId', 'INTEGER', false, null, null);
         // validators

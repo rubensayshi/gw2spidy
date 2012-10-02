@@ -21,6 +21,33 @@ use GW2Spidy\DB\om\BaseRecipe;
  * @package    propel.generator.gw2spidy
  */
 class Recipe extends BaseRecipe {
+    public function calculatePrice($forceCrafted = false) {
+        $cost = 0;
+
+        /* @var $ingredient RecipeIngredient */
+        foreach ($this->getIngredients() as $ingredient) {
+            $item      = $ingredient->getItem();
+            $tpcost    = $ingredient->getCount() * $item->getMinSaleUnitPrice();
+            $craftcost = null;
+
+            if ($item->getResultOfRecipes()->count() && $recipe = reset($item->getResultOfRecipes())) {
+                $crafts = ceil($ingredient->getCount() / $recipe->getCount());
+
+                $craftcost = $recipe->calculatePrice() * $crafts;
+            }
+
+            if (!$craftcost) {
+                $cost += $tpcost;
+            } else if (!$tpcost || $forceCrafted) {
+                $cost += $craftcost;
+            } else {
+                $cost += min($tpcost, $craftcost);
+            }
+        }
+
+        return $cost;
+    }
+
     public function getGW2DBTooltip($href = null) {
         $cache    = CacheHandler::getInstance('recipe_gw2db_tooltips');
         $cacheKey = $this->getDataId() . "::" . substr(md5($href),0,10);

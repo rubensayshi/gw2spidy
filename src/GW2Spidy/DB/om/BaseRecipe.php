@@ -5,11 +5,14 @@ namespace GW2Spidy\DB\om;
 use \BaseObject;
 use \BasePeer;
 use \Criteria;
+use \DateTime;
+use \DateTimeZone;
 use \Exception;
 use \PDO;
 use \Persistent;
 use \Propel;
 use \PropelCollection;
+use \PropelDateTime;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
@@ -89,6 +92,30 @@ abstract class BaseRecipe extends BaseObject implements Persistent
      * @var        int
      */
     protected $count;
+
+    /**
+     * The value for the cost field.
+     * @var        int
+     */
+    protected $cost;
+
+    /**
+     * The value for the sell_price field.
+     * @var        int
+     */
+    protected $sell_price;
+
+    /**
+     * The value for the profit field.
+     * @var        int
+     */
+    protected $profit;
+
+    /**
+     * The value for the updated field.
+     * @var        string
+     */
+    protected $updated;
 
     /**
      * The value for the gw2db_id field.
@@ -235,6 +262,77 @@ abstract class BaseRecipe extends BaseObject implements Persistent
     {
 
         return $this->count;
+    }
+
+    /**
+     * Get the [cost] column value.
+     * 
+     * @return   int
+     */
+    public function getCost()
+    {
+
+        return $this->cost;
+    }
+
+    /**
+     * Get the [sell_price] column value.
+     * 
+     * @return   int
+     */
+    public function getSellPrice()
+    {
+
+        return $this->sell_price;
+    }
+
+    /**
+     * Get the [profit] column value.
+     * 
+     * @return   int
+     */
+    public function getProfit()
+    {
+
+        return $this->profit;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *							If format is NULL, then the raw DateTime object will be returned.
+     * @return mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdated($format = 'Y-m-d H:i:s')
+    {
+        if ($this->updated === null) {
+            return null;
+        }
+
+
+        if ($this->updated === '0000-00-00 00:00:00') {
+            // while technically this is not a default value of NULL,
+            // this seems to be closest in meaning.
+            return null;
+        } else {
+            try {
+                $dt = new DateTime($this->updated);
+            } catch (Exception $x) {
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated, true), $x);
+            }
+        }
+
+        if ($format === null) {
+            // Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+            return $dt;
+        } elseif (strpos($format, '%') !== false) {
+            return strftime($format, $dt->format('U'));
+        } else {
+            return $dt->format($format);
+        }
     }
 
     /**
@@ -394,6 +492,92 @@ abstract class BaseRecipe extends BaseObject implements Persistent
     } // setCount()
 
     /**
+     * Set the value of [cost] column.
+     * 
+     * @param      int $v new value
+     * @return   Recipe The current object (for fluent API support)
+     */
+    public function setCost($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->cost !== $v) {
+            $this->cost = $v;
+            $this->modifiedColumns[] = RecipePeer::COST;
+        }
+
+
+        return $this;
+    } // setCost()
+
+    /**
+     * Set the value of [sell_price] column.
+     * 
+     * @param      int $v new value
+     * @return   Recipe The current object (for fluent API support)
+     */
+    public function setSellPrice($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->sell_price !== $v) {
+            $this->sell_price = $v;
+            $this->modifiedColumns[] = RecipePeer::SELL_PRICE;
+        }
+
+
+        return $this;
+    } // setSellPrice()
+
+    /**
+     * Set the value of [profit] column.
+     * 
+     * @param      int $v new value
+     * @return   Recipe The current object (for fluent API support)
+     */
+    public function setProfit($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->profit !== $v) {
+            $this->profit = $v;
+            $this->modifiedColumns[] = RecipePeer::PROFIT;
+        }
+
+
+        return $this;
+    } // setProfit()
+
+    /**
+     * Sets the value of [updated] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   Recipe The current object (for fluent API support)
+     */
+    public function setUpdated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->updated !== null || $dt !== null) {
+            $currentDateAsString = ($this->updated !== null && $tmpDt = new DateTime($this->updated)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+            $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+            if ($currentDateAsString !== $newDateAsString) {
+                $this->updated = $newDateAsString;
+                $this->modifiedColumns[] = RecipePeer::UPDATED;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdated()
+
+    /**
      * Set the value of [gw2db_id] column.
      * 
      * @param      int $v new value
@@ -481,8 +665,12 @@ abstract class BaseRecipe extends BaseObject implements Persistent
             $this->rating = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
             $this->result_item_id = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
             $this->count = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-            $this->gw2db_id = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
-            $this->gw2db_external_id = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+            $this->cost = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+            $this->sell_price = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+            $this->profit = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+            $this->updated = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+            $this->gw2db_id = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+            $this->gw2db_external_id = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -491,7 +679,7 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = RecipePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 12; // 12 = RecipePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Recipe object", $e);
@@ -784,6 +972,18 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         if ($this->isColumnModified(RecipePeer::COUNT)) {
             $modifiedColumns[':p' . $index++]  = '`COUNT`';
         }
+        if ($this->isColumnModified(RecipePeer::COST)) {
+            $modifiedColumns[':p' . $index++]  = '`COST`';
+        }
+        if ($this->isColumnModified(RecipePeer::SELL_PRICE)) {
+            $modifiedColumns[':p' . $index++]  = '`SELL_PRICE`';
+        }
+        if ($this->isColumnModified(RecipePeer::PROFIT)) {
+            $modifiedColumns[':p' . $index++]  = '`PROFIT`';
+        }
+        if ($this->isColumnModified(RecipePeer::UPDATED)) {
+            $modifiedColumns[':p' . $index++]  = '`UPDATED`';
+        }
         if ($this->isColumnModified(RecipePeer::GW2DB_ID)) {
             $modifiedColumns[':p' . $index++]  = '`GW2DB_ID`';
         }
@@ -818,6 +1018,18 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                         break;
                     case '`COUNT`':
 						$stmt->bindValue($identifier, $this->count, PDO::PARAM_INT);
+                        break;
+                    case '`COST`':
+						$stmt->bindValue($identifier, $this->cost, PDO::PARAM_INT);
+                        break;
+                    case '`SELL_PRICE`':
+						$stmt->bindValue($identifier, $this->sell_price, PDO::PARAM_INT);
+                        break;
+                    case '`PROFIT`':
+						$stmt->bindValue($identifier, $this->profit, PDO::PARAM_INT);
+                        break;
+                    case '`UPDATED`':
+						$stmt->bindValue($identifier, $this->updated, PDO::PARAM_STR);
                         break;
                     case '`GW2DB_ID`':
 						$stmt->bindValue($identifier, $this->gw2db_id, PDO::PARAM_INT);
@@ -997,9 +1209,21 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                 return $this->getCount();
                 break;
             case 6:
-                return $this->getGw2dbId();
+                return $this->getCost();
                 break;
             case 7:
+                return $this->getSellPrice();
+                break;
+            case 8:
+                return $this->getProfit();
+                break;
+            case 9:
+                return $this->getUpdated();
+                break;
+            case 10:
+                return $this->getGw2dbId();
+                break;
+            case 11:
                 return $this->getGw2dbExternalId();
                 break;
             default:
@@ -1037,8 +1261,12 @@ abstract class BaseRecipe extends BaseObject implements Persistent
             $keys[3] => $this->getRating(),
             $keys[4] => $this->getResultItemId(),
             $keys[5] => $this->getCount(),
-            $keys[6] => $this->getGw2dbId(),
-            $keys[7] => $this->getGw2dbExternalId(),
+            $keys[6] => $this->getCost(),
+            $keys[7] => $this->getSellPrice(),
+            $keys[8] => $this->getProfit(),
+            $keys[9] => $this->getUpdated(),
+            $keys[10] => $this->getGw2dbId(),
+            $keys[11] => $this->getGw2dbExternalId(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aDiscipline) {
@@ -1103,9 +1331,21 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                 $this->setCount($value);
                 break;
             case 6:
-                $this->setGw2dbId($value);
+                $this->setCost($value);
                 break;
             case 7:
+                $this->setSellPrice($value);
+                break;
+            case 8:
+                $this->setProfit($value);
+                break;
+            case 9:
+                $this->setUpdated($value);
+                break;
+            case 10:
+                $this->setGw2dbId($value);
+                break;
+            case 11:
                 $this->setGw2dbExternalId($value);
                 break;
         } // switch()
@@ -1138,8 +1378,12 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         if (array_key_exists($keys[3], $arr)) $this->setRating($arr[$keys[3]]);
         if (array_key_exists($keys[4], $arr)) $this->setResultItemId($arr[$keys[4]]);
         if (array_key_exists($keys[5], $arr)) $this->setCount($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setGw2dbId($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setGw2dbExternalId($arr[$keys[7]]);
+        if (array_key_exists($keys[6], $arr)) $this->setCost($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setSellPrice($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setProfit($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setUpdated($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setGw2dbId($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setGw2dbExternalId($arr[$keys[11]]);
     }
 
     /**
@@ -1157,6 +1401,10 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         if ($this->isColumnModified(RecipePeer::RATING)) $criteria->add(RecipePeer::RATING, $this->rating);
         if ($this->isColumnModified(RecipePeer::RESULT_ITEM_ID)) $criteria->add(RecipePeer::RESULT_ITEM_ID, $this->result_item_id);
         if ($this->isColumnModified(RecipePeer::COUNT)) $criteria->add(RecipePeer::COUNT, $this->count);
+        if ($this->isColumnModified(RecipePeer::COST)) $criteria->add(RecipePeer::COST, $this->cost);
+        if ($this->isColumnModified(RecipePeer::SELL_PRICE)) $criteria->add(RecipePeer::SELL_PRICE, $this->sell_price);
+        if ($this->isColumnModified(RecipePeer::PROFIT)) $criteria->add(RecipePeer::PROFIT, $this->profit);
+        if ($this->isColumnModified(RecipePeer::UPDATED)) $criteria->add(RecipePeer::UPDATED, $this->updated);
         if ($this->isColumnModified(RecipePeer::GW2DB_ID)) $criteria->add(RecipePeer::GW2DB_ID, $this->gw2db_id);
         if ($this->isColumnModified(RecipePeer::GW2DB_EXTERNAL_ID)) $criteria->add(RecipePeer::GW2DB_EXTERNAL_ID, $this->gw2db_external_id);
 
@@ -1227,6 +1475,10 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         $copyObj->setRating($this->getRating());
         $copyObj->setResultItemId($this->getResultItemId());
         $copyObj->setCount($this->getCount());
+        $copyObj->setCost($this->getCost());
+        $copyObj->setSellPrice($this->getSellPrice());
+        $copyObj->setProfit($this->getProfit());
+        $copyObj->setUpdated($this->getUpdated());
         $copyObj->setGw2dbId($this->getGw2dbId());
         $copyObj->setGw2dbExternalId($this->getGw2dbExternalId());
 
@@ -1822,6 +2074,10 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         $this->rating = null;
         $this->result_item_id = null;
         $this->count = null;
+        $this->cost = null;
+        $this->sell_price = null;
+        $this->profit = null;
+        $this->updated = null;
         $this->gw2db_id = null;
         $this->gw2db_external_id = null;
         $this->alreadyInSave = false;

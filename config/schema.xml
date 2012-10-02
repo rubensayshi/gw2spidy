@@ -58,13 +58,18 @@
         <column name="result_item_id" type="integer" />
         <column name="count" type="integer" size="4" default="1" />
 
+        <column name="cost" type="integer" />
+        <column name="sell_price" type="integer" />
+        <column name="profit" type="integer" />
+        <column name="updated" type="timestamp" />
+
         <column name="gw2db_id" type="integer" />
         <column name="gw2db_external_id" type="integer" />
 
         <foreign-key foreignTable="discipline" phpName="Discipline" refPhpName="Recipe">
             <reference local="discipline_id" foreign="id" />
         </foreign-key>
-        
+
         <foreign-key foreignTable="item" phpName="ResultItem" refPhpName="ResultOfRecipe">
             <reference local="result_item_id" foreign="data_id" />
         </foreign-key>

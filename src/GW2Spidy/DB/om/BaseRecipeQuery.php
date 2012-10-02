@@ -30,6 +30,10 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     RecipeQuery orderByRating($order = Criteria::ASC) Order by the rating column
  * @method     RecipeQuery orderByResultItemId($order = Criteria::ASC) Order by the result_item_id column
  * @method     RecipeQuery orderByCount($order = Criteria::ASC) Order by the count column
+ * @method     RecipeQuery orderByCost($order = Criteria::ASC) Order by the cost column
+ * @method     RecipeQuery orderBySellPrice($order = Criteria::ASC) Order by the sell_price column
+ * @method     RecipeQuery orderByProfit($order = Criteria::ASC) Order by the profit column
+ * @method     RecipeQuery orderByUpdated($order = Criteria::ASC) Order by the updated column
  * @method     RecipeQuery orderByGw2dbId($order = Criteria::ASC) Order by the gw2db_id column
  * @method     RecipeQuery orderByGw2dbExternalId($order = Criteria::ASC) Order by the gw2db_external_id column
  *
@@ -39,6 +43,10 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     RecipeQuery groupByRating() Group by the rating column
  * @method     RecipeQuery groupByResultItemId() Group by the result_item_id column
  * @method     RecipeQuery groupByCount() Group by the count column
+ * @method     RecipeQuery groupByCost() Group by the cost column
+ * @method     RecipeQuery groupBySellPrice() Group by the sell_price column
+ * @method     RecipeQuery groupByProfit() Group by the profit column
+ * @method     RecipeQuery groupByUpdated() Group by the updated column
  * @method     RecipeQuery groupByGw2dbId() Group by the gw2db_id column
  * @method     RecipeQuery groupByGw2dbExternalId() Group by the gw2db_external_id column
  *
@@ -67,6 +75,10 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     Recipe findOneByRating(int $rating) Return the first Recipe filtered by the rating column
  * @method     Recipe findOneByResultItemId(int $result_item_id) Return the first Recipe filtered by the result_item_id column
  * @method     Recipe findOneByCount(int $count) Return the first Recipe filtered by the count column
+ * @method     Recipe findOneByCost(int $cost) Return the first Recipe filtered by the cost column
+ * @method     Recipe findOneBySellPrice(int $sell_price) Return the first Recipe filtered by the sell_price column
+ * @method     Recipe findOneByProfit(int $profit) Return the first Recipe filtered by the profit column
+ * @method     Recipe findOneByUpdated(string $updated) Return the first Recipe filtered by the updated column
  * @method     Recipe findOneByGw2dbId(int $gw2db_id) Return the first Recipe filtered by the gw2db_id column
  * @method     Recipe findOneByGw2dbExternalId(int $gw2db_external_id) Return the first Recipe filtered by the gw2db_external_id column
  *
@@ -76,6 +88,10 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     array findByRating(int $rating) Return Recipe objects filtered by the rating column
  * @method     array findByResultItemId(int $result_item_id) Return Recipe objects filtered by the result_item_id column
  * @method     array findByCount(int $count) Return Recipe objects filtered by the count column
+ * @method     array findByCost(int $cost) Return Recipe objects filtered by the cost column
+ * @method     array findBySellPrice(int $sell_price) Return Recipe objects filtered by the sell_price column
+ * @method     array findByProfit(int $profit) Return Recipe objects filtered by the profit column
+ * @method     array findByUpdated(string $updated) Return Recipe objects filtered by the updated column
  * @method     array findByGw2dbId(int $gw2db_id) Return Recipe objects filtered by the gw2db_id column
  * @method     array findByGw2dbExternalId(int $gw2db_external_id) Return Recipe objects filtered by the gw2db_external_id column
  *
@@ -168,7 +184,7 @@ abstract class BaseRecipeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `NAME`, `DISCIPLINE_ID`, `RATING`, `RESULT_ITEM_ID`, `COUNT`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID` FROM `recipe` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `NAME`, `DISCIPLINE_ID`, `RATING`, `RESULT_ITEM_ID`, `COUNT`, `COST`, `SELL_PRICE`, `PROFIT`, `UPDATED`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID` FROM `recipe` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -479,6 +495,172 @@ abstract class BaseRecipeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(RecipePeer::COUNT, $count, $comparison);
+    }
+
+    /**
+     * Filter the query on the cost column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCost(1234); // WHERE cost = 1234
+     * $query->filterByCost(array(12, 34)); // WHERE cost IN (12, 34)
+     * $query->filterByCost(array('min' => 12)); // WHERE cost > 12
+     * </code>
+     *
+     * @param     mixed $cost The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return RecipeQuery The current query, for fluid interface
+     */
+    public function filterByCost($cost = null, $comparison = null)
+    {
+        if (is_array($cost)) {
+            $useMinMax = false;
+            if (isset($cost['min'])) {
+                $this->addUsingAlias(RecipePeer::COST, $cost['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($cost['max'])) {
+                $this->addUsingAlias(RecipePeer::COST, $cost['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(RecipePeer::COST, $cost, $comparison);
+    }
+
+    /**
+     * Filter the query on the sell_price column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterBySellPrice(1234); // WHERE sell_price = 1234
+     * $query->filterBySellPrice(array(12, 34)); // WHERE sell_price IN (12, 34)
+     * $query->filterBySellPrice(array('min' => 12)); // WHERE sell_price > 12
+     * </code>
+     *
+     * @param     mixed $sellPrice The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return RecipeQuery The current query, for fluid interface
+     */
+    public function filterBySellPrice($sellPrice = null, $comparison = null)
+    {
+        if (is_array($sellPrice)) {
+            $useMinMax = false;
+            if (isset($sellPrice['min'])) {
+                $this->addUsingAlias(RecipePeer::SELL_PRICE, $sellPrice['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($sellPrice['max'])) {
+                $this->addUsingAlias(RecipePeer::SELL_PRICE, $sellPrice['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(RecipePeer::SELL_PRICE, $sellPrice, $comparison);
+    }
+
+    /**
+     * Filter the query on the profit column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByProfit(1234); // WHERE profit = 1234
+     * $query->filterByProfit(array(12, 34)); // WHERE profit IN (12, 34)
+     * $query->filterByProfit(array('min' => 12)); // WHERE profit > 12
+     * </code>
+     *
+     * @param     mixed $profit The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return RecipeQuery The current query, for fluid interface
+     */
+    public function filterByProfit($profit = null, $comparison = null)
+    {
+        if (is_array($profit)) {
+            $useMinMax = false;
+            if (isset($profit['min'])) {
+                $this->addUsingAlias(RecipePeer::PROFIT, $profit['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($profit['max'])) {
+                $this->addUsingAlias(RecipePeer::PROFIT, $profit['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(RecipePeer::PROFIT, $profit, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdated('2011-03-14'); // WHERE updated = '2011-03-14'
+     * $query->filterByUpdated('now'); // WHERE updated = '2011-03-14'
+     * $query->filterByUpdated(array('max' => 'yesterday')); // WHERE updated > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updated The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return RecipeQuery The current query, for fluid interface
+     */
+    public function filterByUpdated($updated = null, $comparison = null)
+    {
+        if (is_array($updated)) {
+            $useMinMax = false;
+            if (isset($updated['min'])) {
+                $this->addUsingAlias(RecipePeer::UPDATED, $updated['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updated['max'])) {
+                $this->addUsingAlias(RecipePeer::UPDATED, $updated['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(RecipePeer::UPDATED, $updated, $comparison);
     }
 
     /**
