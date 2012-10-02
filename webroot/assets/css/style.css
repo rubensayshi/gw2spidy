@@ -9,6 +9,7 @@ body {
        -moz-background-size: cover;
          -o-background-size: cover;
             background-size: cover;
+    font-size: 12px;
 }
 
 h1 {
@@ -132,7 +133,7 @@ h1 {
 .item-list-table .min_sale_unit_price,
 .item-list-table .max_offer_unit_price,
 .item-list-table .margin {
-    min-width: 110px;
+    min-width: 115px;
     width: 10%;
     text-align: center;
 }
@@ -142,7 +143,7 @@ h1 {
 }
 
 .item-list-table .restriction_level {
-    min-width: 70px;
+    min-width: 40px;
     width: 5%;
     text-align: center;
 }
@@ -154,8 +155,8 @@ h1 {
 }
 
 .item-list-table .type {
-    min-width: 140px;
-    width: 20%;
+    min-width: 120px;
+    width: 10%;
     text-align: center;
 }
 
