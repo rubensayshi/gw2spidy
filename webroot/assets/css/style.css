@@ -84,7 +84,9 @@ h1 {
 }
 
 .item .stats .name,
-.recipe .stats .name {
+.recipe .stats .name,
+.item .info .name,
+.recipe .info .name {
     font-weight: bold;
 }
 
