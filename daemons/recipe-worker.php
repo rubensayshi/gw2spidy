@@ -10,6 +10,7 @@ $offset = 20;
 $i = 0;
 $q = RecipeQuery::create();
 $q->limit($offset)
+  ->filterByDataId(1093)
   ->offset($i);
 
 while (($recipes = $q->find()) && $recipes->count()) {
@@ -17,7 +18,7 @@ while (($recipes = $q->find()) && $recipes->count()) {
 
     /* @var $recipe GW2Spidy\DB\Recipe */
     foreach ($recipes as $recipe) {
-        $price = $recipe->calculatePrice(true);
+        $price = $recipe->calculatePrice();
 
         $recipe->setCost($price);
         $recipe->setSellPrice($recipe->getResultItem()->getMinSaleUnitPrice());

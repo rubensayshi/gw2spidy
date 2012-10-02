@@ -113,16 +113,20 @@ var gun = {
     }
 };
 
-var Crafting = function(item, container, summary, total, sellPrice, profit) {
+var Crafting = function(item, container, summarycontainer) {
     var self       = this;
     var topentry   = null;
     var $container = $(container);
-    var $summary   = $(summary);
-    var $total     = $(total);
-    var $sellPrice = $(sellPrice);
-    var $profit    = $(profit);
+    var $sumcont   = $(summarycontainer);
+    var $summary   = $sumcont.find("#recipe_summary");
 
     var update = function() {
+        var total = 0, sellprice = 0, listingfee = 0, transactionfee = 0, profit = 0;
+
+        sellprice      = $sumcont.find('#recipe_summary_sell_price').data('sell-price');
+        transactionfee = sellprice * 0.05;
+        listingfee     = sellprice * 0.10;
+
         $summary.html("");
 
         ingredients = {};
@@ -134,7 +138,6 @@ var Crafting = function(item, container, summary, total, sellPrice, profit) {
             }
         });
 
-        var total = 0;
         $.each(ingredients, function(id, ingredient) {
             var $row = $("<tr />");
 
@@ -148,8 +151,13 @@ var Crafting = function(item, container, summary, total, sellPrice, profit) {
             $summary.append($row);
         });
 
-        $total.html(formatGW2Money(total));
-        $profit.html(formatGW2Money($sellPrice.data('sell-price') - total));
+        profit = sellprice - total - transactionfee - listingfee;
+
+        $sumcont.find('#recipe_summary_total').html(formatGW2Money(total));
+        $sumcont.find('#recipe_summary_sell_price').html(formatGW2Money(sellprice));
+        $sumcont.find('#recipe_summary_profit').html(formatGW2Money(profit));
+        $sumcont.find('#recipe_summary_transaction_fee').html(formatGW2Money(transactionfee));
+        $sumcont.find('#recipe_summary_listing_fee').html(formatGW2Money(listingfee));
     };
 
     var init = function() {
@@ -284,14 +292,14 @@ var CraftEntry = function(item, count, parent, path, last) {
                 var count = crafts * ingredient[1];
                 var price = ingre.price * count;
 
-                craftprice += price;
-
                 var entry = new CraftEntry(ingre, count, self, path, (k == item.recipe.ingredients.length-1));
                 children.push(entry);
 
                 $childList.append(entry.render());
             });
         }
+
+        craftprice = calculateCraftPrice();
 
         if (craftprice == 0 && price == 0) {
             $ccwrapper.remove();

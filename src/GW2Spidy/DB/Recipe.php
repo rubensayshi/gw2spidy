@@ -32,7 +32,7 @@ class Recipe extends BaseRecipe {
     }
 
     public function calculatePrice($forceCrafted = false) {
-        $cost = 0;
+        $total = 0;
 
         /* @var $ingredient RecipeIngredient */
         foreach ($this->getIngredients() as $ingredient) {
@@ -43,19 +43,22 @@ class Recipe extends BaseRecipe {
             if ($item->getResultOfRecipes()->count() && $recipe = reset($item->getResultOfRecipes())) {
                 $crafts = ceil($ingredient->getCount() / $recipe->getCount());
 
-                $craftcost = $recipe->calculatePrice() * $crafts;
+                $craftcost = $recipe->calculatePrice($forceCrafted) * $crafts;
             }
+
 
             if (!$craftcost) {
-                $cost += $tpcost;
+                $cost = $tpcost;
             } else if (!$tpcost || $forceCrafted) {
-                $cost += $craftcost;
+                $cost = $craftcost;
             } else {
-                $cost += min($tpcost, $craftcost);
+                $cost = min($tpcost, $craftcost);
             }
+
+            $total += $cost;
         }
 
-        return $cost;
+        return $total;
     }
 
     public function getGW2DBTooltip($href = null) {
