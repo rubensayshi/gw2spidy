@@ -21,6 +21,14 @@ use GW2Spidy\DB\om\BaseRecipe;
  * @package    propel.generator.gw2spidy
  */
 class Recipe extends BaseRecipe {
+    public function save(\PropelPDO $con = null) {
+        if ($this->isColumnModified(RecipePeer::SELL_PRICE) || $this->isColumnModified(RecipePeer::COST) || $this->isColumnModified(RecipePeer::PROFIT)) {
+            $this->setUpdated(new \DateTime());
+        }
+
+        return parent::save($con);
+    }
+
     public function calculatePrice($forceCrafted = false) {
         $cost = 0;
 

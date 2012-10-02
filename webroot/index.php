@@ -743,7 +743,7 @@ $app->get("/crafting/{discipline}/{page}", function(Request $request, $disciplin
         $q->filterByDisciplineId($discipline);
     }
 
-    $sortByOptions = array('name', 'rating');
+    $sortByOptions = array('name', 'rating', 'cost', 'sell_price', 'profit');
 
     foreach ($sortByOptions as $sortByOption) {
         if ($request->get("sort_{$sortByOption}", null)) {

@@ -135,7 +135,10 @@ h1 {
 }
 .item-list-table .min_sale_unit_price,
 .item-list-table .max_offer_unit_price,
-.item-list-table .margin {
+.item-list-table .margin,
+.item-list-table .cost,
+.item-list-table .sell_price,
+.item-list-table .profit, {
     min-width: 110px;
     width: 10%;
     text-align: center;
@@ -164,15 +167,6 @@ h1 {
     text-align: center;
 }
 
-.recipe-list-table .info {
-    width: 40%;
-}
-.recipe-list-table .rating {
-    width: 20%;
-}
-.recipe-list-table .type {
-    width: 40%;
-}
 
 /*
  * some responsive hiding of columns for smaller screens
@@ -376,7 +370,7 @@ h1 {
 }
 
 .sidebar .item-history-list li {
-    margin-bottom: 5px;   
+    margin-bottom: 5px;
 }
 
 .sidebar .item-history-list .db-tooltip .db-summary > *,

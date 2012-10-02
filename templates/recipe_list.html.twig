@@ -67,6 +67,9 @@
             {{ _self.th_sortable('Name', 'name', current_sort, current_sort_order, _context) }}
             <th class="type">Type</th>
             {{ _self.th_sortable('Rating', 'rating', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Cost', 'cost', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Sell Price', 'sell_price', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Profit', 'profit', current_sort, current_sort_order, _context) }}
         </thead>
         {% for recipe in recipes %}
             <tr class="recipe">
@@ -80,6 +83,15 @@
                 </td>
                 <td class="rating">
                     {{ recipe.rating }}
+                </td>
+                <td class="cost">
+                    {{ recipe.cost | gw2money }}
+                </td>
+                <td class="sell_price">
+                    {{ recipe.sellPrice | gw2money }}
+                </td>
+                <td class="profit">
+                    {{ recipe.profit | gw2money }}
                 </td>
             </tr>
         {% endfor %}

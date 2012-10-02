@@ -19,10 +19,9 @@ while (($recipes = $q->find()) && $recipes->count()) {
     foreach ($recipes as $recipe) {
         $price = $recipe->calculatePrice(true);
 
-        $recipe->setUpdated(new DateTime());
         $recipe->setCost($price);
         $recipe->setSellPrice($recipe->getResultItem()->getMinSaleUnitPrice());
-        $recipe->setProfit($recipe->getResultItem()->getMinSaleUnitPrice() - $price);
+        $recipe->setProfit(($recipe->getResultItem()->getMinSaleUnitPrice() * 0.85) - $price);
 
         $recipe->save();
 
