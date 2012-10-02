@@ -267,12 +267,13 @@ var CraftEntry = function(item, count, parent, path, last) {
         };
 
         var $tpcost = renderOption('BUY', price, TP);
-
         $price.append($tpcost);
+
+        var $ccwrapper = renderOption('CRAFT', 0, CRAFT);
+        $price.append($ccwrapper);
 
         if (item.recipe) {
             var crafts     = Math.ceil(count / item.recipe.count);
-            var $ccwrapper = renderOption('CRAFT', 0, CRAFT);
             $craftcost     = $ccwrapper.find('span.price');
 
             $.each(item.recipe.ingredients, function(k, ingredient) {
@@ -287,17 +288,31 @@ var CraftEntry = function(item, count, parent, path, last) {
 
                 $childList.append(entry.render());
             });
-
-            $price.append($ccwrapper);
         }
 
-        if (!$ccwrapper) {
-            $tpcost.addClass('label-inverse label-not-craftable');
-            $tpcost.find('label .label-text').html('NOT CRAFTABLE');
+        if (craftprice == 0 && price == 0) {
+            $ccwrapper.remove();
+
+            $tpcost.addClass('label-warning label-wide');
+            $tpcost.find('label .label-text').html('NOT CRAFTED, NOT SOLD');
             $tpcost.find('input').attr('checked', true);
-            $tpcost.find('input').attr('readonly', true);
+            $tpcost.find('input').attr('disabled', true);
+        } else if (craftprice == 0) {
+            $ccwrapper.addClass('label-inverse label-not-crafted');
+            $ccwrapper.find('label .label-text').html('NOT CRAFTED');
+            $ccwrapper.find('input').attr('checked', false);
+            $ccwrapper.find('input').attr('disabled', true);
+
+            $tpcost.addClass('label-success');
+            $tpcost.find('input').attr('checked', true);
+        }  else if (price == 0) {
+            $tpcost.find('label .label-text').html('NOT SOLD');
+            $tpcost.addClass('label-inverse label-not-crafted');
+            $tpcost.find('input').attr('disabled', true);
+            $ccwrapper.addClass('label-success');
+            $ccwrapper.find('input').attr('checked', true);
         } else {
-            if (craftprice != 0 && craftprice < price) {
+            if (craftprice != 0 && (craftprice < price || price == 0)) {
                 $ccwrapper.find('input').attr('checked', true);
                 $ccwrapper.addClass('label-success');
                 $tpcost.addClass('label-important');

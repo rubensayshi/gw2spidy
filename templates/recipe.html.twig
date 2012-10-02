@@ -63,9 +63,11 @@
         padding-left: 25px;
     }
 
-    .label-not-craftable {
+    .label-wide {
         width: 264px !important;
-        opacity: 0.8;
+    }
+    .label-not-crafted {
+        opacity: 0.3;
     }
 
     .children-disabled .item-row {
@@ -109,11 +111,6 @@
 </style>
 
 <h1>{{ recipe.name }}</h1>
-<p class="alert alert-info">
-    Select which items you want to buy and which you want to craft. <br />
-    The cheapest path has been marked green and selected by default!
-</p>
-
 <div id="recipe_container" class="well recipe-wrapper clearfix">
 </div>
 <div id="recipe_summary_container">
@@ -140,6 +137,50 @@
         </table>
     </div>
 </div>
+
+<div class="well">
+    <h3>How does it work?</h3>
+    <p>Select which parts of the recipe you want to buy and which you want to craft, we marked the best choices for you by default ;-) <br />
+        The resulting shopping list and cost / profit is displayed in the summary!
+    </p>
+</div>
+
+<table class="table well">
+    <tr>
+        <th colspan="2"><h3>Legend</h3></th>
+    </tr>
+    <tr>
+        <td>
+            <span class="label label-success">BUY</span> <span class="label label-important">CRAFT</span>
+        </td>
+        <td>more profitable to buy from TP, you can still choose to craft it of course!</td>
+    </tr>
+    <tr>
+        <td>
+            <span class="label label-important">BUY</span> <span class="label label-success">CRAFT</span>
+        </td>
+        <td>more profitable to craft, you can still choose to buy it of course!</td>
+    </tr>
+    <tr>
+        <td>
+            <span class="label label-inverse label-not-crafted">NOT SOLD</span> <span class="label label-success">CRAFT</span>
+        </td>
+        <td>we don't have a sell price for this item so your only option is to craft it</td>
+    </tr>
+    <tr>
+        <td>
+            <span class="label label-success">BUY</span> <span class="label label-inverse label-not-crafted">NOT CRAFTED</span>
+        </td>
+        <td>we don't have a recipe for this item so your only option is to buy it</td>
+    </tr>
+    <tr>
+        <td>
+            <span class="label label-wide label-warning">NOT CRAFTED, NOT SOLD</span>
+        </td>
+        <td>we don't have a recipe and we don't have a sell price for this item!</td>
+    </tr>
+</table>
+
 
 <script type="text/javascript">
     $(document).ready(function() {
