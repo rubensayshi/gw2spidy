@@ -113,12 +113,14 @@ var gun = {
     }
 };
 
-var Crafting = function(container, summary, total, item) {
+var Crafting = function(item, container, summary, total, sellPrice, profit) {
     var self       = this;
     var topentry   = null;
     var $container = $(container);
     var $summary   = $(summary);
     var $total     = $(total);
+    var $sellPrice = $(sellPrice);
+    var $profit    = $(profit);
 
     var update = function() {
         $summary.html("");
@@ -147,6 +149,7 @@ var Crafting = function(container, summary, total, item) {
         });
 
         $total.html(formatGW2Money(total));
+        $profit.html(formatGW2Money($sellPrice.data('sell-price') - total));
     };
 
     var init = function() {
@@ -378,21 +381,30 @@ var CraftEntry = function(item, count, parent, path, last) {
 var formatGW2Money = function(copper) {
     var string = "";
 
+    if (negative = copper < 0) {
+        copper *= -1;
+    }
+
     var gold = Math.floor(copper / 10000);
     if (gold) {
         copper = copper % (gold * 10000);
+        gold = negative ? gold*-1 : gold;
+
         string += gold + "g ";
     }
 
     var silver = Math.floor(copper / 100);
     if (silver) {
         copper = copper % (silver * 100);
+        silver = negative ? silver*-1 : silver;
+
         if (silver) string += silver + "s ";
     }
 
     if (copper) {
         // round by 2 digits
         copper = Math.round(copper * 100) / 100;
+        copper = negative ? copper*-1 : copper;
 
         string += copper + "c ";
     }

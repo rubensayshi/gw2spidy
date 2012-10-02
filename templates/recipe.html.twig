@@ -104,7 +104,7 @@
         width: 15%;
     }
     .crafting-summary-table .total {
-        min-width: 75px;
+        min-width: 85px;
         width: 20%;
     }
 
@@ -134,8 +134,19 @@
         	</tbody>
         	<tfoot>
         		<tr style="border-top: 2px solid black;">
-        			<td colspan="3"></td>
+        			<td colspan="2"></td>
+        			<td style="text-align: right;">crafing cost:</td>
         			<td id="recipe_summary_total"></td>
+        		</tr>
+        		<tr>
+        			<td colspan="2"></td>
+        			<td style="text-align: right;">sell price:</td>
+        			<td id="recipe_summary_sell_price" data-sell-price="{{ recipe.sellPrice }}">{{ recipe.sellPrice | gw2money }}</td>
+        		</tr>
+        		<tr>
+        			<td colspan="2"></td>
+        			<th style="text-align: right;">profit:</th>
+        			<th id="recipe_summary_profit"></th>
         		</tr>
         	</tfoot>
         </table>
@@ -195,7 +206,7 @@
 			$("#recipe_summary_container").appendTo($("#recipe_summary_sidebar"));
 		}
 
-        new Crafting($("#recipe_container"), $("#recipe_summary"), $("#recipe_summary_total"), item);
+        new Crafting(item, $("#recipe_container"), $("#recipe_summary"), $("#recipe_summary_total"), $("#recipe_summary_sell_price"), $("#recipe_summary_profit"));
     });
 </script>
 
