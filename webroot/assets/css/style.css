@@ -43,6 +43,10 @@ h1 {
     position: relative;
 }
 
+.main-content {
+    position: relative;
+}
+
 #chart_wrapper #legend {
     position: absolute;
     top: 8px;
