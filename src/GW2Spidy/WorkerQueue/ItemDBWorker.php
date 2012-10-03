@@ -98,7 +98,7 @@ class ItemDBWorker implements Worker {
             $sellListing->setItem($item);
             $sellListing->setListingDate($now);
             $sellListing->setListingTime($now);
-            $sellListing->setQuantity($itemData['sale_availability'] ?: 1);
+            $sellListing->setQuantity(isset($itemData['sale_availability']) ? $itemData['sale_availability'] : 0);
             $sellListing->setUnitPrice($itemData['min_sale_unit_price']);
             $sellListing->setListings(1);
 
@@ -110,7 +110,7 @@ class ItemDBWorker implements Worker {
             $buyListing->setItem($item);
             $buyListing->setListingDate($now);
             $buyListing->setListingTime($now);
-            $buyListing->setQuantity($itemData['offer_availability'] ?: 1);
+            $buyListing->setQuantity(isset($itemData['sale_availability']) ? $itemData['sale_availability'] : 0);
             $buyListing->setUnitPrice($itemData['max_offer_unit_price']);
             $buyListing->setListings(1);
 
