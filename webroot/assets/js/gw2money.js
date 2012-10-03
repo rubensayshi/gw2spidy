@@ -23,7 +23,7 @@ var formatGW2Money = function(copper) {
         copper = copper % (silver * 100);
         silver = negative ? silver*-1 : silver;
 
-        silver + " " + silverImg + " ";
+        string += silver + " " + silverImg + " ";
     }
 
     if (copper) {
