@@ -6,29 +6,34 @@
 <div id="container" style="height: 500px; width: 100%; min-width: 450px;"></div>
 <script type="text/javascript">
 var formatGW2Money = function(copper) {
+    
+    var goldImg   = '<img src="/assets/img/gold.png" /> ';
+    var silverImg = '<img src="/assets/img/silver.png" /> ';
+    var copperImg = '<img src="/assets/img/copper.png" /> ';
+    
     var string = "";
 
     var gold = Math.floor(copper / 10000);
     if (gold) {
         copper = copper % (gold * 10000);
-        string += gold + "g ";
+        string += gold + goldImg +" ";
     }
 
     var silver = Math.floor(copper / 100);
     if (silver) {
         copper = copper % (silver * 100);
-        if (silver) string += silver + "s ";
+        if (silver) string += silver + silverImg+" ";
     }
 
     if (copper) {
         // round by 2 digits
         copper = Math.round(copper * 100) / 100;
 
-        string += copper + "c ";
+        string += copper + copperImg+" ";
     }
 
     if (!string) {
-        return copper + "c";
+        return copper + copperImg+" ";
     } else {
         return string;
     }
@@ -68,7 +73,8 @@ $(function() {
         			// s.push(options.footerFormat || ''); // todo how to get the options xD
 
         			return s.join('');
-                }
+                },
+                useHTML: true
             },
             legend : {
                 enabled: {{ hideLegend ? 'false' : 'true' }},
@@ -89,7 +95,10 @@ $(function() {
             },
             yAxis : {
                 labels : {
-                    formatter: function() { return formatGW2Money(this.value); }
+                    formatter: function() {
+                        return formatGW2Money(this.value);
+                    },
+                    useHTML: true
                 }
             },
             series : data
