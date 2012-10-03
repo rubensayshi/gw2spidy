@@ -4,10 +4,18 @@ namespace GW2Spidy\Util;
 
 abstract class Functions {
     public static function almostEqualCompare($left, $right) {
+        // we dont care about casing or trailing space
         if (trim(strtolower($left)) == trim(strtolower($right))) {
             return 100;
         }
 
+        // if they trimmed off an ' of YadaYada' suffix then it's still fine
+        $leftquoted = preg_quote($left);
+        if (preg_match("/^{$leftquoted} of .+/", $right)) {
+            return 99;
+        }
+
+        // otherwise use similar_text to identify the %% equal
         $p = 0;
         $i = similar_text($left, $right, $p);
 
