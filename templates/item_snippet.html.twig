@@ -19,12 +19,6 @@
                 {% if href %}</a>{% endif %}
             </div>
             {% endif %}
-            &nbsp;<div title="click and copy the code to link this item ingame" class="ingame-share" style="display: inline-block; position: relative;">
-                <input value="{{ item.ingamecode }}" type="text" class="input-small" style="display: none; margin: 0px; position: absolute; top: 0px; left: 0px;" />
-                <span style="cursor: pointer;">
-                    <i class="icon icon-share"></i> ingame
-                </span>
-            </div>
             {% if item.itemType %}
                 <div class="item-type">{{ item.itemType.title }}</div>
             {% endif %}

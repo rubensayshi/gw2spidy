@@ -12,6 +12,12 @@
     	<img src="{{ versioned_asset('/assets/img/powered_gw2db_onLight.png') }}" /><br />
     	<small style="font-size: 9px;">click to open gw2db</small>
     </a>
+    <div title="click and copy the code to link this item ingame" class="ingame-share" style="display: block; float: right; position: relative; top: -0px; right: -0px;">
+        <input value="{{ item.ingamecode }}" type="text" class="input-small" style="display: none; margin: 0px; position: absolute; top: 0px; left: 0px;" />
+        <span style="cursor: pointer;">
+            <i class="icon icon-share"></i> link ingame
+        </span>
+    </div>
 </div>
 <div class="clearfix">
 	{% if item.resultOfRecipes | length %}
