@@ -21,27 +21,27 @@
 </div>
 <div class="clearfix">
 	{% if item.resultOfRecipes | length %}
-		<table class="table" style="width: 440px;">
+		<table class="table" style="width: 650px;">
 			<tr>
 				<th>Created By</th>
-				{#
 				<th>Cost</th>
+				<th>Sell price</th>
 				<th>Profit</th>
-				#}
 			</tr>
     		{% for recipe in item.resultOfRecipes %}
     			<tr>
     				<td style="width: 250px;">
     					<a href="{{ path('recipe', {dataId : recipe.dataId}) }}">{{ recipe.name }}</a>
     				</td>
-    				{#
-    				<td style="width: 95px;">
-						{{ 23743 | gw2money }}
+    				<td style="width: 115px;">
+						{{ recipe.cost | gw2money }}
 					</td>
-    				<td style="width: 95px;">
-						{{ 23743 | gw2money }}
+    				<td style="width: 115px;">
+						{{ recipe.sellPrice | gw2money }}
 					</td>
-					#}
+    				<td style="width: 115px;">
+						{{ recipe.profit | gw2money }}
+					</td>
 				</tr>
     		{% endfor %}
 		</table>
