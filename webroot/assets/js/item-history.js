@@ -3,6 +3,8 @@ var GW2SpidyItemHistory = (function() {
         $ul = null,
         itemHistory  = {},
         itemSnippets = {},
+        VERSION     = "20121003v1",
+        VERSION_KEY = "GW2SPIDY-ITEM-HISTORY-VERSION",
         HISTORY_KEY = "GW2SPIDY-ITEM-HISTORY",
         SNIPPET_KEY = "GW2SPIDY-ITEM-SNIPPETS",
         TIMEOUT_SEC = 3600;
@@ -30,12 +32,20 @@ var GW2SpidyItemHistory = (function() {
     };
 
     var initData = function() {
+
         if (json = window.localStorage.getItem(HISTORY_KEY)) {
             itemHistory = JSON.parse(json);
         }
 
         if (json = window.localStorage.getItem(SNIPPET_KEY)) {
             itemSnippets = JSON.parse(json);
+        }
+
+        if (!(version = window.localStorage.getItem(VERSION_KEY)) || version != VERSION) {
+            window.localStorage.setItem(VERSION_KEY, VERSION);
+
+            itemSnippets = null;
+            itemHistory  = null;
         }
 
         itemSnippets = itemSnippets || {};
