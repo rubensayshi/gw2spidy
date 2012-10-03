@@ -6,34 +6,34 @@
 <div id="container" style="height: 500px; width: 100%; min-width: 450px;"></div>
 <script type="text/javascript">
 var formatGW2Money = function(copper) {
-    
-    var goldImg   = '<img src="/assets/img/gold.png" /> ';
-    var silverImg = '<img src="/assets/img/silver.png" /> ';
-    var copperImg = '<img src="/assets/img/copper.png" /> ';
-    
+
+    var goldImg   = '<img src="{{ versioned_asset('/assets/img/gold.png') }}" />';
+    var silverImg = '<img src="{{ versioned_asset('/assets/img/silver.png') }}" />';
+    var copperImg = '<img src="{{ versioned_asset('/assets/img/copper.png') }}" />';
+
     var string = "";
 
     var gold = Math.floor(copper / 10000);
     if (gold) {
         copper = copper % (gold * 10000);
-        string += gold + goldImg +" ";
+        string += gold + " " + goldImg + " ";
     }
 
     var silver = Math.floor(copper / 100);
     if (silver) {
         copper = copper % (silver * 100);
-        if (silver) string += silver + silverImg+" ";
+        string += silver + " " + silverImg + " ";
     }
 
     if (copper) {
         // round by 2 digits
         copper = Math.round(copper * 100) / 100;
 
-        string += copper + copperImg+" ";
+        string += copper + " " + copperImg + " ";
     }
 
     if (!string) {
-        return copper + copperImg+" ";
+        return copper + " " + copperImg +"  ";
     } else {
         return string;
     }
