@@ -397,6 +397,8 @@ h1 {
     height: 15px;
     vertical-align: middle;
     background: transparent no-repeat;
+    text-indent: -1999px;
+    overflow: hidden;
 }
 .gw2money-copper {
     background-image: url('../img/copper.png');

@@ -14,9 +14,9 @@ class GW2MoneyExtension extends \Twig_Extension {
     }
 
     public function getGW2Money($copper) {
-        $goldImg   = '<i class="gw2money-gold"></i>';
-        $silverImg = '<i class="gw2money-silver"></i>';
-        $copperImg = '<i class="gw2money-copper"></i>';
+        $goldImg   = '<i class="gw2money-gold">g</i>';
+        $silverImg = '<i class="gw2money-silver">s</i>';
+        $copperImg = '<i class="gw2money-copper">c</i>';
 
         $copper = intval($copper);
         if ($negative = $copper < 0) {
