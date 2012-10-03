@@ -1,8 +1,8 @@
 
 var formatGW2Money = function(copper) {
-    var goldImg   = '<i class="gw2money-gold"></i>';
-    var silverImg = '<i class="gw2money-silver"></i>';
-    var copperImg = '<i class="gw2money-copper"></i>';
+    var goldImg   = '<i class="gw2money-gold">g</i>';
+    var silverImg = '<i class="gw2money-silver">s</i>';
+    var copperImg = '<i class="gw2money-copper">c</i>';
 
     var string = "";
 
@@ -36,9 +36,5 @@ var formatGW2Money = function(copper) {
 
     string = string.replace(/( )+$/, '');
 
-    if (!string) {
-        return "0 " + copperImg;
-    } else {
-        return string;
-    }
+    return (!string ? "0 " + copperImg : string);
 };

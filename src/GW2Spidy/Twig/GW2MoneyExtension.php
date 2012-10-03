@@ -53,7 +53,7 @@ class GW2MoneyExtension extends \Twig_Extension {
             $result .= "{$copper} {$copperImg} ";
         }
 
-        return $result ? trim($result) : "0 {$copperImg}";
+        return ($result ? trim($result) : "0 {$copperImg}") . "&nbsp;";
     }
 
     public function getName() {
