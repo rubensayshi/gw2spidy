@@ -5,6 +5,8 @@
  *  this file contains all routing and the 'controllers' using lambda functions
  */
 
+use GW2Spidy\DB\RecipeQuery;
+
 use GW2Spidy\Twig\GenericHelpersExtension;
 
 use GW2Spidy\GW2SessionManager;
@@ -22,6 +24,8 @@ use GW2Spidy\DB\ItemPeer;
 use GW2Spidy\DB\BuyListingPeer;
 use GW2Spidy\DB\SellListingPeer;
 use GW2Spidy\DB\BuyListingQuery;
+
+use GW2Spidy\Util\Functions;
 
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -777,6 +781,135 @@ $app->get("/profit", function(Request $request) use($app) {
         ));
     }
 });
+
+/**
+ * ----------------------
+ *  route /crafting
+ * ----------------------
+ */
+$app->get("/crafting/{discipline}/{page}", function(Request $request, $discipline, $page) use($app) {
+    $page = $page > 0 ? $page : 1;
+    $itemsperpage = 50;
+
+    $q = RecipeQuery::create();
+
+    if (!is_null($discipline) && $discipline != -1) {
+        $q->filterByDisciplineId($discipline);
+    }
+
+    $sortByOptions = array('name', 'rating', 'cost', 'sell_price', 'profit');
+
+    foreach ($sortByOptions as $sortByOption) {
+        if ($request->get("sort_{$sortByOption}", null)) {
+            $sortOrder = $request->get("sort_{$sortByOption}", 'asc');
+            $sortBy    = $sortByOption;
+        }
+    }
+
+    $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'rating';
+    $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'desc';
+
+    $count = $q->count();
+
+    if ($count > 0) {
+        $lastpage = ceil($count / $itemsperpage);
+        if ($page > $lastpage) {
+            $page = $lastpage;
+        }
+    } else {
+        $page     = 1;
+        $lastpage = 1;
+    }
+
+    $q->addSelectColumn("*");
+
+    $q->offset($itemsperpage * ($page-1))
+      ->limit($itemsperpage);
+
+    if ($sortOrder == 'asc') {
+        $q->addAscendingOrderByColumn($sortBy);
+    } else if ($sortOrder == 'desc') {
+        $q->addDescendingOrderByColumn($sortBy);
+    }
+
+    $recipes = $q->find();
+
+    return $app['twig']->render('recipe_list.html.twig', array(
+        'discipline' => $discipline,
+
+        'page'     => $page,
+        'lastpage' => $lastpage,
+        'recipes'  => $recipes,
+
+        'current_sort'       => $sortBy,
+        'current_sort_order' => $sortOrder,
+    ));
+})
+->assert('discipline', '-?\d+')
+->assert('page',       '-?\d+')
+->value('page', 1)
+->bind('crafting');
+
+/**
+ * ----------------------
+ *  route /crafting
+ * ----------------------
+ */
+$app->get("/recipe/{dataId}", function(Request $request, $dataId) use($app) {
+    $recipe = RecipeQuery::create()->findPK($dataId);
+
+    if (!$recipe) {
+        return $app->abort(404, "Page does not exist.");
+    }
+
+    $item = $recipe->getResultItem();
+    if(!$item) {
+        return $app->abort(404, "Recipe not supported yet, we don't have the resulting item in the database yet [[ {$recipe->getName()} ]] [[ {$recipe->getResultItemId()} ]] ");
+    }
+
+
+    $tree = buildRecipeTree($item, $recipe, $app);
+
+    return $app['twig']->render('recipe.html.twig', array(
+        'recipe' => $recipe,
+        'tree' => json_encode($tree),
+    ));
+})
+->assert('recipe', '-?\d+')
+->bind('recipe');
+
+function buildRecipeTree($item, $recipe = null, $app) {
+    $tree = array(
+        'id' => $item->getDataId(),
+        'name' => $item->getName(),
+        'href' => $app['url_generator']->generate('item', array('dataId' => $item->getDataId())),
+        'gw2db_href' => "http://www.gw2db.com/items/{$item->getGw2dbExternalId()}-" . Functions::slugify($item->getName()),
+        'rarity' => $item->getRarityName(),
+        'img'	=> $item->getImg(),
+        'price' => $item->getMinSaleUnitPrice()
+    );
+
+    if ($recipe) {
+        $recipeTree = array();
+
+        foreach ($recipe->getIngredients() as $ingredient) {
+            $ingredientItem   = $ingredient->getItem();
+            $ingredientRecipe = null;
+
+            $ingredientRecipes = $ingredientItem->getResultOfRecipes();
+
+            if (count($ingredientRecipes)) {
+                $ingredientRecipe = $ingredientRecipes[0];
+            }
+
+            $recipeTree[] = array(buildRecipeTree($ingredientItem, $ingredientRecipe, $app), $ingredient->getCount());
+        }
+
+        $tree['recipe'] = array('count' => $recipe->getCount(), 'ingredients' => $recipeTree);
+    }
+
+    return $tree;
+}
 
 // bootstrap the app
 $app->run();

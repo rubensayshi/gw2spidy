@@ -6,8 +6,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
 class GW2MoneyExtension extends \Twig_Extension {
-    protected $env;
-    protected $assetRouting;
 
     public function getFilters() {
         return array(
@@ -15,38 +13,43 @@ class GW2MoneyExtension extends \Twig_Extension {
         );
     }
 
-    public function initRuntime(\Twig_Environment $env) {
-        $this->env = $env;
-        $this->assetRouting = $this->env->getExtension('asset_routing');
-    }
-
-    public function getMoneyImagePath($path) {
-        if ($this->assetRouting) {
-            $path = $this->assetRouting->getAssetPath($path);
-        }
-
-        return $path;
-    }
-
     public function getGW2Money($copper) {
-        $goldImg   = '<img src="' . $this->getMoneyImagePath('/assets/img/gold.png') . '" /> ';
-        $silverImg = '<img src="' . $this->getMoneyImagePath('/assets/img/silver.png') . '" /> ';
-        $copperImg = '<img src="' . $this->getMoneyImagePath('/assets/img/copper.png') . '" /> ';
+        $goldImg   = '<i class="gw2money-gold"></i>';
+        $silverImg = '<i class="gw2money-silver"></i>';
+        $copperImg = '<i class="gw2money-copper"></i>';
 
         $copper = intval($copper);
+        if ($negative = $copper < 0) {
+            $copper *= -1;
+        }
+
         $result = "";
 
         if ($gold = floor($copper / 10000)) {
             $copper = $copper % ($gold * 10000);
+
+            if ($negative) {
+                $gold *= -1;
+            }
+
             $result .= "{$gold} {$goldImg} ";
         }
 
         if ($silver = floor($copper / 100)) {
             $copper = $copper % ($silver * 100);
+
+            if ($negative) {
+                $silver *= -1;
+            }
+
             $result .= "{$silver} {$silverImg} ";
         }
 
         if ($copper) {
+            if ($negative) {
+                $copper *= -1;
+            }
+
             $result .= "{$copper} {$copperImg} ";
         }
 

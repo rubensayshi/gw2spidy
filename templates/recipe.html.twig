@@ -1,0 +1,237 @@
+{% extends "content_sidebar.html.twig" %}
+
+{% block content %}
+
+<script type="text/javascript" src="{{ versioned_asset('/assets/js/crafting.js') }}"></script>
+
+<style>
+    .recipe-wrapper {}
+
+    .recipe-row {
+    }
+
+    .recipe-row label {
+        display: inline-block;
+    }
+
+    .recipe-row .item-row-wrapper {
+        float: left;
+        position: relative;
+    }
+    .recipe-row .item-row {
+        border: 1px solid black;
+        -webkit-border-radius: 3px;
+           -moz-border-radius: 3px;
+                border-radius: 3px;
+
+        margin-bottom: 5px;
+        padding: 4px;
+        height: 24px;
+        width: 580px;
+    }
+
+    .recipe-row .item {
+        float: left;
+        height: 24px;
+        width: 270px;
+        overflow: hidden;
+        font-weight: bold;
+    }
+
+    .recipe-row .options {
+        float: right;
+        height: 24px;
+    }
+
+    .recipe-row .options > span {
+        display: inline-block;
+        padding: 3px 10px 2px;
+        width: 130px;
+        height: 19px;
+        margin-left: 3px;
+    }
+
+    .recipe-row .options span label {
+        font-weight: bold;
+    }
+    .recipe-row .options span input {
+        position: relative;
+        top: -2px;
+    }
+
+    .recipe-row .children {
+        padding-left: 25px;
+    }
+
+    .label-wide {
+        width: 264px !important;
+    }
+    .label-not-crafted {
+        opacity: 0.3;
+    }
+
+    .children-disabled .item-row {
+        opacity: 0.5;
+        background-color: gray;
+    }
+
+    .folder-structure-icon {
+        width: 25px;
+        height: 39px;
+        float: left;
+        position: relative;
+        top: -5px;
+
+        overflow: hidden;
+        font-size: 52px;
+    }
+
+    .folder-structure-icon-cont {
+        padding-left: 5px;
+        width: 20px;
+    }
+
+    .crafting-summary-table .num {
+        min-width: 20px;
+        width: 10%;
+    }
+    .crafting-summary-table .ingredient {
+        min-width: 150px;
+        width: 55%;
+    }
+    .crafting-summary-table .ea {
+        min-width: 75px;
+        width: 15%;
+    }
+    .crafting-summary-table .total {
+        min-width: 85px;
+        width: 20%;
+    }
+
+</style>
+
+<h1>{{ recipe.name }}</h1>
+<div id="recipe_summary_container" class="well">
+	<div class="clearfix">
+        <div style="width: 45%; float: left;">
+        <h4 style="border-bottom: 1px solid black;">Shopping list</h4>
+            <table class="crafting-summary-table table table-striped table-condensed">
+            	<thead>
+            		<tr>
+            			<th class="num">#</th>
+            			<th class="ingredient">Ingredient</th>
+            			<th class="ea">ea</th>
+            			<th class="total">total</th>
+            		</tr>
+            	</thead>
+            	<tbody class="recipe_summary">
+
+            	</tbody>
+            	<tfoot>
+            		<tr style="border-top: 2px solid black;">
+            			<td colspan="3" style="text-align: right;">crafing cost:</td>
+            			<td class="recipe_summary_total">{{ recipe.cost | gw2money }}</td>
+            		</tr>
+            	</tfoot>
+        	</table>
+    	</div>
+        <div style="width: 45%; float: right;">
+        	<h4 style="border-bottom: 1px solid black;">Profit</h4>
+            <table class="crafting-summary-table table table-striped table-condensed">
+        		<tbody>
+            		<tr>
+            			<td colspan="3" style="text-align: right;">crafing cost:</td>
+            			<td class="recipe_summary_total">{{ recipe.cost | gw2money }}</td>
+            		</tr>
+            		<tr>
+            			<td colspan="3" style="text-align: right;">sell price:</td>
+            			<td class="recipe_summary_sell_price" data-sell-price="{{ recipe.sellPrice }}">{{ recipe.sellPrice | gw2money }}</td>
+            		</tr>
+            		<tr>
+            			<td colspan="3" style="text-align: right;">listing fee:</td>
+            			<td class="recipe_summary_listing_fee">{{ (recipe.sellPrice * 0.05) | round | gw2money }}</td>
+            		</tr>
+            		<tr>
+            			<td colspan="3" style="text-align: right;">transaction fee:</td>
+            			<td class="recipe_summary_transaction_fee">{{ (recipe.sellPrice * 0.10) | round | gw2money }}</td>
+            		</tr>
+            		<tr>
+            			<th colspan="3" style="text-align: right;">profit:</th>
+            			<th class="recipe_summary_profit">{{ recipe.profit | gw2money }}</th>
+            		</tr>
+            	</tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="recipe_container" class="well recipe-wrapper clearfix" style="position: relative;">
+	<h4 style="border-bottom: 1px solid black;">Customize</h4>
+    <div style="position: absolute; top: 20px; right: 20px;">
+        <a href="#help" title="How does it work?"><i class="icon-question-sign"></i></a>
+	</div>
+
+</div>
+
+<div class="well">
+    <a name="help"></a>
+    <h4 style="border-bottom: 1px solid black;">How does it work?</h4>
+    <p>Select which parts of the recipe you want to buy and which you want to craft, we marked the best choices for you by default ;-) <br />
+        The resulting shopping list and cost / profit is displayed in the summary!
+    </p>
+</div>
+
+<div class="well">
+    <h4 style="border-bottom: 1px solid black;">Legend</h4>
+    <table class="table">
+        <tr>
+            <td>
+                <span class="label label-success">BUY</span> <span class="label label-important">CRAFT</span>
+            </td>
+            <td>more profitable to buy from TP, you can still choose to craft it of course!</td>
+        </tr>
+        <tr>
+            <td>
+                <span class="label label-important">BUY</span> <span class="label label-success">CRAFT</span>
+            </td>
+            <td>more profitable to craft, you can still choose to buy it of course!</td>
+        </tr>
+        <tr>
+            <td>
+                <span class="label label-inverse label-not-crafted">NOT SOLD</span> <span class="label label-success">CRAFT</span>
+            </td>
+            <td>we don't have a sell price for this item so your only option is to craft it</td>
+        </tr>
+        <tr>
+            <td>
+                <span class="label label-success">BUY</span> <span class="label label-inverse label-not-crafted">NOT CRAFTED</span>
+            </td>
+            <td>we don't have a recipe for this item so your only option is to buy it</td>
+        </tr>
+        <tr>
+            <td>
+                <span class="label label-wide label-warning">NOT CRAFTED, NOT SOLD</span>
+            </td>
+            <td>we don't have a recipe and we don't have a sell price for this item!</td>
+        </tr>
+    </table>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+		var item = {{ tree | raw }};
+
+		if ($(window).width() > 1400) {
+			//$("#recipe_summary_container").appendTo($("#recipe_summary_sidebar"));
+		}
+
+        new Crafting(item, $("#recipe_container"), $("#recipe_summary_container"));
+    });
+</script>
+
+{% endblock %}
+
+{% block sidebar %}
+    {{ recipe.GW2DBTooltip | raw }}
+	<div id="recipe_summary_sidebar"></div>
+{% endblock %}

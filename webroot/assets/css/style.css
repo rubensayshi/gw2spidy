@@ -44,6 +44,10 @@ h1 {
     position: relative;
 }
 
+.main-content {
+    position: relative;
+}
+
 #chart_wrapper #legend {
     position: absolute;
     top: 8px;
@@ -74,7 +78,8 @@ h1 {
     clear: both;
 }
 
-.item .image {
+.item .image,
+.recipe .image {
     float: left;
 }
 
@@ -83,7 +88,10 @@ h1 {
     margin-left: 5px;
 }
 
-.item .stats .name {
+.item .stats .name,
+.recipe .stats .name,
+.item .info .name,
+.recipe .info .name {
     font-weight: bold;
 }
 
@@ -132,7 +140,10 @@ h1 {
 }
 .item-list-table .min_sale_unit_price,
 .item-list-table .max_offer_unit_price,
-.item-list-table .margin {
+.item-list-table .margin,
+.item-list-table .cost,
+.item-list-table .sell_price,
+.item-list-table .profit, {
     min-width: 115px;
     width: 10%;
     text-align: center;
@@ -148,7 +159,8 @@ h1 {
     text-align: center;
 }
 
-.item-list-table .rarity {
+.item-list-table .rarity,
+.item-list-table .rating {
     min-width: 75px;
     width: 10%;
     text-align: center;
@@ -159,6 +171,7 @@ h1 {
     width: 10%;
     text-align: center;
 }
+
 
 /*
  * some responsive hiding of columns for smaller screens
@@ -291,6 +304,10 @@ h1 {
     overflow: hidden;
 }
 
+.gw2db-icon {
+    display: inline-block;
+}
+
 .twitter-icon {
     display: inline-block;
     margin-top: 5px;
@@ -352,3 +369,42 @@ h1 {
 /* ----------------
  * [END] tweet plugin style
    ---------------- */
+
+.sidebar .db-description {
+    width: 260px !important;
+    min-height: 56px;
+}
+
+.sidebar .item-history-list li {
+    margin-bottom: 5px;
+}
+
+.sidebar .item-history-list .db-tooltip .db-summary > *,
+.sidebar .item-history-list .db-tooltip .db-summary > .db-weaponInfo .db-weaponRarity {
+    display: none;
+}
+.sidebar .item-history-list .db-tooltip .db-summary > .db-title,
+.sidebar .item-history-list .db-tooltip .db-summary > .db-armorType,
+.sidebar .item-history-list .db-tooltip .db-summary > .db-weaponInfo {
+    display: block;
+}
+
+.gw2money-copper,
+.gw2money-silver,
+.gw2money-gold {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    vertical-align: middle;
+    background: transparent no-repeat;
+}
+.gw2money-copper {
+    background-image: url('../img/copper.png');
+}
+.gw2money-silver { 
+    background-image: url('../img/silver.png'); 
+}
+.gw2money-gold {
+    background-image: url('../img/gold.png');  
+}
+

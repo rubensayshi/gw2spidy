@@ -14,6 +14,8 @@ use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemPeer;
 use GW2Spidy\DB\ItemSubTypePeer;
 use GW2Spidy\DB\ItemTypePeer;
+use GW2Spidy\DB\RecipeIngredientPeer;
+use GW2Spidy\DB\RecipePeer;
 use GW2Spidy\DB\SellListingPeer;
 use GW2Spidy\DB\map\ItemTableMap;
 

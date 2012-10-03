@@ -2,6 +2,9 @@
 
 namespace GW2Spidy\Util;
 
+use GW2Spidy\DB\Item;
+use GW2Spidy\DB\Recipe;
+
 abstract class Functions {
     public static function almostEqualCompare($left, $right) {
         // we dont care about casing or trailing space
@@ -20,6 +23,34 @@ abstract class Functions {
         $i = similar_text($left, $right, $p);
 
         return $p;
+    }
+
+    public static function slugify($str) {
+        $str = preg_replace('/^\s+|\s+$/', '', $str);
+        $str = strtolower($str);
+
+        $str = str_replace(str_split('ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;'), str_split('aaaaaeeeeeiiiiooooouuuunc------'), $str);
+
+        $str = preg_replace('/[^a-z0-9 -]/', '', $str);
+        $str = preg_replace('/\s+/', '-', $str);
+        $str = preg_replace('/-+/', '-', $str);
+        $str = preg_replace('/-+$/', '', $str);
+
+        return $str;
+    }
+
+    public static function getGW2DBLink(Item $item) {
+        $id   = urlencode($item->getGw2dbExternalId());
+        $slug = urlencode(self::slugify($item->getName()));
+
+        return "http://www.gw2db.com/items/{$id}-{$slug}";
+    }
+
+    public static function getGW2DBLinkRecipe(Recipe $recipe) {
+        $id   = urlencode($recipe->getGw2dbExternalId());
+        $slug = urlencode(self::slugify($recipe->getName()));
+
+        return "http://www.gw2db.com/recipes/{$id}-{$slug}";
     }
 
     /**

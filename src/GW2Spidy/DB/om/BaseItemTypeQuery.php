@@ -390,7 +390,7 @@ abstract class BaseItemTypeQuery extends ModelCriteria
      *
      * @return ItemTypeQuery The current query, for fluid interface
      */
-    public function joinItem($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinItem($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Item');
@@ -425,7 +425,7 @@ abstract class BaseItemTypeQuery extends ModelCriteria
      *
      * @return   \GW2Spidy\DB\ItemQuery A secondary query class using the current class as primary query
      */
-    public function useItemQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useItemQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinItem($relationAlias, $joinType)

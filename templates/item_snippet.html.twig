@@ -1,16 +1,23 @@
+{% set href = href is defined ? href : null %}
+
 <{{ tag }} class="item clearfix" id="item-snippet-{{ item.dataId }}">
-    <div class="image clearfix">
-        {% if href is defined %}<a href="{{ href }}">{% endif %}
-            <img src="{{ item.img }}" width="64" height="64" />
-        {% if href is defined %}</a>{% endif %}
-    </div>
-    <div class="stats">
-        <div class="name {{ item.rarityCssClass }}">
-            {% if href is defined %}<a href="{{ href }}">{% endif %}
+    {% if item.getGW2DBTooltip(href) %}
+        {{ item.getGW2DBTooltip(href) | raw }}
+    {% else %}
+        <div class="image clearfix">
+            {% if href %}<a href="{{ href }}">{% endif %}
+                <img src="{{ item.img }}" width="64" height="64" />
+            {% if href %}</a>{% endif %}
+        </div>
+        <div class="stats">
+            <div class="name {{ item.rarityCssClass }}">
+                {% if href %}<a href="{{ href }}">{% endif %}
                 {{- item.name -}}
             {% if href is defined %}</a>{% endif %}
             {% if item.gw2dbExternalId %}
         	   &nbsp;<a href="http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}" target="_blank" title="Show this item on GW2DB.com"><i class="icon-search"></i> gw2db.com</a>
+                {% if href %}</a>{% endif %}
+            </div>
             {% endif %}
             &nbsp;<div title="click and copy the code to link this item ingame" class="ingame-share" style="display: inline-block; position: relative;">
                 <input value="{{ item.ingamecode }}" type="text" class="input-small" style="display: none; margin: 0px; position: absolute; top: 0px; left: 0px;" />
@@ -18,16 +25,16 @@
                     <i class="icon icon-share"></i> ingame
                 </span>
             </div>
+            {% if item.itemType %}
+                <div class="item-type">{{ item.itemType.title }}</div>
+            {% endif %}
+            {% if item.itemSubType %}
+                <div class="item-sub-type">{{ item.itemSubType.title }}</div>
+            {% endif %}
+            <div class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</div>
+            {% if item.restrictionLevel %}
+                <div class="restriction-level">Required Level: {{ item.restrictionLevel }}</div>
+            {% endif %}
         </div>
-        {% if item.itemType %}
-            <div class="item-type">{{ item.itemType.title }}</div>
-        {% endif %}
-        {% if item.itemSubType %}
-            <div class="item-sub-type">{{ item.itemSubType.title }}</div>
-        {% endif %}
-        <div class="rarity {{ item.rarityCssClass }}">{{ item.rarityName }}</div>
-        {% if item.restrictionLevel %}
-            <div class="restriction-level">Required Level: {{ item.restrictionLevel }}</div>
-        {% endif %}
-    </div>
+    {% endif %}
 </{{ tag }}>

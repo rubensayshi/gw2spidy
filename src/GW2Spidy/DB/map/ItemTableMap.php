@@ -52,8 +52,8 @@ class ItemTableMap extends TableMap
         $this->addColumn('VENDOR_SELL_PRICE', 'VendorSellPrice', 'INTEGER', true, null, null);
         $this->addColumn('IMG', 'Img', 'VARCHAR', true, 255, null);
         $this->addColumn('RARITY_WORD', 'RarityWord', 'VARCHAR', true, 255, null);
-        $this->addForeignKey('ITEM_TYPE_ID', 'ItemTypeId', 'INTEGER', 'item_type', 'ID', true, null, null);
-        $this->addForeignKey('ITEM_SUB_TYPE_ID', 'ItemSubTypeId', 'INTEGER', 'item_sub_type', 'ID', true, null, null);
+        $this->addForeignKey('ITEM_TYPE_ID', 'ItemTypeId', 'INTEGER', 'item_type', 'ID', false, null, null);
+        $this->addForeignKey('ITEM_SUB_TYPE_ID', 'ItemSubTypeId', 'INTEGER', 'item_sub_type', 'ID', false, null, null);
         $this->addColumn('MAX_OFFER_UNIT_PRICE', 'MaxOfferUnitPrice', 'INTEGER', true, null, null);
         $this->addColumn('MIN_SALE_UNIT_PRICE', 'MinSaleUnitPrice', 'INTEGER', true, null, null);
         $this->addColumn('OFFER_AVAILABILITY', 'OfferAvailability', 'INTEGER', true, null, 0);
@@ -70,8 +70,11 @@ class ItemTableMap extends TableMap
     {
         $this->addRelation('ItemType', 'GW2Spidy\\DB\\ItemType', RelationMap::MANY_TO_ONE, array('item_type_id' => 'id', ), null, null);
         $this->addRelation('ItemSubType', 'GW2Spidy\\DB\\ItemSubType', RelationMap::MANY_TO_ONE, array('item_sub_type_id' => 'id', ), null, null);
+        $this->addRelation('ResultOfRecipe', 'GW2Spidy\\DB\\Recipe', RelationMap::ONE_TO_MANY, array('data_id' => 'result_item_id', ), null, null, 'ResultOfRecipes');
+        $this->addRelation('Ingredient', 'GW2Spidy\\DB\\RecipeIngredient', RelationMap::ONE_TO_MANY, array('data_id' => 'item_id', ), null, null, 'Ingredients');
         $this->addRelation('SellListing', 'GW2Spidy\\DB\\SellListing', RelationMap::ONE_TO_MANY, array('data_id' => 'item_id', ), null, null, 'SellListings');
         $this->addRelation('BuyListing', 'GW2Spidy\\DB\\BuyListing', RelationMap::ONE_TO_MANY, array('data_id' => 'item_id', ), null, null, 'BuyListings');
+        $this->addRelation('Recipe', 'GW2Spidy\\DB\\Recipe', RelationMap::MANY_TO_MANY, array(), null, null, 'Recipes');
     } // buildRelations()
 
 } // ItemTableMap

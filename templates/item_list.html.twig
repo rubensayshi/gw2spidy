@@ -108,7 +108,7 @@
         {% for item in items %}
             <tr class="item">
                 <td class="info">
-                    <a href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
+                    <a data-tooltip-href="http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}" href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
                         <img class="image" src="{{ item.img }}" width="32" height="32" /> {{ item.name }}
                     </a>
                 </td>

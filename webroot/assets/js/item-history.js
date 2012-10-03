@@ -24,7 +24,7 @@ var GW2SpidyItemHistory = (function() {
         $container = $("#item-history-placeholder");
 
         $('<h3>Item history</h3>').appendTo($container);
-        $ul = $('<ul class="nav nav-pills nav-stacked item-history-list">').appendTo($container);
+        $ul = $('<ul class="nav nav-stacked item-history-list">').appendTo($container);
 
         buildList();
     };
@@ -58,11 +58,21 @@ var GW2SpidyItemHistory = (function() {
     };
 
     var buildList = function() {
+        var hasItems = false;
+
         $.each(itemHistory, function(visited, itemID) {
             if (itemSnippets[itemID]) {
                 $(itemSnippets[itemID]).prependTo($ul);
+                hasItems = true;
             }
         });
+
+        if (hasItems) {
+            _gaq.push(['_trackEvent', 'item-history', 'has-items']);
+            $container.on('click', function() {
+                _gaq.push(['_trackEvent', 'item-history', 'clicked']);
+            });
+        }
     };
 
     var init = function() {

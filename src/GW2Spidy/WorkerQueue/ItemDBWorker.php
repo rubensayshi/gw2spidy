@@ -116,6 +116,8 @@ class ItemDBWorker implements Worker {
 
             $buyListing->save();
         }
+
+        return $item;
     }
 
 

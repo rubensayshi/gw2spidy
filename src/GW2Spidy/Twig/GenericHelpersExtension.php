@@ -2,32 +2,44 @@
 
 namespace GW2Spidy\Twig;
 
+use GW2Spidy\Util\Functions;
+
 class GenericHelpersExtension extends \Twig_Extension {
     public function getFilters() {
         return array(
+            'round' => new \Twig_Filter_Method($this, 'round'),
             'ceil' => new \Twig_Filter_Method($this, 'ceil'),
             'floor' => new \Twig_Filter_Method($this, 'floor'),
             'rarity_css_class' => new \Twig_Filter_Method($this, 'rarity_css_class'),
             'slugify' => new \Twig_Filter_Method($this, 'slugify'),
         );
     }
+    public function getFunctions() {
+        return array(
+            'gw2db' => new \Twig_Function_Method($this, 'gw2db_item'),
+            'gw2db_item' => new \Twig_Function_Method($this, 'gw2db_item'),
+            'gw2db_recipe' => new \Twig_Function_Method($this, 'gw2db_recipe'),
+        );
+    }
+
+    public function gw2db_item($item) {
+        return Functions::getGW2DBLink($item);
+    }
+
+    public function gw2db_recipe($recipe) {
+        return Functions::getGW2DBLinkRecipe($recipe);
+    }
 
     public function slugify($str) {
-        $str = preg_replace('/^\s+|\s+$/', '', $str);
-        $str = strtolower($str);
-
-        $str = str_replace(str_split('ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;'), str_split('aaaaaeeeeeiiiiooooouuuunc------'), $str);
-
-        $str = preg_replace('/[^a-z0-9 -]/', '', $str);
-        $str = preg_replace('/\s+/', '-', $str);
-        $str = preg_replace('/-+/', '-', $str);
-        $str = preg_replace('/-+$/', '', $str);
-
-        return $str;
+        return Functions::slugify($str);
     }
 
     public function floor($num) {
         return floor($num);
+    }
+
+    public function round($num) {
+        return round($num);
     }
 
     public function ceil($num) {

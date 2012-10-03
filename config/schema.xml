@@ -23,8 +23,8 @@
         <column name="vendor_sell_price" type="integer" required="true" />
         <column name="img" type="varchar" size="255" required="true" />
         <column name="rarity_word" type="varchar" size="255" required="true" />
-        <column name="item_type_id" type="integer" required="true" />
-        <column name="item_sub_type_id" type="integer" required="true" />
+        <column name="item_type_id" type="integer" required="false" />
+        <column name="item_sub_type_id" type="integer" required="false" />
         <column name="max_offer_unit_price" type="integer" required="true" />
         <column name="min_sale_unit_price" type="integer" required="true" />
         <column name="offer_availability" type="integer" required="true" default="0" />
@@ -36,6 +36,54 @@
         </foreign-key>
         <foreign-key foreignTable="item_sub_type" phpName="ItemSubType" refPhpName="Item">
             <reference local="item_sub_type_id" foreign="id" />
+        </foreign-key>
+    </table>
+    <table name="gw2db_item_archive" phpName="GW2DBItemArchive">
+        <column name="ID" type="integer" required="true" primaryKey="true" />
+        <column name="ExternalID" type="integer" />
+        <column name="DataID" type="integer" />
+        <column name="Name" type="varchar" size="255" />
+    </table>
+    <table name="discipline" phpName="Discipline">
+        <column name="id" type="integer" required="true" primaryKey="true" />
+        <column name="name" type="varchar" size="255" required="true" />
+    </table>
+    <table name="recipe" phpName="Recipe">
+        <column name="data_id" type="integer" required="true" primaryKey="true" />
+        <column name="name" type="varchar" size="255" required="true" />
+
+        <column name="discipline_id" type="integer" />
+
+        <column name="rating" type="integer" size="4" default="0" />
+        <column name="result_item_id" type="integer" />
+        <column name="count" type="integer" size="4" default="1" />
+
+        <column name="cost" type="integer" />
+        <column name="sell_price" type="integer" />
+        <column name="profit" type="integer" />
+        <column name="updated" type="timestamp" />
+
+        <column name="gw2db_id" type="integer" />
+        <column name="gw2db_external_id" type="integer" />
+
+        <foreign-key foreignTable="discipline" phpName="Discipline" refPhpName="Recipe">
+            <reference local="discipline_id" foreign="id" />
+        </foreign-key>
+
+        <foreign-key foreignTable="item" phpName="ResultItem" refPhpName="ResultOfRecipe">
+            <reference local="result_item_id" foreign="data_id" />
+        </foreign-key>
+    </table>
+    <table name="recipe_ingredient" phpName="RecipeIngredient" isCrossRef="true">
+        <column name="recipe_id" type="integer" required="true" primaryKey="true" />
+        <column name="item_id" type="integer" required="true" primaryKey="true" />
+        <column name="count" type="integer" required="true" default="1" />
+
+        <foreign-key foreignTable="recipe" phpName="Recipe" refPhpName="Ingredient">
+            <reference local="recipe_id" foreign="data_id" />
+        </foreign-key>
+        <foreign-key foreignTable="item" phpName="Item" refPhpName="Ingredient">
+            <reference local="item_id" foreign="data_id" />
         </foreign-key>
     </table>
     <table name="sell_listing" phpName="SellListing">

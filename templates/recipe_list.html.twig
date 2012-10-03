@@ -1,0 +1,101 @@
+{% extends "content_sidebar.html.twig" %}
+
+{# ---------------
+    pager is repeated multiple times
+   --------------- #}
+{% macro pager(page, lastpage, parent_context) %}
+    {# ---------------
+        calculate how many pages we can display before and after the curently active page
+         - add a [...] link (eating up 1 page number) if there's an overflow
+       --------------- #}
+    {% set maxpages = 20 %}
+    {% set before = ((maxpages / 2) | floor) %}
+    {% set before = page <= before ? page -1 : before %}
+    {% set after = maxpages - before - 1 %}
+    {% set before = (page + after > lastpage) ? before + (after - (lastpage - page)) : before %}
+    {% set dotsbefore = (page - before > 1) %}
+    {% set dotsafter  = (page + after < lastpage) %}
+    {% set before = dotsbefore ? before -1 : before %}
+    {% set after  = dotsafter  ? after  -1 : after %}
+    <div class="pagination">
+        <ul>
+            <li class="{% if page <= 1 %}disabled{% endif %}"><a href="{{ recipe_list_path(parent_context, {page: (page-1)}) }}">Prev</a></li>
+            {% if dotsbefore %}
+                <li>
+                    <a href="{{ recipe_list_path(parent_context, {page: (page - before - 1)}) }}">...</a>
+                </li>
+            {% endif %}
+            {% for i in range(1, lastpage) %}
+                {% if (i >= (page - before)) and (i <= page + after) %}
+                    <li class="{% if i == page %}active{% endif %}">
+                        <a href="{{ recipe_list_path(parent_context, {page: i}) }}">{{ i }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if dotsafter %}
+                <li>
+                    <a href="{{ recipe_list_path(parent_context, {page: (page + after + 1)}) }}">...</a>
+                </li>
+            {% endif %}
+            <li class="{% if page >= lastpage %}disabled{% endif %}"><a href="{{ recipe_list_path(parent_context, {page: (page+1)}) }}">Next</a></li>
+        </ul>
+    </div>
+{% endmacro %}
+
+{# ---------------
+    table header (with sorting link) is repeated multiple times
+   --------------- #}
+{% macro th_sortable(title, key, current_sort, current_sort_order, parent_context, extra_classes) %}
+    {# set the inverted order if we're already sorting by this key #}
+    {% set sort_order = current_sort == key ? (current_sort_order == 'desc' ? 'asc' : 'desc') : 'asc' %}
+
+    <th class="{{ key }} {{ extra_classes }}">
+        <a href="{{ recipe_list_path(parent_context, {('sort_' ~ key): sort_order}) }}">
+            {{ title }}
+            {% if current_sort == key %}
+                <i class="icon-arrow-{{ (current_sort_order == 'desc' ? 'down' : 'up') }}"></i>
+            {% endif %}
+        </a>
+    </th>
+{% endmacro %}
+
+{% block content %}
+    {{ _self.pager(page, lastpage, _context) }}
+
+    <table class="item-list-table recipe-list-table table table-striped table-condensed">
+        <thead>
+            {{ _self.th_sortable('Name', 'name', current_sort, current_sort_order, _context) }}
+            <th class="type">Type</th>
+            {{ _self.th_sortable('Rating', 'rating', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Cost', 'cost', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Sell Price', 'sell_price', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Profit', 'profit', current_sort, current_sort_order, _context) }}
+        </thead>
+        {% for recipe in recipes %}
+            <tr class="recipe">
+                <td class="info">
+                    <a data-tooltip-href="{{ gw2db_recipe(recipe) }}" href="{{ path('recipe', {dataId: recipe.dataId}) }}">
+                        <img class="image" src="{{ recipe.resultitem.img }}" width="32" height="32" /> {{ recipe.name }}
+                    </a>
+                </td>
+                <td class="type">
+                    {{ recipe.discipline.name }}
+                </td>
+                <td class="rating">
+                    {{ recipe.rating }}
+                </td>
+                <td class="cost">
+                    {{ recipe.cost | gw2money }}
+                </td>
+                <td class="sell_price">
+                    {{ recipe.sellPrice | gw2money }}
+                </td>
+                <td class="profit">
+                    {{ recipe.profit | gw2money }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    {{ _self.pager(page, lastpage, _context) }}
+{% endblock %}

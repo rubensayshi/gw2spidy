@@ -2,6 +2,8 @@
 
 namespace GW2Spidy;
 
+use GW2Spidy\DB\DisciplineQuery;
+
 use GW2Spidy\DB\ItemTypeQuery;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -9,7 +11,9 @@ class Application extends \Silex\Application {
     protected $time;
     protected $homeActive = false;
     protected $gemActive = false;
+    protected $craftingActive = false;
     protected $displayTypes = null;
+    protected $disciplines = null;
 
     protected static $instance;
 
@@ -81,8 +85,18 @@ class Application extends \Silex\Application {
         return $this->gemActive;
     }
 
+    public function setCraftingActive($bool = true) {
+        $this->craftingActive = $bool;
+
+        return $this;
+    }
+
+    public function isCraftingActive() {
+        return $this->craftingActive;
+    }
+
     public function isBrowseActive() {
-        return !$this->isHomeActive() && !$this->isGemActive();
+        return !$this->isHomeActive() && !$this->isGemActive() && !$this->isCraftingActive();
     }
 
     public function getDisplayTypes() {
@@ -97,6 +111,14 @@ class Application extends \Silex\Application {
         }
 
         return $this->displayTypes;
+    }
+
+    public function getDisciplines() {
+        if (is_null($this->disciplines)) {
+            $this->disciplines = DisciplineQuery::getAllDisciplines();
+        }
+
+        return $this->disciplines;
     }
 }
 
