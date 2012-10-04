@@ -233,10 +233,6 @@
     $(document).ready(function() {
 		var item = {{ tree | raw }};
 
-		if ($(window).width() > 1400) {
-			//$("#recipe_summary_container").appendTo($("#recipe_summary_sidebar"));
-		}
-
         new Crafting(item, $("#recipe_container"), $("#recipe_summary_container"));
     });
 </script>
