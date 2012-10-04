@@ -63,6 +63,13 @@ class ItemDBWorker implements Worker {
         $now  = new \DateTime();
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
+        if (isset($itemData['min_sale_unit_price']) && $itemData['min_sale_unit_price'] >= 0) {
+            $itemData['min_sale_unit_price'] = 0;
+        }
+        if (isset($itemData['max_offer_unit_price']) && $itemData['max_offer_unit_price'] >= 0) {
+            $itemData['max_offer_unit_price'] = 0;
+        }
+
         var_dump($itemData['name']) . "\n\n";
         if ($item) {
             if (($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
