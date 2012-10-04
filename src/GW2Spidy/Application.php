@@ -39,7 +39,11 @@ class Application extends \Silex\Application {
     }
 
     public function getVersionString() {
-        return $this['version_string'] != 'dev' ? $this['version_string'] : null;
+        if ($this['version_string'] == 'time') {
+            return time();
+        } else {
+            return $this['version_string'] != 'dev' ? $this['version_string'] : null;
+        }
     }
 
     public function isDevMode() {
