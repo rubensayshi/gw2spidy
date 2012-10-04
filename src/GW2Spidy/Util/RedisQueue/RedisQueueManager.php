@@ -31,7 +31,7 @@ class RedisQueueManager {
             return null;
         }
 
-        $queueItem->setMananger($this);
+        $queueItem->setManager($this);
 
         return $queueItem;
     }

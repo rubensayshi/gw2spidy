@@ -113,9 +113,8 @@ class ItemListingsQueueItem extends RedisPriorityQueueItem {
             // -> finaly
         }
 
+        $this->requeue();
         if (isset($e) && $e instanceof Exception) {
-            $this->requeue();
-
             throw $e;
         }
     }
@@ -189,7 +188,7 @@ class ItemListingsQueueItem extends RedisPriorityQueueItem {
 
     protected function requeue() {
         $newQueueItem = clone $this;
-        $this->mananger->enqueue($newQueueItem);
+        $this->manager->enqueue($newQueueItem);
     }
 }
 

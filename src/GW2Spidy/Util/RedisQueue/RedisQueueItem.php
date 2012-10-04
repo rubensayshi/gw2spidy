@@ -5,7 +5,7 @@ namespace GW2Spidy\Util\RedisQueue;
 abstract class RedisQueueItem {
     protected $manager;
 
-    public function setMananger(RedisQueueManager $manager) {
+    public function setManager(RedisQueueManager $manager) {
         $this->manager = $manager;
     }
 
