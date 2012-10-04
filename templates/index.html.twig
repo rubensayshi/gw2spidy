@@ -16,9 +16,20 @@
 .index-blocks .block:first-child {
     margin-left: 0%;
 }
+
+.index-blocks .block .items,
 .index-blocks .block .image {
+    width: 240px;
+    height: 200px;
+
     margin: 0 auto;
     margin-bottom: 10px;
+}
+.index-blocks .block.gems .image {
+    background: transparent url('{{ versioned_asset('/assets/img/gem-exchange.png') }}') no-repeat;
+}
+.index-blocks .block.community .image {
+    background: transparent url('{{ versioned_asset('/assets/img/community.png') }}') no-repeat;
 }
 .index-blocks h2,
 .index-blocks h3,
@@ -46,9 +57,13 @@
     </div>
 </form>
 <div class="row-fluid index-blocks">
-  <div class="block span3 well tp">
+    <div class="block span3 well tp">
       <h2>Tradingpost</h2>
-      <div class="image" style="background: gray; width: 240px; height: 200px;">HOT ITEMS</div>
+      <div class="items">
+        <table>
+            <tr><td>Item Number 1</td><td>UP 2</td>
+        </table>
+      </div>
       <h4>Categories</h4>
       <ul class="nav nav-pills nav-stacked">
           {% for type in app.displayTypes %}
@@ -67,7 +82,7 @@
   </div>
   <div class="block span3 well crafting">
       <h2>Crafting</h2>
-      <div class="image" style="background: gray; width: 240px; height: 200px;">HOT RECIPES</div>
+      <div class="image"></div>
       <h4>Disciplines</h4>
       <ul class="nav nav-pills nav-stacked">
           {% for discipline in app.getDisciplines %}
@@ -86,16 +101,16 @@
   </div>
   <div class="block span3 well gems">
       <h2>Gem Exchange</h2>
-      <div class="image" style="background: gray; width: 240px; height: 200px;"></div>
+      <div class="image"></div>
       <h4>Rates</h4>
       <p>100 gems sells for 28 <i class="gw2money-silver">s</i> 1 <i class="gw2money-copper">c</i>&nbsp;</p>
       <p>100 gems costs 38 <i class="gw2money-silver">s</i> 77 <i class="gw2money-copper">c</i>&nbsp; to buy</p>
       <p>100 gems costs 1.25 USD to buy</p>
       <p>1 <i class="gw2money-gold">g</i>&nbsp; costs 4.46 USD to buy through gems</p>
   </div>
-  <div class="block span3 well contribute">
+  <div class="block span3 well community">
       <h2>Community</h2>
-      <div class="image" style="background: gray; width: 240px; height: 200px;"></div>
+      <div class="image"></div>
       <h4>Open source</h4>
       <p>The source code is available on <a href="https://github.com/rubensayshi/gw2spidy">github</a>.
           Paired with a README to get you started!</p>

@@ -5,5 +5,9 @@
 
 <div id="container" style="height: 500px; width: 100%; min-width: 450px;"></div>
 <script type="text/javascript">
-    var chart = new GW2SpidyChart('{{ url }}', $('#container'), {{ hideLegend ? 'false' : 'true' }});
+    var chart = new GW2SpidyChart('{{ url }}', $('#container'), {
+        legend : {
+            enabled : {{ hideLegend ? 'false' : 'true' }}
+        }
+    });
 </script>
