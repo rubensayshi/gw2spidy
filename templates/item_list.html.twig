@@ -1,4 +1,4 @@
-{% extends "content_sidebar.html.twig" %}
+{% extends "content_wide.html.twig" %}
 
 {# ---------------
     pager is repeated multiple times
@@ -60,8 +60,14 @@
 {% endmacro %}
 
 {% block sidebar %}
-    <h3>Filter item list</h3>
-    <div class="form-horizontal">
+
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    {{ _self.pager(page, lastpage, _context) }}
+
+    <div class="form-horizontal" style="margin-top: -9px;">
         <div class="control-group" style="margin-bottom: 0px;">
             <label class="control-label" for="rarity_filter">Filter by rarity:</label>
             <div class="controls">
@@ -74,26 +80,6 @@
             </div>
         </div>
     </div>
-    <p>&nbsp;</p>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("#rarity_filter").on('change', function() {
-                var href = $(this).find(':selected').data('href');
-
-                pos = window.location.href.indexOf(href);
-                if (pos == -1 || window.location.href.substr(pos) != href) {
-                    window.location.href = href;
-                }
-            });
-        });
-    </script>
-
-    {{ parent() }}
-{% endblock %}
-
-{% block content %}
-    {{ _self.pager(page, lastpage, _context) }}
 
     <table class="item-list-table table table-striped table-condensed">
         <thead>
@@ -131,4 +117,17 @@
     </table>
 
     {{ _self.pager(page, lastpage, _context) }}
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#rarity_filter").on('change', function() {
+                var href = $(this).find(':selected').data('href');
+
+                pos = window.location.href.indexOf(href);
+                if (pos == -1 || window.location.href.substr(pos) != href) {
+                    window.location.href = href;
+                }
+            });
+        });
+    </script>
 {% endblock %}

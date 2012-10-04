@@ -1,4 +1,4 @@
-{% extends "content_sidebar.html.twig" %}
+{% extends "content_wide.html.twig" %}
 
 {% block content %}
 <h3>Welcome to the Guild Wars 2 Spidy website!</h3>
@@ -54,12 +54,4 @@ Or join me on irc.gamesurge.net with your favorite IRC client or the <a href="ht
     <li><a href="http://www.guildwars2riches.com">Guild Wars 2 Riches</a> </li>
     <li><a href="http://gw2skills.net/editor/en/">Guild Wars 2 Skills</a> </li>
 </ul>
-{% endblock %}
-
-{% block sidebar %}
-    <a href="{{ path('gem') }}"><h3>Gem Exchange Rate <small>click for bigger chart</small></h3></a>
-    {% include "gem.html.twig" with {'included': true, hideLegend: true} %}
-    <p>&nbsp;</p>
-    <h3>Tweet!</h3>
-    <div id="tweet"></div>
 {% endblock %}

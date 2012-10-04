@@ -1,7 +1,7 @@
 {% set included = included is defined ? included : false %}
 {% set hideLegend = hideLegend is defined ? hideLegend : false %}
 
-{% extends not included ? "content_sidebar.html.twig" : "empty_shell.html.twig" %}
+{% extends not included ? "content_wide.html.twig" : "empty_shell.html.twig" %}
 
 {% block content %}
 <div class="clearfix">
