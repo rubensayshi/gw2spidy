@@ -37,10 +37,6 @@ class QueueManager extends Singleton {
             unset($item, $queueItem);
 
             var_dump($i++);
-
-            if ($i > 5) {
-                return;
-            }
         }
     }
 }
