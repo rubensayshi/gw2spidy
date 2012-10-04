@@ -59,11 +59,6 @@
     </th>
 {% endmacro %}
 
-{% block sidebar %}
-
-    {{ parent() }}
-{% endblock %}
-
 {% block content %}
     {{ _self.pager(page, lastpage, _context) }}
 
