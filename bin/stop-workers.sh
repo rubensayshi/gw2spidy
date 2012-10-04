@@ -11,9 +11,9 @@ if [[ -z `ls /var/run/gw2spidy | grep "worker-.*.pid"` ]]; then
 fi
 
 if [ "$1" == "now" ]; then
-    PIDS=$(cat /var/run/gw2spidy/worker-*.pid)
+    PIDS=$(cat /var/run/gw2spidy/*.pid)
 
-    rm -f /var/run/gw2spidy/worker-*.pid
+    rm -f /var/run/gw2spidy/*.pid
 
     for PID in $PIDS; do        
         if [ -e /proc/$PID -a /proc/$PID/exe ]; then
@@ -29,5 +29,5 @@ if [ "$1" == "now" ]; then
     done
 else
     echo "removing pid files so workers will kill themselves"
-    rm -f /var/run/gw2spidy/worker-*.pid
+    rm -f /var/run/gw2spidy/*.pid
 fi

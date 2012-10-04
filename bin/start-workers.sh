@@ -32,17 +32,34 @@ mkdir ${LOGDIR}/archive
 mv ${LOGDIR}/*.log ${LOGDIR}/archive
 rm -f ${LOGDIR}/*.log
 
-for ((i = 0; i < CNT; i++)); do 
-    if [[ -e /var/run/gw2spidy/worker-${i}.pid ]]; then
-        PID=$(cat /var/run/gw2spidy/worker-${i}.pid)
+function start_worker {
+	NAME=$1
+	NUM=$2
+	PIDFILE="/var/run/gw2spidy/${NAME}-${NUM}.pid"
+    if [[ -e $PIDFILE ]]; then
+        PID=$(cat $PIDFILE)
                         
         if [ -e /proc/$PID -a /proc/$PID/exe ]; then
-            echo "already running daemon number ${i}; [[ ${PID} ]]"
+            echo "already running daemon ${NAME} number ${NUM}; [[ ${PID} ]]"
             continue
         fi
     fi
     
-    echo "startin daemon number ${i}"
+    echo "startin daemon ${NAME} number ${NUM}"
     
-    ((${ROOT}/bin/worker.sh $i &>> ${LOGDIR}/start-workers.log) & echo $! > /var/run/gw2spidy/worker-${i}.pid &)
+    ((${ROOT}/bin/worker.sh $NAME $NUM $PIDFILE &>> ${LOGDIR}/start-workers.log) & echo $! > $PIDFILE &)
+}
+
+for ((i = 0; i < LISTING_CNT; i++)); do 
+	start_worker "item-listing-worker" $i
 done
+
+for ((i = 0; i < ITEM_CNT; i++)); do 
+	start_worker "item-worker" $i
+done
+
+for ((i = 0; i < GEM_CNT; i++)); do 
+	start_worker "gem-worker" $i
+done
+
+
