@@ -1,10 +1,10 @@
 <?php
 
-namespace GW2Spidy\WorkerQueue;
+namespace GW2Spidy\Worker;
 
 use GW2Spidy\Util\Functions;
 
-use GW2Spidy\Queue\WorkerQueueManager;
+use GW2Spidy\Queue\QueueManager;
 use GW2Spidy\Queue\WorkerQueueItem;
 
 use GW2Spidy\DB\ItemSubType;
@@ -13,7 +13,7 @@ use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\TradingPostSpider;
 
-class ItemTypeDBWorker implements Worker {
+class ItemTypeDBWorker {
     public function getRetries() {
         return 1;
     }
@@ -77,10 +77,9 @@ class ItemTypeDBWorker implements Worker {
 
     public static function enqueueWorker() {
         $queueItem = new WorkerQueueItem();
-        $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\ItemTypeDBWorker");
-        // $queueItem->setPriority(WorkerQueueItem::PRIORITY_TYPEDB);
+        $queueItem->setWorker("\\GW2Spidy\\Worker\\ItemTypeDBWorker");
 
-        WorkerQueueManager::getInstance()->enqueue($queueItem);
+        QueueManager::getInstance()->getItemQueueManager()->enqueue($queueItem);
 
         return $queueItem;
     }

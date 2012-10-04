@@ -4,7 +4,7 @@
  * process queue items
  */
 
-use GW2Spidy\WorkerQueue\ItemDBWorker;
+use GW2Spidy\Worker\ItemDBWorker;
 use GW2Spidy\GemExchangeSpider;
 
 use GW2Spidy\GW2SessionManager;
@@ -12,7 +12,7 @@ use GW2Spidy\GW2SessionManager;
 use GW2Spidy\TradingPostSpider;
 
 use GW2Spidy\Queue\RequestSlotManager;
-use GW2Spidy\Queue\WorkerQueueManager;
+use GW2Spidy\Queue\QueueManager;
 
 
 require dirname(__FILE__) . '/../autoload.php';
@@ -30,7 +30,7 @@ if ($debug || (defined('SQL_LOG_MODE') && SQL_LOG_MODE)) {
 }
 
 $slotManager  = RequestSlotManager::getInstance();
-$queueManager = WorkerQueueManager::getInstance();
+$queueManager = QueueManager::getInstance()->getItemQueueManager();
 
 /*
  * login here, this allows us to exit right away on failure

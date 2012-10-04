@@ -10,7 +10,7 @@ use GW2Spidy\DB\ItemTypeQuery;
 
 use GW2Spidy\DB\ItemType;
 
-use GW2Spidy\WorkerQueue\ItemDBWorker;
+use GW2Spidy\Worker\ItemDBWorker;
 
 use GW2Spidy\TradingPostSpider;
 

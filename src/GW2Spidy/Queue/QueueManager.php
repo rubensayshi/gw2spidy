@@ -3,63 +3,41 @@
 namespace GW2Spidy\Queue;
 
 use \Propel;
+use GW2Spidy\Util\Singleton;
 use GW2Spidy\DB\ItemType;
-
-use GW2Spidy\WorkerQueue\GemExchangeDBWorker;
-
 use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\DB\ItemTypeQuery;
-use GW2Spidy\WorkerQueue\ItemTypeDBWorker;
-use GW2Spidy\WorkerQueue\ItemListingsDBWorker;
-use GW2Spidy\WorkerQueue\ItemDBWorker;
+use GW2Spidy\Util\RedisQueue\RedisQueueManager;
+use GW2Spidy\Util\RedisQueue\RedisPriorityQueueManager;
 
-class QueueManager {
-    public function buildItemTypeDB() {
-        ItemTypeDBWorker::enqueueWorker();
+class QueueManager extends Singleton {
+    public function getItemListingsQueueManager() {
+        return new RedisPriorityQueueManager('item-listings-queue');
+    }
+    public function getItemQueueManager() {
+        return new RedisQueueManager('items-queue');
     }
 
-    public function buildItemDB($full = true) {
-        foreach (ItemTypeQuery::getAllTypes() as $type) {
-            foreach ($type->getSubTypes() as $subtype) {
-                ItemDBWorker::enqueueWorker($type, $subtype, $full);
-            }
-
-            ItemDBWorker::enqueueWorker($type, null, $full);
-        }
-    }
-
-    public function buildListingsDB($type = null) {
+    public function enqueueItemListingWorkersDB($type = null) {
         Propel::disableInstancePooling();
 
         $q = ItemQuery::create();
+        $queueManager = $this->getItemListingsQueueManager();
 
         if ($type instanceof ItemType) {
             $q->filterByType($type);
         } else if (is_numeric($type)) {
             $q->filterByTypeId($type);
-        } else {
-            $q->filterByTypeId(NULL, \Criteria::ISNOTNULL);
         }
 
-        $items = array();
+        $i = 0;
         foreach ($q->find() as $item) {
-            $items[$item->getDataId()] = $item;
+            $queueItem = new ItemListingsQueueItem($item);
+            $queueManager->enqueue($queueItem);
 
-            if (count($items) >= 50) {
-                ItemListingsDBWorker::enqueueWorker($items);
-                $items = array();
-            }
+            unset($item, $queueItem);
 
-            unset($item);
+            var_dump($i++);
         }
-
-        if (count($items) > 0) {
-            ItemListingsDBWorker::enqueueWorker($items);
-        }
-    }
-
-    public function buildGemExchangeDB() {
-        GemExchangeDBWorker::enqueueWorker();
     }
 }
 

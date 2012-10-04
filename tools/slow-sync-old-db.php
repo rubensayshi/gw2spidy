@@ -2,12 +2,7 @@
 
 ini_set('memory_limit', '1G');
 
-use GW2Spidy\TradeMarket;
-
 use GW2Spidy\DB\ItemQuery;
-
-use GW2Spidy\WorkerQueue\ItemDBWorker;
-
 
 require dirname(__FILE__) . '/../autoload.php';
 

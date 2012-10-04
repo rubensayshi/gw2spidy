@@ -2,7 +2,6 @@
 
 use \DateTime;
 use GW2Spidy\DB\RecipeQuery;
-use GW2Spidy\Queue\WorkerQueueManager;
 
 require dirname(__FILE__) . '/../autoload.php';
 

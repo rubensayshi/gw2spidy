@@ -1,6 +1,6 @@
 <?php
 
-namespace GW2Spidy\WorkerQueue;
+namespace GW2Spidy\Worker;
 
 use \Criteria;
 
@@ -10,7 +10,7 @@ use GW2Spidy\DB\SellListing;
 
 use GW2Spidy\Util\Functions;
 
-use GW2Spidy\Queue\WorkerQueueManager;
+use GW2Spidy\Queue\QueueManager;
 use GW2Spidy\Queue\WorkerQueueItem;
 
 use GW2Spidy\DB\Item;
@@ -20,7 +20,7 @@ use GW2Spidy\TradingPostSpider;
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemSubType;
 
-class ItemDBWorker implements Worker {
+class ItemDBWorker {
     const ERROR_CODE_NO_LONGER_EXISTS = 444441;
 
     public function getRetries() {
@@ -63,6 +63,12 @@ class ItemDBWorker implements Worker {
         $now  = new \DateTime();
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
+        // done based on listings, ignore this data here ;-)
+        unset($itemData['min_sale_unit_price']);
+        unset($itemData['sale_availability']);
+        unset($itemData['max_offer_unit_price']);
+        unset($itemData['offer_availability']);
+
         var_dump($itemData['name']) . "\n\n";
         if ($item) {
             if (($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
@@ -93,30 +99,6 @@ class ItemDBWorker implements Worker {
             $item->save();
         }
 
-        if (isset($itemData['min_sale_unit_price']) && $itemData['min_sale_unit_price'] > 0) {
-            $sellListing = new SellListing();
-            $sellListing->setItem($item);
-            $sellListing->setListingDate($now);
-            $sellListing->setListingTime($now);
-            $sellListing->setQuantity(isset($itemData['sale_availability']) ? $itemData['sale_availability'] : 0);
-            $sellListing->setUnitPrice($itemData['min_sale_unit_price']);
-            $sellListing->setListings(1);
-
-            $sellListing->save();
-        }
-
-        if (isset($itemData['max_offer_unit_price']) && $itemData['max_offer_unit_price'] > 0) {
-            $buyListing = new BuyListing();
-            $buyListing->setItem($item);
-            $buyListing->setListingDate($now);
-            $buyListing->setListingTime($now);
-            $buyListing->setQuantity(isset($itemData['sale_availability']) ? $itemData['sale_availability'] : 0);
-            $buyListing->setUnitPrice($itemData['max_offer_unit_price']);
-            $buyListing->setListings(1);
-
-            $buyListing->save();
-        }
-
         return $item;
     }
 
@@ -127,8 +109,8 @@ class ItemDBWorker implements Worker {
 
     public static function enqueueWorker($type, $subtype, $offset = 0, $full = true) {
         $queueItem = new WorkerQueueItem();
-        $queueItem->setWorker("\\GW2Spidy\\WorkerQueue\\ItemDBWorker");
-        // $queueItem->setPriority(WorkerQueueItem::PRIORITY_ITEMDB);
+        $queueItem->setWorker("\\GW2Spidy\\Worker\\ItemDBWorker");
+
         $queueItem->setData(array(
             'type'    => $type,
             'subtype' => $subtype,
@@ -136,7 +118,7 @@ class ItemDBWorker implements Worker {
             'full'    => $full,
         ));
 
-        WorkerQueueManager::getInstance()->enqueue($queueItem);
+        QueueManager::getInstance()->getItemQueueManager()->enqueue($queueItem);
 
         return $queueItem;
     }

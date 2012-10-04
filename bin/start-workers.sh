@@ -1,6 +1,8 @@
 #!/bin/bash
 
-CNT=$1
+LISTING_CNT=$1
+ITEM_CNT=$2
+GEM_CNT=$3
 LOGDIR="/var/log/gw2spidy"
 
 if [ -z "$ROOT" ]; then
@@ -8,8 +10,14 @@ if [ -z "$ROOT" ]; then
     export ROOT
 fi
 
-if [[ -z "${CNT}" ]]; then
-    CNT=1
+if [[ -z "${LISTING_CNT}" ]]; then
+    LISTING_CNT=1
+fi
+if [[ -z "${ITEM_CNT}" ]]; then
+    ITEM_CNT=1
+fi
+if [[ -z "${GEM_CNT}" ]]; then
+    GEM_CNT=1
 fi
 
 if [ ! -d "${LOGDIR}" ]; then 
