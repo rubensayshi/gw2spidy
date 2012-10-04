@@ -1,6 +1,112 @@
 {% extends "content_wide.html.twig" %}
 
 {% block content %}
+
+<style>
+
+.index-blocks .block {
+    padding-top: 5px;
+    min-height: 630px;
+    width: 24.0769%;
+    margin-left: 1.2308%;
+    min-width: 280px;
+}
+.index-blocks .block:first-child {
+    margin-left: 0%;
+}
+.index-blocks .block .image {
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+.index-blocks h2,
+.index-blocks h3,
+.index-blocks h4 {
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+.index-blocks .block.crafting ul,
+.index-blocks .block.tp ul {
+    float: left;
+    width: 50%;
+}
+
+.index-blocks .block.gems h4 {
+    margin-bottom: 5px;
+}
+
+</style>
+
+<form class="form-search" action="{{ path('searchpost') }}" method="POST">
+    <div class="well">
+        <div class="input-append" style="width: 60%; margin: 0 auto; display: block;">
+            <input placeholder="Search" name="search" type="text" class="search-query" style="width: 79%;"><button type="submit" class="btn" style="width: 19%;">Search</button>
+        </div>
+    </div>
+</form>
+<div class="row-fluid index-blocks">
+  <div class="block span3 well tp">
+      <h2>Tradingpost</h2>
+      <div class="image" style="background: gray; width: 240px; height: 200px;">HOT ITEMS</div>
+      <h4>Categories</h4>
+      <ul class="nav nav-pills nav-stacked">
+          {% for type in app.displayTypes %}
+              {%  if loop.index0 %2 == 0 %}
+                  <li><a href="{{ path('type', {type: type.id}) }}">{{ type.title }}</a></li>
+              {% endif %}
+          {% endfor %}
+      </ul>
+      <ul class="nav nav-pills nav-stacked" style="text-align: right;">
+          {% for type in app.displayTypes %}
+              {%  if loop.index0 %2 == 1 %}
+                  <li><a href="{{ path('type', {type: type.id}) }}">{{ type.title }}</a></li>
+              {% endif %}
+          {% endfor %}
+      </ul>
+  </div>
+  <div class="block span3 well crafting">
+      <h2>Crafting</h2>
+      <div class="image" style="background: gray; width: 240px; height: 200px;">HOT RECIPES</div>
+      <h4>Disciplines</h4>
+      <ul class="nav nav-pills nav-stacked">
+          {% for discipline in app.getDisciplines %}
+              {%  if loop.index0 %2 == 0 %}
+                  <li><a href="{{ path('crafting', {discipline: discipline.id}) }}">{{ discipline.name }}</a></li>
+              {% endif %}
+          {% endfor %}
+      </ul>
+      <ul class="nav nav-pills nav-stacked" style="text-align: right;">
+          {% for discipline in app.getDisciplines %}
+              {%  if loop.index0 %2 == 1 %}
+                  <li><a href="{{ path('crafting', {discipline: discipline.id}) }}">{{ discipline.name }}</a></li>
+              {% endif %}
+          {% endfor %}
+      </ul>
+  </div>
+  <div class="block span3 well gems">
+      <h2>Gem Exchange</h2>
+      <div class="image" style="background: gray; width: 240px; height: 200px;"></div>
+      <h4>Rates</h4>
+      <p>100 gems sells for 28 <i class="gw2money-silver">s</i> 1 <i class="gw2money-copper">c</i>&nbsp;</p>
+      <p>100 gems costs 38 <i class="gw2money-silver">s</i> 77 <i class="gw2money-copper">c</i>&nbsp; to buy</p>
+      <p>100 gems costs 1.25 USD to buy</p>
+      <p>1 <i class="gw2money-gold">g</i>&nbsp; costs 4.46 USD to buy through gems</p>
+  </div>
+  <div class="block span3 well contribute">
+      <h2>Community</h2>
+      <div class="image" style="background: gray; width: 240px; height: 200px;"></div>
+      <h4>Open source</h4>
+      <p>The source code is available on <a href="https://github.com/rubensayshi/gw2spidy">github</a>.
+          Paired with a README to get you started!</p>
+      <h4>IRC channel</h4>
+      <p>Join me on <a href="irc://irc.gamesurge.net:6667/gw2spidy">irc.gamesurge.net</a> with your favorite IRC client or the <a href="https://gamesurge.net/chat/">web client</a>. <br />
+          You can find me (Drakie) in <a href="irc://irc.gamesurge.net:6667/gw2spidy">#gw2spidy</a></p>
+      <h4>E-mail</h4>
+      <p style="text-align: center;"><a href="mailto:gw2spidy@rubensayshi.com">gw2spidy@rubensayshi.com</a></p>
+      <h4>Twitter <a href="https://twitter.com/gw2spidy" target="_blank">@GW2Spidy</a></h4>
+      <div id="tweet"></div>
+  </div>
+</div>
+
 <h3>Welcome to the Guild Wars 2 Spidy website!</h3>
 <p>This website aims to provide you with graphs of the sale and buy listings of items on the Guild Wars 2 Trade Market.
 </p>
