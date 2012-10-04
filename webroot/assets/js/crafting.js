@@ -135,8 +135,8 @@ var CraftEntry = function(item, count, parent, path, last) {
 
     function render() {
         var $entry     = $('<div class="recipe-row">');
-        var $itemWrap  = $('<div class="item-row-wrapper" />');
-        $item          = $('<div class="item-row clearfix">');
+        var $itemWrap  = $('<div class="item-row-wrapper" style="clear: both;" />');
+        $item          = $('<div class="item-row">');
         $childList     = $('<div class="children" />');
 
         $entry.append($itemWrap.append($item));
