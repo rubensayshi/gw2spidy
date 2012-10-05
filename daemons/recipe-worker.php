@@ -11,6 +11,10 @@ $q = RecipeQuery::create();
 $q->limit($offset)
   ->offset($i);
 
+if ($argv[1]) {
+    $q->filterByDataId($argv[1]);
+}
+
 while (($recipes = $q->find()) && $recipes->count()) {
     var_dump($i);
 
