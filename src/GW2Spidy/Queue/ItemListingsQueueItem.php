@@ -37,7 +37,6 @@ class ItemListingsQueueItem extends RedisPriorityQueueItem {
             case 'Armor':
                 if ($this->item->getRarity() >= 3) {
                     if ($this->item->getRestrictionLevel() > 60) {
-                        return self::FIVE_MIN;
                         return self::FIFTEEN_MIN;
                     } else if ($this->item->getRestrictionLevel() > 40) {
                         return self::ONE_HOUR;
