@@ -8,9 +8,10 @@ use GW2Spidy\TradingPostSpider;
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\BuyListing;
 use GW2Spidy\DB\SellListing;
-use GW2Spidy\Util\RedisQueue\RedisPriorityQueueItem;
+use GW2Spidy\DB\ItemQuery;
+use GW2Spidy\Util\RedisQueue\RedisPriorityIdentifierQueueItem;
 
-class ItemListingsQueueItem extends RedisPriorityQueueItem {
+class ItemListingsQueueItem extends RedisPriorityIdentifierQueueItem {
     const ONE_DAY = 86400;
     const ONE_HOUR = 3600;
     const THREE_HOURS = 10900;
@@ -19,8 +20,16 @@ class ItemListingsQueueItem extends RedisPriorityQueueItem {
 
     protected $item;
 
-    public function __construct(Item $item) {
-        $this->item = $item;
+    public function __construct($input) {
+        if ($input instanceof Item) {
+            $this->item = $input;
+        } else {
+            $this->item = ItemQuery::create()->findPk($input);
+        }
+    }
+
+    public function getIdentifier() {
+        return $this->item->getDataId();
     }
 
     public function getPriority() {

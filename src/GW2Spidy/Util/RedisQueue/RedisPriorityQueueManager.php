@@ -4,7 +4,7 @@ namespace GW2Spidy\Util\RedisQueue;
 
 class RedisPriorityQueueManager extends RedisQueueManager {
     public function enqueue(RedisPriorityQueueItem $queueItem) {
-        return $this->client->zadd($this->getQueueName(), $queueItem->getPriority(), serialize($queueItem));
+        return $this->client->zadd($this->getQueueName(), $queueItem->getPriority(), $this->prepareItem($queueItem));
     }
 
     public function next() {
@@ -37,15 +37,7 @@ class RedisPriorityQueueManager extends RedisQueueManager {
             // check if the zrem command removed 1 (or more)
             // if it did we can use this item
             if ($results[0] >= 1) {
-                $queueItem = unserialize($queueItem);
-
-                if (!($queueItem instanceof RedisPriorityQueueItem)) {
-                    return null;
-                }
-
-                $queueItem->setManager($this);
-
-                return $queueItem;
+                return $this->returnItem($queueItem);
             }
 
             // if we didn't get a usable slot we retry

@@ -7,11 +7,11 @@ use GW2Spidy\Util\Singleton;
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\Util\RedisQueue\RedisQueueManager;
-use GW2Spidy\Util\RedisQueue\RedisPriorityQueueManager;
+use GW2Spidy\Util\RedisQueue\RedisPriorityIdentifierQueueManager;
 
 class QueueManager extends Singleton {
     public function getItemListingsQueueManager() {
-        return new RedisPriorityQueueManager('item-listings-queue');
+        return new RedisPriorityIdentifierQueueManager('item-listings-queue', '\\GW2Spidy\\Queue\\ItemListingsQueueItem');
     }
     public function getItemQueueManager() {
         return new RedisQueueManager('items-queue');

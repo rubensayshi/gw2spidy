@@ -20,14 +20,22 @@ class RedisQueueManager {
     }
 
     public function enqueue(RedisQueueItem $queueItem) {
-        return $this->client->lpush($this->getQueueName(), serialize($queueItem));
+        return $this->client->lpush($this->getQueueName(), $this->prepareItem($queueItem));
+    }
+
+    protected function prepareItem(RedisQueueItem $queueItem) {
+        return serialize($queueItem);
     }
 
     public function next() {
         $result    = $this->client->brpop($this->getQueueName(), 2);
-        $queueItem = unserialize($result[1]);
+        return $this->returnItem($result[1]);
+    }
 
-        if (!($queueItem instanceof RedisQueueItem)) {
+    protected function returnItem($queueItem) {
+        $queueItem = unserialize($queueItem);
+
+        if (!($queueItem instanceof RedisPriorityQueueItem)) {
             return null;
         }
 
