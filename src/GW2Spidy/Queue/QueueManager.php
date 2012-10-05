@@ -54,8 +54,6 @@ class QueueManager extends Singleton {
 
         list($exists, $nexists) = $queueManager->multi_exists($q->find()->toArray(), true);
 
-        var_dump($exists, $nexists);
-
         foreach ($nexists as $id) {
             $queueItem = new ItemListingsQueueItem($id);
             $queueManager->enqueue($queueItem);
