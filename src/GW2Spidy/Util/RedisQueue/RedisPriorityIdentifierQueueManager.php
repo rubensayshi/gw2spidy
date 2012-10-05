@@ -2,21 +2,15 @@
 
 namespace GW2Spidy\Util\RedisQueue;
 
-class RedisPriorityIdentifierQueueManager extends RedisPriorityQueueManager {
-    protected $itemClass;
-
-    public function __construct($queueName, $itemClass) {
-        $this->itemClass = $itemClass;
-
-        parent::__construct($queueName);
-    }
+abstract class RedisPriorityIdentifierQueueManager extends RedisPriorityQueueManager {
+    abstract protected function queueItemFromIdentifier($identifier);
 
     protected function prepareItem(RedisPriorityIdentifierQueueItem $queueItem) {
         return $queueItem->getIdentifier();
     }
 
     protected function returnItem($queueItem) {
-        $queueItem = new $this->itemClass($queueItem);
+        $queueItem = $this->queueItemFromIdentifier($queueItem);
 
         $queueItem->setManager($this);
 

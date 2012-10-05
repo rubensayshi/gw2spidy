@@ -115,19 +115,6 @@ class ItemListingsQueueItem extends RedisPriorityIdentifierQueueItem {
     }
 
     public function work() {
-        try {
-            $this->_work();
-        } catch (Exception $e) {
-            // -> finaly
-        }
-
-        $this->requeue();
-        if (isset($e) && $e instanceof Exception) {
-            throw $e;
-        }
-    }
-
-    protected function _work() {
         $now  = new DateTime();
         $item = $this->item;
         $listings = TradingPostSpider::getInstance()->getAllListingsById($item->getDataId());
@@ -194,7 +181,7 @@ class ItemListingsQueueItem extends RedisPriorityIdentifierQueueItem {
         return $item;
     }
 
-    protected function requeue() {
+    public function requeue() {
         $newQueueItem = clone $this;
         $this->manager->enqueue($newQueueItem);
     }
