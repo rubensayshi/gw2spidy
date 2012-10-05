@@ -38,6 +38,29 @@ class QueueManager extends Singleton {
             var_dump($i++);
         }
     }
+
+    public function superviseItemListingWorkersDB($type = null) {
+        Propel::disableInstancePooling();
+
+        $q = ItemQuery::create();
+        $q->select('DataId');
+        $queueManager = $this->getItemListingsQueueManager();
+
+        if ($type instanceof ItemType) {
+            $q->filterByType($type);
+        } else if (is_numeric($type)) {
+            $q->filterByTypeId($type);
+        }
+
+        list($exists, $nexists) = $queueManager->multi_exists($q->find()->toArray(), true);
+
+        var_dump($exists, $nexists);
+
+        foreach ($nexists as $id) {
+            $queueItem = new ItemListingsQueueItem($id);
+            $queueManager->enqueue($queueItem);
+        }
+    }
 }
 
 ?>
