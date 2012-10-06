@@ -155,7 +155,7 @@ $app->get("/", function() use($app) {
     $featured = ItemQuery::create()->findPk(19697);
 
     return $app['twig']->render('index.html.twig', array(
-        'featured' => $featured,
+        'item' => $featured,
     ));
 })
 ->bind('homepage');
@@ -405,7 +405,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
  *  route /status
  * ----------------------
  */
-$app->get("/status", function() use($app) {
+$app->get("/status/", function() use($app) {
     ob_start();
 
     echo "there are [[ " . RequestSlotManager::getInstance()->getLength() . " ]] available slots right now \n";
