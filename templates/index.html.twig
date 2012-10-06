@@ -25,6 +25,12 @@
     margin: 0 auto;
     margin-bottom: 10px;
 }
+
+.index-blocks .block .items li {
+    padding: 5px;
+    border-bottom: 1px solid gray;
+}
+
 .index-blocks .block.gems .image {
     background: transparent url('{{ versioned_asset('/assets/img/gem-exchange.png') }}') no-repeat;
 }
@@ -37,8 +43,8 @@
     text-align: center;
     border-bottom: 1px solid black;
 }
-.index-blocks .block.crafting ul,
-.index-blocks .block.tp ul {
+.index-blocks .block.crafting ul.double,
+.index-blocks .block.tp ul.double {
     float: left;
     width: 50%;
 }
@@ -59,20 +65,32 @@
 <div class="row-fluid index-blocks">
 	<div class="block span3 well tp">
         <h2>Tradingpost</h2>
-        <div class="items">
-          <table>
-              <tr><td>Item Number 1</td><td>UP 2</td>
-          </table>
-        </div>
+    	<ul class="nav nav-pills nav-stacked items clearfix">
+    		{% for item in trending %}
+    			{% set href = path('item', {dataId : item.dataId}) %}
+        		<li data-tooltip-href="{{ gw2db_item(item) }}">
+                	<div style="display: inline-block;">
+                        <a href="{{ href }}"><img src="{{ item.img }}" width="32" height="32" /></a>
+                    </div>
+                	<div style="display: inline-block;" class="name {{ item.rarityCssClass }}">
+                        <a href="{{ href }}">{{ item.name }}</a>
+                    </div>
+                    <div style="text-align: center;">
+                  		{{ item.minSaleUnitPrice | gw2money }}
+                  		<span class="badge badge-success" style="float: right;">+40% last hour</span>
+                  	</div>
+              	</li>
+          	{% endfor %}
+        </ul>
         <h4>Categories</h4>
-        <ul class="nav nav-pills nav-stacked">
+        <ul class="nav nav-pills nav-stacked double">
             {% for type in app.displayTypes %}
                 {%  if loop.index0 %2 == 0 %}
                     <li><a href="{{ path('type', {type: type.id}) }}">{{ type.title }}</a></li>
                 {% endif %}
             {% endfor %}
         </ul>
-        <ul class="nav nav-pills nav-stacked" style="text-align: right;">
+        <ul class="nav nav-pills nav-stacked double" style="text-align: right;">
             {% for type in app.displayTypes %}
                 {%  if loop.index0 %2 == 1 %}
                     <li><a href="{{ path('type', {type: type.id}) }}">{{ type.title }}</a></li>
@@ -84,14 +102,14 @@
         <h2>Crafting</h2>
         <div class="image"></div>
         <h4>Disciplines</h4>
-        <ul class="nav nav-pills nav-stacked">
+        <ul class="nav nav-pills nav-stacked double">
             {% for discipline in app.getDisciplines %}
                 {%  if loop.index0 %2 == 0 %}
                     <li><a href="{{ path('crafting', {discipline: discipline.id}) }}">{{ discipline.name }}</a></li>
                 {% endif %}
             {% endfor %}
         </ul>
-        <ul class="nav nav-pills nav-stacked" style="text-align: right;">
+        <ul class="nav nav-pills nav-stacked double" style="text-align: right;">
             {% for discipline in app.getDisciplines %}
                 {%  if loop.index0 %2 == 1 %}
                     <li><a href="{{ path('crafting', {discipline: discipline.id}) }}">{{ discipline.name }}</a></li>

@@ -151,11 +151,14 @@ $app->get("/", function() use($app) {
     // workaround for now to set active menu item
     $app->setHomeActive();
 
-    // get copper ore as featured item
-    $featured = ItemQuery::create()->findPk(19697);
+    $trending = array(
+        ItemQuery::create()->findPk(31105),
+        ItemQuery::create()->findPk(31034),
+        ItemQuery::create()->findPk(13162),
+    );
 
     return $app['twig']->render('index.html.twig', array(
-        'item' => $featured,
+        'trending' => $trending,
     ));
 })
 ->bind('homepage');
