@@ -1,36 +1,23 @@
 <?php
 
-/**
- * process queue items
- */
-
-use GW2Spidy\WorkerQueue\ItemDBWorker;
-use GW2Spidy\GemExchangeSpider;
-
 use GW2Spidy\GW2SessionManager;
 
 use GW2Spidy\TradingPostSpider;
 
 use GW2Spidy\Queue\RequestSlotManager;
-use GW2Spidy\Queue\WorkerQueueManager;
+use GW2Spidy\Queue\QueueManager;
 
 
 require dirname(__FILE__) . '/../autoload.php';
 
 $UUID    = getmypid() . "::" . time();
-$workers = array();
 $con     = Propel::getConnection();
 $run     = 0;
 $max     = 100;
 $debug   = in_array('--debug', $argv);
 
-if ($debug || (defined('SQL_LOG_MODE') && SQL_LOG_MODE)) {
-    $con->setLogLevel(\Propel::LOG_DEBUG);
-    $con->useDebug(true);
-}
-
 $slotManager  = RequestSlotManager::getInstance();
-$queueManager = WorkerQueueManager::getInstance();
+$queueManager = QueueManager::getInstance()->getItemListingsQueueManager();
 
 /*
  * login here, this allows us to exit right away on failure
@@ -41,7 +28,6 @@ try {
     $gw2session = GW2SessionManager::getInstance()->getSession();
     echo "login ok [".(microtime(true) - $begin)."] -> [".(int)$gw2session->getGameSession()."] -> [{$gw2session->getSessionKey()}] \n";
 
-    GemExchangeSpider::getInstance()->setSession($gw2session);
     TradingPostSpider::getInstance()->setSession($gw2session);
 } catch (Exception $e) {
     echo "login failed ... sleeping [60] and restarting \n";
@@ -59,8 +45,8 @@ while ($run < $max) {
     $slot = $slotManager->getAvailableSlot();
 
     if (!$slot) {
-        print "no slots, sleeping [10] ... \n";
-        sleep(10);
+        print "no slots, sleeping [4.5] ... \n";
+        usleep(4500);
 
         continue;
     }
@@ -89,14 +75,8 @@ while ($run < $max) {
     // mark our slot as held
     $slot->hold();
 
-    $workerName = $queueItem->getWorker();
-
-    if (!isset($workers[$workerName])) {
-        $workers[$workerName] = new $workerName;
-    }
-
     $try = 1;
-    $retries = $workers[$workerName]->getRetries();
+    $retries = 2;
 
     while (true) {
         /*
@@ -106,7 +86,7 @@ while ($run < $max) {
          */
         try {
             ob_start();
-            $workers[$workerName]->work($queueItem);
+            $queueItem->work();
 
             if ($debug) {
                 echo ob_get_clean();
@@ -119,7 +99,7 @@ while ($run < $max) {
             $log = ob_get_clean();
             echo " --------------- \n !! worker process threw exception !!\n --------------- \n {$log} \n --------------- \n {$e} \n --------------- \n";
 
-           if ($e->getCode() == ItemDBWorker::ERROR_CODE_NO_LONGER_EXISTS || strstr("CurlRequest failed [[ 401 ]]", $e->getMessage())) {
+           if (strstr("CurlRequest failed [[ 401 ]]", $e->getMessage())) {
                 break;
             }
 

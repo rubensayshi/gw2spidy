@@ -1,8 +1,9 @@
 <?php
 
-use GW2Spidy\Queue\WorkerQueueManager;
+use GW2Spidy\Queue\QueueManager;
 
 
 require dirname(__FILE__) . '/../autoload.php';
 
-WorkerQueueManager::getInstance()->purge();
+QueueManager::getInstance()->getItemListingsQueueManager()->purge();
+QueueManager::getInstance()->getItemQueueManager()->purge();

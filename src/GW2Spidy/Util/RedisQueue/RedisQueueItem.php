@@ -2,41 +2,14 @@
 
 namespace GW2Spidy\Util\RedisQueue;
 
-class RedisQueueItem {
-    protected $id    = null;
-    protected $queue = '';
-    protected $data  = null;
+abstract class RedisQueueItem {
+    protected $manager;
 
-
-    public function setId($id) {
-        $this->id = $id;
-
-        return $this;
+    public function setManager(RedisQueueManager $manager) {
+        $this->manager = $manager;
     }
 
-    public function getId() {
-        return $this->id;
-    }
-
-    public function setQueue($queue) {
-        $this->queue = $queue;
-
-        return $this;
-    }
-
-    public function getQueue() {
-        return $this->queue;
-    }
-
-    public function setData($data) {
-        $this->data = $data;
-
-        return $this;
-    }
-
-    public function getData() {
-        return $this->data;
-    }
+    abstract public function work();
 }
 
 ?>

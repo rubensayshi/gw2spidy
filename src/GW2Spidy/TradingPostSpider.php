@@ -54,28 +54,41 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getListingsById($id, $type = self::LISTING_TYPE_SELL) {
-        // for now we can query for 'all' and get both sell and buy in the return
-        //  should it stop working like that we can just query for what we want
-        $queryType = 'all';
-        $cacheKey  = "listings::{$id}";
+        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/listings.json?id={$id}&type={$queryType}")
+                    ->setCookie("s={$this->getSession()->getSessionKey()}")
+                    ->setHeader("X-Requested-With: XMLHttpRequest")
+                    ->exec()
+                    ;
 
-        if (!($listings = $this->cache->get($cacheKey))) {
-            $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/listings.json?id={$id}&type={$queryType}")
-                        ->setCookie("s={$this->getSession()->getSessionKey()}")
-                        ->setHeader("X-Requested-With: XMLHttpRequest")
-                        ->exec()
-                        ;
+        $data = json_decode($curl->getResponseBody(), true);
 
-            $data = json_decode($curl->getResponseBody(), true);
-
-            if (!isset($data['listings']) || !isset($data['listings'][$type])) {
-                throw new Exception("Failed to retrieve proper listingsdata from the request result");
-            }
-
-            $listings = $data['listings'][$type];
-
-            $this->cache->set($cacheKey, $listings, MEMCACHE_COMPRESSED, 10);
+        if (!isset($data['listings']) || !isset($data['listings'][$type])) {
+            throw new Exception("Failed to retrieve proper listingsdata from the request result");
         }
+
+        $listings = $data['listings'][$type];
+
+
+        return $listings;
+    }
+
+    public function getAllListingsById($id) {
+        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/listings.json?id={$id}&type=all")
+                    ->setCookie("s={$this->getSession()->getSessionKey()}")
+                    ->setHeader("X-Requested-With: XMLHttpRequest")
+                    ->exec()
+                    ;
+
+        $data = json_decode($curl->getResponseBody(), true);
+
+        if (!isset($data['listings']) || !isset($data['listings']['buys']) || !isset($data['listings']['sells'])) {
+            throw new Exception("Failed to retrieve proper listingsdata from the request result");
+        }
+
+        $listings = array(
+            self::LISTING_TYPE_SELL => $data['listings'][self::LISTING_TYPE_SELL],
+            self::LISTING_TYPE_BUY	=> $data['listings'][self::LISTING_TYPE_BUY],
+        );
 
         return $listings;
     }

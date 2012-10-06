@@ -2,7 +2,6 @@
 
 use \DateTime;
 use GW2Spidy\DB\RecipeQuery;
-use GW2Spidy\Queue\WorkerQueueManager;
 
 require dirname(__FILE__) . '/../autoload.php';
 
@@ -11,6 +10,10 @@ $i = 0;
 $q = RecipeQuery::create();
 $q->limit($offset)
   ->offset($i);
+
+if ($argv[1]) {
+    $q->filterByDataId($argv[1]);
+}
 
 while (($recipes = $q->find()) && $recipes->count()) {
     var_dump($i);

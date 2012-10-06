@@ -2,9 +2,9 @@
 
 namespace GW2Spidy\Util\RedisQueue;
 
-abstract class RedisPriorityQueueManager extends RedisQueueManager {
+class RedisPriorityQueueManager extends RedisQueueManager {
     public function enqueue(RedisPriorityQueueItem $queueItem) {
-        return $this->client->zadd($this->getQueueName(), $queueItem->getPriority(), serialize($queueItem));
+        return $this->client->zadd($this->getQueueName(), $queueItem->getPriority(), $this->prepareItem($queueItem));
     }
 
     public function next() {
@@ -15,8 +15,8 @@ abstract class RedisPriorityQueueManager extends RedisQueueManager {
             // set a watch on the $queueKey
             $this->client->watch($queueKey);
 
-            // pop the hotest item off $queueKey which is between 0 and time() with limit 0,1
-            $items = $this->client->zrevRangeByScore($queueKey, '+inf', '-inf', array('limit' => array(0, 1)));
+            // pop the hotest item off $queueKey which is between -inf and +inf with limit 0,1
+            $items = $this->client->zRangeByScore($queueKey, '-inf', '+inf', array('limit' => array(0, 1)));
             // grab the item we popped off
             $queueItem = $items ? $items[0] : null;
 
@@ -37,9 +37,7 @@ abstract class RedisPriorityQueueManager extends RedisQueueManager {
             // check if the zrem command removed 1 (or more)
             // if it did we can use this item
             if ($results[0] >= 1) {
-                $queueItem = unserialize($queueItem);
-
-                return ($queueItem instanceof RedisPriorityQueueItem) ? $queueItem : null;
+                return $this->returnItem($queueItem);
             }
 
             // if we didn't get a usable slot we retry

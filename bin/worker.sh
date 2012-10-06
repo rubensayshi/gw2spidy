@@ -1,36 +1,40 @@
 #!/bin/bash
 
-NUMBER=$1
-PID_DIR=/var/
+NAME=$1
+NUMBER=$2
+PIDFILE=$3
 
 if [ -z "$ROOT" ]; then
     ROOT=`php -r "echo dirname(dirname(realpath('$(pwd)/$0')));"`
     export ROOT
 fi
 
+if [[ -z "${NAME}" ]]; then
+    echo "[[ EXIT ]] NO DAEMON NAME SPECIFIED \n"
+    exit 1
+fi
 if [[ -z "${NUMBER}" ]]; then
     echo "[[ EXIT ]] NO DAEMON NUMBER SPECIFIED \n"
     exit 1
 fi
-
-if [ -n "$2" ]; then
-    echo "done"
-    exit 0
+if [[ -z "${PIDFILE}" ]]; then
+    echo "[[ EXIT ]] NO DAEMON PIDFILE SPECIFIED \n"
+    exit 1
 fi
 
 while [[ true ]]; do 
-    if [[ ! -e /var/run/gw2spidy/worker-${NUMBER}.pid ]]; then
+    if [[ ! -e $PIDFILE ]]; then
         echo "pid file is gone, exit daemon [${NUMBER}] [$$]"
         exit 0
     fi
     
-    if [[ -e /var/run/gw2spidy/worker-${i}.pid ]]; then
-        if [[ ! `cat /var/run/gw2spidy/worker-${i}.pid` == $$ ]]; then
+    if [[ -e $PIDFILE ]]; then
+        if [[ ! `cat ${PIDFILE}` == $$ ]]; then
 	        echo "pid file is cheating on us, has another PID, exit daemon [${NUMBER}] [$$]"
 	        exit 0
 	    fi
     fi
 
     echo "restart"; 
-    php ${ROOT}/daemons/worker-queue.php &>> /var/log/gw2spidy/worker-queue.${NUMBER}.log; 
+    php ${ROOT}/daemons/${NAME}.php &>> /var/log/gw2spidy/${NAME}.${NUMBER}.log; 
 done

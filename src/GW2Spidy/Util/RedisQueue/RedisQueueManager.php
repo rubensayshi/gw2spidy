@@ -6,24 +6,42 @@ use GW2Spidy\Util\Singleton;
 
 use Predis\Client;
 
-abstract class RedisQueueManager extends Singleton {
+class RedisQueueManager {
+    protected $queueName;
     protected $client;
 
-    protected function __construct() {
+    public function __construct($queueName) {
         $this->client = new Client();
+        $this->queueName = $queueName;
     }
 
-    abstract protected function getQueueName();
+    protected function getQueueName() {
+        return $this->queueName;
+    }
 
     public function enqueue(RedisQueueItem $queueItem) {
-        return $this->client->lpush($this->getQueueName(), serialize($queueItem));
+        return $this->client->lpush($this->getQueueName(), $this->prepareItem($queueItem));
+    }
+
+    protected function prepareItem(RedisQueueItem $queueItem) {
+        return serialize($queueItem);
     }
 
     public function next() {
         $result    = $this->client->brpop($this->getQueueName(), 2);
-        $queueItem = unserialize($result[1]);
+        return $this->returnItem($result[1]);
+    }
 
-        return ($queueItem instanceof RedisQueueItem) ? $queueItem : null;
+    protected function returnItem($queueItem) {
+        $queueItem = unserialize($queueItem);
+
+        if (!($queueItem instanceof RedisPriorityQueueItem)) {
+            return null;
+        }
+
+        $queueItem->setManager($this);
+
+        return $queueItem;
     }
 
     public function purge() {
