@@ -432,9 +432,9 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
         'gw2money' => true,
     );
     $chart[] = array(
-    	'data'    => $buyListings['monthly'],
-    	'name'    => "Buy Listings 30-day Average",
-    	'visible' => false,
+    	'data'     => $buyListings['monthly'],
+    	'name'     => "Buy Listings 30-day Average",
+    	'visible'  => false,
         'gw2money' => true,
     );
 
@@ -442,24 +442,28 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
      *  VOLUME
      *---------------*/
     $chart[] = array(
-    	'data'   => $sellListings['cnt'],
-    	'name'  => "Sell Listings Volume",
+    	'data'    => $sellListings['cnt'],
+    	'name'    => "Sell Listings Volume",
     	'visible' => false,
+        'yAxis'   => 1,
     );
     $chart[] = array(
-    	'data'   => $sellListings['daily_cnt'],
-    	'name'  => "Sell Listings Volume Daily Avg",
+    	'data'    => $sellListings['daily_cnt'],
+    	'name'    => "Sell Listings Volume Daily Avg",
     	'visible' => false,
+        'yAxis'   => 1,
     );
     $chart[] = array(
-    	'data'   => $buyListings['cnt'],
-    	'name'  => "Buy Listings Volume",
+    	'data'    => $buyListings['cnt'],
+    	'name'    => "Buy Listings Volume",
     	'visible' => false,
+        'yAxis'   => 1,
     );
     $chart[] = array(
-    	'data'   => $buyListings['daily_cnt'],
-    	'name'  => "Buy Listings Volume Daily Avg",
+    	'data'    => $buyListings['daily_cnt'],
+    	'name'    => "Buy Listings Volume Daily Avg",
     	'visible' => false,
+        'yAxis'   => 1,
     );
 
     $content = json_encode($chart);

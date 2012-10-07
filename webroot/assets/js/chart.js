@@ -56,14 +56,21 @@ var GW2SpidyChart = function(url, container, set_options) {
             ],
             selected : 2
         },
-        yAxis : {
-            labels : {
-                formatter: function() {
-                    return formatGW2Money(this.value);
-                },
-                useHTML: true
-            }
-        }
+        yAxis : [
+             {
+                 title : { text : 'coin', style : { color : '#AA4643'} },
+                 labels : {
+                     formatter: function() {
+                         return formatGW2Money(this.value);
+                     },
+                     useHTML: true
+                 }
+             },
+             {
+                 title : { text : 'volume', style : { color : '#4572A7'} },
+                 opposite : true
+             },
+        ]
     };
 
     options = $.extend(true, {}, options, set_options);
