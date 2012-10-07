@@ -193,11 +193,13 @@
 	<div class="block span3 well gems">
         <h2>Gem Exchange</h2>
         <a href="{{ path('gem') }}" class="image"></a>
-        <h4>Rates</h4>
-        <p>100 gems sells for 28 <i class="gw2money-silver">s</i> 1 <i class="gw2money-copper">c</i>&nbsp;</p>
-        <p>100 gems costs 38 <i class="gw2money-silver">s</i> 77 <i class="gw2money-copper">c</i>&nbsp; to buy</p>
-        <p>100 gems costs 1.25 USD to buy</p>
-        <p>1 <i class="gw2money-gold">g</i>&nbsp; costs 4.46 USD to buy through gems</p>
+        {% if gemtogold is defined %}
+        	<h4>Rates</h4>
+            <p>100 gems sells for {{ gemtogold | gw2money }}.</p>
+            <p>100 gems costs {{ goldtogem | gw2money }} to buy.</p>
+            <p>100 gems costs {{ usdtogem | number_format(2, '.', ',') }} USD to buy.</p>
+            <p>{{ (10000) | gw2money }} costs {{ usdtogold | number_format(2, '.', ',') }} USD to buy through gems.</p>
+		{% endif %}
 	</div>
 	<div class="block span3 well community">
         <h2>Community</h2>

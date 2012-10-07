@@ -142,6 +142,40 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
     ));
 };
 
+function gem_summary() {
+    $lastSell = GemToGoldRateQuery::create()
+                ->addDescendingOrderByColumn("rate_datetime")
+                ->offset(-1)
+                ->limit(1)
+                ->findOne();
+
+    $lastBuy = GoldToGemRateQuery::create()
+                ->addDescendingOrderByColumn("rate_datetime")
+                ->offset(-1)
+                ->limit(1)
+                ->findOne();
+
+    if (!$lastSell || !$lastBuy) {
+        return null;
+    }
+
+    $gemtogold = $lastSell->getRate();
+    $goldtogem = $lastBuy->getRate();
+
+    $usdtogem    = 10  / 800 * 100;
+    $poundstogem = 8.5 / 800 * 100;
+    $eurostogem  = 10  / 800 * 100;
+
+    $usdtogold   = (10000 / $gemtogold) * $usdtogem;
+
+    return array(
+        'gemtogold' => $gemtogold,
+        'goldtogem' => $goldtogem,
+        'usdtogem'  => $usdtogem,
+        'usdtogold' => $usdtogold,
+    );
+}
+
 /**
  * ----------------------
  *  route /
@@ -161,10 +195,14 @@ $app->get("/", function() use($app) {
                         ->limit(3)
                         ->find();
 
+
+    $summary = gem_summary();
+
     return $app['twig']->render('index.html.twig', array(
         'trending_up' => $trendingUp,
         'trending_down' => $trendingDown,
-    ));
+
+    ) + (array)$summary);
 })
 ->bind('homepage');
 
@@ -177,38 +215,9 @@ $app->get("/gem", function() use($app) {
     // workaround for now to set active menu item
     $app->setGemActive();
 
+    $summary = gem_summary();
 
-    $lastSell = GemToGoldRateQuery::create()
-                ->addDescendingOrderByColumn("rate_datetime")
-                ->offset(-1)
-                ->limit(1)
-                ->findOne();
-
-    $lastBuy = GoldToGemRateQuery::create()
-                ->addDescendingOrderByColumn("rate_datetime")
-                ->offset(-1)
-                ->limit(1)
-                ->findOne();
-
-    if (!$lastSell || !$lastBuy) {
-        return $app['twig']->render('gem.html.twig', array());
-    }
-
-    $gemtogold = $lastSell->getRate();
-    $goldtogem = $lastBuy->getRate();
-
-    $usdtogem    = 10  / 800 * 100;
-    $poundstogem = 8.5 / 800 * 100;
-    $eurostogem  = 10  / 800 * 100;
-
-    $usdtogold   = (10000 / $gemtogold) * $usdtogem;
-
-    return $app['twig']->render('gem.html.twig', array(
-        'gemtogold' => $gemtogold,
-        'goldtogem' => $goldtogem,
-        'usdtogem'  => $usdtogem,
-        'usdtogold' => $usdtogold,
-    ));
+    return $app['twig']->render('gem.html.twig', (array)$summary);
 })
 ->bind('gem');
 
