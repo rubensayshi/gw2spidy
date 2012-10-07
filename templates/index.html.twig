@@ -31,6 +31,19 @@
     padding: 5px;
     border-bottom: 1px solid gray;
 }
+.index-blocks .block .items .item-image {
+    display: block;
+    float: left;
+    width: 32px;
+    height: 32px;
+}
+.index-blocks .block .items .item-name {
+    display: block;
+    float: left;
+    width: 190px;
+    padding-left: 5px;
+    height: 32px;
+}
 
 .index-blocks .block.gems .image {
     background: transparent url('{{ versioned_asset('/assets/img/gem-exchange.png') }}') no-repeat;
@@ -86,10 +99,10 @@
         			{% set href = path('item', {dataId : item.dataId}) %}
             		<li>
             			<div data-tooltip-href="{{ gw2db_item(item) }}">
-                        	<div style="display: inline-block;">
+                        	<div class="item-image">
                                 <a href="{{ href }}"><img src="{{ item.img }}" width="32" height="32" /></a>
                             </div>
-                        	<div style="display: inline-block;" class="name {{ item.rarityCssClass }}">
+                        	<div class="item-name {{ item.rarityCssClass }}">
                                 <a href="{{ href }}">{{ item.name }}</a>
                             </div>
                         </div>
