@@ -388,7 +388,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
         'data'     => $sellListings['raw'],
         'name'     => "Sell Listings Raw Data",
     	'visible'  => false,
-        'gw2money' => false,
+        'gw2money' => true,
     );
     $chart[] = array(
     	'data'     => $sellListings['daily'],
@@ -417,7 +417,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
         'data'     => $buyListings['raw'],
         'name'     => "Buy Listings Raw Data",
     	'visible'  => false,
-        'gw2money' => false,
+        'gw2money' => true,
     );
     $chart[] = array(
     	'data'     => $buyListings['daily'],
