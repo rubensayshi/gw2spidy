@@ -438,6 +438,30 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
         'gw2money' => true,
     );
 
+    /*---------------
+     *  VOLUME
+     *---------------*/
+    $chart[] = array(
+    	'data'   => $sellListings['cnt'],
+    	'name'  => "Sell Listings Volume",
+    	'visible' => false,
+    );
+    $chart[] = array(
+    	'data'   => $sellListings['daily_cnt'],
+    	'name'  => "Sell Listings Volume Daily Avg",
+    	'visible' => false,
+    );
+    $chart[] = array(
+    	'data'   => $buyListings['cnt'],
+    	'name'  => "Buy Listings Volume",
+    	'visible' => false,
+    );
+    $chart[] = array(
+    	'data'   => $buyListings['daily_cnt'],
+    	'name'  => "Buy Listings Volume Daily Avg",
+    	'visible' => false,
+    );
+
     $content = json_encode($chart);
 
     return $content;
