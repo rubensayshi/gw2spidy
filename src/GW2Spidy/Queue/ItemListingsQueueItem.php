@@ -219,7 +219,7 @@ class ItemListingsQueueItem extends RedisPriorityIdentifierQueueItem {
         if (!$oneHourAgoBuyListing || $oneHourAgoBuyListing->getUnitPrice() <= 0 || $item->getMaxOfferUnitPrice() <= 0) {
             $item->setOfferPriceChangeLastHour(0);
         } else {
-            $item->setOfferPriceChangeLastHour(($item->getMaxOfferUnitPrice() - $oneHourAgoBuyListing->getUnitPrice()) / $oneHourAgoBuyListing->getUnitPrice());
+            $item->setOfferPriceChangeLastHour((($item->getMaxOfferUnitPrice() - $oneHourAgoBuyListing->getUnitPrice()) / $oneHourAgoBuyListing->getUnitPrice()) * 100);
         }
 
         $item->save();
