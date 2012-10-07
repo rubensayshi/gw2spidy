@@ -223,7 +223,7 @@ $app->get("/gem", function() use($app) {
 
 /**
  * ----------------------
- *  route /gem
+ *  route /gem_chart
  * ----------------------
  */
 $app->get("/gem_chart", function() use($app) {
@@ -234,24 +234,28 @@ $app->get("/gem_chart", function() use($app) {
     *----------------------*/
     $goldToGem = GoldToGemRateQuery::getChartDatasetData();
     $chart[] = array(
-        'data'   => $goldToGem['raw'],
-        'name'  => "Gold To Gems Raw Data",
-    	'visible' => true,
+        'data'     => $goldToGem['raw'],
+        'name'     => "Gold To Gems Raw Data",
+    	'visible'  => true,
+        'gw2money' => true,
     );
     $chart[] = array(
-    	'data'   => $goldToGem['daily'],
-    	'name'  => "Gold To Gems Daily Average",
-    	'visible' => true,
+    	'data'     => $goldToGem['daily'],
+    	'name'     => "Gold To Gems Daily Average",
+    	'visible'  => true,
+        'gw2money' => true,
     );
     $chart[] = array(
-    	'data'   => $goldToGem['weekly'],
-    	'name'  => "Gold To Gems Weekly Average",
-    	'visible' => false,
+    	'data'     => $goldToGem['weekly'],
+    	'name'     => "Gold To Gems Weekly Average",
+    	'visible'  => false,
+        'gw2money' => true,
     );
     $chart[] = array(
-    	'data'   => $goldToGem['monthly'],
-    	'name'  => "Gold To Gems 30-day Average",
-    	'visible' => false,
+    	'data'     => $goldToGem['monthly'],
+    	'name'     => "Gold To Gems 30-day Average",
+    	'visible'  => false,
+        'gw2money' => true,
     );
 
     /*---------------------
@@ -259,24 +263,28 @@ $app->get("/gem_chart", function() use($app) {
     *----------------------*/
     $gemToGold = GemToGoldRateQuery::getChartDatasetData();
     $chart[] = array(
-        'data'   => $gemToGold['raw'],
-        'name'  => "Gems to Gold Raw Data",
-    	'visible' => true,
+        'data'     => $gemToGold['raw'],
+        'name'     => "Gems to Gold Raw Data",
+    	'visible'  => true,
+        'gw2money' => true,
     );
     $chart[] = array(
-    	'data'   => $gemToGold['daily'],
-    	'name'  => "Gems to Gold Daily Average",
-    	'visible' => true,
+    	'data'     => $gemToGold['daily'],
+    	'name'     => "Gems to Gold Daily Average",
+    	'visible'  => true,
+        'gw2money' => true,
     );
     $chart[] = array(
-    	'data'   => $gemToGold['weekly'],
-    	'name'  => "Gems to Gold Weekly Average",
-    	'visible' => false,
+    	'data'     => $gemToGold['weekly'],
+    	'name'     => "Gems to Gold Weekly Average",
+    	'visible'  => false,
+        'gw2money' => true,
     );
     $chart[] = array(
-    	'data'   => $gemToGold['monthly'],
-    	'name'  => "Gems to Gold 30-day Average",
-    	'visible' => false,
+    	'data'     => $gemToGold['monthly'],
+    	'name'     => "Gems to Gold 30-day Average",
+    	'visible'  => false,
+        'gw2money' => true,
     );
 
     $content = json_encode($chart);
@@ -377,24 +385,28 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
      *----------------*/
     $sellListings = SellListingQuery::getChartDatasetDataForItem($item);
     $chart[] = array(
-        'data'   => $sellListings['raw'],
-        'name'  => "Sell Listings Raw Data",
-    	'visible' => false,
+        'data'     => $sellListings['raw'],
+        'name'     => "Sell Listings Raw Data",
+    	'visible'  => false,
+        'gw2money' => false,
     );
     $chart[] = array(
-    	'data'   => $sellListings['daily'],
-    	'name'  => "Sell Listings Daily Average",
-    	'visible' => true,
+    	'data'     => $sellListings['daily'],
+    	'name'     => "Sell Listings Daily Average",
+    	'visible'  => true,
+        'gw2money' => true,
     );
     $chart[] = array(
-    	'data'   => $sellListings['weekly'],
-    	'name'  => "Sell Listings Weekly Average",
-    	'visible' => false,
+    	'data'     => $sellListings['weekly'],
+    	'name'     => "Sell Listings Weekly Average",
+    	'visible'  => false,
+        'gw2money' => true,
     );
     $chart[] = array(
-    	'data'   => $sellListings['monthly'],
-    	'name'  => "Sell Listings 30-day Average",
-    	'visible' => false,
+    	'data'     => $sellListings['monthly'],
+    	'name'     => "Sell Listings 30-day Average",
+    	'visible'  => false,
+        'gw2money' => true,
     );
 
     /*---------------
@@ -402,24 +414,28 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
      *---------------*/
     $buyListings = BuyListingQuery::getChartDatasetDataForItem($item);
     $chart[] = array(
-        'data'   => $buyListings['raw'],
-        'name'   => "Buy Listings Raw Data",
-    	'visible' => false,
+        'data'     => $buyListings['raw'],
+        'name'     => "Buy Listings Raw Data",
+    	'visible'  => false,
+        'gw2money' => false,
     );
     $chart[] = array(
-    	'data'   => $buyListings['daily'],
-    	'name'  => "Buy Listings Daily Average",
-    	'visible' => true,
+    	'data'     => $buyListings['daily'],
+    	'name'     => "Buy Listings Daily Average",
+    	'visible'  => true,
+        'gw2money' => true,
     );
     $chart[] = array(
-    	'data'   => $buyListings['weekly'],
-    	'name'  => "Buy Listings Weekly Average",
-    	'visible' => false,
+    	'data'     => $buyListings['weekly'],
+    	'name'     => "Buy Listings Weekly Average",
+    	'visible'  => false,
+        'gw2money' => true,
     );
     $chart[] = array(
-    	'data'   => $buyListings['monthly'],
-    	'name'  => "Buy Listings 30-day Average",
+    	'data'    => $buyListings['monthly'],
+    	'name'    => "Buy Listings 30-day Average",
     	'visible' => false,
+        'gw2money' => true,
     );
 
     $content = json_encode($chart);

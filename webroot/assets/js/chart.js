@@ -27,8 +27,9 @@ var GW2SpidyChart = function(url, container, set_options) {
 
                 // build the values
                 $.each(items, function (key, item) {
-                    series = item.series;
-                    s.push('<span style="color:'+ series.color +'">' + series.name + '</span>: <b>' + formatGW2Money(item.y) + '</b> <br />');
+                    var series = item.series;
+                    var y = series.options.gw2money ? formatGW2Money(item.y) : item.y;
+                    s.push('<span style="color:'+ series.color +'">' + series.name + '</span>: <b>' + y + '</b> <br />');
                 });
 
                 // footer
