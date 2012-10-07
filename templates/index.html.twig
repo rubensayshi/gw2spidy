@@ -34,6 +34,9 @@
 .index-blocks .block.gems .image {
     background: transparent url('{{ versioned_asset('/assets/img/gem-exchange.png') }}') no-repeat;
 }
+.index-blocks .block.crafting .image {
+    background: transparent url('{{ versioned_asset('/assets/img/crafting.png') }}') no-repeat;
+}
 .index-blocks .block.community .image {
     background: transparent url('{{ versioned_asset('/assets/img/community.png') }}') no-repeat;
 }
@@ -53,6 +56,13 @@
     margin-bottom: 5px;
 }
 
+.index-blocks .tp .items .choice-buttons span {
+    cursor: pointer;
+}
+.index-blocks .tp .items ul:not(.active) {
+    display: none;
+}
+
 </style>
 
 <form class="form-search" action="{{ path('searchpost') }}" method="POST">
@@ -65,23 +75,71 @@
 <div class="row-fluid index-blocks">
 	<div class="block span3 well tp">
         <h2>Tradingpost</h2>
-    	<ul class="nav nav-pills nav-stacked items clearfix">
-    		{% for item in trending %}
-    			{% set href = path('item', {dataId : item.dataId}) %}
-        		<li data-tooltip-href="{{ gw2db_item(item) }}">
-                	<div style="display: inline-block;">
-                        <a href="{{ href }}"><img src="{{ item.img }}" width="32" height="32" /></a>
-                    </div>
-                	<div style="display: inline-block;" class="name {{ item.rarityCssClass }}">
-                        <a href="{{ href }}">{{ item.name }}</a>
-                    </div>
-                    <div style="text-align: center;">
-                  		{{ item.minSaleUnitPrice | gw2money }}
-                  		<span class="badge badge-success" style="float: right;">+40% last hour</span>
-                  	</div>
-              	</li>
-          	{% endfor %}
-        </ul>
+        <div class="items">
+        	<div class="choice-buttons" style="text-align: center;">
+        		<span data-toggle="#trending_up" class="badge badge-inverse">trending up</span>
+        		<span data-toggle="#trending_down" class="badge">trending down</span>
+    		</div>
+        	<ul class="nav nav-pills nav-stacked clearfix active" id="trending_up">
+        		{% for item in trending_up %}
+        			{% set href = path('item', {dataId : item.dataId}) %}
+            		<li>
+            			<div data-tooltip-href="{{ gw2db_item(item) }}">
+                        	<div style="display: inline-block;">
+                                <a href="{{ href }}"><img src="{{ item.img }}" width="32" height="32" /></a>
+                            </div>
+                        	<div style="display: inline-block;" class="name {{ item.rarityCssClass }}">
+                                <a href="{{ href }}">{{ item.name }}</a>
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                      		{{ item.minSaleUnitPrice | gw2money }}
+                      		<span class="badge badge-success" style="float: right;">{{ (item.salePriceChangeLastHour) | round }}% last hour</span>
+                      	</div>
+                  	</li>
+              	{% else %}
+              		<li>No trending data</li>
+              	{% endfor %}
+            </ul>
+        	<ul class="nav nav-pills nav-stacked clearfix" id="trending_down">
+        		{% for item in trending_down %}
+        			{% set href = path('item', {dataId : item.dataId}) %}
+            		<li>
+            			<div data-tooltip-href="{{ gw2db_item(item) }}">
+                        	<div style="display: inline-block;">
+                                <a href="{{ href }}"><img src="{{ item.img }}" width="32" height="32" /></a>
+                            </div>
+                        	<div style="display: inline-block;" class="name {{ item.rarityCssClass }}">
+                                <a href="{{ href }}">{{ item.name }}</a>
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                      		{{ item.minSaleUnitPrice | gw2money }}
+                      		<span class="badge badge-important" style="float: right;">{{ (item.salePriceChangeLastHour) | round }}% last hour</span>
+                      	</div>
+                  	</li>
+              	{% else %}
+              		<li>No trending data</li>
+              	{% endfor %}
+            </ul>
+        </div>
+        <script type="text/javascript">
+        	$(document).ready(function() {
+				$('.index-blocks .tp .items').each(function(k, container) {
+					var $container = $(container);
+					var $buttons = $container.find('.choice-buttons span.badge');
+					$buttons.click(function(e) {
+						var $this = $(e.target);
+
+						$buttons.removeClass('badge-inverse');
+						$this.addClass('badge-inverse');
+
+						$container.find('ul').removeClass('active');
+						$($this.data('toggle')).addClass('active');
+					});
+				});
+            });
+        </script>
         <h4>Categories</h4>
         <ul class="nav nav-pills nav-stacked double">
             {% for type in app.displayTypes %}

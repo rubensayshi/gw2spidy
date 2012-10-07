@@ -31,6 +31,14 @@ class Item extends BaseItem {
     const RARITY_LEGENDARY  = 6;
     const FALSE_POSITIVE = 'FALSE_POSITIVE';
 
+    public function preSave() {
+        if ($this->isColumnModified(ItemPeer::MIN_SALE_UNIT_PRICE) || $this->isColumnModified(ItemPeer::MAX_OFFER_UNIT_PRICE)) {
+            $this->setLastPriceChanged(new \DateTime());
+        }
+
+        return true;
+    }
+
     public function getRarityName() {
         switch ($this->getRarity()) {
             case self::RARITY_COMMON:     return "Common";

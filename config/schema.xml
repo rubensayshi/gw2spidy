@@ -31,6 +31,11 @@
         <column name="sale_availability" type="integer" required="true" default="0" />
         <column name="gw2db_id" type="integer" />
         <column name="gw2db_external_id" type="integer" />
+        
+        <column name="last_price_changed" type="timestamp" />
+        <column name="sale_price_change_last_hour" type="integer" default="0" />
+        <column name="offer_price_change_last_hour" type="integer" default="0" />
+        
         <foreign-key foreignTable="item_type" phpName="ItemType" refPhpName="Item">
             <reference local="item_type_id" foreign="id" />
         </foreign-key>

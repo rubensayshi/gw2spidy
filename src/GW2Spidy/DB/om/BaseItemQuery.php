@@ -45,6 +45,9 @@ use GW2Spidy\DB\SellListing;
  * @method     ItemQuery orderBySaleAvailability($order = Criteria::ASC) Order by the sale_availability column
  * @method     ItemQuery orderByGw2dbId($order = Criteria::ASC) Order by the gw2db_id column
  * @method     ItemQuery orderByGw2dbExternalId($order = Criteria::ASC) Order by the gw2db_external_id column
+ * @method     ItemQuery orderByLastPriceChanged($order = Criteria::ASC) Order by the last_price_changed column
+ * @method     ItemQuery orderBySalePriceChangeLastHour($order = Criteria::ASC) Order by the sale_price_change_last_hour column
+ * @method     ItemQuery orderByOfferPriceChangeLastHour($order = Criteria::ASC) Order by the offer_price_change_last_hour column
  *
  * @method     ItemQuery groupByDataId() Group by the data_id column
  * @method     ItemQuery groupByTypeId() Group by the type_id column
@@ -64,6 +67,9 @@ use GW2Spidy\DB\SellListing;
  * @method     ItemQuery groupBySaleAvailability() Group by the sale_availability column
  * @method     ItemQuery groupByGw2dbId() Group by the gw2db_id column
  * @method     ItemQuery groupByGw2dbExternalId() Group by the gw2db_external_id column
+ * @method     ItemQuery groupByLastPriceChanged() Group by the last_price_changed column
+ * @method     ItemQuery groupBySalePriceChangeLastHour() Group by the sale_price_change_last_hour column
+ * @method     ItemQuery groupByOfferPriceChangeLastHour() Group by the offer_price_change_last_hour column
  *
  * @method     ItemQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ItemQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -114,6 +120,9 @@ use GW2Spidy\DB\SellListing;
  * @method     Item findOneBySaleAvailability(int $sale_availability) Return the first Item filtered by the sale_availability column
  * @method     Item findOneByGw2dbId(int $gw2db_id) Return the first Item filtered by the gw2db_id column
  * @method     Item findOneByGw2dbExternalId(int $gw2db_external_id) Return the first Item filtered by the gw2db_external_id column
+ * @method     Item findOneByLastPriceChanged(string $last_price_changed) Return the first Item filtered by the last_price_changed column
+ * @method     Item findOneBySalePriceChangeLastHour(int $sale_price_change_last_hour) Return the first Item filtered by the sale_price_change_last_hour column
+ * @method     Item findOneByOfferPriceChangeLastHour(int $offer_price_change_last_hour) Return the first Item filtered by the offer_price_change_last_hour column
  *
  * @method     array findByDataId(int $data_id) Return Item objects filtered by the data_id column
  * @method     array findByTypeId(int $type_id) Return Item objects filtered by the type_id column
@@ -133,6 +142,9 @@ use GW2Spidy\DB\SellListing;
  * @method     array findBySaleAvailability(int $sale_availability) Return Item objects filtered by the sale_availability column
  * @method     array findByGw2dbId(int $gw2db_id) Return Item objects filtered by the gw2db_id column
  * @method     array findByGw2dbExternalId(int $gw2db_external_id) Return Item objects filtered by the gw2db_external_id column
+ * @method     array findByLastPriceChanged(string $last_price_changed) Return Item objects filtered by the last_price_changed column
+ * @method     array findBySalePriceChangeLastHour(int $sale_price_change_last_hour) Return Item objects filtered by the sale_price_change_last_hour column
+ * @method     array findByOfferPriceChangeLastHour(int $offer_price_change_last_hour) Return Item objects filtered by the offer_price_change_last_hour column
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -223,7 +235,7 @@ abstract class BaseItemQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID`, `MAX_OFFER_UNIT_PRICE`, `MIN_SALE_UNIT_PRICE`, `OFFER_AVAILABILITY`, `SALE_AVAILABILITY`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID` FROM `item` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID`, `MAX_OFFER_UNIT_PRICE`, `MIN_SALE_UNIT_PRICE`, `OFFER_AVAILABILITY`, `SALE_AVAILABILITY`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID`, `LAST_PRICE_CHANGED`, `SALE_PRICE_CHANGE_LAST_HOUR`, `OFFER_PRICE_CHANGE_LAST_HOUR` FROM `item` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -978,6 +990,131 @@ abstract class BaseItemQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ItemPeer::GW2DB_EXTERNAL_ID, $gw2dbExternalId, $comparison);
+    }
+
+    /**
+     * Filter the query on the last_price_changed column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByLastPriceChanged('2011-03-14'); // WHERE last_price_changed = '2011-03-14'
+     * $query->filterByLastPriceChanged('now'); // WHERE last_price_changed = '2011-03-14'
+     * $query->filterByLastPriceChanged(array('max' => 'yesterday')); // WHERE last_price_changed > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $lastPriceChanged The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByLastPriceChanged($lastPriceChanged = null, $comparison = null)
+    {
+        if (is_array($lastPriceChanged)) {
+            $useMinMax = false;
+            if (isset($lastPriceChanged['min'])) {
+                $this->addUsingAlias(ItemPeer::LAST_PRICE_CHANGED, $lastPriceChanged['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($lastPriceChanged['max'])) {
+                $this->addUsingAlias(ItemPeer::LAST_PRICE_CHANGED, $lastPriceChanged['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::LAST_PRICE_CHANGED, $lastPriceChanged, $comparison);
+    }
+
+    /**
+     * Filter the query on the sale_price_change_last_hour column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterBySalePriceChangeLastHour(1234); // WHERE sale_price_change_last_hour = 1234
+     * $query->filterBySalePriceChangeLastHour(array(12, 34)); // WHERE sale_price_change_last_hour IN (12, 34)
+     * $query->filterBySalePriceChangeLastHour(array('min' => 12)); // WHERE sale_price_change_last_hour > 12
+     * </code>
+     *
+     * @param     mixed $salePriceChangeLastHour The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterBySalePriceChangeLastHour($salePriceChangeLastHour = null, $comparison = null)
+    {
+        if (is_array($salePriceChangeLastHour)) {
+            $useMinMax = false;
+            if (isset($salePriceChangeLastHour['min'])) {
+                $this->addUsingAlias(ItemPeer::SALE_PRICE_CHANGE_LAST_HOUR, $salePriceChangeLastHour['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($salePriceChangeLastHour['max'])) {
+                $this->addUsingAlias(ItemPeer::SALE_PRICE_CHANGE_LAST_HOUR, $salePriceChangeLastHour['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::SALE_PRICE_CHANGE_LAST_HOUR, $salePriceChangeLastHour, $comparison);
+    }
+
+    /**
+     * Filter the query on the offer_price_change_last_hour column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByOfferPriceChangeLastHour(1234); // WHERE offer_price_change_last_hour = 1234
+     * $query->filterByOfferPriceChangeLastHour(array(12, 34)); // WHERE offer_price_change_last_hour IN (12, 34)
+     * $query->filterByOfferPriceChangeLastHour(array('min' => 12)); // WHERE offer_price_change_last_hour > 12
+     * </code>
+     *
+     * @param     mixed $offerPriceChangeLastHour The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByOfferPriceChangeLastHour($offerPriceChangeLastHour = null, $comparison = null)
+    {
+        if (is_array($offerPriceChangeLastHour)) {
+            $useMinMax = false;
+            if (isset($offerPriceChangeLastHour['min'])) {
+                $this->addUsingAlias(ItemPeer::OFFER_PRICE_CHANGE_LAST_HOUR, $offerPriceChangeLastHour['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($offerPriceChangeLastHour['max'])) {
+                $this->addUsingAlias(ItemPeer::OFFER_PRICE_CHANGE_LAST_HOUR, $offerPriceChangeLastHour['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::OFFER_PRICE_CHANGE_LAST_HOUR, $offerPriceChangeLastHour, $comparison);
     }
 
     /**

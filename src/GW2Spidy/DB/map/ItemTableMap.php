@@ -60,6 +60,9 @@ class ItemTableMap extends TableMap
         $this->addColumn('SALE_AVAILABILITY', 'SaleAvailability', 'INTEGER', true, null, 0);
         $this->addColumn('GW2DB_ID', 'Gw2dbId', 'INTEGER', false, null, null);
         $this->addColumn('GW2DB_EXTERNAL_ID', 'Gw2dbExternalId', 'INTEGER', false, null, null);
+        $this->addColumn('LAST_PRICE_CHANGED', 'LastPriceChanged', 'TIMESTAMP', false, null, null);
+        $this->addColumn('SALE_PRICE_CHANGE_LAST_HOUR', 'SalePriceChangeLastHour', 'INTEGER', false, null, 0);
+        $this->addColumn('OFFER_PRICE_CHANGE_LAST_HOUR', 'OfferPriceChangeLastHour', 'INTEGER', false, null, 0);
         // validators
     } // initialize()
 

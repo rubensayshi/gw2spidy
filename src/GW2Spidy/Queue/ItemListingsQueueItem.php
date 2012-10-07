@@ -9,6 +9,9 @@ use GW2Spidy\DB\Item;
 use GW2Spidy\DB\BuyListing;
 use GW2Spidy\DB\SellListing;
 use GW2Spidy\DB\ItemQuery;
+use GW2Spidy\DB\BuyListingQuery;
+use GW2Spidy\DB\SellListingQuery;
+
 use GW2Spidy\Util\RedisQueue\RedisPriorityIdentifierQueueItem;
 
 class ItemListingsQueueItem extends RedisPriorityIdentifierQueueItem {
@@ -114,7 +117,7 @@ class ItemListingsQueueItem extends RedisPriorityIdentifierQueueItem {
         }
     }
 
-    public function work() {
+    protected function getListings() {
         $now  = new DateTime();
         $item = $this->item;
         $listings = TradingPostSpider::getInstance()->getAllListingsById($item->getDataId());
@@ -175,10 +178,58 @@ class ItemListingsQueueItem extends RedisPriorityIdentifierQueueItem {
         $buyListing->save();
 
         $item->save();
+    }
 
-        var_dump($item->getName(), $item->getItemType() ? $item->getItemType()->getTitle() : null, $item->getRarityName(), $item->getRestrictionLevel());
+    protected function updateTrending() {
+        if ($this->getItemPriority() > self::ONE_HOUR) {
+            $item->setSalePriceChangeLastHour(0);
+            $item->setOfferPriceChangeLastHour(0);
 
-        return $item;
+            $item->save();
+
+            return;
+        }
+
+        $onehourago = new DateTime();
+        $onehourago->sub(new \DateInterval('PT1H'));
+        $item = $this->item;
+
+        $q = SellListingQuery::create()
+                ->filterByItemId($item->getDataId())
+                ->filterByListingDate('now')
+                ->filterByListingTime($onehourago, \Criteria::GREATER_THAN)
+                ->orderByListingTime(\Criteria::ASC);
+
+        $oneHourAgoSellListing = $q->findOne();
+
+        if (!$oneHourAgoSellListing || $oneHourAgoSellListing->getUnitPrice() <= 0 || $item->getMinSaleUnitPrice() <= 0) {
+            $item->setSalePriceChangeLastHour(0);
+        } else {
+            $item->setSalePriceChangeLastHour((($item->getMinSaleUnitPrice() - $oneHourAgoSellListing->getUnitPrice()) / $oneHourAgoSellListing->getUnitPrice()) * 100);
+        }
+
+        $q = BuyListingQuery::create()
+                ->filterByItemId($item->getDataId())
+                ->filterByListingDate('now')
+                ->filterByListingTime($onehourago, \Criteria::GREATER_THAN)
+                ->orderByListingTime(\Criteria::ASC);
+
+        $oneHourAgoBuyListing = $q->findOne();
+
+        if (!$oneHourAgoBuyListing || $oneHourAgoBuyListing->getUnitPrice() <= 0 || $item->getMaxOfferUnitPrice() <= 0) {
+            $item->setOfferPriceChangeLastHour(0);
+        } else {
+            $item->setOfferPriceChangeLastHour(($item->getMaxOfferUnitPrice() - $oneHourAgoBuyListing->getUnitPrice()) / $oneHourAgoBuyListing->getUnitPrice());
+        }
+
+        $item->save();
+    }
+
+    public function work() {
+        $this->getListings();
+        $this->updateTrending();
+
+        return $this->item;
     }
 
     public function requeue() {

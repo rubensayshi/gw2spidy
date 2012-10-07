@@ -151,14 +151,19 @@ $app->get("/", function() use($app) {
     // workaround for now to set active menu item
     $app->setHomeActive();
 
-    $trending = array(
-        ItemQuery::create()->findPk(31105),
-        ItemQuery::create()->findPk(31034),
-        ItemQuery::create()->findPk(13162),
-    );
+    $trendingUp = ItemQuery::create()
+                        ->addDescendingOrderByColumn("sale_price_change_last_hour")
+                        ->limit(3)
+                        ->find();
+
+    $trendingDown = ItemQuery::create()
+                        ->addAscendingOrderByColumn("sale_price_change_last_hour")
+                        ->limit(3)
+                        ->find();
 
     return $app['twig']->render('index.html.twig', array(
-        'trending' => $trending,
+        'trending_up' => $trendingUp,
+        'trending_down' => $trendingDown,
     ));
 })
 ->bind('homepage');
