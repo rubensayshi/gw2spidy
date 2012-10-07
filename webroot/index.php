@@ -292,6 +292,18 @@ $app->get("/types", function() use($app) {
 
 /**
  * ----------------------
+ *  route /faq
+ * ----------------------
+ */
+$app->get("/faq", function() use($app) {
+    $app->setFAQActive();
+
+    return $app['twig']->render('faq.html.twig');
+})
+->bind('faq');
+
+/**
+ * ----------------------
  *  route /type
  * ----------------------
  */

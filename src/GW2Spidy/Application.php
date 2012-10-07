@@ -11,6 +11,7 @@ class Application extends \Silex\Application {
     protected $time;
     protected $homeActive = false;
     protected $gemActive = false;
+    protected $faqActive = false;
     protected $craftingActive = false;
     protected $displayTypes = null;
     protected $disciplines = null;
@@ -77,6 +78,16 @@ class Application extends \Silex\Application {
 
     public function isHomeActive() {
         return $this->homeActive;
+    }
+
+    public function setFAQActive($bool = true) {
+        $this->faqActive = $bool;
+
+        return $this;
+    }
+
+    public function isFAQActive() {
+        return $this->faqActive;
     }
 
     public function setGemActive($bool = true) {
