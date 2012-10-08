@@ -186,7 +186,7 @@ $app->get("/", function() use($app) {
     $app->setHomeActive();
 
     $trendingUp = ItemQuery::create()
-                        ->addDescendingOrderByColumn("sale_price_change_last_hour")
+                        ->addDescendingOrderByColumn("offer_price_change_last_hour")
                         ->limit(3)
                         ->find();
 
