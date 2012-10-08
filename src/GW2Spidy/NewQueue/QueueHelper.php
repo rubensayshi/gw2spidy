@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\NewQueue;
 
+use GW2Spidy\DB\ItemTypeQuery;
+
 use \Propel;
 use GW2Spidy\Util\Singleton;
 use GW2Spidy\DB\ItemType;
@@ -11,8 +13,24 @@ class QueueHelper extends Singleton {
     public function getItemListingDBQueueManager() {
         return new ItemListingDBQueueManager();
     }
+
     public function getItemDBQueueManager() {
         return new ItemDBQueueManager();
+    }
+
+    public function enqueueItemDB($type = null) {
+        Propel::disableInstancePooling();
+
+        $q = ItemQuery::create();
+        $queueManager = $this->getItemDBQueueManager();
+
+        foreach (ItemTypeQuery::getAllTypes() as $type) {
+            foreach ($type->getSubTypes() as $subtype) {
+                $queueManager->enqueue(new ItemDBQueueItem($type, $subtype));
+            }
+
+            $queueManager->enqueue(new ItemDBQueueItem($type, null));
+        }
     }
 
     public function enqueueItemListingDB($type = null) {

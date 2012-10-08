@@ -27,13 +27,11 @@ class ItemDBQueueWorker {
     }
 
     public function work(ItemDBQueueItem $item) {
-        $data = $item->getData();
-
-        $res = $this->buildItemDB($data['type'], $data['subtype'], $data['offset']);
+        $res = $this->buildItemDB($item->getType(), $item->getSubType(), $item->getOffset());
 
         // we stop enqueueing the next slice when we stop getting results
-        if ($data['full'] && $res) {
-            $this->enqeueNextOffset($data['type'], $data['subtype'], $data['offset']);
+        if ($item->getFull() && $res) {
+            $this->enqeueNextOffset($item);
         }
     }
 
@@ -102,23 +100,11 @@ class ItemDBQueueWorker {
     }
 
 
-    protected function enqeueNextOffset($type, $subtype, $offset) {
-        return self::enqueueWorker($type, $subtype, $offset + 10, true);
-    }
+    protected function enqeueNextOffset(ItemDBQueueItem $item) {
+        $item = clone $item;
+        $item->addOffset(10);
 
-    public static function enqueueWorker($type, $subtype, $offset = 0, $full = true) {
-        $queueItem = new ItemDBQueueItem();
-
-        $queueItem->setData(array(
-            'type'    => $type,
-            'subtype' => $subtype,
-            'offset'  => $offset,
-            'full'    => $full,
-        ));
-
-        $this->manager->enqueue($queueItem);
-
-        return $queueItem;
+        $this->manager->enqueue($item);
     }
 }
 
