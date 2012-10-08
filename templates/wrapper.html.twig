@@ -34,7 +34,7 @@
     <meta name="description" content="Guild Wars 2 Trading Post Graphs" />
     <meta name="keywords" content="Guild Wars 2, Trading Post, Graphs, Charts, Spider, Snapshot" />
     <meta name="author" content="Ruben de Vries / Drakie / rubensayshi" />
-    <meta name="robots" content="index,nofollow" />
+    <meta name="robots" content="{% block htmlrobots %}index,follow{% endblock %}" />
 
     <link rel="image_src" href="{{ versioned_asset('/assets/img/preview.png') }}" />
     <link rel="icon" href="{{ versioned_asset('/assets/img/favicon.ico') }}" sizes="16x16 24x24 32x32 48x48 64x64 72x72 80x80 96x96 128x128 256x256" type="image/vnd.microsoft.icon">
