@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\NewQueue\ItemDBQueueItem;
+
 use GW2Spidy\NewQueue\RequestSlotManager;
 
 use GW2Spidy\Util\CacheHandler;
@@ -9,8 +11,6 @@ use GW2Spidy\DB\GW2DBItemArchive;
 use GW2Spidy\DB\ItemTypeQuery;
 
 use GW2Spidy\DB\ItemType;
-
-use GW2Spidy\Worker\ItemDBWorker;
 
 use GW2Spidy\TradingPostSpider;
 
@@ -84,7 +84,7 @@ $max    = null;
 
 $tp = TradingPostSpider::getInstance();
 $slots = RequestSlotManager::getInstance();
-$worker = new ItemDBWorker();
+$worker = new ItemDBQueueItem();
 
 $getItemByGW2DBID = function($gw2dbID) use ($tp, $slots, $worker) {
     $result = ItemQuery::create()->findOneByGw2dbId($gw2dbID);
