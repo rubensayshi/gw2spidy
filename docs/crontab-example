@@ -1,0 +1,7 @@
+#m h dom mon dow command
+15,45   *       *       *       *       php /var/sandbox/gw2spidy/daemons/recipe-worker.php
+58      23      *       *       *       php /var/sandbox/gw2spidy/daemons/request-slot-check.php
+5       0       *       *       *       php /var/sandbox/gw2spidy/daemons/worker-types.php
+5       1       *       *       *       php /var/sandbox/gw2spidy/daemons/fill-queue-item-db.php
+5       2       *       *       *       php /var/sandbox/gw2spidy/daemons/request-slot-check.php
+5       3       *       *       *       php /var/sandbox/gw2spidy/daemons/supervise-queue-item-listing-db.php
