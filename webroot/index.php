@@ -674,11 +674,17 @@ $app->get("/api/price/{format}/{secret}", function(Request $request, $format, $s
         return $app->redirect("/");
     }
 
-    if (!($search = $request->get('search'))) {
+    $q = ItemQuery::create();
+
+    if ($search = $request->get('search')) {
+        $q->filterByName($search);
+    } else if ($id = $request->get('id')) {
+        $q->filterByDataId($id);
+    } else {
         return $app->redirect("/");
     }
 
-    $item = ItemQuery::create()->filterByName($search)->findOne();
+    $item = $q->findOne();
 
     if (!$item) {
         return $app->abort(404, "Item does not exist.");
@@ -690,8 +696,8 @@ $app->get("/api/price/{format}/{secret}", function(Request $request, $format, $s
 
         ob_start();
 
-        echo implode(",", array('min_sale_unit_price', 'max_offer_unit_price')) . "\n";
-        echo implode(",", array($item->getMinSaleUnitPrice(), $item->getMaxOfferUnitPrice())) . "\n";
+        echo implode(",", array('min_sale_unit_price', 'max_offer_unit_price', 'sale_availability', 'offer_availability')) . "\n";
+        echo implode(",", array($item->getMinSaleUnitPrice(), $item->getMaxOfferUnitPrice(), $item->getSaleAvailability(), $item->getOfferAvailability())) . "\n";
 
         return ob_get_clean();
     } else if ($format == 'json') {
@@ -701,6 +707,8 @@ $app->get("/api/price/{format}/{secret}", function(Request $request, $format, $s
         $json = array(
             'min_sale_unit_price'  => $item->getMinSaleUnitPrice(),
             'max_offer_unit_price' => $item->getMaxOfferUnitPrice(),
+            'sale_availability'    => $item->getSaleAvailability(),
+            'offer_availability'   => $item->getOfferAvailability(),
         );
 
         return json_encode($json);
