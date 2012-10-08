@@ -181,6 +181,8 @@ class ItemListingsQueueItem extends RedisPriorityIdentifierQueueItem {
     }
 
     protected function updateTrending() {
+        $item = $this->item;
+
         if ($this->getItemPriority() > self::ONE_HOUR) {
             $item->setSalePriceChangeLastHour(0);
             $item->setOfferPriceChangeLastHour(0);
@@ -192,7 +194,6 @@ class ItemListingsQueueItem extends RedisPriorityIdentifierQueueItem {
 
         $onehourago = new DateTime();
         $onehourago->sub(new \DateInterval('PT1H'));
-        $item = $this->item;
 
         $q = SellListingQuery::create()
                 ->filterByItemId($item->getDataId())
