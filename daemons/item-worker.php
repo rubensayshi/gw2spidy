@@ -4,15 +4,13 @@
  * process queue items
  */
 
-use GW2Spidy\Worker\ItemDBWorker;
-use GW2Spidy\GemExchangeSpider;
-
 use GW2Spidy\GW2SessionManager;
 
 use GW2Spidy\TradingPostSpider;
 
 use GW2Spidy\Queue\RequestSlotManager;
-use GW2Spidy\Queue\QueueManager;
+use GW2Spidy\NewQueue\ItemDBQueueManager;
+use GW2Spidy\NewQueue\ItemDBQueueWorker;
 
 
 require dirname(__FILE__) . '/../autoload.php';
@@ -30,7 +28,8 @@ if ($debug || (defined('SQL_LOG_MODE') && SQL_LOG_MODE)) {
 }
 
 $slotManager  = RequestSlotManager::getInstance();
-$queueManager = QueueManager::getInstance()->getItemQueueManager();
+$queueManager = new ItemDBQueueManager();
+$queueWorker  = new ItemDBQueueWorker($queueManager);
 
 /*
  * login here, this allows us to exit right away on failure
@@ -41,7 +40,6 @@ try {
     $gw2session = GW2SessionManager::getInstance()->getSession();
     echo "login ok [".(microtime(true) - $begin)."] -> [".(int)$gw2session->getGameSession()."] -> [{$gw2session->getSessionKey()}] \n";
 
-    GemExchangeSpider::getInstance()->setSession($gw2session);
     TradingPostSpider::getInstance()->setSession($gw2session);
 } catch (Exception $e) {
     echo "login failed ... sleeping [60] and restarting \n";
@@ -89,14 +87,8 @@ while ($run < $max) {
     // mark our slot as held
     $slot->hold();
 
-    $workerName = $queueItem->getWorker();
-
-    if (!isset($workers[$workerName])) {
-        $workers[$workerName] = new $workerName;
-    }
-
     $try = 1;
-    $retries = $workers[$workerName]->getRetries();
+    $retries = 2;
 
     while (true) {
         /*
@@ -106,7 +98,7 @@ while ($run < $max) {
          */
         try {
             ob_start();
-            $workers[$workerName]->work($queueItem);
+            $queueWorker->work($queueItem);
 
             if ($debug) {
                 echo ob_get_clean();
