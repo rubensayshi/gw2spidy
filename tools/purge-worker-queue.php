@@ -4,5 +4,5 @@ use GW2Spidy\NewQueue\QueueHelper;
 
 require dirname(__FILE__) . '/../autoload.php';
 
-QueueManager::getInstance()->getItemListingDBQueueManager()->purge();
-QueueManager::getInstance()->getItemDBQueueManager()->purge();
+QueueHelper::getInstance()->getItemListingDBQueueManager()->purge();
+QueueHelper::getInstance()->getItemDBQueueManager()->purge();
