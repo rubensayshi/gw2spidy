@@ -39,7 +39,8 @@ There's also a INSTALL file which contains a snippet I copy paste when I setup m
 Linux
 -----
 I run the project on a linux server and many of the requirements might not be available on windows and I have only (a tiny bit) of (negative) experience with windows.  
-If you want to run this on a windows machine, for development purposes, then I strongly sugest you just run a virtual machine with linux (virtualbox is free and works pretty nice).
+If you want to run this on a windows machine, for development purposes, then I strongly sugest you just run a virtual machine with linux (vmware player is free and works pretty nice).  
+If you make your way to the IRC channel I have a VM image on my google drive (made by Marthisdil) with everything setup and ready to roll ;)
 
 PHP 5.3
 -------
@@ -100,9 +101,9 @@ ArenaNet is okay with me doing this, but nonetheless I want to limit the amount 
 I came up with this concept of 'request slots', I setup an x amount of slots, claim one when I do a request and then give it a cooldown before I can use it again.  
 That way I can control the flood a bit better, from the technicaly side this is done using Redis sorted sets.
 
-WorkerQueue
------------
-All spidering work is done through the worker queue, the queue process also handles the previously mentioned request slots.
+Background Queues
+-----------------
+All spidering work is done in background process / daemons and the heavy lifting is done with a few queues, the queues process also handles the previously mentioned request slots.
 This is also done using Redis sorted sets.
 
 Config / Env
@@ -129,36 +130,48 @@ Run `tools/setup-request-slots.php` to create the initial request slots, you can
 
 First Spider Run
 ----------------
-The first time you'll have to run `daemons/fill-queue-daily.php` to enqueue a job which will fetch all the item (sub)types.  
-Then run `daemons/worker-queue.php` to execute that job.  
-After that is done, run  `daemons/fill-queue-listings.php` again, this will enqueue a job for each (sub)type to start fetch item information.  
-Then run `daemons/worker-queue.php` again until it's done (needs to fetch about 600~650 pages of items).
+Some stuff changed recently so if it's giving you a hard time just come to the IRC channel and ask me for help ;)  
+The first time you'll have to run `daemons/worker-types.php` to fetch all the item (sub)types (after that I run it nightly, just to ensure there aren't any changes, none in the past month).  
+After that is done, run `daemons/fill-queue-item-db.php`, this will enqueue a job for each (sub)type to start fetch item information.  
+Then run `daemons/worker-queue-item-db.php`, you'll have to do it a few times since it fetches 1 page (10 items) per queue-item and there are about 600~650 pages of items.
 
-The Worker Queue
-----------------  
-When you run `daemons/worker-queue.php` the script will do 50 loops to either fetch an item from the queue to execute or if none it will sleep.  
-It will also sleep if there are no slots available.
+Ater this you should have a full item database, without any listings yet.
 
-Previously I used to run 4 of these in parallel using `while [ true ]; do php daemons/worker-queue.php >> /var/log/gw2spidy/worker.1.log; echo "restart"; done;`  
+Now you should run `daemons/fill-queue-item-listing-db.php`, this will put 1 queue-item for every item into the queue (other queue then fill-queue-item-db).  
+
+ItemListingDB Worker
+--------------------
+With the `daemons/worker-queue-item-listing-db.php` you will pop items off the listing queue and process them, this is done 1 item at a time.  
+There's a priority system in place so that some items (like weapons above certain rarity / level) are processed more often then others (like salvage kits, which nobody buys from the TP ...).  
+
+These queue-items are automatically requeue'd with their priority so you should never have to run `daemons/fill-queue-item-listing-db.php` again.  
+However if the script fails we might sometimes loose a queue-item or new items might be added to the database at some point so there's a `daemons/supervise-queue-item-listing-db.php` script which makes sure that the queue is still filled properly.
+
+ItemDB Worker
+-------------
+Incase new items appear in the tradingpost we rerun the `daemons/fill-queue-item-db.php` once in a while (nightly on the live site) and I always have 1 instance of `daemons/worker-queue-item-db.php` running to process that.  
+
+Gem Worker
+----------
+The `daemons/worker-gem.php` script does 2 requests to the gem-exchange site to retrieve the exchange rates and volume and then sleeps for 180 seconds (3 minutes).
+
+Running The Workers
+-------------------
+The workers all do 100 loops to do their specific task or if no tasks they do short sleeps waiting for a task.  
+They will also sleep if there are no slots available.
+
+Previously I used to run 4 workers in parallel using `while [ true ]; do php daemons/worker-queue-item-listing-db.php >> /var/log/gw2spidy/worker.1.log; echo "restart"; done;`  
 Where I replace the .1 with which number of the 4 it is so I got 4 logs to tail.
 
 I now added some bash scripts in the `bin` folder to `bin/start-workers.sh 4` and `bin/stop-workers.sh` to manage them.  
-You have to `mkdir -p /var/run/gw2spidy/` first though since I manage the processIDs there.
+You have to `mkdir -p /var/run/gw2spidy/` first though since I manage the processIDs there.  
+You should check the bash scripts and understand them before running them imo ;)
 
-Fill Queue Listings
--------------------
-The `daemon/fill-queue-listings.php` atm does the same as the fill queue daily since we can no longer fetch listings directly.  
-We just do it more frequent then daily xD
-
-Fill Queue Daily
-----------------
-The `daemon/fill-queue-daily.php` script enqueues a job for every (sub)type in the database to fetch the first page of items,  
-that job then requeues itself until all the pages are fetched.
-
-Fill Queue Gems
+Priority System
 ---------------
-The `daemon/fill-queue-gems.php` script enqueues one job which does 2 requests to the gem-exchange site to retrieve the exchange rates and volume.
-
+Our amount of request we do are limited by our requestslot system, unfortunatly we're now bound by doing 1 item per request (previously we could combine up to 250).  
+So I created a priority system to process 'important' items more often, in the this spreadsheet I calculated the priorities:  
+https://docs.google.com/a/rubensayshi.com/spreadsheet/ccc?key=0Alq65aekWXJmdGotSmdBYXJPZ0NKbHBhdzVZMlh5Q1E#gid=0
 
 GW2 Sessions
 ============

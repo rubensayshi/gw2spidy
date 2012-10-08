@@ -25,6 +25,8 @@ class ItemDBQueueManager {
             $queueItem = unserialize($result[1]);
         } else if (is_scalar($result)) {
             $queueItem = unserialize($result);
+        } else {
+            return null;
         }
 
         if (!($queueItem instanceof ItemDBQueueItem)) {
