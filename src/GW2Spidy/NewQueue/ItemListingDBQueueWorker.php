@@ -2,20 +2,22 @@
 
 namespace GW2Spidy\NewQueue;
 
+use \DateTime;
+use \DateInterval;
 use \Criteria;
 
+use GW2Spidy\DB\Item;
+use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\BuyListing;
-
 use GW2Spidy\DB\SellListing;
+use GW2Spidy\DB\ItemQuery;
+use GW2Spidy\DB\ItemSubType;
+use GW2Spidy\DB\BuyListingQuery;
+use GW2Spidy\DB\SellListingQuery;
 
 use GW2Spidy\Util\Functions;
-
-use GW2Spidy\DB\Item;
-use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\TradingPostSpider;
 
-use GW2Spidy\DB\ItemType;
-use GW2Spidy\DB\ItemSubType;
 
 class ItemListingDBQueueWorker {
     protected $manager;
@@ -31,6 +33,7 @@ class ItemListingDBQueueWorker {
 
     protected function updateListings(ItemListingDBQueueItem $queueItem) {
         $item = $queueItem->getItem();
+        $now  = new DateTime();
 
         $listings = TradingPostSpider::getInstance()->getAllListingsById($item->getDataId());
         $sell = $listings[TradingPostSpider::LISTING_TYPE_SELL];
@@ -95,7 +98,7 @@ class ItemListingDBQueueWorker {
     protected function updateTrending(ItemListingDBQueueItem $queueItem) {
         $item = $queueItem->getItem();
 
-        if ($this->getItemPriority() > self::ONE_HOUR) {
+        if ($queueItem->getItemPriority() > ItemListingDBQueueItem::ONE_HOUR) {
             $item->setSalePriceChangeLastHour(0);
             $item->setOfferPriceChangeLastHour(0);
 

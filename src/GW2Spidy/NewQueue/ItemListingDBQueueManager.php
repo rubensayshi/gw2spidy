@@ -28,7 +28,7 @@ class ItemListingDBQueueManager {
     }
 
     protected function queueItemFromIdentifier($identifier) {
-        return new ItemListingsQueueItem($identifier);
+        return new ItemListingDBQueueItem($identifier);
     }
 
     public function next() {
