@@ -49,9 +49,10 @@ var GW2SpidyChart = function(url, container, set_options) {
         },
         rangeSelector : {
             buttons: [
-                {type: 'day',  count: 1,  text: '1d'},
-                {type: 'day',  count: 3,  text: '3d'},
-                {type: 'week', count: 1,  text: '1w'},
+                {type: 'day',   count: 1,  text: '1d'},
+                {type: 'day',   count: 3,  text: '3d'},
+                {type: 'week',  count: 1,  text: '1w'},
+                {type: 'month', count: 1,  text: '1m'},
                 {type: 'all',             text: 'all'}
             ],
             selected : 2
