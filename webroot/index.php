@@ -482,8 +482,8 @@ $app->get("/status/", function() use($app) {
     ob_start();
 
     echo "there are [[ " . RequestSlotManager::getInstance()->getLength() . " ]] available slots right now \n";
-    echo "there are [[ " . QueueManager::getInstance()->getItemListingDBQueueManager()->getLength() . " ]] items in the item listings queue \n";
-    echo "there are [[ " . QueueManager::getInstance()->getItemDBQueueManager()->getLength() . " ]] items in the item DB queue \n";
+    echo "there are [[ " . QueueHelper::getInstance()->getItemListingDBQueueManager()->getLength() . " ]] items in the item listings queue \n";
+    echo "there are [[ " . QueueHelper::getInstance()->getItemDBQueueManager()->getLength() . " ]] items in the item DB queue \n";
 
     $content = ob_get_clean();
 
