@@ -1,5 +1,6 @@
 {% extends "content_wide.html.twig" %}
 
+{% block htmltitle %}{{ parent() }} | {{ recipe.name }}{% endblock %}
 {% block content %}
 
 <script type="text/javascript" src="{{ versioned_asset('/assets/js/crafting.js') }}"></script>
