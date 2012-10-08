@@ -1,13 +1,11 @@
 <?php
 
-namespace GW2Spidy\Queue;
+namespace GW2Spidy\NewQueue;
+
+use Predis\Client;
 
 class ItemListingDBQueueManager {
     protected $client;
-
-    protected function queueItemFromIdentifier($identifier) {
-        return new ItemListingsQueueItem($identifier);
-    }
 
     public function __construct() {
         $this->client = new Client();
@@ -17,19 +15,10 @@ class ItemListingDBQueueManager {
         return 'item-listing-db-queue';
     }
 
-    public function enqueue(ItemListingDBQueueItem $queueItem) {
-        return $this->client->lpush($this->getQueueName(), $queueItem->getIdentifier());
-    }
-
-    public function next() {
-        $result    = $this->client->brpop($this->getQueueName(), 2);
-        return $this->returnItem($result[1]);
-    }
-
     protected function returnItem($queueItem) {
         $queueItem = $this->queueItemFromIdentifier($queueItem);
 
-        if (!($queueItem instanceof RedisPriorityQueueItem)) {
+        if (!($queueItem instanceof ItemListingDBQueueItem)) {
             return null;
         }
 
@@ -38,30 +27,8 @@ class ItemListingDBQueueManager {
         return $queueItem;
     }
 
-    public function purge() {
-        $this->client->del($this->getQueueName());
-    }
-
-    protected function returnItem($queueItem) {
-        $queueItem = $this->queueItemFromIdentifier($queueItem);
-
-        $queueItem->setManager($this);
-
-        return $queueItem;
-    }
-    protected function returnItem($queueItem) {
-        $queueItem = parent::returnItem($queueItem);
-        $queueItem->requeue();
-
-        return $queueItem;
-    }
-
-    public function enqueue(RedisPriorityQueueItem $queueItem) {
-        return $this->client->zadd($this->getQueueName(), $queueItem->getPriority(), $this->prepareItem($queueItem));
-    }
-
-    public function requeue(RedisPriorityQueueItem $queueItem) {
-        return $this->enqueue(clone $queueItem);
+    protected function queueItemFromIdentifier($identifier) {
+        return new ItemListingsQueueItem($identifier);
     }
 
     public function next() {
@@ -101,6 +68,18 @@ class ItemListingDBQueueManager {
         } while ($triesLeft-- > 0);
 
         return null;
+    }
+
+    public function enqueue(ItemListingDBQueueItem $queueItem) {
+        return $this->client->zadd($this->getQueueName(), $queueItem->getPriority(), $queueItem->getIdentifier());
+    }
+
+    public function requeue(ItemListingDBQueueItem $queueItem) {
+        return $this->enqueue(clone $queueItem);
+    }
+
+    public function purge() {
+        $this->client->del($this->getQueueName());
     }
 
     public function getLength() {

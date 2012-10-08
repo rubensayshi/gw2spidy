@@ -2,7 +2,6 @@
 
 namespace GW2Spidy\NewQueue;
 
-use GW2Spidy\Util\Singleton;
 use Predis\Client;
 
 class ItemDBQueueManager {

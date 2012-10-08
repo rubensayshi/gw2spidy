@@ -1,6 +1,6 @@
 <?php
 
-use GW2Spidy\Queue\RequestSlotManager;
+use GW2Spidy\NewQueue\RequestSlotManager;
 
 use GW2Spidy\Util\CacheHandler;
 

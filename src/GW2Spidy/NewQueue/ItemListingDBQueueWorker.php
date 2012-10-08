@@ -10,9 +10,6 @@ use GW2Spidy\DB\SellListing;
 
 use GW2Spidy\Util\Functions;
 
-use GW2Spidy\Queue\QueueManager;
-use GW2Spidy\Queue\WorkerQueueItem;
-
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\TradingPostSpider;
@@ -23,7 +20,7 @@ use GW2Spidy\DB\ItemSubType;
 class ItemListingDBQueueWorker {
     protected $manager;
 
-    public function __construct(ItemDBQueueManager $manager) {
+    public function __construct(ItemListingDBQueueManager $manager) {
         $this->manager = $manager;
     }
 

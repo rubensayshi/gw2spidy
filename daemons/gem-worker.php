@@ -13,7 +13,7 @@ use GW2Spidy\DB\GemToGoldRate;
 use GW2Spidy\DB\GemToGoldRateQuery;
 
 use GW2Spidy\GemExchangeSpider;
-use GW2Spidy\Queue\RequestSlotManager;
+use GW2Spidy\NewQueue\RequestSlotManager;
 
 require dirname(__FILE__) . '/../autoload.php';
 
