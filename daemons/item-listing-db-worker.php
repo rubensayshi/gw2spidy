@@ -1,23 +1,35 @@
 <?php
 
+/**
+ * process queue items
+ */
+
 use GW2Spidy\GW2SessionManager;
 
 use GW2Spidy\TradingPostSpider;
 
 use GW2Spidy\Queue\RequestSlotManager;
-use GW2Spidy\Queue\QueueManager;
+use GW2Spidy\NewQueue\ItemListingDBQueueManager;
+use GW2Spidy\NewQueue\ItemListingDBQueueWorker;
 
 
 require dirname(__FILE__) . '/../autoload.php';
 
 $UUID    = getmypid() . "::" . time();
+$workers = array();
 $con     = Propel::getConnection();
 $run     = 0;
 $max     = 100;
 $debug   = in_array('--debug', $argv);
 
+if ($debug || (defined('SQL_LOG_MODE') && SQL_LOG_MODE)) {
+    $con->setLogLevel(\Propel::LOG_DEBUG);
+    $con->useDebug(true);
+}
+
 $slotManager  = RequestSlotManager::getInstance();
-$queueManager = QueueManager::getInstance()->getItemListingsQueueManager();
+$queueManager = new ItemListingDBQueueManager();
+$queueWorker  = new ItemListingDBQueueWorker($queueManager);
 
 /*
  * login here, this allows us to exit right away on failure
@@ -86,7 +98,7 @@ while ($run < $max) {
          */
         try {
             ob_start();
-            $queueItem->work();
+            $queueWorker->work($queueItem);
 
             if ($debug) {
                 echo ob_get_clean();
@@ -99,7 +111,7 @@ while ($run < $max) {
             $log = ob_get_clean();
             echo " --------------- \n !! worker process threw exception !!\n --------------- \n {$log} \n --------------- \n {$e} \n --------------- \n";
 
-           if (strstr("CurlRequest failed [[ 401 ]]", $e->getMessage())) {
+           if ($e->getCode() == ItemDBWorker::ERROR_CODE_NO_LONGER_EXISTS || strstr("CurlRequest failed [[ 401 ]]", $e->getMessage())) {
                 break;
             }
 
