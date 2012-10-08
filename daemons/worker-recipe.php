@@ -11,7 +11,7 @@ $q = RecipeQuery::create();
 $q->limit($offset)
   ->offset($i);
 
-if ($argv[1]) {
+if (isset($argv[1])) {
     $q->filterByDataId($argv[1]);
 }
 
@@ -35,4 +35,8 @@ while (($recipes = $q->find()) && $recipes->count()) {
 
     $q->offset(($i+=$offset));
     sleep(2);
+}
+
+if (!$recipes->count()) {
+    die("no recipes?");
 }
