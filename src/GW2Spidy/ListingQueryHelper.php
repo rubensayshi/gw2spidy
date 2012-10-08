@@ -94,6 +94,7 @@ class ListingQueryHelper {
         );
 
         $rates = $q->select(array('rateDatetime', 'rate'))
+                   ->filterByRateDatetime(date("Y-m-d 00:00:00", strtotime("-1 week")), \Criteria::GREATER_EQUAL)
                    ->find();
 
         /*
