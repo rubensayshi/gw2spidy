@@ -696,8 +696,8 @@ $app->get("/api/price/{format}/{secret}", function(Request $request, $format, $s
 
         ob_start();
 
-        echo implode(",", array('min_sale_unit_price', 'max_offer_unit_price')) . "\n";
-        echo implode(",", array($item->getMinSaleUnitPrice(), $item->getMaxOfferUnitPrice())) . "\n";
+        echo implode(",", array('min_sale_unit_price', 'max_offer_unit_price', 'sale_availability', 'offer_availability')) . "\n";
+        echo implode(",", array($item->getMinSaleUnitPrice(), $item->getMaxOfferUnitPrice(), $item->getSaleAvailability(), $item->getOfferAvailability())) . "\n";
 
         return ob_get_clean();
     } else if ($format == 'json') {
@@ -707,6 +707,8 @@ $app->get("/api/price/{format}/{secret}", function(Request $request, $format, $s
         $json = array(
             'min_sale_unit_price'  => $item->getMinSaleUnitPrice(),
             'max_offer_unit_price' => $item->getMaxOfferUnitPrice(),
+            'sale_availability'    => $item->getSaleAvailability(),
+            'offer_availability'   => $item->getOfferAvailability(),
         );
 
         return json_encode($json);
