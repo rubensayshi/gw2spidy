@@ -674,11 +674,17 @@ $app->get("/api/price/{format}/{secret}", function(Request $request, $format, $s
         return $app->redirect("/");
     }
 
-    if (!($search = $request->get('search'))) {
+    $q = ItemQuery::create();
+
+    if ($search = $request->get('search')) {
+        $q->filterByName($search);
+    } else if ($id = $request->get('id')) {
+        $q->filterByDataId($id);
+    } else {
         return $app->redirect("/");
     }
 
-    $item = ItemQuery::create()->filterByName($search)->findOne();
+    $item = $q->findOne();
 
     if (!$item) {
         return $app->abort(404, "Item does not exist.");
