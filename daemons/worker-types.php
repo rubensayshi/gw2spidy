@@ -1,5 +1,9 @@
 <?php
 
+use GW2Spidy\DB\ItemTypeQuery;
+
+use GW2Spidy\DB\ItemSubTypeQuery;
+
 use GW2Spidy\DB\ItemSubType;
 
 use GW2Spidy\DB\ItemType;
