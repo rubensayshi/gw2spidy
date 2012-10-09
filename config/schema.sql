@@ -163,8 +163,6 @@ DROP TABLE IF EXISTS `sell_listing`;
 CREATE TABLE `sell_listing`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `listing_date` DATE NOT NULL,
-    `listing_time` TIME NOT NULL,
     `listing_datetime` DATETIME NOT NULL,
     `item_id` INTEGER NOT NULL,
     `listings` INTEGER NOT NULL,
@@ -186,8 +184,6 @@ DROP TABLE IF EXISTS `buy_listing`;
 CREATE TABLE `buy_listing`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `listing_date` DATE NOT NULL,
-    `listing_time` TIME NOT NULL,
     `listing_datetime` DATETIME NOT NULL,
     `item_id` INTEGER NOT NULL,
     `listings` INTEGER NOT NULL,

@@ -93,8 +93,6 @@
     </table>
     <table name="sell_listing" phpName="SellListing">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-        <column name="listing_date" type="date" required="true" />
-        <column name="listing_time" type="time" required="true" />
         <column name="listing_datetime" type="timestamp" required="true" />
         <column name="item_id" type="integer" required="true" />
         <column name="listings" type="integer" required="true" />
@@ -111,8 +109,6 @@
     </table>
     <table name="buy_listing" phpName="BuyListing">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-        <column name="listing_date" type="date" required="true" />
-        <column name="listing_time" type="time" required="true" />
         <column name="listing_datetime" type="timestamp" required="true" />
         <column name="item_id" type="integer" required="true" />
         <column name="listings" type="integer" required="true" />

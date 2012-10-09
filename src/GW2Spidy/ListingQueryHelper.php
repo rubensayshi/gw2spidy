@@ -17,11 +17,10 @@ class ListingQueryHelper {
         	'monthly' => array(),
         );
 
-        $listings = $q->select(array('listingDate', 'listingTime'))
+        $listings = $q->select(array('listingDatetime'))
                       ->withColumn('SUM(quantity)', 'quantity')
                       ->withColumn('MIN(unit_price)', 'min_unit_price')
-                      ->groupBy('listingDate')
-                      ->groupBy('listingTime')
+                      ->groupBy('listingDatetime')
                       ->filterByItemId($item->getDataId())
                       ->find();
 
@@ -35,7 +34,7 @@ class ListingQueryHelper {
         $monthlyValues  = array();
         foreach ($listings as $listingEntry) {
 
-            $date = new DateTime("{$listingEntry['listingDate']} {$listingEntry['listingTime']}");
+            $date = new DateTime("{$listingEntry['listingDatetime']}");
             $date->setTimezone(new DateTimeZone('UTC'));
             $timestamp = $date->getTimestamp();
 
