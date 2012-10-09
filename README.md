@@ -175,25 +175,26 @@ https://docs.google.com/a/rubensayshi.com/spreadsheet/ccc?key=0Alq65aekWXJmdGotS
 
 GW2 Sessions
 ============
-When spidering we're accessing the tradingpost using a session created by logging into accounts.guildwars2.com.  
+When spidering we used to access the tradingpost using a session created by logging into accounts.guildwars2.com.  
 Aftering logging in it gives us a session_key which allows access to the tradingpost, however limited to only being able to get the lists of items!  
 
 When you open the tradingpost from inside the game you access it using a session_key generated from the game login, these sessions have access to more features of the tradingpost!  
 With that session you can also see the list of offers for the various prices, instead of only the lowest sell and highest buy!  
 For the gem-exchange the ingame session_key allows you to calculate conversions, while the accounts.guildwars2.com session only gives you a rounded average (which is kinda useless).  
 
-Because I've added gem-exchange now, I needed a way to be able to use an ingame session_key when spidering!  
-You can intercept the session_key by either using Fiddler to intercept the HTTPS trafic or using some custom tools to grab the URLs from share memory ...  
-I've added a table to propel named `gw2session` and a form on `/admin/session` to insert the ingame session_key, it requires you to also fill in a 'secret' which is equal to what you configure by defining the 'ADMIN_SECRET' constant  
+As of late ArenaNet has messed up the item lists (search results and such) to be very unaccurate (due to caching), you can also see this ingame.  
+I also want to collect gem-exchange data ...  
+So I needed a way to be able to use an ingame session_key when spidering!  
 
-The previous ingame session_key expires when you login to the game client, so you need to use the new session_key whenever you login.
+You can intercept the session_key by either using Fiddle2r to intercept the HTTPS trafic or using some custom tools to grab the URLs from share memory ...  
+I've added a table to the database named `gw2session` and a form on `/admin/session` to insert the ingame session_key, it requires you to also fill in a 'secret' which is equal to what you configure in the config or not required on dev envs    
 
-**I don't know exactly what you can do with someone elses session_key** thus I rely on myself not slacking and updating the session_key everytime I login.  
-I think it's fairly harmless, since the game client handles all sell/buy actions (and those are related/linked to your character too).
+**I don't know exactly what you can do with someone elses session_key** thus I rely on myself not slacking and updating the session_key regularly and will not accept other people giving me their session_key!  
+I know for a fact that combined with a charid you can place buy orders and such from outside of the game, so you should be careful with this information ;)  
 
-**As a fallback** whenever there's no ingame session_key available to use (or it has died) we'll generate one from accounts.guildwars2.com, this gives us enough access for the tradingpost, but won't be able to gather gem-exchange data.
+**As a fallback** I will be re-adding the use of the search lists for whenever there's no game session_key so at least some data can be gathered ...
 
-I do have a small tool (provided by someone else) that quickly grabs the session_key without much hassle, but it can be optimized a bit and if I were to share it then I'd want to be able to share the source code to to ensure it's safe!
+I do have a small tool (provided by someone else) that quickly grabs the session_key (by seaching for it in shared memory) without much hassle, I won't be sharing it publicly but you could consider joining the IRC channel and asking for it ;)
 
 Copyright and License
 =====================
