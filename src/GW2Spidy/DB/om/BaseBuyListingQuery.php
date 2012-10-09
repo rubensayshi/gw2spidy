@@ -25,6 +25,7 @@ use GW2Spidy\DB\Item;
  * @method     BuyListingQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     BuyListingQuery orderByListingDate($order = Criteria::ASC) Order by the listing_date column
  * @method     BuyListingQuery orderByListingTime($order = Criteria::ASC) Order by the listing_time column
+ * @method     BuyListingQuery orderByListingDatetime($order = Criteria::ASC) Order by the listing_datetime column
  * @method     BuyListingQuery orderByItemId($order = Criteria::ASC) Order by the item_id column
  * @method     BuyListingQuery orderByListings($order = Criteria::ASC) Order by the listings column
  * @method     BuyListingQuery orderByUnitPrice($order = Criteria::ASC) Order by the unit_price column
@@ -33,6 +34,7 @@ use GW2Spidy\DB\Item;
  * @method     BuyListingQuery groupById() Group by the id column
  * @method     BuyListingQuery groupByListingDate() Group by the listing_date column
  * @method     BuyListingQuery groupByListingTime() Group by the listing_time column
+ * @method     BuyListingQuery groupByListingDatetime() Group by the listing_datetime column
  * @method     BuyListingQuery groupByItemId() Group by the item_id column
  * @method     BuyListingQuery groupByListings() Group by the listings column
  * @method     BuyListingQuery groupByUnitPrice() Group by the unit_price column
@@ -52,6 +54,7 @@ use GW2Spidy\DB\Item;
  * @method     BuyListing findOneById(int $id) Return the first BuyListing filtered by the id column
  * @method     BuyListing findOneByListingDate(string $listing_date) Return the first BuyListing filtered by the listing_date column
  * @method     BuyListing findOneByListingTime(string $listing_time) Return the first BuyListing filtered by the listing_time column
+ * @method     BuyListing findOneByListingDatetime(string $listing_datetime) Return the first BuyListing filtered by the listing_datetime column
  * @method     BuyListing findOneByItemId(int $item_id) Return the first BuyListing filtered by the item_id column
  * @method     BuyListing findOneByListings(int $listings) Return the first BuyListing filtered by the listings column
  * @method     BuyListing findOneByUnitPrice(int $unit_price) Return the first BuyListing filtered by the unit_price column
@@ -60,6 +63,7 @@ use GW2Spidy\DB\Item;
  * @method     array findById(int $id) Return BuyListing objects filtered by the id column
  * @method     array findByListingDate(string $listing_date) Return BuyListing objects filtered by the listing_date column
  * @method     array findByListingTime(string $listing_time) Return BuyListing objects filtered by the listing_time column
+ * @method     array findByListingDatetime(string $listing_datetime) Return BuyListing objects filtered by the listing_datetime column
  * @method     array findByItemId(int $item_id) Return BuyListing objects filtered by the item_id column
  * @method     array findByListings(int $listings) Return BuyListing objects filtered by the listings column
  * @method     array findByUnitPrice(int $unit_price) Return BuyListing objects filtered by the unit_price column
@@ -154,7 +158,7 @@ abstract class BaseBuyListingQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `ID`, `LISTING_DATE`, `LISTING_TIME`, `ITEM_ID`, `LISTINGS`, `UNIT_PRICE`, `QUANTITY` FROM `buy_listing` WHERE `ID` = :p0';
+        $sql = 'SELECT `ID`, `LISTING_DATE`, `LISTING_TIME`, `LISTING_DATETIME`, `ITEM_ID`, `LISTINGS`, `UNIT_PRICE`, `QUANTITY` FROM `buy_listing` WHERE `ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -354,6 +358,49 @@ abstract class BaseBuyListingQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(BuyListingPeer::LISTING_TIME, $listingTime, $comparison);
+    }
+
+    /**
+     * Filter the query on the listing_datetime column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByListingDatetime('2011-03-14'); // WHERE listing_datetime = '2011-03-14'
+     * $query->filterByListingDatetime('now'); // WHERE listing_datetime = '2011-03-14'
+     * $query->filterByListingDatetime(array('max' => 'yesterday')); // WHERE listing_datetime > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $listingDatetime The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return BuyListingQuery The current query, for fluid interface
+     */
+    public function filterByListingDatetime($listingDatetime = null, $comparison = null)
+    {
+        if (is_array($listingDatetime)) {
+            $useMinMax = false;
+            if (isset($listingDatetime['min'])) {
+                $this->addUsingAlias(BuyListingPeer::LISTING_DATETIME, $listingDatetime['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($listingDatetime['max'])) {
+                $this->addUsingAlias(BuyListingPeer::LISTING_DATETIME, $listingDatetime['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BuyListingPeer::LISTING_DATETIME, $listingDatetime, $comparison);
     }
 
     /**

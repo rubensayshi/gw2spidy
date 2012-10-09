@@ -4,13 +4,8 @@ namespace GW2Spidy\NewQueue;
 
 use \DateTime;
 use \Exception;
-use GW2Spidy\TradingPostSpider;
 use GW2Spidy\DB\Item;
-use GW2Spidy\DB\BuyListing;
-use GW2Spidy\DB\SellListing;
 use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\DB\BuyListingQuery;
-use GW2Spidy\DB\SellListingQuery;
 
 use GW2Spidy\Util\RedisQueue\RedisPriorityIdentifierQueueItem;
 

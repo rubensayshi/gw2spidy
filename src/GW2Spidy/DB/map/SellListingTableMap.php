@@ -45,6 +45,7 @@ class SellListingTableMap extends TableMap
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('LISTING_DATE', 'ListingDate', 'DATE', true, null, null);
         $this->addColumn('LISTING_TIME', 'ListingTime', 'TIME', true, null, null);
+        $this->addColumn('LISTING_DATETIME', 'ListingDatetime', 'TIMESTAMP', true, null, null);
         $this->addForeignKey('ITEM_ID', 'ItemId', 'INTEGER', 'item', 'DATA_ID', true, null, null);
         $this->addColumn('LISTINGS', 'Listings', 'INTEGER', true, null, null);
         $this->addColumn('UNIT_PRICE', 'UnitPrice', 'INTEGER', true, null, null);

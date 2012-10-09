@@ -55,6 +55,7 @@ class ItemListingDBQueueWorker {
 
         $sellListing = new SellListing();
         $sellListing->setItem($item);
+        $sellListing->setListingDatetime($now);
         $sellListing->setListingDate($now);
         $sellListing->setListingTime($now);
         $sellListing->setQuantity($q);
@@ -80,6 +81,7 @@ class ItemListingDBQueueWorker {
 
         $buyListing = new BuyListing();
         $buyListing->setItem($item);
+        $buyListing->setListingDatetime($now);
         $buyListing->setListingDate($now);
         $buyListing->setListingTime($now);
         $buyListing->setQuantity($q);

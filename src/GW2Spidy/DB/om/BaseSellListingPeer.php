@@ -36,13 +36,13 @@ abstract class BaseSellListingPeer {
     const TM_CLASS = 'SellListingTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /** the column name for the ID field */
     const ID = 'sell_listing.ID';
@@ -52,6 +52,9 @@ abstract class BaseSellListingPeer {
 
     /** the column name for the LISTING_TIME field */
     const LISTING_TIME = 'sell_listing.LISTING_TIME';
+
+    /** the column name for the LISTING_DATETIME field */
+    const LISTING_DATETIME = 'sell_listing.LISTING_DATETIME';
 
     /** the column name for the ITEM_ID field */
     const ITEM_ID = 'sell_listing.ITEM_ID';
@@ -84,12 +87,12 @@ abstract class BaseSellListingPeer {
      * e.g. SellListingPeer::$fieldNames[SellListingPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('Id', 'ListingDate', 'ListingTime', 'ItemId', 'Listings', 'UnitPrice', 'Quantity', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'listingDate', 'listingTime', 'itemId', 'listings', 'unitPrice', 'quantity', ),
-        BasePeer::TYPE_COLNAME => array (SellListingPeer::ID, SellListingPeer::LISTING_DATE, SellListingPeer::LISTING_TIME, SellListingPeer::ITEM_ID, SellListingPeer::LISTINGS, SellListingPeer::UNIT_PRICE, SellListingPeer::QUANTITY, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'LISTING_DATE', 'LISTING_TIME', 'ITEM_ID', 'LISTINGS', 'UNIT_PRICE', 'QUANTITY', ),
-        BasePeer::TYPE_FIELDNAME => array ('id', 'listing_date', 'listing_time', 'item_id', 'listings', 'unit_price', 'quantity', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+        BasePeer::TYPE_PHPNAME => array ('Id', 'ListingDate', 'ListingTime', 'ListingDatetime', 'ItemId', 'Listings', 'UnitPrice', 'Quantity', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'listingDate', 'listingTime', 'listingDatetime', 'itemId', 'listings', 'unitPrice', 'quantity', ),
+        BasePeer::TYPE_COLNAME => array (SellListingPeer::ID, SellListingPeer::LISTING_DATE, SellListingPeer::LISTING_TIME, SellListingPeer::LISTING_DATETIME, SellListingPeer::ITEM_ID, SellListingPeer::LISTINGS, SellListingPeer::UNIT_PRICE, SellListingPeer::QUANTITY, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'LISTING_DATE', 'LISTING_TIME', 'LISTING_DATETIME', 'ITEM_ID', 'LISTINGS', 'UNIT_PRICE', 'QUANTITY', ),
+        BasePeer::TYPE_FIELDNAME => array ('id', 'listing_date', 'listing_time', 'listing_datetime', 'item_id', 'listings', 'unit_price', 'quantity', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -99,12 +102,12 @@ abstract class BaseSellListingPeer {
      * e.g. SellListingPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'ListingDate' => 1, 'ListingTime' => 2, 'ItemId' => 3, 'Listings' => 4, 'UnitPrice' => 5, 'Quantity' => 6, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'listingDate' => 1, 'listingTime' => 2, 'itemId' => 3, 'listings' => 4, 'unitPrice' => 5, 'quantity' => 6, ),
-        BasePeer::TYPE_COLNAME => array (SellListingPeer::ID => 0, SellListingPeer::LISTING_DATE => 1, SellListingPeer::LISTING_TIME => 2, SellListingPeer::ITEM_ID => 3, SellListingPeer::LISTINGS => 4, SellListingPeer::UNIT_PRICE => 5, SellListingPeer::QUANTITY => 6, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'LISTING_DATE' => 1, 'LISTING_TIME' => 2, 'ITEM_ID' => 3, 'LISTINGS' => 4, 'UNIT_PRICE' => 5, 'QUANTITY' => 6, ),
-        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'listing_date' => 1, 'listing_time' => 2, 'item_id' => 3, 'listings' => 4, 'unit_price' => 5, 'quantity' => 6, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'ListingDate' => 1, 'ListingTime' => 2, 'ListingDatetime' => 3, 'ItemId' => 4, 'Listings' => 5, 'UnitPrice' => 6, 'Quantity' => 7, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'listingDate' => 1, 'listingTime' => 2, 'listingDatetime' => 3, 'itemId' => 4, 'listings' => 5, 'unitPrice' => 6, 'quantity' => 7, ),
+        BasePeer::TYPE_COLNAME => array (SellListingPeer::ID => 0, SellListingPeer::LISTING_DATE => 1, SellListingPeer::LISTING_TIME => 2, SellListingPeer::LISTING_DATETIME => 3, SellListingPeer::ITEM_ID => 4, SellListingPeer::LISTINGS => 5, SellListingPeer::UNIT_PRICE => 6, SellListingPeer::QUANTITY => 7, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'LISTING_DATE' => 1, 'LISTING_TIME' => 2, 'LISTING_DATETIME' => 3, 'ITEM_ID' => 4, 'LISTINGS' => 5, 'UNIT_PRICE' => 6, 'QUANTITY' => 7, ),
+        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'listing_date' => 1, 'listing_time' => 2, 'listing_datetime' => 3, 'item_id' => 4, 'listings' => 5, 'unit_price' => 6, 'quantity' => 7, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -181,6 +184,7 @@ abstract class BaseSellListingPeer {
             $criteria->addSelectColumn(SellListingPeer::ID);
             $criteria->addSelectColumn(SellListingPeer::LISTING_DATE);
             $criteria->addSelectColumn(SellListingPeer::LISTING_TIME);
+            $criteria->addSelectColumn(SellListingPeer::LISTING_DATETIME);
             $criteria->addSelectColumn(SellListingPeer::ITEM_ID);
             $criteria->addSelectColumn(SellListingPeer::LISTINGS);
             $criteria->addSelectColumn(SellListingPeer::UNIT_PRICE);
@@ -189,6 +193,7 @@ abstract class BaseSellListingPeer {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.LISTING_DATE');
             $criteria->addSelectColumn($alias . '.LISTING_TIME');
+            $criteria->addSelectColumn($alias . '.LISTING_DATETIME');
             $criteria->addSelectColumn($alias . '.ITEM_ID');
             $criteria->addSelectColumn($alias . '.LISTINGS');
             $criteria->addSelectColumn($alias . '.UNIT_PRICE');

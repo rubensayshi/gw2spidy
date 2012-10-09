@@ -4,10 +4,6 @@ namespace GW2Spidy\NewQueue;
 
 use \Criteria;
 
-use GW2Spidy\DB\BuyListing;
-
-use GW2Spidy\DB\SellListing;
-
 use GW2Spidy\Util\Functions;
 
 use GW2Spidy\DB\Item;

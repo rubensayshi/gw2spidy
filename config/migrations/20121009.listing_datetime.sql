@@ -1,0 +1,12 @@
+# This is a fix for InnoDB in MySQL >= 4.1.x
+# It "suspends judgement" for fkey relationships until are tables are set.
+SET FOREIGN_KEY_CHECKS = 0;
+
+ALTER TABLE `buy_listing`
+    ADD `listing_datetime` DATETIME NOT NULL AFTER `listing_time`;
+
+ALTER TABLE `sell_listing`
+    ADD `listing_datetime` DATETIME NOT NULL AFTER `listing_time`;
+
+# This restores the fkey checks, after having unset them earlier
+SET FOREIGN_KEY_CHECKS = 1;
