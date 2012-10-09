@@ -13,6 +13,7 @@ cnf = {
     "google-analytics-id": null,
     "chartbeat-id"       : null,
     "chartbeat-domain"   : null,
+    "getclicky-id"       : null,
 
     /*
      * gw2spidy settings
