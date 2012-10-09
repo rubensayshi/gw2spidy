@@ -10,6 +10,9 @@ cnf = {
      */
     "version_string"     : "dev",
     "memcached_enabled"  : true,
+    "google-analytics-id": null,
+    "chartbeat-id"       : null,
+    "chartbeat-domain"   : null,
 
     /*
      * gw2spidy settings
