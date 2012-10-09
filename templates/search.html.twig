@@ -1,5 +1,7 @@
 {% extends "content_wide.html.twig" %}
 
+{% block htmltitle %}{{ parent() }} | Search{% endblock %}
+
 {% block content %}
 <h3>Search</h3>
 <form class="form-search" action="{{ path('searchpost') }}" method="POST">

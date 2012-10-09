@@ -1,5 +1,10 @@
 {% extends "content_wide.html.twig" %}
 
+{% block htmltitle %}
+{{ parent() }} | {{ discipline }} | Page {{ page }}
+{% endblock %}
+{% block htmlrobots %}noindex,follow{% endblock %}
+
 {# ---------------
     pager is repeated multiple times
    --------------- #}

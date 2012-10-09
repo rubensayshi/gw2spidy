@@ -5,6 +5,12 @@
  *  this file contains all routing and the 'controllers' using lambda functions
  */
 
+use GW2Spidy\DB\DisciplineQuery;
+
+use GW2Spidy\DB\ItemSubTypeQuery;
+
+use GW2Spidy\DB\ItemType;
+
 use GW2Spidy\DB\RecipeQuery;
 
 use GW2Spidy\Twig\GenericHelpersExtension;
@@ -329,11 +335,20 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
 
     $q = ItemQuery::create();
 
-    if (!is_null($type) && $type != -1) {
-        $q->filterByItemTypeId($type);
+    if ($type == -1) {
+        $type = null;
     }
-    if (!is_null($subtype) && $subtype != -1) {
-        $q->filterByItemSubTypeId($subtype);
+    if ($subtype == -1) {
+        $subtype = null;
+    }
+
+    if (!is_null($type)) {
+        $type = ItemTypeQuery::create()->findPk($type);
+        $q->filterByItemType($type);
+    }
+    if (!is_null($subtype)) {
+        $subtype = ItemSubTypeQuery::create()->findPk(array($type, $subtype));
+        $q->filterByItemSubType($subtype);
     }
 
     // use generic function to render
@@ -870,13 +885,20 @@ $app->get("/profit", function(Request $request) use($app) {
  * ----------------------
  */
 $app->get("/crafting/{discipline}/{page}", function(Request $request, $discipline, $page) use($app) {
+    $app->setCraftingActive();
+
     $page = $page > 0 ? $page : 1;
     $itemsperpage = 50;
 
     $q = RecipeQuery::create();
 
-    if (!is_null($discipline) && $discipline != -1) {
-        $q->filterByDisciplineId($discipline);
+    if ($discipline == -1) {
+        $discipline = null;
+    }
+
+    if (!is_null($discipline)) {
+        $discipline = DisciplineQuery::create()->findPk($discipline);
+        $q->filterByDiscipline($discipline);
     }
 
     $sortByOptions = array('name', 'rating', 'cost', 'sell_price', 'profit');
@@ -938,6 +960,7 @@ $app->get("/crafting/{discipline}/{page}", function(Request $request, $disciplin
  * ----------------------
  */
 $app->get("/recipe/{dataId}", function(Request $request, $dataId) use($app) {
+    $app->setCraftingActive();
     $recipe = RecipeQuery::create()->findPK($dataId);
 
     if (!$recipe) {

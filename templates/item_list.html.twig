@@ -1,5 +1,12 @@
 {% extends "content_wide.html.twig" %}
 
+{% block htmltitle %}
+{{ parent() }} | {% if search is defined %}
+"{{ search }}" Search Results
+{% elseif type is defined %}
+{{ type }} {% if subtype %} - {{ subtype }}{% endif %}
+{% endif %}
+ | Page {{ page }}{% endblock %}
 {% block htmlrobots %}noindex,follow{% endblock %}
 
 {# ---------------

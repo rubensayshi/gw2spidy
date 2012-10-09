@@ -25,8 +25,8 @@ class ItemListRoutingExtension extends \Twig_Extension {
             $parameters['search'] = $context['search'];
         } else if (array_key_exists('type', $context)) {
             $name = 'type';
-            $parameters['type']    = $context['type'];
-            $parameters['subtype'] = $context['subtype'];
+            $parameters['type']    = $context['type'] ? $context['type']->getId() : -1;
+            $parameters['subtype'] = $context['subtype'] ? $context['subtype']->getId() : -1;
         } else {
             throw new \Exception("invalid context " . var_export(array_keys($context), true));
         }
@@ -54,7 +54,7 @@ class ItemListRoutingExtension extends \Twig_Extension {
     public function getRecipePath($context, $parameters = array()) {
         if (array_key_exists('discipline', $context)) {
             $name = 'crafting';
-            $parameters['discipline'] = $context['discipline'];
+            $parameters['discipline'] = $context['discipline'] ? $context['discipline']->getId() : -1;
         } else {
             throw new \Exception("invalid context " . var_export(array_keys($context), true));
         }

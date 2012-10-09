@@ -8,7 +8,7 @@ use GW2Spidy\DB\om\BaseDiscipline;
 /**
  * Skeleton subclass for representing a row from the 'discipline' table.
  *
- * 
+ *
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -17,5 +17,7 @@ use GW2Spidy\DB\om\BaseDiscipline;
  * @package    propel.generator.gw2spidy
  */
 class Discipline extends BaseDiscipline {
-
+    public function __toString() {
+        return $this->getName();
+    }
 } // Discipline
