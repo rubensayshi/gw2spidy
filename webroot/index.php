@@ -461,24 +461,28 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     	'name'    => "Sell Listings Volume",
     	'visible' => false,
         'yAxis'   => 1,
+        'type'    => 'column',
     );
     $chart[] = array(
     	'data'    => $sellListings['daily_cnt'],
     	'name'    => "Sell Listings Volume Daily Avg",
-    	'visible' => false,
+    	'visible' => true,
         'yAxis'   => 1,
+        'type'    => 'column',
     );
     $chart[] = array(
     	'data'    => $buyListings['cnt'],
     	'name'    => "Buy Listings Volume",
     	'visible' => false,
         'yAxis'   => 1,
+        'type'    => 'column',
     );
     $chart[] = array(
     	'data'    => $buyListings['daily_cnt'],
     	'name'    => "Buy Listings Volume Daily Avg",
-    	'visible' => false,
+    	'visible' => true,
         'yAxis'   => 1,
+        'type'    => 'column',
     );
 
     $content = json_encode($chart);

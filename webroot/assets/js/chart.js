@@ -65,9 +65,13 @@ var GW2SpidyChart = function(url, container, set_options) {
                          return formatGW2Money(this.value);
                      },
                      useHTML: true
-                 }
+                 },
              },
              {
+                 height: 100,
+                 top: 305,
+                 gridLineWidth : 0,
+                 offset: 0,
                  title : { text : 'volume', style : { color : '#4572A7'} },
                  opposite : true
              },
