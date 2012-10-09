@@ -101,10 +101,9 @@
         <foreign-key foreignTable="item" phpName="Item" refPhpName="SellListing">
             <reference local="item_id" foreign="data_id" />
         </foreign-key>
-        <index name="retrieve_by_date_time">
+        <index name="retrieve_by_datetime">
             <index-column name="item_id" />
-            <index-column name="listing_date" />
-            <index-column name="listing_time" />
+            <index-column name="listing_datetime" />
         </index>
     </table>
     <table name="buy_listing" phpName="BuyListing">
@@ -117,10 +116,9 @@
         <foreign-key foreignTable="item" phpName="Item" refPhpName="BuyListing">
             <reference local="item_id" foreign="data_id" />
         </foreign-key>
-        <index name="retrieve_by_date_time">
+        <index name="retrieve_by_datetime">
             <index-column name="item_id" />
-            <index-column name="listing_date" />
-            <index-column name="listing_time" />
+            <index-column name="listing_datetime" />
         </index>
     </table>
     <table name="gold_to_gem_rate" phpName="GoldToGemRate">
