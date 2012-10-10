@@ -8,7 +8,6 @@ use GW2Spidy\GW2SessionManager;
 
 use GW2Spidy\TradingPostSpider;
 
-use GW2Spidy\NewQueue\ItemDBQueueWorker;
 use GW2Spidy\NewQueue\RequestSlotManager;
 use GW2Spidy\NewQueue\ItemDBQueueManager;
 use GW2Spidy\NewQueue\ItemDBQueueWorker;
