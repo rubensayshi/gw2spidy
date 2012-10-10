@@ -1,19 +1,14 @@
 <?php
 
-use GW2Spidy\DB\DisciplineQuery;
-
-use GW2Spidy\DB\ItemSubTypeQuery;
-
-use GW2Spidy\DB\ItemType;
-
-use GW2Spidy\DB\RecipeQuery;
-
-use GW2Spidy\Twig\GenericHelpersExtension;
-
-use GW2Spidy\GW2SessionManager;
-
 use \DateTime;
 
+use GW2Spidy\Application;
+use Symfony\Component\HttpFoundation\Request;
+
+use GW2Spidy\DB\DisciplineQuery;
+use GW2Spidy\DB\ItemSubTypeQuery;
+use GW2Spidy\DB\ItemType;
+use GW2Spidy\DB\RecipeQuery;
 use GW2Spidy\DB\GW2Session;
 use GW2Spidy\DB\GoldToGemRateQuery;
 use GW2Spidy\DB\GemToGoldRateQuery;
@@ -27,18 +22,6 @@ use GW2Spidy\DB\SellListingPeer;
 use GW2Spidy\DB\BuyListingQuery;
 
 use GW2Spidy\Util\Functions;
-
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\Request;
-
-use GW2Spidy\Application;
-
-use GW2Spidy\Twig\VersionedAssetsRoutingExtension;
-use GW2Spidy\Twig\ItemListRoutingExtension;
-use GW2Spidy\Twig\GW2MoneyExtension;
-
-use GW2Spidy\NewQueue\RequestSlotManager;
-use GW2Spidy\NewQueue\QueueHelper;
 
 /**
  * ----------------------
