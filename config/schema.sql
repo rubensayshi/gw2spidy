@@ -169,7 +169,7 @@ CREATE TABLE `sell_listing`
     `unit_price` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
     PRIMARY KEY (`id`),
-    INDEX `retrieve_by_date_time` (`item_id`, `listing_date`, `listing_time`),
+    INDEX `retrieve_by_datetime` (`item_id`, `listing_datetime`),
     CONSTRAINT `sell_listing_FK_1`
         FOREIGN KEY (`item_id`)
         REFERENCES `item` (`data_id`)
@@ -190,7 +190,7 @@ CREATE TABLE `buy_listing`
     `unit_price` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
     PRIMARY KEY (`id`),
-    INDEX `retrieve_by_date_time` (`item_id`, `listing_date`, `listing_time`),
+    INDEX `retrieve_by_datetime` (`item_id`, `listing_datetime`),
     CONSTRAINT `buy_listing_FK_1`
         FOREIGN KEY (`item_id`)
         REFERENCES `item` (`data_id`)
