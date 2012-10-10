@@ -1,7 +1,40 @@
-apt-get update
-apt-get -y install curl screen git
-apt-get -y install mysql-server-5.5 nginx varnish php5-fpm redis-server memcached
-apt-get -y install php5-curl php5-gd php5-mysql php5-memcache php-pear
-pear channel-discover pear.phing.info
-pear install phing/phing
-pear install Log
+# ##########
+# install dependacies
+# ##########
+sudo apt-get update
+sudo apt-get -y install curl screen git
+sudo apt-get -y install nginx varnish php5-fpm redis-server memcached
+sudo apt-get -y install php5-curl php5-gd php5-mysql php5-memcache php-pear
+sudo pear channel-discover pear.phing.info
+sudo pear install phing/phing
+sudo pear install Log
+sudo apt-get -y install mysql-server-5.5
+
+# ##########
+# setup project
+# ##########
+mysqladmin -uroot -proot create gw2spidy
+mysql -uroot -proot gw2spidy < config/schema.sql
+echo -e"myenv\ndev\ndefault" > config/cnf/env
+cp config/cnf/example-custom-cnf.json config/cnf/myenv.json
+
+# ##########
+# AT THIS POINT YOU NEED TO EDIT config/cnf/myenv.json !!
+# ##########
+
+# ##########
+# init project
+# ##########
+php daemons/purge-cache.php
+php tools/setup-request-slots.php
+php daemons/worker-types.php
+php daemons/purge-cache.php
+php daemons/fill-queue-item-db.php
+
+# raw estimate xD
+for i in {1..25}; do
+    php daemons/worker-queue-item-db.php
+done
+
+php daemons/fill-queue-item-listing-db.php
+php daemons/worker-queue-item-db.php
