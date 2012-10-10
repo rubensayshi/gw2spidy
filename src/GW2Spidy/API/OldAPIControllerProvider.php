@@ -77,8 +77,7 @@ class OldAPIControllerProvider extends BaseAPIControllerProvider {
                 return json_encode($json);
             }
         })
-        ->assert('format', 'csv|json')
-        ->bind('api');
+        ->assert('format', 'csv|json');
 
         /**
          * ----------------------
@@ -152,8 +151,7 @@ class OldAPIControllerProvider extends BaseAPIControllerProvider {
         ->assert('dataId',  '\d+')
         ->assert('format', 'csv|json')
         ->assert('type',   'sell|buy')
-        ->convert('dataId', $toInt)
-        ->bind('api_item');
+        ->convert('dataId', $toInt);
 
 
         /**
@@ -210,8 +208,7 @@ class OldAPIControllerProvider extends BaseAPIControllerProvider {
             }
         })
         ->assert('format', 'csv|json')
-        ->assert('type',   'sell|buy')
-        ->bind('api_price');
+        ->assert('type',   'sell|buy');
 
         return $controllers;
     }
