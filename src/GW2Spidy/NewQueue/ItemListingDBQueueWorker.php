@@ -56,8 +56,6 @@ class ItemListingDBQueueWorker {
         $sellListing = new SellListing();
         $sellListing->setItem($item);
         $sellListing->setListingDatetime($now);
-        $sellListing->setListingDate($now);
-        $sellListing->setListingTime($now);
         $sellListing->setQuantity($q);
         $sellListing->setListings($l);
 
@@ -82,8 +80,6 @@ class ItemListingDBQueueWorker {
         $buyListing = new BuyListing();
         $buyListing->setItem($item);
         $buyListing->setListingDatetime($now);
-        $buyListing->setListingDate($now);
-        $buyListing->setListingTime($now);
         $buyListing->setQuantity($q);
         $sellListing->setListings($l);
 
@@ -114,9 +110,8 @@ class ItemListingDBQueueWorker {
 
         $q = SellListingQuery::create()
                 ->filterByItemId($item->getDataId())
-                ->filterByListingDate('now')
-                ->filterByListingTime($onehourago, \Criteria::GREATER_THAN)
-                ->orderByListingTime(\Criteria::ASC);
+                ->filterByListingDatetime($onehourago, \Criteria::GREATER_THAN)
+                ->orderByListingDatetime(\Criteria::ASC);
 
         $oneHourAgoSellListing = $q->findOne();
 
@@ -128,9 +123,8 @@ class ItemListingDBQueueWorker {
 
         $q = BuyListingQuery::create()
                 ->filterByItemId($item->getDataId())
-                ->filterByListingDate('now')
-                ->filterByListingTime($onehourago, \Criteria::GREATER_THAN)
-                ->orderByListingTime(\Criteria::ASC);
+                ->filterByListingDatetime($onehourago, \Criteria::GREATER_THAN)
+                ->orderByListingDatetime(\Criteria::ASC);
 
         $oneHourAgoBuyListing = $q->findOne();
 

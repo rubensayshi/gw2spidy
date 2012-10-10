@@ -58,18 +58,6 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
     protected $id;
 
     /**
-     * The value for the listing_date field.
-     * @var        string
-     */
-    protected $listing_date;
-
-    /**
-     * The value for the listing_time field.
-     * @var        string
-     */
-    protected $listing_time;
-
-    /**
      * The value for the listing_datetime field.
      * @var        string
      */
@@ -127,77 +115,6 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
     {
 
         return $this->id;
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [listing_date] column value.
-     * 
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *							If format is NULL, then the raw DateTime object will be returned.
-     * @return mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getListingDate($format = '%x')
-    {
-        if ($this->listing_date === null) {
-            return null;
-        }
-
-
-        if ($this->listing_date === '0000-00-00') {
-            // while technically this is not a default value of NULL,
-            // this seems to be closest in meaning.
-            return null;
-        } else {
-            try {
-                $dt = new DateTime($this->listing_date);
-            } catch (Exception $x) {
-                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->listing_date, true), $x);
-            }
-        }
-
-        if ($format === null) {
-            // Because propel.useDateTimeClass is TRUE, we return a DateTime object.
-            return $dt;
-        } elseif (strpos($format, '%') !== false) {
-            return strftime($format, $dt->format('U'));
-        } else {
-            return $dt->format($format);
-        }
-    }
-
-    /**
-     * Get the [optionally formatted] temporal [listing_time] column value.
-     * 
-     *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
-     *							If format is NULL, then the raw DateTime object will be returned.
-     * @return mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getListingTime($format = '%X')
-    {
-        if ($this->listing_time === null) {
-            return null;
-        }
-
-
-
-        try {
-            $dt = new DateTime($this->listing_time);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->listing_time, true), $x);
-        }
-
-        if ($format === null) {
-            // Because propel.useDateTimeClass is TRUE, we return a DateTime object.
-            return $dt;
-        } elseif (strpos($format, '%') !== false) {
-            return strftime($format, $dt->format('U'));
-        } else {
-            return $dt->format($format);
-        }
     }
 
     /**
@@ -302,52 +219,6 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
 
         return $this;
     } // setId()
-
-    /**
-     * Sets the value of [listing_date] column to a normalized version of the date/time value specified.
-     * 
-     * @param      mixed $v string, integer (timestamp), or DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return   BuyListing The current object (for fluent API support)
-     */
-    public function setListingDate($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->listing_date !== null || $dt !== null) {
-            $currentDateAsString = ($this->listing_date !== null && $tmpDt = new DateTime($this->listing_date)) ? $tmpDt->format('Y-m-d') : null;
-            $newDateAsString = $dt ? $dt->format('Y-m-d') : null;
-            if ($currentDateAsString !== $newDateAsString) {
-                $this->listing_date = $newDateAsString;
-                $this->modifiedColumns[] = BuyListingPeer::LISTING_DATE;
-            }
-        } // if either are not null
-
-
-        return $this;
-    } // setListingDate()
-
-    /**
-     * Sets the value of [listing_time] column to a normalized version of the date/time value specified.
-     * 
-     * @param      mixed $v string, integer (timestamp), or DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return   BuyListing The current object (for fluent API support)
-     */
-    public function setListingTime($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->listing_time !== null || $dt !== null) {
-            $currentDateAsString = ($this->listing_time !== null && $tmpDt = new DateTime($this->listing_time)) ? $tmpDt->format('H:i:s') : null;
-            $newDateAsString = $dt ? $dt->format('H:i:s') : null;
-            if ($currentDateAsString !== $newDateAsString) {
-                $this->listing_time = $newDateAsString;
-                $this->modifiedColumns[] = BuyListingPeer::LISTING_TIME;
-            }
-        } // if either are not null
-
-
-        return $this;
-    } // setListingTime()
 
     /**
      * Sets the value of [listing_datetime] column to a normalized version of the date/time value specified.
@@ -493,13 +364,11 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
         try {
 
             $this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-            $this->listing_date = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-            $this->listing_time = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-            $this->listing_datetime = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-            $this->item_id = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-            $this->listings = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-            $this->unit_price = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
-            $this->quantity = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+            $this->listing_datetime = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+            $this->item_id = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
+            $this->listings = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+            $this->unit_price = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
+            $this->quantity = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -508,7 +377,7 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = BuyListingPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = BuyListingPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating BuyListing object", $e);
@@ -739,12 +608,6 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
         if ($this->isColumnModified(BuyListingPeer::ID)) {
             $modifiedColumns[':p' . $index++]  = '`ID`';
         }
-        if ($this->isColumnModified(BuyListingPeer::LISTING_DATE)) {
-            $modifiedColumns[':p' . $index++]  = '`LISTING_DATE`';
-        }
-        if ($this->isColumnModified(BuyListingPeer::LISTING_TIME)) {
-            $modifiedColumns[':p' . $index++]  = '`LISTING_TIME`';
-        }
         if ($this->isColumnModified(BuyListingPeer::LISTING_DATETIME)) {
             $modifiedColumns[':p' . $index++]  = '`LISTING_DATETIME`';
         }
@@ -773,12 +636,6 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
                 switch ($columnName) {
                     case '`ID`':
 						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-                        break;
-                    case '`LISTING_DATE`':
-						$stmt->bindValue($identifier, $this->listing_date, PDO::PARAM_STR);
-                        break;
-                    case '`LISTING_TIME`':
-						$stmt->bindValue($identifier, $this->listing_time, PDO::PARAM_STR);
                         break;
                     case '`LISTING_DATETIME`':
 						$stmt->bindValue($identifier, $this->listing_datetime, PDO::PARAM_STR);
@@ -945,24 +802,18 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
                 return $this->getId();
                 break;
             case 1:
-                return $this->getListingDate();
-                break;
-            case 2:
-                return $this->getListingTime();
-                break;
-            case 3:
                 return $this->getListingDatetime();
                 break;
-            case 4:
+            case 2:
                 return $this->getItemId();
                 break;
-            case 5:
+            case 3:
                 return $this->getListings();
                 break;
-            case 6:
+            case 4:
                 return $this->getUnitPrice();
                 break;
-            case 7:
+            case 5:
                 return $this->getQuantity();
                 break;
             default:
@@ -995,13 +846,11 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
         $keys = BuyListingPeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getListingDate(),
-            $keys[2] => $this->getListingTime(),
-            $keys[3] => $this->getListingDatetime(),
-            $keys[4] => $this->getItemId(),
-            $keys[5] => $this->getListings(),
-            $keys[6] => $this->getUnitPrice(),
-            $keys[7] => $this->getQuantity(),
+            $keys[1] => $this->getListingDatetime(),
+            $keys[2] => $this->getItemId(),
+            $keys[3] => $this->getListings(),
+            $keys[4] => $this->getUnitPrice(),
+            $keys[5] => $this->getQuantity(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aItem) {
@@ -1045,24 +894,18 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
                 $this->setId($value);
                 break;
             case 1:
-                $this->setListingDate($value);
-                break;
-            case 2:
-                $this->setListingTime($value);
-                break;
-            case 3:
                 $this->setListingDatetime($value);
                 break;
-            case 4:
+            case 2:
                 $this->setItemId($value);
                 break;
-            case 5:
+            case 3:
                 $this->setListings($value);
                 break;
-            case 6:
+            case 4:
                 $this->setUnitPrice($value);
                 break;
-            case 7:
+            case 5:
                 $this->setQuantity($value);
                 break;
         } // switch()
@@ -1090,13 +933,11 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
         $keys = BuyListingPeer::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setListingDate($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setListingTime($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setListingDatetime($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setItemId($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setListings($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setUnitPrice($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setQuantity($arr[$keys[7]]);
+        if (array_key_exists($keys[1], $arr)) $this->setListingDatetime($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setItemId($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setListings($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setUnitPrice($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setQuantity($arr[$keys[5]]);
     }
 
     /**
@@ -1109,8 +950,6 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
         $criteria = new Criteria(BuyListingPeer::DATABASE_NAME);
 
         if ($this->isColumnModified(BuyListingPeer::ID)) $criteria->add(BuyListingPeer::ID, $this->id);
-        if ($this->isColumnModified(BuyListingPeer::LISTING_DATE)) $criteria->add(BuyListingPeer::LISTING_DATE, $this->listing_date);
-        if ($this->isColumnModified(BuyListingPeer::LISTING_TIME)) $criteria->add(BuyListingPeer::LISTING_TIME, $this->listing_time);
         if ($this->isColumnModified(BuyListingPeer::LISTING_DATETIME)) $criteria->add(BuyListingPeer::LISTING_DATETIME, $this->listing_datetime);
         if ($this->isColumnModified(BuyListingPeer::ITEM_ID)) $criteria->add(BuyListingPeer::ITEM_ID, $this->item_id);
         if ($this->isColumnModified(BuyListingPeer::LISTINGS)) $criteria->add(BuyListingPeer::LISTINGS, $this->listings);
@@ -1179,8 +1018,6 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setListingDate($this->getListingDate());
-        $copyObj->setListingTime($this->getListingTime());
         $copyObj->setListingDatetime($this->getListingDatetime());
         $copyObj->setItemId($this->getItemId());
         $copyObj->setListings($this->getListings());
@@ -1301,8 +1138,6 @@ abstract class BaseBuyListing extends BaseObject implements Persistent
     public function clear()
     {
         $this->id = null;
-        $this->listing_date = null;
-        $this->listing_time = null;
         $this->listing_datetime = null;
         $this->item_id = null;
         $this->listings = null;
