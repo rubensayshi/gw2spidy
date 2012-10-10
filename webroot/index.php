@@ -539,11 +539,8 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
     $q->filterByName("%{$search}%");
     
     if ($q->count() == 1) {
-        error_reporting(E_ALL);
-        $item = $q->findOne();
-        echo $app['url_generator']->generate('item', array('dataId' => $item['dataId']));
-        exit;
-        return $app->redirect($app['url_generator']->generate('item', array('dataId' => $item['dataId'])));
+        $item = $q->findOne()
+        return $app->redirect($app['url_generator']->generate('item', array('dataId' => $item->getDataId())));
     }
 
     // use generic function to render
