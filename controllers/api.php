@@ -23,6 +23,11 @@ use GW2Spidy\DB\BuyListingQuery;
 
 use GW2Spidy\Util\Functions;
 
+$app->mount('/api', new GW2Spidy\API\OldAPIControllerProvider());
+$app->mount('/api/v0.9', new GW2Spidy\API\v090APIControllerProvider());
+
+return;
+
 /**
  * ----------------------
  *  route /api
