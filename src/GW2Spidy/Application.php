@@ -111,7 +111,7 @@ class Application extends \Silex\Application {
     }
 
     public function isBrowseActive() {
-        return !$this->isHomeActive() && !$this->isGemActive() && !$this->isCraftingActive();
+        return !$this->isHomeActive() && !$this->isGemActive() && !$this->isCraftingActive() && !$this->isFAQActive();
     }
 
     public function getDisplayTypes() {
