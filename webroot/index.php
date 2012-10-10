@@ -111,8 +111,11 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
     }
 
     $count = $q->count();
-
-    if ($count > 0) {
+    
+    if ($count == 1) {
+        $item = $q->findOne();
+        return $app->redirect($app['url_generator']->generate('item', array('dataId' => $item['dataId'])));
+    } elseif ($count > 0) {
         $lastpage = ceil($count / $itemsperpage);
         if ($page > $lastpage) {
             $page = $lastpage;
