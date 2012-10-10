@@ -23,8 +23,8 @@ while (($recipes = $q->find()) && $recipes->count()) {
         $price = $recipe->calculatePrice();
 
         $recipe->setCost($price);
-        $recipe->setSellPrice($recipe->getResultItem()->getMinSaleUnitPrice());
-        $recipe->setProfit(($recipe->getResultItem()->getMinSaleUnitPrice() * 0.85) - $price);
+        $recipe->setSellPrice($recipe->getResultItem()->getMinSaleUnitPrice() * $recipe->getCount());
+        $recipe->setProfit(($recipe->getSellPrice() * 0.85) - $price);
 
         $recipe->save();
 
@@ -35,8 +35,4 @@ while (($recipes = $q->find()) && $recipes->count()) {
 
     $q->offset(($i+=$offset));
     sleep(2);
-}
-
-if (!$recipes->count()) {
-    die("no recipes?");
 }

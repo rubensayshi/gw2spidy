@@ -46,7 +46,7 @@ var Crafting = function(item, container, summarycontainer) {
     };
 
     var init = function() {
-        topentry = new CraftEntry(item, 1, self, [], false);
+        topentry = new CraftEntry(item, item.recipe.count, self, [], false);
 
         $container.append(topentry.render());
 
