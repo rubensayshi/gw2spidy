@@ -55,12 +55,17 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
     }
 
     if (!is_null($type)) {
-        $type = ItemTypeQuery::create()->findPk($type);
+        if (!($type = ItemTypeQuery::create()->findPk($type))) {
+            return $app->abort(404, "bad type");
+        }
         $q->filterByItemType($type);
-    }
-    if (!is_null($subtype)) {
-        $subtype = ItemSubTypeQuery::create()->findPk(array($type, $subtype));
-        $q->filterByItemSubType($subtype);
+
+        if (!is_null($subtype)) {
+            if (!($subtype = ItemSubTypeQuery::create()->findPk(array($subtype, $type->getId())))) {
+                return $app->abort(404, "bad type");
+            }
+            $q->filterByItemSubType($subtype);
+        }
     }
 
     // use generic function to render
