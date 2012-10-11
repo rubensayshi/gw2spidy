@@ -5,6 +5,10 @@ backend default {
 }
 
 sub vcl_recv {
+    if (!req.http.host ~ "gw2spidy.com$") {
+        return(pipe);    
+    }
+    
     unset req.http.cookie;
 
 # uncomment to have varnish serve a downtime page
