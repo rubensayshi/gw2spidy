@@ -61,7 +61,7 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
         $q->filterByItemType($type);
 
         if (!is_null($subtype)) {
-            if (!($subtype = ItemSubTypeQuery::create()->findPk(array($type->getId(), $subtype)))) {
+            if (!($subtype = ItemSubTypeQuery::create()->findPk(array($subtype, $type->getId())))) {
                 return $app->abort(404, "bad type");
             }
             $q->filterByItemSubType($subtype);
