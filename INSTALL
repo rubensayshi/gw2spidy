@@ -25,7 +25,7 @@ cp config/cnf/example-custom-cnf.json config/cnf/myenv.json
 # ##########
 # init project
 # ##########
-php daemons/purge-cache.php
+php tools/purge-cache.php
 php tools/setup-request-slots.php
 php daemons/worker-types.php
 php daemons/purge-cache.php

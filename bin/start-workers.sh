@@ -51,7 +51,7 @@ function start_worker {
         fi
     fi
     
-    echo "startin daemon ${NAME} number ${NUM}"
+    echo "starting daemon ${NAME} number ${NUM}"
     
     ((${ROOT}/bin/worker.sh $NAME $NUM $PIDFILE &>> ${LOGDIR}/start-workers.log) & echo $! > $PIDFILE &)
 }
