@@ -64,6 +64,9 @@ require "{$root}/controllers/gems.php";
 // search
 require "{$root}/controllers/search.php";
 
+// watchlist
+require "{$root}/controllers/watchlist.php";
+
 // api stuff
 require "{$root}/controllers/api.php";
 

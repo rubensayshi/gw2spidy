@@ -19,6 +19,15 @@
             <i class="icon icon-share"></i> link ingame
         </span>
     </div>
+    
+    <div title="click to add to watchlist" class="watchlist" style="display: block; float: right; position: relative; top: -0px; right: 5px;">
+        <form id="watchlist-form" action="{{ path('watchlistpost') }}" method="post"> 
+            <input value="{{ item.dataId }}" name="data_id" type="hidden" />
+        </form>
+        <span style="cursor: pointer;">
+            <i class="icon icon-share"></i> add to watchlist
+        </span>
+    </div>
 </div>
 <div class="clearfix">
 	{% if item.resultOfRecipes | length %}
