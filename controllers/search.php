@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+
 use \DateTime;
 
 use GW2Spidy\Application;
