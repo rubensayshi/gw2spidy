@@ -60,7 +60,7 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
     return item_list($app, $request, $q, $page, 25, array('search' => $search));
 })
 ->assert('search',   '[^/]*')
-->assert('page',     '-?\d+')
+->assert('page',     '-?\d*')
 ->convert('page',    $toInt)
 ->convert('search',  function($search) { return urldecode($search); })
 ->value('search',    null)
