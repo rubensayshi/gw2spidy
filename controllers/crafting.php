@@ -124,6 +124,6 @@ $app->get("/recipe/{dataId}", function(Request $request, $dataId) use($app) {
         'tree' => json_encode($tree),
     ));
 })
-->assert('recipe', '-?\d*')
+->assert('dataId', '\d+')
 ->bind('recipe');
 

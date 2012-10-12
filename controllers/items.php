@@ -95,7 +95,7 @@ $app->get("/item/{dataId}", function($dataId) use ($app) {
         'item'        => $item,
     ));
 })
-->assert('dataId',  '\d*')
+->assert('dataId',  '\d+')
 ->bind('item');
 
 /**
@@ -206,6 +206,6 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
 
     return $content;
 })
-->assert('dataId',  '\d*')
+->assert('dataId',  '\d+')
 ->bind('chart');
 
