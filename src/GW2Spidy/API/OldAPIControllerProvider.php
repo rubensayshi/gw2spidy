@@ -4,6 +4,7 @@ namespace GW2Spidy\API;
 
 use \DateTime;
 use \Propel;
+use \BasePeer;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -101,10 +102,10 @@ class OldAPIControllerProvider implements ControllerProviderInterface {
             $fields   = array();
             $listings = array();
             if ($type == 'sell') {
-                $fields   = SellListingPeer::getFieldNames(\BasePeer::TYPE_FIELDNAME);
+                $fields   = SellListingPeer::getFieldNames(BasePeer::TYPE_FIELDNAME);
                 $listings = SellListingQuery::create()->findByItemId($item->getDataId());
             } else {
-                $fields   = BuyListingPeer::getFieldNames(\BasePeer::TYPE_FIELDNAME);
+                $fields   = BuyListingPeer::getFieldNames(BasePeer::TYPE_FIELDNAME);
                 $listings = BuyListingQuery::create()->findByItemId($item->getDataId());
             }
 
