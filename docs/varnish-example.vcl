@@ -6,14 +6,13 @@ backend default {
 
 sub vcl_recv {
     if (!req.http.host ~ "gw2spidy.com$") {
-        return(pipe);    
+            return(pipe);    
     }
-    
-    unset req.http.cookie;
 
-# uncomment to have varnish serve a downtime page
 #   error 500 "More downtime ... TP is down anyway ... need to get my shit sorted sorry ...";
 
+    unset req.http.cookie;
+    
     if (req.url ~ "no_cache") {
         return(pipe);
     }
@@ -21,36 +20,67 @@ sub vcl_recv {
 
 sub vcl_fetch {
     set beresp.ttl = 1m;
-    set beresp.grace = 1m;
+    set beresp.grace = 1h;
 
     unset beresp.http.expires;
 
+    # homepage, trending and gem data
     if (req.url ~ "^/$") {
         set beresp.ttl = 3m;
     }
 
+    # queue and slot status
     if (req.url ~ "^/status") {
         set beresp.ttl = 0s;
     }
 
+    # versioned assets
     if (req.url ~ "^/assets/v.*") {
         set beresp.http.cache-control = "max-age=31536000";
         set beresp.ttl = 365d;
     }
 
+    # item lists - search and types
     if (req.url ~ "^/type" || req.url ~ "^/search") {
         set beresp.ttl = 1h;
     }
 
-    if (req.url ~ "^/item") {
-        set beresp.ttl = 1d;
+    # item and recipe detail pages
+    if (req.url ~ "^/item" || req.url ~ "^/recipe") {
+        set beresp.ttl = 15m;
     }
 
+    # item charts, gem detail and gem charts
     if (req.url ~ "^/chart" || req.url ~ "^/gem" || req.url ~ "^/gem_chart") {
         set beresp.ttl = 10m;
     }
+    
+    # the old invite-only API
+    if (!(req.url ~ "^/api/v0.9")) {
+        set beresp.ttl = 15m;
+    
+    # the normal API
+    } else if (req.url ~ "^/api") {
+        set beresp.ttl = 1h;
+        
+        if (req.url ~ "^api/v.*/.+/types" || req.url ~ "^api/v.*/.+/disciplines" || req.url ~ "^api/v.*/.+/rarities") {
+            set beresp.ttl = 24h;
+        }
+        if (req.url ~ "^api/v.*/.+/items" || req.url ~ "^api/v.*/.+/recipes") {
+            set beresp.ttl = 24h;
+        }
+        if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/" || req.url ~ "^api/v.*/.+/listings/") {
+            set beresp.ttl = 15m;
+        }
+        if (req.url ~ "^api/v.*/.+/item-search/") {
+            set beresp.ttl = 1h;
+        }
+        if (req.url ~ "^api/v.*/.+/gem-price" || req.url ~ "^api/v.*/.+/gem-history/") {
+            set beresp.ttl = 15m;
+        }
+    }
 
-    if (req.http.host ~ "beta") {
+    if (req.http.host ~ "^beta.gw2spidy.com$" && !(req.url ~ "api")) {
         set beresp.ttl = 0s;
     }
 }

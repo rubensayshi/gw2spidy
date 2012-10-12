@@ -12,6 +12,7 @@ class GenericHelpersExtension extends \Twig_Extension {
             'floor' => new \Twig_Filter_Method($this, 'floor'),
             'rarity_css_class' => new \Twig_Filter_Method($this, 'rarity_css_class'),
             'slugify' => new \Twig_Filter_Method($this, 'slugify'),
+            'clean_whitespace' => new \Twig_Filter_Method($this, 'clean_whitespace'),
         );
     }
     public function getFunctions() {
@@ -19,6 +20,7 @@ class GenericHelpersExtension extends \Twig_Extension {
             'gw2db' => new \Twig_Function_Method($this, 'gw2db_item'),
             'gw2db_item' => new \Twig_Function_Method($this, 'gw2db_item'),
             'gw2db_recipe' => new \Twig_Function_Method($this, 'gw2db_recipe'),
+            'now' => new \Twig_Function_Method($this, 'now'),
         );
     }
 
@@ -46,8 +48,16 @@ class GenericHelpersExtension extends \Twig_Extension {
         return ceil($num);
     }
 
+    public function now($format = "Y-m-d H:i:s") {
+        return date($format);
+    }
+
     public function rarity_css_class($rarity) {
         return strtolower("rarity-" . str_replace(" ", "-", $rarity));
+    }
+
+    public function clean_whitespace($str) {
+        return trim(preg_replace('/\n /', "\n", preg_replace('/ +/', ' ', $str)));
     }
 
     public function getName() {

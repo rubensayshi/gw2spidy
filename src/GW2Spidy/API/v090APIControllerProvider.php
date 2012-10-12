@@ -1,0 +1,387 @@
+<?php
+
+namespace GW2Spidy\API;
+
+use Symfony\Component\HttpFoundation\Request;
+
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+
+use GW2Spidy\DB\DisciplineQuery;
+use GW2Spidy\DB\ItemSubTypeQuery;
+use GW2Spidy\DB\ItemType;
+use GW2Spidy\DB\RecipeQuery;
+use GW2Spidy\DB\GW2Session;
+use GW2Spidy\DB\GoldToGemRateQuery;
+use GW2Spidy\DB\GemToGoldRateQuery;
+use GW2Spidy\DB\ItemQuery;
+use GW2Spidy\DB\ItemTypeQuery;
+use GW2Spidy\DB\SellListingQuery;
+use GW2Spidy\DB\WorkerQueueItemQuery;
+use GW2Spidy\DB\ItemPeer;
+use GW2Spidy\DB\BuyListingPeer;
+use GW2Spidy\DB\SellListingPeer;
+use GW2Spidy\DB\BuyListingQuery;
+
+
+class v090APIControllerProvider implements ControllerProviderInterface {
+    public function connect(Application $app) {
+        $toInt = function($val) {
+            return (int) $val;
+        };
+
+        $controllers = $app['controllers_factory'];
+
+        /**
+         * ----------------------
+         *  route /types
+         * ----------------------
+         */
+        $controllers->get("/{format}/types", function(Request $request, $format) use($app) {
+
+            $results = array();
+            foreach (ItemTypeQuery::getAllTypes() as $type) {
+                $result = array('id' => $type->getId(), 'name' => $type->getTitle(), 'subtypes' => array());
+
+                foreach ($type->getSubTypes() as $subtype) {
+                    $result['subtypes'][] = array('id' => $subtype->getId(), 'name' => $subtype->getTitle());
+                }
+                $results[] = $result;
+            }
+
+            $response = array('results' => $results);
+
+            $app['api-helper']->outputHeaders($format, 'types');
+
+            if ($format == 'csv') {
+                ob_start();
+
+                echo "id,name,parent_id\n";
+
+                foreach ($results as $result) {
+                    echo "{$result['id']},{$result['name']},\n";
+                    foreach ($result['subtypes'] as $subresult) {
+                        echo "{$subresult['id']},{$subresult['name']},{$result['id']}\n";
+                    }
+                }
+
+                return ob_get_clean();
+            } else if ($format == 'json') {
+                return json_encode($response);
+            }
+        })
+        ->assert('format', 'csv|json');
+
+        /**
+         * ----------------------
+         *  route /disciplines
+         * ----------------------
+         */
+        $controllers->get("/{format}/disciplines", function(Request $request, $format) use($app) {
+
+            $results = array();
+            foreach (DisciplineQuery::getAllDisciplines() as $disc) {
+                $results[] = array('id' => $disc->getId(), 'name' => $disc->getName());
+            }
+
+            $response = array('results' => $results);
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "disciplines");
+        })
+        ->assert('format', 'csv|json');
+
+        /**
+         * ----------------------
+         *  route /rarities
+         * ----------------------
+         */
+        $controllers->get("/{format}/rarities", function(Request $request, $format) use($app) {
+
+            $results = array(
+                array("id" => 0, "name" => "Junk"),
+                array("id" => 1, "name" => "Common"),
+                array("id" => 2, "name" => "Fine"),
+                array("id" => 3, "name" => "Masterwork"),
+                array("id" => 4, "name" => "Rare"),
+                array("id" => 5, "name" => "Exotic"),
+                array("id" => 6, "name" => "Legendary"),
+            );
+
+            $response = array('results' => $results);
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "rarities");
+        })
+        ->assert('format', 'csv|json');
+
+        /**
+         * ----------------------
+         *  route /items
+         * ----------------------
+         */
+        $controllers->get("/{format}/items/{typeId}/{page}", function(Request $request, $format, $typeId, $page) use($app) {
+
+            $itemsperpage = 100;
+            $page = $page > 0 ? $page : 1;
+
+            $q = ItemQuery::create();
+
+            if (in_array($typeId, array('all', '*all*'))) {
+                $typeId = null;
+            }
+            if (!is_null($typeId)) {
+                if (!($type = ItemTypeQuery::create()->findPk($typeId))) {
+                    return $app->abort(404, "Invalid type [{$typeId}]");
+                }
+
+                $q->filterByItemType($type);
+            }
+
+            $total = $q->count();
+
+            if ($total > 0) {
+                $lastpage = ceil($total / $itemsperpage);
+            } else {
+                $page     = 1;
+                $lastpage = 1;
+            }
+
+            $q->offset($itemsperpage * ($page-1))
+              ->limit($itemsperpage);
+
+            $count = $q->count();
+
+            $results = array();
+            foreach ($q->find() as $item) {
+                $results[] = $app['api-helper']->buildItemDataArray($item);
+            }
+
+            $response = array(
+                'count'     => $count,
+                'page'      => $page,
+                'last_page' => $lastpage,
+                'total'     => $total,
+                'results'   => $results
+            );
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "items-{$typeId}-{$page}");
+        })
+        ->assert('format', 'csv|json')
+        ->assert('typeId', '\d+|\*?all\*?')
+        ->assert('page', '\d*');
+
+        /**
+         * ----------------------
+         *  route /item
+         * ----------------------
+         */
+        $controllers->get("/{format}/item/{dataId}", function(Request $request, $format, $dataId) use($app) {
+
+            if (!($item = ItemQuery::create()->findPk($dataId))) {
+                return $app->abort(404, "Item Not Found [{$dataId}].");
+            }
+
+            $response = array('result' => $app['api-helper']->buildItemDataArray($item));
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "item-{$dataId}");
+        })
+        ->assert('format', 'csv|json')
+        ->assert('dataId', '\d+');
+
+        /**
+         * ----------------------
+         *  route /listings
+         * ----------------------
+         */
+        $controllers->get("/{format}/listings/{dataId}/{type}/{page}", function(Request $request, $format, $dataId, $type, $page) use($app) {
+
+            $itemsperpage = 100;
+            $page = $page > 0 ? $page : 1;
+
+            if (!($item = ItemQuery::create()->findPk($dataId))) {
+                return $app->abort(404, "Item Not Found [{$dataId}].");
+            }
+
+            $fields   = array();
+            $listings = array();
+            if ($type == 'sell') {
+                $q = SellListingQuery::create()->filterByItemId($item->getDataId());
+            } else {
+                $q = BuyListingQuery::create()->filterByItemId($item->getDataId());
+            }
+
+            $q->orderByListingDatetime(\ModelCriteria::DESC);
+
+            $total = $q->count();
+
+            if ($total > 0) {
+                $lastpage = ceil($total / $itemsperpage);
+            } else {
+                $page     = 1;
+                $lastpage = 1;
+            }
+
+            $q->offset($itemsperpage * ($page-1))
+              ->limit($itemsperpage);
+
+            $count = $q->count();
+
+            $results = array();
+            foreach ($q->find() as $listing) {
+                $results[] = array(
+                    "listing_datetime" => $app['api-helper']->dateAsUTCString($listing->getListingDatetime()),
+                    "unit_price"       => $listing->getUnitPrice(),
+                    "quantity"         => $listing->getQuantity(),
+                    "listings"         => $listing->getListings(),
+                );
+            }
+
+            $response = array(
+                'count'     => $count,
+                'page'      => $page,
+                'last_page' => $lastpage,
+                'total'     => $total,
+                'results'   => $results
+            );
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "item-listings-{$dataId}-{$type}-{$page}");
+        })
+        ->assert('dataId', '\d+')
+        ->assert('format', 'csv|json')
+        ->assert('page',   '\d*')
+        ->assert('type',   'sell|buy');
+
+        /**
+         * ----------------------
+         *  route /item-search
+         * ----------------------
+         */
+        $controllers->get("/{format}/item-search/{name}", function(Request $request, $format, $name) use($app) {
+
+            $itemsperpage = 10;
+
+            $q = ItemQuery::create();
+            $q->filterByName("%{$name}%");
+            $q->limit($itemsperpage);
+
+            $count = $q->count();
+
+            $results = array();
+            foreach ($q->find() as $item) {
+                $results[] = $app['api-helper']->buildItemDataArray($item);
+            }
+
+            $response = array(
+                    'count'     => $count,
+                    'results'   => $results
+            );
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "item-search-{$page}");
+        })
+        ->assert('format', 'csv|json');
+
+        /**
+         * ----------------------
+         *  route /recipes
+         * ----------------------
+         */
+        $controllers->get("/{format}/recipes/{discId}/{page}", function(Request $request, $format, $discId, $page) use($app) {
+
+            $itemsperpage = 100;
+            $page = $page > 0 ? $page : 1;
+
+            $q = RecipeQuery::create();
+
+            if (in_array($discId, array('all', '*all*'))) {
+                $discId = null;
+            }
+            if (!is_null($discId)) {
+                if (!($disc = DisciplineQuery::create()->findPk($discId))) {
+                    return $app->abort(404, "Invalid discipline [{$discId}]");
+                }
+
+                $q->filterByDiscipline($disc);
+            }
+
+            $total = $q->count();
+
+            if ($total > 0) {
+                $lastpage = ceil($total / $itemsperpage);
+            } else {
+                $page     = 1;
+                $lastpage = 1;
+            }
+
+            $q->offset($itemsperpage * ($page-1))
+              ->limit($itemsperpage);
+
+            $count = $q->count();
+
+            $results = array();
+            foreach ($q->find() as $recipe) {
+                $results[] = $app['api-helper']->buildRecipeDataArray($recipe);
+            }
+
+            $response = array(
+                'count'     => $count,
+                'page'      => $page,
+                'last_page' => $lastpage,
+                'total'     => $total,
+                'results'   => $results
+            );
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "recipes-{$discId}-{$page}");
+        })
+        ->assert('format', 'csv|json')
+        ->assert('discId', '\d+|\*?all\*?')
+        ->assert('page', '\d*');
+
+        /**
+         * ----------------------
+         *  route /item
+         * ----------------------
+         */
+        $controllers->get("/{format}/recipe/{dataId}", function(Request $request, $format, $dataId) use($app) {
+
+            if (!($recipe = RecipeQuery::create()->findPk($dataId))) {
+                return $app->abort(404, "Recipe Not Found [{$dataId}].");
+            }
+
+            $response = array('result' => $app['api-helper']->buildRecipeDataArray($recipe));
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "recipe-{$dataId}");
+        })
+        ->assert('format', 'csv|json')
+        ->assert('dataId', '\d+');
+
+        /**
+         * ----------------------
+         *  route /gem-price
+         * ----------------------
+         */
+        $controllers->get("/{format}/gem-price", function(Request $request, $format) use($app) {
+            $gemtogold = GemToGoldRateQuery::create()
+                        ->addDescendingOrderByColumn("rate_datetime")
+                        ->offset(-1)
+                        ->limit(1)
+                        ->findOne();
+
+            $goldtogem = GoldToGemRateQuery::create()
+                        ->addDescendingOrderByColumn("rate_datetime")
+                        ->offset(-1)
+                        ->limit(1)
+                        ->findOne();
+
+
+            if (!$gemtogold || !$goldtogem) {
+                return $app->abort(404, "Gem Data Not Found.");
+            }
+
+            $response = array('result' => array('gem_to_gold' => $gemtogold->getRate(), 'gold_to_gem' => $goldtogem->getRate()));
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "gem-price");
+        })
+        ->assert('format', 'csv|json');
+
+        return $controllers;
+    }
+}

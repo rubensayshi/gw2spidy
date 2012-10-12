@@ -71,9 +71,9 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
     // use generic function to render
     return item_list($app, $request, $q, $page, 50, array('type' => $type, 'subtype' => $subtype));
 })
-->assert('type',     '-?\d+')
-->assert('subtype',  '-?\d+')
-->assert('page',     '-?\d+')
+->assert('type',     '-?\d*')
+->assert('subtype',  '-?\d*')
+->assert('page',     '-?\d*')
 ->value('type',      -1)
 ->value('subtype',   -1)
 ->value('page',      1)

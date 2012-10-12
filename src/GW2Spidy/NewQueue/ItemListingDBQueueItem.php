@@ -39,7 +39,7 @@ class ItemListingDBQueueItem {
     }
 
     public function getItemPriority() {
-        if ($this->item->getItemTypeId() == null) {
+        if ($this->item->getItemTypeId() === null) {
             return 24 * 60 * 60;
         }
 
