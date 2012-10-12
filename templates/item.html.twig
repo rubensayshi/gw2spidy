@@ -19,6 +19,26 @@
             <i class="icon icon-share"></i> link ingame
         </span>
     </div>
+    <div style="float: left;">
+        <table class="table" style="width: 200px;">
+			<tr>
+				<th>Sell Price: </th>
+				<td>{{ item.minSaleUnitPrice | gw2money }}</td>
+			</tr>
+			<tr>
+				<th>Supply: </th>
+				<td>{{ item.saleAvailability }}</td>
+			</tr>
+			<tr>
+				<th>Buy Price: </th>
+				<td>{{ item.maxOfferUnitPrice | gw2money }}</td>
+			</tr>
+			<tr>
+				<th>Demand: </th>
+				<td>{{ item.offerAvailability }}</td>
+			</tr>
+		</table>
+    </div>
 </div>
 <div class="clearfix">
 	{% if item.resultOfRecipes | length %}
@@ -26,7 +46,6 @@
 			<tr>
 				<th>Created By</th>
 				<th>Cost</th>
-				<th>Sell price</th>
 				<th>Profit</th>
 			</tr>
     		{% for recipe in item.resultOfRecipes %}
@@ -36,9 +55,6 @@
     				</td>
     				<td style="width: 115px;">
 						{{ recipe.cost | gw2money }}
-					</td>
-    				<td style="width: 115px;">
-						{{ recipe.sellPrice | gw2money }}
 					</td>
     				<td style="width: 115px;">
 						{{ recipe.profit | gw2money }}
