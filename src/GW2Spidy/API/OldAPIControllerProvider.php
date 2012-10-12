@@ -27,7 +27,7 @@ use GW2Spidy\DB\BuyListingQuery;
 
 use GW2Spidy\Util\Functions;
 
-class OldAPIControllerProvider extends BaseAPIControllerProvider {
+class OldAPIControllerProvider implements ControllerProviderInterface {
     public function connect(Application $app) {
         $toInt = function($val) {
             return (int) $val;
@@ -146,7 +146,7 @@ class OldAPIControllerProvider extends BaseAPIControllerProvider {
                 return json_encode($json);
             }
         })
-        ->assert('dataId',  '\d+')
+        ->assert('dataId',  '\d*')
         ->assert('format', 'csv|json')
         ->assert('type',   'sell|buy')
         ->convert('dataId', $toInt);
