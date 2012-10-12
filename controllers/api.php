@@ -108,7 +108,7 @@ $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $
         foreach ($listings as $listing) {
         	$data = $listing->toArray(BasePeer::TYPE_FIELDNAME);
 
-            $date = new DateTime("{$listing->getListingDate()} {$listing->getListingTime()}");
+            $date = new DateTime("{$listing->getListingDatetime()}");
             $date->setTimezone(new DateTimeZone('UTC'));
 
             $data['listing_date'] = $date->format("Y-m-d");
@@ -127,7 +127,7 @@ $app->get("/api/listings/{dataId}/{type}/{format}/{secret}", function($dataId, $
         foreach ($listings as $listing) {
             $json[$listing->getId()] = $listing->toArray(BasePeer::TYPE_FIELDNAME);
 
-            $date = new DateTime("{$listing->getListingDate()} {$listing->getListingTime()}");
+            $date = new DateTime("{$listing->getListingtime()}");
             $date->setTimezone(new DateTimeZone('UTC'));
 
             $json[$listing->getId()]['listing_date'] = $date->format("Y-m-d");
