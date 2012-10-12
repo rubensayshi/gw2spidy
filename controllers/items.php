@@ -71,9 +71,9 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
     // use generic function to render
     return item_list($app, $request, $q, $page, 50, array('type' => $type, 'subtype' => $subtype));
 })
-->assert('type',     '-?\d+')
-->assert('subtype',  '-?\d+')
-->assert('page',     '-?\d+')
+->assert('type',     '-?\d*')
+->assert('subtype',  '-?\d*')
+->assert('page',     '-?\d*')
 ->value('type',      -1)
 ->value('subtype',   -1)
 ->value('page',      1)
@@ -95,7 +95,7 @@ $app->get("/item/{dataId}", function($dataId) use ($app) {
         'item'        => $item,
     ));
 })
-->assert('dataId',  '\d+')
+->assert('dataId',  '\d*')
 ->bind('item');
 
 /**
@@ -206,6 +206,6 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
 
     return $content;
 })
-->assert('dataId',  '\d+')
+->assert('dataId',  '\d*')
 ->bind('chart');
 

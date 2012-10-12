@@ -93,8 +93,8 @@ $app->get("/crafting/{discipline}/{page}", function(Request $request, $disciplin
         'current_sort_order' => $sortOrder,
     ));
 })
-->assert('discipline', '-?\d+')
-->assert('page',       '-?\d+')
+->assert('discipline', '-?\d*')
+->assert('page',       '-?\d*')
 ->value('page', 1)
 ->bind('crafting');
 
@@ -124,6 +124,6 @@ $app->get("/recipe/{dataId}", function(Request $request, $dataId) use($app) {
         'tree' => json_encode($tree),
     ));
 })
-->assert('recipe', '-?\d+')
+->assert('recipe', '-?\d*')
 ->bind('recipe');
 
