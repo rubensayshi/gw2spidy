@@ -119,11 +119,10 @@ class OldAPIControllerProvider extends BaseAPIControllerProvider {
                 foreach ($listings as $listing) {
                 	$data = $listing->toArray(BasePeer::TYPE_FIELDNAME);
 
-                    $date = new DateTime("{$listing->getListingDate()} {$listing->getListingTime()}");
+                    $date = new DateTime("{$listing->getListingDatetime()}");
                     $date->setTimezone(new DateTimeZone('UTC'));
 
-                    $data['listing_date'] = $date->format("Y-m-d");
-                    $data['listing_time'] = $date->format("H:i:s");
+                    $data['listing_datetime'] = $date->format("Y-m-d H:i:s");
 
                     echo implode(",", $data) . "\n";
                 }
@@ -138,11 +137,10 @@ class OldAPIControllerProvider extends BaseAPIControllerProvider {
                 foreach ($listings as $listing) {
                     $json[$listing->getId()] = $listing->toArray(BasePeer::TYPE_FIELDNAME);
 
-                    $date = new DateTime("{$listing->getListingDate()} {$listing->getListingTime()}");
+                    $date = new DateTime("{$listing->getListingDatetime()}");
                     $date->setTimezone(new DateTimeZone('UTC'));
 
-                    $json[$listing->getId()]['listing_date'] = $date->format("Y-m-d");
-                    $json[$listing->getId()]['listing_time'] = $date->format("H:i:s");
+                    $json[$listing->getId()]['listing_datetime'] = $date->format("Y-m-d H:i:s");
                 }
 
                 return json_encode($json);
