@@ -118,12 +118,20 @@
         <div class="row-fluid footer-row navbar">
             <div class="navbar-inner">
                 <div>
-                    <span>this is a <a href="https://github.com/rubensayshi/gw2spidy">open source project</a> by <a href="http://www.guildwars2guru.com/user/39936-drakie/">Drakie</a> / <a href="https://github.com/rubensayshi">rubensayshi</a></span>
-                    <span>logo provided by <a href="http://codeoneteam.deviantart.com/">~CODEONETEAM</a></span>
+                    <span><a href="https://github.com/rubensayshi/gw2spidy">open source project</a> by <a href="http://www.guildwars2guru.com/user/39936-drakie/">Drakie</a> / <a href="https://github.com/rubensayshi">rubensayshi</a></span>
                 </div>
                 <div style="float: right;">
                     <span title="&copy; 2011 ArenaNet, Inc. All rights reserved. NCsoft, the interlocking NC logo, ArenaNet, Arena.net, Guild Wars, Guild Wars Factions, Factions, Guild Wars Nightfall, Nightfall, Guild Wars: Eye of the North, Guild Wars Eye of the North, Eye of the North, Guild Wars 2, and all associated logos and designs are trademarks or registered trademarks of NCsoft Corporation. All other trademarks are the property of their respective owners.">&copy; 2011 ArenaNet, Inc. All rights reserved.</span>
-                    <span><small title="{{ app.memusage }}">rending page took {{ app.time | number_format(5) }}</small></span>
+                    {% set pagestats %}
+                        this page took {{ app.time | number_format(5) }} seconds
+                        and used {{ app.memusage }} memory to render.
+
+                        it was generated @ {{ now('H:i') }}
+                        and if this isn't equal to your current time you're looking at a cached version ;-)
+                    {% endset %}
+                    <span style="font-size: 80%" title="{{- pagestats | clean_whitespace | e('html') -}}">
+                        page generated @ {{ now('H:i') }}
+                    </span>
                 </div>
         </div>
     </div>
