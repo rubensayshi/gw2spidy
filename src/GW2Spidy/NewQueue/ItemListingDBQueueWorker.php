@@ -5,6 +5,7 @@ namespace GW2Spidy\NewQueue;
 use \DateTime;
 use \DateInterval;
 use \Criteria;
+use \Exception;
 
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemType;
@@ -26,13 +27,103 @@ class ItemListingDBQueueWorker {
         $this->manager = $manager;
     }
 
-    public function work(ItemListingDBQueueItem $queueItem) {
-        $this->updateListings($queueItem);
-        $this->updateTrending($queueItem);
+    public function work($workload) {
+        $items = array();
+
+        if ($workload instanceof ItemListingDBQueueItem) {
+            $item = $workload->getItem();
+            $items[$item->getDataId()] = $workload->getItem();
+
+            $this->updateListings($item);
+        } else {
+            $ids = array();
+            foreach ($workload as $queueItem) {
+                $item = $queueItem->getItem();
+                $items[$item->getDataId()] = $queueItem->getItem();
+            }
+
+            $this->massUpdateListings($items);
+        }
+
+        foreach ($items as $item) {
+            $this->updateTrending($item);
+        }
     }
 
-    protected function updateListings(ItemListingDBQueueItem $queueItem) {
-        $item = $queueItem->getItem();
+    public function massUpdateListings($items) {
+        if ($itemsData = TradingPostSpider::getInstance()->getItemsByIds(array_keys($items))) {
+            $exceptions = array();
+
+            foreach ($itemsData as $itemData) {
+                try {
+                    $this->updateListingFromItemData($itemData, $items[$itemData['data_id']]);
+                } catch (Exception $e) {
+                    if (strstr("CurlRequest failed [[ 401 ]]", $e->getMessage())) {
+                        continue;
+                    }
+
+                    $exceptions[] = $e;
+                }
+            }
+
+            if (count($exceptions) == 1) {
+                throw $exceptions[0];
+            } else if (count($exceptions) > 1) {
+                $s = "";
+                foreach ($exceptions as $e) {
+                    $s .= $e->getMessage() . " \n ------------ \n";
+                }
+
+                throw new Exception("Multiple Exceptions were thrown: \n {$s}");
+            }
+        }
+    }
+    public function updateListingFromItemData($itemData, $item = null) {
+        // not sure when this happens, I think when the item is no longer on the tradingpost at all
+        // it has an ID and img, but nothing more ... skipping it silently for now
+        if (!isset($itemData['name']) && !isset($itemData['rarity']) && !isset($itemData['restriction_level']) && isset($itemData['data_id'])) {
+            return;
+        }
+
+        $now  = new DateTime();
+        $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
+
+        if (!isset($itemData['sale_availability'])) {
+            var_dump($itemData); die();
+        }
+
+        $item->setOfferAvailability($itemData['sale_availability']);
+        if (isset($itemData['min_sale_unit_price']) && $itemData['min_sale_unit_price'] > 0) {
+            $item->setMinSaleUnitPrice($itemData['min_sale_unit_price']);
+
+            $sellListing = new SellListing();
+            $sellListing->setItem($item);
+            $sellListing->setListingDatetime($now);
+            $sellListing->setQuantity($itemData['sale_availability'] ?: 0);
+            $sellListing->setUnitPrice($itemData['min_sale_unit_price']);
+            $sellListing->setListings(1);
+
+            $sellListing->save();
+        }
+
+        $item->setOfferAvailability($itemData['offer_availability']);
+        if (isset($itemData['max_offer_unit_price']) && $itemData['max_offer_unit_price'] > 0) {
+            $item->setMaxOfferUnitPrice($itemData['max_offer_unit_price']);
+
+            $buyListing = new BuyListing();
+            $buyListing->setItem($item);
+            $buyListing->setListingDatetime($now);
+            $buyListing->setQuantity($itemData['offer_availability'] ?: 0);
+            $buyListing->setUnitPrice($itemData['max_offer_unit_price']);
+            $buyListing->setListings(1);
+
+            $buyListing->save();
+        }
+
+        $item->save();
+    }
+
+    protected function updateListings(Item $item) {
         $now  = new DateTime();
 
         $listings = TradingPostSpider::getInstance()->getAllListingsById($item->getDataId());
@@ -64,6 +155,8 @@ class ItemListingDBQueueWorker {
             $item->setMinSaleUnitPrice($lowestSell['unit_price']);
         }
 
+        $item->setSaleAvailability($q);
+
         $sellListing->save();
 
         $q = 0;
@@ -88,15 +181,15 @@ class ItemListingDBQueueWorker {
             $item->setMaxOfferUnitPrice($lowestBuy['unit_price']);
         }
 
+        $item->setOfferAvailability($q);
+
         $buyListing->save();
 
         $item->save();
     }
 
-    protected function updateTrending(ItemListingDBQueueItem $queueItem) {
-        $item = $queueItem->getItem();
-
-        if ($queueItem->getItemPriority() > ItemListingDBQueueItem::ONE_HOUR) {
+    protected function updateTrending(Item $item) {
+        if ($item->getQueuePriority() > Item::ONE_HOUR) {
             $item->setSalePriceChangeLastHour(0);
             $item->setOfferPriceChangeLastHour(0);
 

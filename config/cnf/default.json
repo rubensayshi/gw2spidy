@@ -25,7 +25,10 @@ cnf = {
 
         "api_secrets"     : {},
 
-        "admin_secret"    : null
+        "admin_secret"    : null,
+        
+        "use_listings-json" : false,
+        "items-per-request" : 100
     },
 
     /*

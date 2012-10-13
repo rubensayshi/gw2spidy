@@ -30,6 +30,6 @@ if (!$item) die("failed to find item");
 var_dump($item->getName(), $item->getItemTypeId());
 
 $queueItem = new ItemListingDBQueueItem($item);
-var_dump($queueItem->getItemPriority());
+var_dump($queueItem->getItem()->getQueuePriority());
 
 $queueWorker->work($queueItem);

@@ -23,6 +23,12 @@ use GW2Spidy\Util\CacheHandler;
  * @package    propel.generator.gw2spidy
  */
 class Item extends BaseItem {
+    const ONE_DAY = 86400;
+    const ONE_HOUR = 3600;
+    const THREE_HOURS = 10900;
+    const FIFTEEN_MIN = 900;
+    const FIVE_MIN = 300;
+
     const RARITY_COMMON     = 1;
     const RARITY_FINE       = 2;
     const RARITY_MASTERWORK = 3;
@@ -37,6 +43,84 @@ class Item extends BaseItem {
         }
 
         return true;
+    }
+
+    public function getQueuePriority() {
+        if ($this->getItemTypeId() === null) {
+            return 24 * 60 * 60;
+        }
+
+        switch ($this->getItemType()->getTitle()) {
+            case 'Weapon':
+            case 'Armor':
+                if ($this->getRarity() >= 3) {
+                    if ($this->getRestrictionLevel() > 60) {
+                        return self::FIFTEEN_MIN;
+                    } else if ($this->getRestrictionLevel() > 40) {
+                        return self::ONE_HOUR;
+                    } else {
+                        return self::THREE_HOURS;
+                    }
+                } else if ($this->getRarity() >= 2) {
+                    return self::THREE_HOURS;
+                } else {
+                    return self::ONE_DAY;
+                }
+
+                break;
+
+            case 'Gathering':
+            case 'Tool':
+                return self::ONE_DAY;
+
+                break;
+
+            case 'Trophy':
+                if ($this->getRarity() >= 2) {
+                    return self::FIFTEEN_MIN;
+                } else {
+                    return self::ONE_DAY;
+                }
+
+                break;
+
+            case 'Gizmo':
+                if ($this->getRarity() >= 5) {
+                    return self::ONE_HOUR;
+                } else {
+                    return self::THREE_HOURS;
+                }
+
+                break;
+
+            case 'Mini':
+            case 'Bag':
+            case 'Crafting Material':
+                return self::FIFTEEN_MIN;
+
+                break;
+
+            case 'Container':
+                if ($this->getRarity() >= 2) {
+                    return self::FIFTEEN_MIN;
+                } else {
+                    return self::ONE_HOUR;
+                }
+
+                break;
+
+            case 'Consumable':
+            case 'Upgrade Component':
+            case 'Trinket':
+                return self::ONE_HOUR;
+
+                break;
+
+            default:
+                throw new Exception("Unknown type {$this->getItemType()->getTitle()}");
+
+                break;
+        }
     }
 
     public function getRarityName() {

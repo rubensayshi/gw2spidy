@@ -18,7 +18,7 @@ class RequestSlotManager extends RedisSlotManager {
     }
 
     protected function getTimeout() {
-        return 10;
+        return 20;
     }
 
     /**
