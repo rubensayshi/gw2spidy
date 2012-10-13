@@ -14,6 +14,7 @@ cnf = {
     "chartbeat-id"       : null,
     "chartbeat-domain"   : null,
     "gauges-id"          : "5073f1f6613f5d73ad00006a",
+    "request-language"   : "en",
 
     /*
      * gw2spidy settings
