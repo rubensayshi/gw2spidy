@@ -13,7 +13,7 @@
                 <connection>
                     <dsn>mysql:host=localhost;dbname=gw2spidy</dsn>
                     <user>root</user>
-                    <password>root</password>
+                    <password>Letmein1</password>
                 </connection>
             </datasource>
         </datasources>

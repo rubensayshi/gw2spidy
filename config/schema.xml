@@ -137,4 +137,18 @@
         <column name="created" type="timestamp" required="true" />
         <column name="source" type="varchar" size="255" />
     </table>
+    <table name="user" phpName="User">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+    </table>
+    <table name="watchlist" phpName="Watchlist">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="user_id" type="integer" required="true" />
+        <column name="item_id" type="integer" required="true" />
+        <foreign-key foreignTable="user" phpName="Watchlist" refPhpName="Watchlist">
+            <reference local="user_id" foreign="id" />
+        </foreign-key>
+        <foreign-key foreignTable="item" phpName="Item" refPhpName="Watchlist">
+            <reference local="item_id" foreign="data_id" />
+        </foreign-key>
+    </table>
 </database>

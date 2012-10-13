@@ -3,7 +3,7 @@ cnf = {
      * debug settings
      */
     "sql_logging": false,
-    "debug"      : false,
+    "debug"      : true,
 
     /*
      * application settings
@@ -38,7 +38,7 @@ cnf = {
                 "connection" : {
                     "dsn"      : "mysql:host=localhost;dbname=gw2spidy",
                     "user"     : "root",
-                    "password" : "root"
+                    "password" : "Letmein1"
                 }
             },
             "default" : "gw2spidy"
