@@ -36,6 +36,8 @@ Environment setup
 I'll provide you with some short setup instructions to make your life easier if you want to run the code for yourself or contribute.
 There's also a INSTALL file which contains a snippet I copy paste when I setup my VM, it should suffice ;-)
 
+#### A LOT has changed and most likely will continue a while longer ... Like I said, join the the IRC channel and we can talk!  
+
 Linux
 -----
 I run the project on a linux server and many of the requirements might not be available on windows and I have only (a tiny bit) of (negative) experience with windows.  
@@ -130,7 +132,6 @@ Run `tools/setup-request-slots.php` to create the initial request slots, you can
 
 Building The Item Database
 --------------------------
-Some stuff changed recently so if it's giving you a hard time just come to the IRC channel and ask me for help ;)  
 The first time you'll have to run `daemons/worker-types.php` to fetch all the item (sub)types (after that I run it nightly, just to ensure there aren't any changes, none in the past month).  
 After that is done, run `daemons/fill-queue-item-db.php`, this will enqueue a job for each (sub)type to start fetch item information.  
 Then run `daemons/worker-queue-item-db.php`, you'll have to do it a few times since it fetches 1 page (10 items) per queue-item, about ~22 times.
@@ -139,7 +140,6 @@ Ater this you should have a full item database, without any listings yet.
 
 Crawling The Tradingpost
 ------------------------
-A LOT has changed and most likely will continue a while longer ... Like I said, join the the IRC channel and we can talk!  
 The crawling can be done in 3 ways and I'm gonna explain them a bit before continueing your journey how to use GW2Spidy ;)
 
 ### listings.json
