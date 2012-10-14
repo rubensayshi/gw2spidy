@@ -34,7 +34,7 @@ cnf = {
          *  								- when false we'll use search.json?ids=    and the amount of IDs is decided with items-per-request
          *  use_shroud_magic				- someone shared a better way to get search.json?ids= with me, but didn't want me to share it ... this enables that method
          */
-        "use_listings-json" : true,
+        "use_listings-json" : false,
         "use_shroud_magic"  : false,
         "save_listing_from_item_data" : true,
         "items-per-request" : 100
