@@ -79,19 +79,18 @@ class ItemListingDBQueueWorker {
         }
     }
     public function updateListingFromItemData($itemData, $item = null) {
-        // not sure when this happens, I think when the item is no longer on the tradingpost at all
-        // it has an ID and img, but nothing more ... skipping it silently for now
+        // this seems to be removed items o.O?
         if (!isset($itemData['name']) && !isset($itemData['rarity']) && !isset($itemData['restriction_level']) && isset($itemData['data_id'])) {
+            return;
+        }
+
+        // this seems to be items no longer on the TP
+        if (!isset($itemData['sale_availability']) && !isset($itemData['offer_availability'])) {
             return;
         }
 
         $now  = new DateTime();
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
-
-        if (!isset($itemData['sale_availability'])) {
-            var_dump($itemData);
-            return;
-        }
 
         $item->setOfferAvailability($itemData['sale_availability']);
         if (isset($itemData['min_sale_unit_price']) && $itemData['min_sale_unit_price'] > 0) {
