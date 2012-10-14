@@ -80,7 +80,9 @@ while ($run < $max) {
     } else {
         $workload = array();
         for ($i = 0; $i < getAppConfig("gw2spidy.items-per-request"); $i++) {
-            $workload[] = $queueManager->next();
+            if ($queueItem = $queueManager->next()) {
+                $workload[] = $queueItem;
+            }
         }
     }
 
