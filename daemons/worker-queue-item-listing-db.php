@@ -67,8 +67,8 @@ while ($run < $max) {
     $slot = $slotManager->getAvailableSlot();
 
     if (!$slot) {
-        print "no slots, sleeping [4.5] ... \n";
-        usleep(4500);
+        print "no slots, sleeping [9.5] ... \n";
+        usleep(9.5 * 1000 * 1000);
 
         continue;
     }
