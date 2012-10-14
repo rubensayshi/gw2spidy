@@ -89,7 +89,8 @@ class ItemListingDBQueueWorker {
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
         if (!isset($itemData['sale_availability'])) {
-            var_dump($itemData); die();
+            var_dump($itemData);
+            return;
         }
 
         $item->setOfferAvailability($itemData['sale_availability']);
