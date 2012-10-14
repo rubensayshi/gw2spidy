@@ -55,29 +55,30 @@ sub vcl_fetch {
         set beresp.ttl = 10m;
     }
     
-    # the old invite-only API
-    if (!(req.url ~ "^/api/v0.9")) {
-        set beresp.ttl = 15m;
-    
-    # the normal API
-    } else if (req.url ~ "^/api") {
-        set beresp.ttl = 1h;
-        
-        if (req.url ~ "^api/v.*/.+/types" || req.url ~ "^api/v.*/.+/disciplines" || req.url ~ "^api/v.*/.+/rarities") {
-            set beresp.ttl = 24h;
-        }
-        if (req.url ~ "^api/v.*/.+/items" || req.url ~ "^api/v.*/.+/recipes") {
-            set beresp.ttl = 24h;
-        }
-        if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/" || req.url ~ "^api/v.*/.+/listings/") {
-            set beresp.ttl = 15m;
-        }
-        if (req.url ~ "^api/v.*/.+/item-search/") {
-            set beresp.ttl = 1h;
-        }
-        if (req.url ~ "^api/v.*/.+/gem-price" || req.url ~ "^api/v.*/.+/gem-history/") {
-            set beresp.ttl = 15m;
-        }
+    # API
+    if (req.url ~ "^/api") {
+    	# the old invite-only API
+	    if (!(req.url ~ "^/api/v0.9")) {
+	        set beresp.ttl = 15m;
+	    } else {
+	        set beresp.ttl = 1h;
+	        
+	        if (req.url ~ "^api/v.*/.+/types" || req.url ~ "^api/v.*/.+/disciplines" || req.url ~ "^api/v.*/.+/rarities") {
+	            set beresp.ttl = 24h;
+	        }
+	        if (req.url ~ "^api/v.*/.+/items" || req.url ~ "^api/v.*/.+/recipes") {
+	            set beresp.ttl = 24h;
+	        }
+	        if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/" || req.url ~ "^api/v.*/.+/listings/") {
+	            set beresp.ttl = 15m;
+	        }
+	        if (req.url ~ "^api/v.*/.+/item-search/") {
+	            set beresp.ttl = 1h;
+	        }
+	        if (req.url ~ "^api/v.*/.+/gem-price" || req.url ~ "^api/v.*/.+/gem-history/") {
+	            set beresp.ttl = 15m;
+	        }
+	    }
     }
 
     if (req.http.host ~ "^beta.gw2spidy.com$" && !(req.url ~ "api")) {
