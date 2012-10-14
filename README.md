@@ -36,7 +36,9 @@ Environment setup
 I'll provide you with some short setup instructions to make your life easier if you want to run the code for yourself or contribute.
 There's also a INSTALL file which contains a snippet I copy paste when I setup my VM, it should suffice ;-)
 
-#### A LOT has changed and most likely will continue a while longer ... Like I said, join the the IRC channel and we can talk!  
+#### A LOT has changed and most likely will continue a while longer
+Join the the IRC channel and we can talk!  
+Me (Drakie) and other people already involved for a while are happy to share our knowledge and help you, specially if you consider contributing!
 
 Linux
 -----
