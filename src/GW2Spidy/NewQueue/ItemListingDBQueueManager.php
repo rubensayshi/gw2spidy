@@ -15,6 +15,24 @@ class ItemListingDBQueueManager {
         return 'item-listing-db-queue';
     }
 
+    public function getLowestPrio() {
+        // pop the hotest item off $queueKey which is between -inf and +inf with limit 0,1
+        $items = $this->client->zRangeByScore($this->getQueueName(), '-inf', '+inf', array('withscores' => true, 'limit' => array(0, 1)));
+
+        // grab the item we popped off
+        $result = $items ? $items[0] : null;
+
+        // no item :(
+        if (is_null($result)) {
+            return 0;
+        }
+
+        $queueItem = $result[0];
+        $priority  = $result[1];
+
+        return $priority;
+    }
+
     protected function returnItem($queueItem, $priority) {
         $queueItem = $this->queueItemFromIdentifier($queueItem);
 

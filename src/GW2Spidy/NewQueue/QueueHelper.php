@@ -71,11 +71,13 @@ class QueueHelper extends Singleton {
 
         list($exists, $nexists) = $queueManager->multi_exists($q->find()->toArray(), true);
 
-        foreach ($nexists as $id) {
-            var_dump($id);
+        if ($nexists) {
+            $lowestprio = $queueManager->getLowestPrio();
 
-            $queueItem = new ItemListingDBQueueItem($id);
-            $queueManager->enqueue($queueItem);
+            foreach ($nexists as $id) {
+                $queueItem = new ItemListingDBQueueItem($id);
+                $queueManager->enqueue($queueItem, $lowestprio);
+            }
         }
     }
 }
