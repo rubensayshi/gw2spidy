@@ -32,7 +32,7 @@ var_dump($item->getName(), $item->getItemTypeId());
 $queueItem = new ItemListingDBQueueItem($item);
 var_dump($queueItem->getItem()->getQueuePriority());
 
-if (isset($argv[2]) && preg_match("search", $argv[2])) {
+if (isset($argv[2]) && strstr("search", $argv[2])) {
     $queueItem = array($queueItem);
 }
 
