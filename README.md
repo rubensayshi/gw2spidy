@@ -145,7 +145,7 @@ Crawling The Tradingpost
 The crawling can be done in 3 ways and I'm gonna explain them a bit before continueing your journey how to use GW2Spidy ;)
 
 ### listings.json
-A request to /ws/listings.json?id=<item-id> gives back all the buy and sell listings for a single item.  
+A request to **/ws/listings.json?id=<item-id>** gives back all the buy and sell listings for a single item.  
 Atm I grab the lowest and don't even store the other except summing up their total quantity, this is because I'm not using the other listings and the database is getting to big to just carelessly store them.  
 
 This method is always the most accurate and guaranteed to work because it's what the game relies on heavily.  
@@ -155,12 +155,12 @@ I created a priority system (read below) to update more interesting items more o
 Another problem with this method is that we need a session_key from the game client, read below for more information GW2 Sessions.
 
 ### search.json
-A request to /ws/search.json?type=<type-id>&page=<page> is what we also use to build up the item database and gives us data for 10 items in 1 request.  
+A request to **/ws/search.json?type=<type-id>&page=<page>** is what we also use to build up the item database and gives us data for 10 items in 1 request.  
 However ArenaNet had a lot of bugs which made the prices unreliable (ingame too), so I started using listings.json a few weeks ago!  
 They however fixed the bugs in the past patch for this method and we can use it again to build listings data on too.  
 
 ### search.json?ids=
-There's another way to use search.json, namely a request to /ws/search.json?ids=<csv-ids-max-250> which allows us to get up to 250 items in 1 request!  
+There's another way to use search.json, namely a request to **/ws/search.json?ids=<csv-ids-max-250>** which allows us to get up to 250 items in 1 request!  
 This was (even more) buggy too and ArenaNet hasn't fixed it propely yet, mostly because they themselves only use them when you click on an item on the homepage of the TP (click the Unidentified Dye ingame, you'll notice the price is wrong).  
 
 I got a tip from *shroud* how to get around this bug, but he didn't want me to share it with anyone because he feels it might allow a lot of other people to use this to play the market a bit too well.  
@@ -173,7 +173,7 @@ However since ArenaNet only fixed the normal *search.json* without the *shroud-m
 Before all this madness, I always used the normal *search.json*, I sugest others should do that too atm until I can either release *shrouds* magic or ArenaNet fixes it themselves.  
 Or use *listings.json* but you'll have a lot lower frequency!
 
-### Configure it
+### How To Configure it
 The default config will use the *search.json?ids=* method if you use the listingsDB worker, which is inaccurate and should be avoided atm, you can instead enabled 'use_listings-json' in the config to use *listings.json* if you want too.  
 However, the best way atm to go is with the 'save_listing_from_item_data' enabled (default enabled) and only use the itemDB worker!
 
