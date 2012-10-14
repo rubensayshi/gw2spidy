@@ -189,15 +189,6 @@ class ItemListingDBQueueWorker {
     }
 
     protected function updateTrending(Item $item) {
-        if ($item->getQueuePriority() > Item::ONE_HOUR) {
-            $item->setSalePriceChangeLastHour(0);
-            $item->setOfferPriceChangeLastHour(0);
-
-            $item->save();
-
-            return;
-        }
-
         $onehourago = new DateTime();
         $onehourago->sub(new \DateInterval('PT1H'));
 

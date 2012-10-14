@@ -23,11 +23,11 @@ use GW2Spidy\Util\CacheHandler;
  * @package    propel.generator.gw2spidy
  */
 class Item extends BaseItem {
-    const ONE_DAY = 86400;
-    const ONE_HOUR = 3600;
-    const THREE_HOURS = 10900;
-    const FIFTEEN_MIN = 900;
-    const FIVE_MIN = 300;
+    const PRIO_ONE   = 1;
+    const PRIO_TWO   = 2;
+    const PRIO_THREE = 3;
+    const PRIO_FOUR  = 5;
+    const PRIO_FIVE  = 10;
 
     const RARITY_COMMON     = 1;
     const RARITY_FINE       = 2;
@@ -47,7 +47,7 @@ class Item extends BaseItem {
 
     public function getQueuePriority() {
         if ($this->getItemTypeId() === null) {
-            return 24 * 60 * 60;
+            return self::PRIO_FIVE;
         }
 
         switch ($this->getItemType()->getTitle()) {
@@ -55,40 +55,40 @@ class Item extends BaseItem {
             case 'Armor':
                 if ($this->getRarity() >= 3) {
                     if ($this->getRestrictionLevel() > 60) {
-                        return self::FIFTEEN_MIN;
+                        return self::PRIO_ONE;
                     } else if ($this->getRestrictionLevel() > 40) {
-                        return self::ONE_HOUR;
+                        return self::PRIO_TWO;
                     } else {
-                        return self::THREE_HOURS;
+                        return self::PRIO_THREE;
                     }
                 } else if ($this->getRarity() >= 2) {
-                    return self::THREE_HOURS;
+                    return self::PRIO_THREE;
                 } else {
-                    return self::ONE_DAY;
+                    return self::PRIO_FIVE;
                 }
 
                 break;
 
             case 'Gathering':
             case 'Tool':
-                return self::ONE_DAY;
+                return self::PRIO_FIVE;
 
                 break;
 
             case 'Trophy':
                 if ($this->getRarity() >= 2) {
-                    return self::FIFTEEN_MIN;
+                    return self::PRIO_ONE;
                 } else {
-                    return self::ONE_DAY;
+                    return self::PRIO_FIVE;
                 }
 
                 break;
 
             case 'Gizmo':
                 if ($this->getRarity() >= 5) {
-                    return self::ONE_HOUR;
+                    return self::PRIO_TWO;
                 } else {
-                    return self::THREE_HOURS;
+                    return self::PRIO_THREE;
                 }
 
                 break;
@@ -96,15 +96,15 @@ class Item extends BaseItem {
             case 'Mini':
             case 'Bag':
             case 'Crafting Material':
-                return self::FIFTEEN_MIN;
+                return self::PRIO_ONE;
 
                 break;
 
             case 'Container':
                 if ($this->getRarity() >= 2) {
-                    return self::FIFTEEN_MIN;
+                    return self::PRIO_ONE;
                 } else {
-                    return self::ONE_HOUR;
+                    return self::PRIO_TWO;
                 }
 
                 break;
@@ -112,7 +112,7 @@ class Item extends BaseItem {
             case 'Consumable':
             case 'Upgrade Component':
             case 'Trinket':
-                return self::ONE_HOUR;
+                return self::PRIO_TWO;
 
                 break;
 

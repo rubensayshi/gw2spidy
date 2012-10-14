@@ -29,7 +29,7 @@ class ItemListingDBQueueItem {
     }
 
     public function getPriority() {
-        return time() + $this->item->getQueuePriority();
+        return $this->item->getQueuePriority();
     }
 }
 
