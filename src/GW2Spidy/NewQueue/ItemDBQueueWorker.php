@@ -13,15 +13,7 @@ use GW2Spidy\TradingPostSpider;
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemSubType;
 
-class ItemDBQueueWorker {
-    const ERROR_CODE_NO_LONGER_EXISTS = 444441;
-
-    protected $manager;
-
-    public function __construct(ItemDBQueueManager $manager) {
-        $this->manager = $manager;
-    }
-
+class ItemDBQueueWorker extends BaseWorker {
     public function work(ItemDBQueueItem $item) {
         $res = $this->buildItemDB($item->getType(), $item->getSubType(), $item->getOffset());
 
@@ -59,16 +51,18 @@ class ItemDBQueueWorker {
         $now  = new \DateTime();
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
-        // done based on listings, ignore this data here ;-)
-        unset($itemData['min_sale_unit_price']);
-        unset($itemData['sale_availability']);
-        unset($itemData['max_offer_unit_price']);
-        unset($itemData['offer_availability']);
+        $updateItemData = $itemData;
 
-        var_dump($itemData['name']) . "\n\n";
+        // dont update this data data here, processed elsewhere ;-)
+        unset($updateItemData['min_sale_unit_price']);
+        unset($updateItemData['sale_availability']);
+        unset($updateItemData['max_offer_unit_price']);
+        unset($updateItemData['offer_availability']);
+
+        var_dump($updateItemData['name']) . "\n\n";
         if ($item) {
-            if (($p = Functions::almostEqualCompare($itemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
-                $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
+            if (($p = Functions::almostEqualCompare($updateItemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
+                $item->fromArray($updateItemData, \BasePeer::TYPE_FIELDNAME);
 
                 if ($type) {
                     $item->setItemType($type);
@@ -76,14 +70,12 @@ class ItemDBQueueWorker {
                 if ($subtype) {
                     $item->setItemSubType($subtype);
                 }
-
-                $item->save();
             } else {
-                throw new \Exception("Title for ID no longer matches! item [{$p}] [json::{$itemData['data_id']}::{$itemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}]", self::ERROR_CODE_NO_LONGER_EXISTS);
+                throw new \Exception("Title for ID no longer matches! item [{$p}] [json::{$updateItemData['data_id']}::{$updateItemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}]", self::ERROR_CODE_NO_LONGER_EXISTS);
             }
         } else {
             $item = new Item();
-            $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
+            $item->fromArray($updateItemData, \BasePeer::TYPE_FIELDNAME);
 
             if ($type) {
                 $item->setItemType($type);
@@ -91,9 +83,13 @@ class ItemDBQueueWorker {
             if ($subtype) {
                 $item->setItemSubType($subtype);
             }
-
-            $item->save();
         }
+
+        if (getAppConfig('gw2spidy.save_listing_from_item_data')) {
+            $this->processListingsFromItemData($itemData, $item, false);
+        }
+
+        $item->save();
 
         return $item;
     }

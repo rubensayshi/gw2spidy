@@ -20,13 +20,7 @@ use GW2Spidy\Util\Functions;
 use GW2Spidy\TradingPostSpider;
 
 
-class ItemListingDBQueueWorker {
-    protected $manager;
-
-    public function __construct(ItemListingDBQueueManager $manager) {
-        $this->manager = $manager;
-    }
-
+class ItemListingDBQueueWorker extends BaseWorker {
     public function work($workload) {
         $items = array();
 
@@ -89,38 +83,7 @@ class ItemListingDBQueueWorker {
             return;
         }
 
-        $now  = new DateTime();
-        $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
-
-        $item->setOfferAvailability($itemData['sale_availability']);
-        if (isset($itemData['min_sale_unit_price']) && $itemData['min_sale_unit_price'] > 0) {
-            $item->setMinSaleUnitPrice($itemData['min_sale_unit_price']);
-
-            $sellListing = new SellListing();
-            $sellListing->setItem($item);
-            $sellListing->setListingDatetime($now);
-            $sellListing->setQuantity($itemData['sale_availability'] ?: 0);
-            $sellListing->setUnitPrice($itemData['min_sale_unit_price']);
-            $sellListing->setListings(1);
-
-            $sellListing->save();
-        }
-
-        $item->setOfferAvailability($itemData['offer_availability']);
-        if (isset($itemData['max_offer_unit_price']) && $itemData['max_offer_unit_price'] > 0) {
-            $item->setMaxOfferUnitPrice($itemData['max_offer_unit_price']);
-
-            $buyListing = new BuyListing();
-            $buyListing->setItem($item);
-            $buyListing->setListingDatetime($now);
-            $buyListing->setQuantity($itemData['offer_availability'] ?: 0);
-            $buyListing->setUnitPrice($itemData['max_offer_unit_price']);
-            $buyListing->setListings(1);
-
-            $buyListing->save();
-        }
-
-        $item->save();
+        $this->processListingsFromItemData($itemData, $item);
     }
 
     protected function updateListings(Item $item) {
