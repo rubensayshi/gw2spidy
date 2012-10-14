@@ -29,6 +29,8 @@ if (isset($argv[2]) && strstr("search", $argv[2])) {
     $queueItem = array($queueItem);
 }
 
+var_dump(is_array($queueItem));
+
 $queueWorker->work($queueItem);
 
 $l = SellListingQuery::create()

@@ -28,8 +28,9 @@ cnf = {
 
         "admin_secret"    : null,
         
-        "use_listings-json" : false,
-        "items-per-request" : 100
+        "use_listings-json" : true,
+        "items-per-request" : 100,
+        "use_shroud_magic"  : false
     },
 
     /*

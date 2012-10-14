@@ -49,7 +49,7 @@ try {
 /*
  * determine if we're crawling the item listings with search.json or listings.json
  */
-if (getAppConfig("gw2spidy.use_listings-json") && $gw2session->getGameSession()) {
+if (!getAppConfig("gw2spidy.use_shroud_magic") && getAppConfig("gw2spidy.use_listings-json") && $gw2session->getGameSession()) {
     $method = METHOD_LISTINGS_JSON;
 } else {
     $method = METHOD_SEARCH_JSON;
