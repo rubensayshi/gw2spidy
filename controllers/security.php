@@ -49,7 +49,7 @@ $app->match("/register", function(Request $request) use ($app) {
         if (!$error) {
             $user = new User();
             $user->setUsername($username);
-            // $user->setEmail($email);
+            $user->setEmail($email);
             $user->setRoles('USER_ROLE');
 
             // save encoded passwd
