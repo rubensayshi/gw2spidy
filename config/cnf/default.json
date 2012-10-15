@@ -22,7 +22,7 @@ cnf = {
     "gw2spidy" : {
         "request-slots" : {
             "count"    : 100,
-            "cooldown" : 20
+            "cooldown" : 30
         },
         "tradingpost_url" : "https://tradingpost-live.ncplatform.net",
         "gemexchange_url" : "https://exchange-live.ncplatform.net",
@@ -30,7 +30,7 @@ cnf = {
 
         "api_secrets"     : {},
         "admin_secret"    : null,
-        
+
         /*
          * this controls how the crawling is done
          *  save_listing_from_item_data 	- when true during the worker-queue-item-db we'll also save listings from that data
