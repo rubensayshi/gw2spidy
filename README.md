@@ -174,7 +174,7 @@ Before all this madness, I always used the normal *search.json*, I sugest others
 Or use *listings.json* but you'll have a lot lower frequency!
 
 ### How To Configure it
-The default config will use the *search.json?ids=* method if you use the listingsDB worker, which is inaccurate and should be avoided atm, you can instead enabled 'use_listings-json' in the config to use *listings.json* if you want too.  
+The default config will use the *listings.json* method if you use the listingsDB worker, to match how it was working before I reimplemented all this, you can instead disabled 'use_listings-json' in the config to use *search.json?ids=* if you want too.  
 However, the best way atm to go is with the 'save_listing_from_item_data' enabled (default enabled) and only use the itemDB worker!
 
 ItemDB Worker
