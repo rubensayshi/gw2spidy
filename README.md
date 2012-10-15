@@ -30,6 +30,9 @@ Date/time data
 As usual I didn't really think about timezones when I started this project, but now that multiple people forked the project and that I'm exporting data to some people it suddently matters ... 
 All data is stored in the server's timezone, however I've made sure that data going out (charts and API) are converted to UTC (and Highcharts converts it to the browsers timezone).
 
+Mailing List
+============
+Please join the [Google Groups Mailing List](https://groups.google.com/forum/#!forum/gw2spidy) for gw2spidy so that I can keep you up-to-date of any (major) changes / new versions of the Codebase!
 
 Environment setup
 =================
