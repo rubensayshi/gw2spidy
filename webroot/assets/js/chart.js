@@ -104,8 +104,6 @@ var GW2SpidyChart = function(url, container, set_options) {
             }
         });
 
-        console.log(data);
-
         // Create the chart
         var chart = new Highcharts.StockChart($.extend(true, {}, options, {
             series : data
