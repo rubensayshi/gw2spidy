@@ -20,9 +20,6 @@ use GW2Spidy\Util\Functions;
  * ----------------------
  */
 $app->get("/", function() use($app) {
-
-    var_dump($app['security']->getToken()->getUser());
-
     // workaround for now to set active menu item
     $app->setHomeActive();
 
