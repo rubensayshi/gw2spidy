@@ -35,29 +35,29 @@ $app['sql_logging'] && $app->enableSQLLogging();
 // register security provider
 $app->register(new Silex\Provider\SecurityServiceProvider(), array(
     'security.firewalls' => array(
-            'login' => array(
-                    'pattern' => '^/login$',
-            ),
-            'rest' => array(
-                    'anonymous' => true,
-                    'form'      => array('login_path' => '/login', 'check_path' => '/login_check'),
-                    'logout'    => array('logout_path' => '/logout'),
-                    'users' => $app->share(function () use ($app) {
-                        return new UserProvider();
-                    }),
-                    /*'users'     => array(
-                     // raw password is foo
-                            'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
-                            'user'  => array('ROLE_USER',  '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
-                    ),*/
-            ),
+        'login' => array(
+            'pattern' => '^/login$',
+        ),
+        'rest' => array(
+            'anonymous' => true,
+            'form'      => array('login_path' => '/login', 'check_path' => '/login_check'),
+            'logout'    => array('logout_path' => '/logout'),
+            'users' => $app->share(function () use ($app) {
+                return new UserProvider();
+            }),
+            /*'users'     => array(
+             // raw password is foo
+                    'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
+                    'user'  => array('ROLE_USER',  '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
+            ),*/
+        ),
     ),
     'security.role_hierarchy' => array(
-            'ROLE_ADMIN' => array('ROLE_USER', 'ROLE_ALLOWED_TO_SWITCH'),
-            'ROLE_USER' => array(),
+        'ROLE_ADMIN' => array('ROLE_USER', 'ROLE_ALLOWED_TO_SWITCH'),
+        'ROLE_USER' => array(),
     ),
     'security.access_rules' => array(
-            array('^/admin', 'ROLE_ADMIN'),
+        array('^/admin', 'ROLE_ADMIN'),
     ),
 ));
 // hit the security.firewall_map and the security so they initialize properly before Twig tries to use them in some odd way
