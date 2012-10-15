@@ -23,8 +23,14 @@ use GW2Spidy\DB\Watchlist;
  * 
  *
  * @method     UserQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     UserQuery orderByUsername($order = Criteria::ASC) Order by the username column
+ * @method     UserQuery orderByPassword($order = Criteria::ASC) Order by the password column
+ * @method     UserQuery orderByRoles($order = Criteria::ASC) Order by the roles column
  *
  * @method     UserQuery groupById() Group by the id column
+ * @method     UserQuery groupByUsername() Group by the username column
+ * @method     UserQuery groupByPassword() Group by the password column
+ * @method     UserQuery groupByRoles() Group by the roles column
  *
  * @method     UserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     UserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -38,8 +44,14 @@ use GW2Spidy\DB\Watchlist;
  * @method     User findOneOrCreate(PropelPDO $con = null) Return the first User matching the query, or a new User object populated from the query conditions when no match is found
  *
  * @method     User findOneById(int $id) Return the first User filtered by the id column
+ * @method     User findOneByUsername(string $username) Return the first User filtered by the username column
+ * @method     User findOneByPassword(string $password) Return the first User filtered by the password column
+ * @method     User findOneByRoles(string $roles) Return the first User filtered by the roles column
  *
  * @method     array findById(int $id) Return User objects filtered by the id column
+ * @method     array findByUsername(string $username) Return User objects filtered by the username column
+ * @method     array findByPassword(string $password) Return User objects filtered by the password column
+ * @method     array findByRoles(string $roles) Return User objects filtered by the roles column
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -130,7 +142,7 @@ abstract class BaseUserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `ID` FROM `user` WHERE `ID` = :p0';
+        $sql = 'SELECT `ID`, `USERNAME`, `PASSWORD`, `ROLES` FROM `user` WHERE `ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -244,6 +256,93 @@ abstract class BaseUserQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserPeer::ID, $id, $comparison);
+    }
+
+    /**
+     * Filter the query on the username column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUsername('fooValue');   // WHERE username = 'fooValue'
+     * $query->filterByUsername('%fooValue%'); // WHERE username LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $username The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return UserQuery The current query, for fluid interface
+     */
+    public function filterByUsername($username = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($username)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $username)) {
+                $username = str_replace('*', '%', $username);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(UserPeer::USERNAME, $username, $comparison);
+    }
+
+    /**
+     * Filter the query on the password column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPassword('fooValue');   // WHERE password = 'fooValue'
+     * $query->filterByPassword('%fooValue%'); // WHERE password LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $password The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return UserQuery The current query, for fluid interface
+     */
+    public function filterByPassword($password = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($password)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $password)) {
+                $password = str_replace('*', '%', $password);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(UserPeer::PASSWORD, $password, $comparison);
+    }
+
+    /**
+     * Filter the query on the roles column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByRoles('fooValue');   // WHERE roles = 'fooValue'
+     * $query->filterByRoles('%fooValue%'); // WHERE roles LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $roles The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return UserQuery The current query, for fluid interface
+     */
+    public function filterByRoles($roles = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($roles)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $roles)) {
+                $roles = str_replace('*', '%', $roles);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(UserPeer::ROLES, $roles, $comparison);
     }
 
     /**

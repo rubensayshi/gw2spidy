@@ -1,4 +1,6 @@
 <?php
+use GW2Spidy\DB\User;
+
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 /**
@@ -9,6 +11,8 @@ ini_set('display_errors', 'On');
 use GW2Spidy\Util\Functions;
 
 use GW2Spidy\Application;
+
+use GW2Spidy\UserProvider;
 
 use GW2Spidy\Twig\VersionedAssetsRoutingExtension;
 use GW2Spidy\Twig\ItemListRoutingExtension;
@@ -27,6 +31,7 @@ $app->register(new Igorw\Silex\ConfigServiceProvider(getAppConfig()));
 $app['sql_logging'] && $app->enableSQLLogging();
 
 // register providers
+$app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path'    => dirname(__FILE__) . '/../templates',
@@ -41,7 +46,35 @@ $app['twig']->addExtension(new VersionedAssetsRoutingExtension());
 $app['twig']->addExtension(new GW2MoneyExtension());
 $app['twig']->addExtension(new ItemListRoutingExtension($app['url_generator']));
 
-$app['debug'] = true;
+// register security provider, make sure it's after twig has done it's bridging stuff
+$app->register(new Silex\Provider\SecurityServiceProvider(), array(
+    'security.firewalls' => array(
+        'login' => array(
+            'pattern' => '^/login$',
+        ),
+        'rest' => array(
+            'anonymous' => true,
+            'form'      => array('login_path' => '/login', 'check_path' => '/login_check'),
+            'logout'    => array('logout_path' => '/logout'),
+            'users' => $app->share(function () use ($app) {
+                return new UserProvider();
+            }),
+            /*'users'     => array(
+                // raw password is foo
+                'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
+                'user'  => array('ROLE_USER',  '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
+            ),*/
+        ),
+    ),
+    'security.role_hierarchy' => array(
+        'ROLE_ADMIN' => array('ROLE_USER', 'ROLE_ALLOWED_TO_SWITCH'),
+        'ROLE_USER' => array(),
+    ),
+    'security.access_rules' => array(
+        array('^/admin', 'ROLE_ADMIN'),
+    ),
+));
+
 /*
  * it's not very clean and silex-like but following are some includes to split up all the routing / functionality
  *  instead of using their mounting stuff, because it's just to much trouble
@@ -71,6 +104,9 @@ require "{$root}/controllers/watchlist.php";
 
 // api stuff
 require "{$root}/controllers/api.php";
+
+// login stuff
+require "{$root}/controllers/security.php";
 
 // bootstrap the app
 $app->run();

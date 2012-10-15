@@ -36,16 +36,25 @@ abstract class BaseUserPeer {
     const TM_CLASS = 'UserTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 1;
+    const NUM_COLUMNS = 4;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 1;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /** the column name for the ID field */
     const ID = 'user.ID';
+
+    /** the column name for the USERNAME field */
+    const USERNAME = 'user.USERNAME';
+
+    /** the column name for the PASSWORD field */
+    const PASSWORD = 'user.PASSWORD';
+
+    /** the column name for the ROLES field */
+    const ROLES = 'user.ROLES';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -66,12 +75,12 @@ abstract class BaseUserPeer {
      * e.g. UserPeer::$fieldNames[UserPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('Id', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id', ),
-        BasePeer::TYPE_COLNAME => array (UserPeer::ID, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID', ),
-        BasePeer::TYPE_FIELDNAME => array ('id', ),
-        BasePeer::TYPE_NUM => array (0, )
+        BasePeer::TYPE_PHPNAME => array ('Id', 'Username', 'Password', 'Roles', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'username', 'password', 'roles', ),
+        BasePeer::TYPE_COLNAME => array (UserPeer::ID, UserPeer::USERNAME, UserPeer::PASSWORD, UserPeer::ROLES, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'USERNAME', 'PASSWORD', 'ROLES', ),
+        BasePeer::TYPE_FIELDNAME => array ('id', 'username', 'password', 'roles', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
     );
 
     /**
@@ -81,12 +90,12 @@ abstract class BaseUserPeer {
      * e.g. UserPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('Id' => 0, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, ),
-        BasePeer::TYPE_COLNAME => array (UserPeer::ID => 0, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, ),
-        BasePeer::TYPE_FIELDNAME => array ('id' => 0, ),
-        BasePeer::TYPE_NUM => array (0, )
+        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Username' => 1, 'Password' => 2, 'Roles' => 3, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'username' => 1, 'password' => 2, 'roles' => 3, ),
+        BasePeer::TYPE_COLNAME => array (UserPeer::ID => 0, UserPeer::USERNAME => 1, UserPeer::PASSWORD => 2, UserPeer::ROLES => 3, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'USERNAME' => 1, 'PASSWORD' => 2, 'ROLES' => 3, ),
+        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'username' => 1, 'password' => 2, 'roles' => 3, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
     );
 
     /**
@@ -161,8 +170,14 @@ abstract class BaseUserPeer {
     {
         if (null === $alias) {
             $criteria->addSelectColumn(UserPeer::ID);
+            $criteria->addSelectColumn(UserPeer::USERNAME);
+            $criteria->addSelectColumn(UserPeer::PASSWORD);
+            $criteria->addSelectColumn(UserPeer::ROLES);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.USERNAME');
+            $criteria->addSelectColumn($alias . '.PASSWORD');
+            $criteria->addSelectColumn($alias . '.ROLES');
         }
     }
 

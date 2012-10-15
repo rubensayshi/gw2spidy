@@ -139,6 +139,9 @@
     </table>
     <table name="user" phpName="User">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="username" type="varchar" size="255" required="true" />
+        <column name="password" type="varchar" size="255" required="true" />
+        <column name="roles" type="varchar" size="255" default="" />
     </table>
     <table name="watchlist" phpName="Watchlist">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />

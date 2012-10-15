@@ -1,0 +1,27 @@
+{% extends "content_wide.html.twig" %}
+
+{% block htmltitle %}{{ parent() }} | Login{% endblock %}
+{% block content %}
+
+<form class="form" action="{{ path('login_check') }}" method="post">
+    {{ error }}
+    <div class="control-group">
+        <label class="control-label" for=""loginUsername"">Username</label>
+        <div class="controls">
+            <input type="text" id="loginUsername" name="_username" value="{{ last_username }}" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="loginPassword">Password</label>
+        <div class="controls">
+            <input type="password" id="loginPassword" name="_password" value="" />
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

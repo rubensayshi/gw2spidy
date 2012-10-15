@@ -55,6 +55,25 @@ abstract class BaseUser extends BaseObject implements Persistent
     protected $id;
 
     /**
+     * The value for the username field.
+     * @var        string
+     */
+    protected $username;
+
+    /**
+     * The value for the password field.
+     * @var        string
+     */
+    protected $password;
+
+    /**
+     * The value for the roles field.
+     * Note: this column has a database default value of: ''
+     * @var        string
+     */
+    protected $roles;
+
+    /**
      * @var        PropelObjectCollection|Watchlist[] Collection to store aggregation of Watchlist objects.
      */
     protected $collWatchlists;
@@ -81,6 +100,27 @@ abstract class BaseUser extends BaseObject implements Persistent
     protected $watchlistsScheduledForDeletion = null;
 
     /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see        __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->roles = '';
+    }
+
+    /**
+     * Initializes internal state of BaseUser object.
+     * @see        applyDefaults()
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->applyDefaultValues();
+    }
+
+    /**
      * Get the [id] column value.
      * 
      * @return   int
@@ -89,6 +129,39 @@ abstract class BaseUser extends BaseObject implements Persistent
     {
 
         return $this->id;
+    }
+
+    /**
+     * Get the [username] column value.
+     * 
+     * @return   string
+     */
+    public function getUsername()
+    {
+
+        return $this->username;
+    }
+
+    /**
+     * Get the [password] column value.
+     * 
+     * @return   string
+     */
+    public function getPassword()
+    {
+
+        return $this->password;
+    }
+
+    /**
+     * Get the [roles] column value.
+     * 
+     * @return   string
+     */
+    public function getRoles()
+    {
+
+        return $this->roles;
     }
 
     /**
@@ -113,6 +186,69 @@ abstract class BaseUser extends BaseObject implements Persistent
     } // setId()
 
     /**
+     * Set the value of [username] column.
+     * 
+     * @param      string $v new value
+     * @return   User The current object (for fluent API support)
+     */
+    public function setUsername($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->username !== $v) {
+            $this->username = $v;
+            $this->modifiedColumns[] = UserPeer::USERNAME;
+        }
+
+
+        return $this;
+    } // setUsername()
+
+    /**
+     * Set the value of [password] column.
+     * 
+     * @param      string $v new value
+     * @return   User The current object (for fluent API support)
+     */
+    public function setPassword($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->password !== $v) {
+            $this->password = $v;
+            $this->modifiedColumns[] = UserPeer::PASSWORD;
+        }
+
+
+        return $this;
+    } // setPassword()
+
+    /**
+     * Set the value of [roles] column.
+     * 
+     * @param      string $v new value
+     * @return   User The current object (for fluent API support)
+     */
+    public function setRoles($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->roles !== $v) {
+            $this->roles = $v;
+            $this->modifiedColumns[] = UserPeer::ROLES;
+        }
+
+
+        return $this;
+    } // setRoles()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -122,6 +258,10 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->roles !== '') {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -145,6 +285,9 @@ abstract class BaseUser extends BaseObject implements Persistent
         try {
 
             $this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
+            $this->username = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+            $this->password = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+            $this->roles = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -153,7 +296,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 1; // 1 = UserPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = UserPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating User object", $e);
@@ -387,6 +530,15 @@ abstract class BaseUser extends BaseObject implements Persistent
         if ($this->isColumnModified(UserPeer::ID)) {
             $modifiedColumns[':p' . $index++]  = '`ID`';
         }
+        if ($this->isColumnModified(UserPeer::USERNAME)) {
+            $modifiedColumns[':p' . $index++]  = '`USERNAME`';
+        }
+        if ($this->isColumnModified(UserPeer::PASSWORD)) {
+            $modifiedColumns[':p' . $index++]  = '`PASSWORD`';
+        }
+        if ($this->isColumnModified(UserPeer::ROLES)) {
+            $modifiedColumns[':p' . $index++]  = '`ROLES`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `user` (%s) VALUES (%s)',
@@ -400,6 +552,15 @@ abstract class BaseUser extends BaseObject implements Persistent
                 switch ($columnName) {
                     case '`ID`':
 						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+                        break;
+                    case '`USERNAME`':
+						$stmt->bindValue($identifier, $this->username, PDO::PARAM_STR);
+                        break;
+                    case '`PASSWORD`':
+						$stmt->bindValue($identifier, $this->password, PDO::PARAM_STR);
+                        break;
+                    case '`ROLES`':
+						$stmt->bindValue($identifier, $this->roles, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -546,6 +707,15 @@ abstract class BaseUser extends BaseObject implements Persistent
             case 0:
                 return $this->getId();
                 break;
+            case 1:
+                return $this->getUsername();
+                break;
+            case 2:
+                return $this->getPassword();
+                break;
+            case 3:
+                return $this->getRoles();
+                break;
             default:
                 return null;
                 break;
@@ -576,6 +746,9 @@ abstract class BaseUser extends BaseObject implements Persistent
         $keys = UserPeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
+            $keys[1] => $this->getUsername(),
+            $keys[2] => $this->getPassword(),
+            $keys[3] => $this->getRoles(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->collWatchlists) {
@@ -618,6 +791,15 @@ abstract class BaseUser extends BaseObject implements Persistent
             case 0:
                 $this->setId($value);
                 break;
+            case 1:
+                $this->setUsername($value);
+                break;
+            case 2:
+                $this->setPassword($value);
+                break;
+            case 3:
+                $this->setRoles($value);
+                break;
         } // switch()
     }
 
@@ -643,6 +825,9 @@ abstract class BaseUser extends BaseObject implements Persistent
         $keys = UserPeer::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setUsername($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setPassword($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setRoles($arr[$keys[3]]);
     }
 
     /**
@@ -655,6 +840,9 @@ abstract class BaseUser extends BaseObject implements Persistent
         $criteria = new Criteria(UserPeer::DATABASE_NAME);
 
         if ($this->isColumnModified(UserPeer::ID)) $criteria->add(UserPeer::ID, $this->id);
+        if ($this->isColumnModified(UserPeer::USERNAME)) $criteria->add(UserPeer::USERNAME, $this->username);
+        if ($this->isColumnModified(UserPeer::PASSWORD)) $criteria->add(UserPeer::PASSWORD, $this->password);
+        if ($this->isColumnModified(UserPeer::ROLES)) $criteria->add(UserPeer::ROLES, $this->roles);
 
         return $criteria;
     }
@@ -718,6 +906,9 @@ abstract class BaseUser extends BaseObject implements Persistent
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
+        $copyObj->setUsername($this->getUsername());
+        $copyObj->setPassword($this->getPassword());
+        $copyObj->setRoles($this->getRoles());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1036,9 +1227,13 @@ abstract class BaseUser extends BaseObject implements Persistent
     public function clear()
     {
         $this->id = null;
+        $this->username = null;
+        $this->password = null;
+        $this->roles = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
