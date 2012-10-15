@@ -96,13 +96,15 @@ var GW2SpidyChart = function(url, container, set_options) {
     var render = function(data) {
         $.each(data, function(k, serie) {
             if (serie.type == 'column') {
-                serie = $.extend(true, {}, serie, {
+                $.extend(true, serie, {
                    dataGrouping : {
                        approximation : 'average'
                    }
                 });
             }
         });
+
+        console.log(data);
 
         // Create the chart
         var chart = new Highcharts.StockChart($.extend(true, {}, options, {
