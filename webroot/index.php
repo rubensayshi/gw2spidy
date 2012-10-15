@@ -1,4 +1,6 @@
 <?php
+use Symfony\Bridge\Twig\Extension\SecurityExtension;
+
 use GW2Spidy\DB\User;
 
 error_reporting(E_ALL);
@@ -30,6 +32,38 @@ $app->register(new Igorw\Silex\ConfigServiceProvider(getAppConfig()));
 // setup dev mode related stuff based on config
 $app['sql_logging'] && $app->enableSQLLogging();
 
+// register security provider
+$app->register(new Silex\Provider\SecurityServiceProvider(), array(
+    'security.firewalls' => array(
+            'login' => array(
+                    'pattern' => '^/login$',
+            ),
+            'rest' => array(
+                    'anonymous' => true,
+                    'form'      => array('login_path' => '/login', 'check_path' => '/login_check'),
+                    'logout'    => array('logout_path' => '/logout'),
+                    'users' => $app->share(function () use ($app) {
+                        return new UserProvider();
+                    }),
+                    /*'users'     => array(
+                     // raw password is foo
+                            'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
+                            'user'  => array('ROLE_USER',  '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
+                    ),*/
+            ),
+    ),
+    'security.role_hierarchy' => array(
+            'ROLE_ADMIN' => array('ROLE_USER', 'ROLE_ALLOWED_TO_SWITCH'),
+            'ROLE_USER' => array(),
+    ),
+    'security.access_rules' => array(
+            array('^/admin', 'ROLE_ADMIN'),
+    ),
+));
+// hit the security.firewall_map and the security so they initialize properly before Twig tries to use them in some odd way
+$app['security.firewall_map'];
+$app['security'];
+
 // register providers
 $app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
@@ -45,35 +79,6 @@ $app['twig']->addExtension(new GenericHelpersExtension());
 $app['twig']->addExtension(new VersionedAssetsRoutingExtension());
 $app['twig']->addExtension(new GW2MoneyExtension());
 $app['twig']->addExtension(new ItemListRoutingExtension($app['url_generator']));
-
-// register security provider, make sure it's after twig has done it's bridging stuff
-$app->register(new Silex\Provider\SecurityServiceProvider(), array(
-    'security.firewalls' => array(
-        'login' => array(
-            'pattern' => '^/login$',
-        ),
-        'rest' => array(
-            'anonymous' => true,
-            'form'      => array('login_path' => '/login', 'check_path' => '/login_check'),
-            'logout'    => array('logout_path' => '/logout'),
-            'users' => $app->share(function () use ($app) {
-                return new UserProvider();
-            }),
-            /*'users'     => array(
-                // raw password is foo
-                'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
-                'user'  => array('ROLE_USER',  '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
-            ),*/
-        ),
-    ),
-    'security.role_hierarchy' => array(
-        'ROLE_ADMIN' => array('ROLE_USER', 'ROLE_ALLOWED_TO_SWITCH'),
-        'ROLE_USER' => array(),
-    ),
-    'security.access_rules' => array(
-        array('^/admin', 'ROLE_ADMIN'),
-    ),
-));
 
 /*
  * it's not very clean and silex-like but following are some includes to split up all the routing / functionality
