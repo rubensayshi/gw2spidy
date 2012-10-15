@@ -94,6 +94,16 @@ var GW2SpidyChart = function(url, container, set_options) {
     };
 
     var render = function(data) {
+        $.each(data, function(k, serie) {
+            if (serie.type == 'column') {
+                v = $.extend(true, {}, v, {
+                   dataGrouping : {
+                       approximation : 'average'
+                   }
+                });
+            }
+        });
+
         // Create the chart
         var chart = new Highcharts.StockChart($.extend(true, {}, options, {
             series : data
