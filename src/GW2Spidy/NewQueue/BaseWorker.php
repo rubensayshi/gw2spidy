@@ -25,7 +25,7 @@ class BaseWorker {
 
     protected $manager;
 
-    public function __construct(ItemDBQueueManager $manager) {
+    public function __construct($manager) {
         $this->manager = $manager;
     }
 
