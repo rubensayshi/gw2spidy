@@ -20,6 +20,10 @@ cnf = {
      * gw2spidy settings
      */
     "gw2spidy" : {
+        "request-slots" : {
+            "count"    : 100,
+            "cooldown" : 20
+        },
         "tradingpost_url" : "https://tradingpost-live.ncplatform.net",
         "gemexchange_url" : "https://exchange-live.ncplatform.net",
         "auth_url"        : "https://account.guildwars2.com",

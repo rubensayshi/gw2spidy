@@ -14,11 +14,11 @@ class RequestSlotManager extends RedisSlotManager {
      *
      */
     protected function getSlots() {
-        return 100;
+        return getAppConfig("gw2spidy.request-slots.count");
     }
 
     protected function getTimeout() {
-        return 20;
+        return getAppConfig("gw2spidy.request-slots.cooldown");
     }
 
     /**
