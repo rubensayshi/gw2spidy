@@ -44,9 +44,12 @@ class UserTableMap extends TableMap
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('USERNAME', 'Username', 'VARCHAR', true, 255, null);
+        $this->addColumn('EMAIL', 'Email', 'VARCHAR', true, 255, null);
         $this->addColumn('PASSWORD', 'Password', 'VARCHAR', true, 255, null);
         $this->addColumn('ROLES', 'Roles', 'VARCHAR', false, 255, '');
         // validators
+        $this->addValidator('USERNAME', 'unique', 'propel.validator.UniqueValidator', '', 'Username already exists!');
+        $this->addValidator('EMAIL', 'unique', 'propel.validator.UniqueValidator', '', 'E-mail already exists!');
     } // initialize()
 
     /**

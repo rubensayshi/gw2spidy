@@ -1,0 +1,41 @@
+{% extends "content_wide.html.twig" %}
+
+{% block htmltitle %}{{ parent() }} | Register{% endblock %}
+{% block content %}
+
+<form class="form" action="{{ path('register') }}" method="post">
+    {% if error %}
+        <div class="alert alert-danger">{{ error | nl2br }}</div>
+    {% endif %}
+    <div class="control-group">
+        <label class="control-label" for=""registerUsername">Username</label>
+        <div class="controls">
+            <input type="text" id="registerUsername" name="username" value="{{ username }}" required="true" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for=""registerEmail">E-mail</label>
+        <div class="controls">
+            <input type="email" id="registerEmail" name="email" value="{{ email }}" required="true" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="registerPassword">Password</label>
+        <div class="controls">
+            <input type="password" id="registerPassword" name="password" value="" required="true" pattern="[^\s]{5,}" title="5 characters minimum" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="registerPasswordAgain">Password Again</label>
+        <div class="controls">
+            <input type="password" id="registerPasswordAgain" name="password2" value="" required="true" pattern="[^\s]{5,}" title="5 characters minimum" />
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

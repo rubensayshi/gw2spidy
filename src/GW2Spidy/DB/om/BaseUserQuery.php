@@ -24,11 +24,13 @@ use GW2Spidy\DB\Watchlist;
  *
  * @method     UserQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     UserQuery orderByUsername($order = Criteria::ASC) Order by the username column
+ * @method     UserQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     UserQuery orderByPassword($order = Criteria::ASC) Order by the password column
  * @method     UserQuery orderByRoles($order = Criteria::ASC) Order by the roles column
  *
  * @method     UserQuery groupById() Group by the id column
  * @method     UserQuery groupByUsername() Group by the username column
+ * @method     UserQuery groupByEmail() Group by the email column
  * @method     UserQuery groupByPassword() Group by the password column
  * @method     UserQuery groupByRoles() Group by the roles column
  *
@@ -45,11 +47,13 @@ use GW2Spidy\DB\Watchlist;
  *
  * @method     User findOneById(int $id) Return the first User filtered by the id column
  * @method     User findOneByUsername(string $username) Return the first User filtered by the username column
+ * @method     User findOneByEmail(string $email) Return the first User filtered by the email column
  * @method     User findOneByPassword(string $password) Return the first User filtered by the password column
  * @method     User findOneByRoles(string $roles) Return the first User filtered by the roles column
  *
  * @method     array findById(int $id) Return User objects filtered by the id column
  * @method     array findByUsername(string $username) Return User objects filtered by the username column
+ * @method     array findByEmail(string $email) Return User objects filtered by the email column
  * @method     array findByPassword(string $password) Return User objects filtered by the password column
  * @method     array findByRoles(string $roles) Return User objects filtered by the roles column
  *
@@ -142,7 +146,7 @@ abstract class BaseUserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `ID`, `USERNAME`, `PASSWORD`, `ROLES` FROM `user` WHERE `ID` = :p0';
+        $sql = 'SELECT `ID`, `USERNAME`, `EMAIL`, `PASSWORD`, `ROLES` FROM `user` WHERE `ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -285,6 +289,35 @@ abstract class BaseUserQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserPeer::USERNAME, $username, $comparison);
+    }
+
+    /**
+     * Filter the query on the email column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
+     * $query->filterByEmail('%fooValue%'); // WHERE email LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $email The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return UserQuery The current query, for fluid interface
+     */
+    public function filterByEmail($email = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($email)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $email)) {
+                $email = str_replace('*', '%', $email);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(UserPeer::EMAIL, $email, $comparison);
     }
 
     /**

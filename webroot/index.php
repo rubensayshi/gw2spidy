@@ -38,11 +38,11 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
         'login' => array(
             'pattern' => '^/login$',
         ),
-        'rest' => array(
+        'main' => array(
             'anonymous' => true,
             'form'      => array('login_path' => '/login', 'check_path' => '/login_check'),
             'logout'    => array('logout_path' => '/logout'),
-            'users' => $app->share(function () use ($app) {
+            'users'     => $app->share(function () use ($app) {
                 return new UserProvider();
             }),
             /*'users'     => array(

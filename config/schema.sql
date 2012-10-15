@@ -249,9 +249,12 @@ CREATE TABLE `user`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `roles` VARCHAR(255) DEFAULT '',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `unique_username` (`username`),
+    UNIQUE INDEX `unique_email` (`email`)
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------

@@ -140,8 +140,21 @@
     <table name="user" phpName="User">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
         <column name="username" type="varchar" size="255" required="true" />
+        <column name="email" type="varchar" size="255" required="true" />
         <column name="password" type="varchar" size="255" required="true" />
         <column name="roles" type="varchar" size="255" default="" />
+        <unique name="unique_username">
+            <unique-column name="username" />
+        </unique>
+        <unique name="unique_email">
+            <unique-column name="email" />
+        </unique>
+        <validator column="username">
+            <rule name="unique" message="Username already exists!" />
+        </validator>
+        <validator column="email">
+            <rule name="unique" message="E-mail already exists!" />
+        </validator>
     </table>
     <table name="watchlist" phpName="Watchlist">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
