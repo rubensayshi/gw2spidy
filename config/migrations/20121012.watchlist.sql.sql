@@ -2,12 +2,6 @@
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE TABLE `user`
-(
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `watchlist`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
