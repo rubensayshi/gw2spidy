@@ -156,15 +156,21 @@
             <rule name="unique" message="E-mail already exists!" />
         </validator>
     </table>
-    <table name="watchlist" phpName="Watchlist">
+    <table name="watchlist" phpName="Watchlist" isCrossRef="true">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
         <column name="user_id" type="integer" required="true" />
         <column name="item_id" type="integer" required="true" />
-        <foreign-key foreignTable="user" phpName="Watchlist" refPhpName="Watchlist">
+        
+        <foreign-key foreignTable="user" phpName="User" refPhpName="Watchlist">
             <reference local="user_id" foreign="id" />
         </foreign-key>
-        <foreign-key foreignTable="item" phpName="Item" refPhpName="Watchlist">
+        <foreign-key foreignTable="item" phpName="Item" refPhpName="OnWatchlist">
             <reference local="item_id" foreign="data_id" />
         </foreign-key>
+        
+        <unique name="unique_user_item">
+            <unique-column name="user_id" />
+            <unique-column name="item_id" />
+        </unique>
     </table>
 </database>

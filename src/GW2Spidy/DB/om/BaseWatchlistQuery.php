@@ -35,9 +35,9 @@ use GW2Spidy\DB\WatchlistQuery;
  * @method     WatchlistQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     WatchlistQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     WatchlistQuery leftJoinWatchlist($relationAlias = null) Adds a LEFT JOIN clause to the query using the Watchlist relation
- * @method     WatchlistQuery rightJoinWatchlist($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Watchlist relation
- * @method     WatchlistQuery innerJoinWatchlist($relationAlias = null) Adds a INNER JOIN clause to the query using the Watchlist relation
+ * @method     WatchlistQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
+ * @method     WatchlistQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
+ * @method     WatchlistQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
  *
  * @method     WatchlistQuery leftJoinItem($relationAlias = null) Adds a LEFT JOIN clause to the query using the Item relation
  * @method     WatchlistQuery rightJoinItem($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Item relation
@@ -269,7 +269,7 @@ abstract class BaseWatchlistQuery extends ModelCriteria
      * $query->filterByUserId(array('min' => 12)); // WHERE user_id > 12
      * </code>
      *
-     * @see       filterByWatchlist()
+     * @see       filterByUser()
      *
      * @param     mixed $userId The value to use as filter.
      *              Use scalar values for equality.
@@ -354,7 +354,7 @@ abstract class BaseWatchlistQuery extends ModelCriteria
      * @return   WatchlistQuery The current query, for fluid interface
      * @throws   PropelException - if the provided filter is invalid.
      */
-    public function filterByWatchlist($user, $comparison = null)
+    public function filterByUser($user, $comparison = null)
     {
         if ($user instanceof User) {
             return $this
@@ -367,22 +367,22 @@ abstract class BaseWatchlistQuery extends ModelCriteria
             return $this
                 ->addUsingAlias(WatchlistPeer::USER_ID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByWatchlist() only accepts arguments of type User or PropelCollection');
+            throw new PropelException('filterByUser() only accepts arguments of type User or PropelCollection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Watchlist relation
+     * Adds a JOIN clause to the query using the User relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return WatchlistQuery The current query, for fluid interface
      */
-    public function joinWatchlist($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Watchlist');
+        $relationMap = $tableMap->getRelation('User');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -397,14 +397,14 @@ abstract class BaseWatchlistQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Watchlist');
+            $this->addJoinObject($join, 'User');
         }
 
         return $this;
     }
 
     /**
-     * Use the Watchlist relation User object
+     * Use the User relation User object
      *
      * @see       useQuery()
      *
@@ -414,11 +414,11 @@ abstract class BaseWatchlistQuery extends ModelCriteria
      *
      * @return   \GW2Spidy\DB\UserQuery A secondary query class using the current class as primary query
      */
-    public function useWatchlistQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinWatchlist($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Watchlist', '\GW2Spidy\DB\UserQuery');
+            ->joinUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'User', '\GW2Spidy\DB\UserQuery');
     }
 
     /**

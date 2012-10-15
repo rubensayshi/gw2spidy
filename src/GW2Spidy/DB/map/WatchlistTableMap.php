@@ -41,6 +41,7 @@ class WatchlistTableMap extends TableMap
         $this->setClassname('GW2Spidy\\DB\\Watchlist');
         $this->setPackage('gw2spidy');
         $this->setUseIdGenerator(true);
+        $this->setIsCrossRef(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
         $this->addForeignKey('USER_ID', 'UserId', 'INTEGER', 'user', 'ID', true, null, null);
@@ -53,7 +54,7 @@ class WatchlistTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Watchlist', 'GW2Spidy\\DB\\User', RelationMap::MANY_TO_ONE, array('user_id' => 'id', ), null, null);
+        $this->addRelation('User', 'GW2Spidy\\DB\\User', RelationMap::MANY_TO_ONE, array('user_id' => 'id', ), null, null);
         $this->addRelation('Item', 'GW2Spidy\\DB\\Item', RelationMap::MANY_TO_ONE, array('item_id' => 'data_id', ), null, null);
     } // buildRelations()
 

@@ -58,6 +58,7 @@ class UserTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('Watchlist', 'GW2Spidy\\DB\\Watchlist', RelationMap::ONE_TO_MANY, array('id' => 'user_id', ), null, null, 'Watchlists');
+        $this->addRelation('Item', 'GW2Spidy\\DB\\Item', RelationMap::MANY_TO_MANY, array(), null, null, 'Items');
     } // buildRelations()
 
 } // UserTableMap

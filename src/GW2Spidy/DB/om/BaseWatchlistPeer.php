@@ -471,7 +471,7 @@ abstract class BaseWatchlistPeer {
 
 
     /**
-     * Returns the number of rows matching criteria, joining the related Watchlist table
+     * Returns the number of rows matching criteria, joining the related User table
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -479,7 +479,7 @@ abstract class BaseWatchlistPeer {
      * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
      * @return int Number of matching rows.
      */
-    public static function doCountJoinWatchlist(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    public static function doCountJoinUser(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         // we're going to modify criteria, so copy it first
         $criteria = clone $criteria;
@@ -581,7 +581,7 @@ abstract class BaseWatchlistPeer {
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
-    public static function doSelectJoinWatchlist(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    public static function doSelectJoinUser(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $criteria = clone $criteria;
 
@@ -694,7 +694,7 @@ abstract class BaseWatchlistPeer {
                 } // if obj2 already loaded
 
                 // Add the $obj1 (Watchlist) to $obj2 (Item)
-                $obj2->addWatchlist($obj1);
+                $obj2->addOnWatchlist($obj1);
 
             } // if joined row was not null
 
@@ -840,7 +840,7 @@ abstract class BaseWatchlistPeer {
                 } // if obj3 loaded
 
                 // Add the $obj1 (Watchlist) to the collection in $obj3 (Item)
-                $obj3->addWatchlist($obj1);
+                $obj3->addOnWatchlist($obj1);
             } // if joined row not null
 
             $results[] = $obj1;
@@ -852,7 +852,7 @@ abstract class BaseWatchlistPeer {
 
 
     /**
-     * Returns the number of rows matching criteria, joining the related Watchlist table
+     * Returns the number of rows matching criteria, joining the related User table
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -860,7 +860,7 @@ abstract class BaseWatchlistPeer {
      * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
      * @return int Number of matching rows.
      */
-    public static function doCountJoinAllExceptWatchlist(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    public static function doCountJoinAllExceptUser(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         // we're going to modify criteria, so copy it first
         $criteria = clone $criteria;
@@ -954,7 +954,7 @@ abstract class BaseWatchlistPeer {
 
 
     /**
-     * Selects a collection of Watchlist objects pre-filled with all related objects except Watchlist.
+     * Selects a collection of Watchlist objects pre-filled with all related objects except User.
      *
      * @param      Criteria  $criteria
      * @param      PropelPDO $con
@@ -963,7 +963,7 @@ abstract class BaseWatchlistPeer {
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
-    public static function doSelectJoinAllExceptWatchlist(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    public static function doSelectJoinAllExceptUser(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $criteria = clone $criteria;
 
@@ -1015,7 +1015,7 @@ abstract class BaseWatchlistPeer {
                 } // if $obj2 already loaded
 
                 // Add the $obj1 (Watchlist) to the collection in $obj2 (Item)
-                $obj2->addWatchlist($obj1);
+                $obj2->addOnWatchlist($obj1);
 
             } // if joined row is not null
 

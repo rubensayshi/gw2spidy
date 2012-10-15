@@ -12,6 +12,7 @@ use \PropelCollection;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
+use GW2Spidy\DB\Item;
 use GW2Spidy\DB\User;
 use GW2Spidy\DB\UserPeer;
 use GW2Spidy\DB\UserQuery;
@@ -450,6 +451,23 @@ abstract class BaseUserQuery extends ModelCriteria
         return $this
             ->joinWatchlist($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Watchlist', '\GW2Spidy\DB\WatchlistQuery');
+    }
+
+    /**
+     * Filter the query by a related Item object
+     * using the watchlist table as cross reference
+     *
+     * @param   Item $item the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return   UserQuery The current query, for fluid interface
+     */
+    public function filterByItem($item, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useWatchlistQuery()
+            ->filterByItem($item, $comparison)
+            ->endUse();
     }
 
     /**

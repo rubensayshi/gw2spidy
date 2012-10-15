@@ -71,7 +71,7 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
     /**
      * @var        User
      */
-    protected $aWatchlist;
+    protected $aUser;
 
     /**
      * @var        Item
@@ -163,8 +163,8 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
             $this->modifiedColumns[] = WatchlistPeer::USER_ID;
         }
 
-        if ($this->aWatchlist !== null && $this->aWatchlist->getId() !== $v) {
-            $this->aWatchlist = null;
+        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
+            $this->aUser = null;
         }
 
 
@@ -262,8 +262,8 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
     public function ensureConsistency()
     {
 
-        if ($this->aWatchlist !== null && $this->user_id !== $this->aWatchlist->getId()) {
-            $this->aWatchlist = null;
+        if ($this->aUser !== null && $this->user_id !== $this->aUser->getId()) {
+            $this->aUser = null;
         }
         if ($this->aItem !== null && $this->item_id !== $this->aItem->getDataId()) {
             $this->aItem = null;
@@ -307,7 +307,7 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aWatchlist = null;
+            $this->aUser = null;
             $this->aItem = null;
         } // if (deep)
     }
@@ -427,11 +427,11 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aWatchlist !== null) {
-                if ($this->aWatchlist->isModified() || $this->aWatchlist->isNew()) {
-                    $affectedRows += $this->aWatchlist->save($con);
+            if ($this->aUser !== null) {
+                if ($this->aUser->isModified() || $this->aUser->isNew()) {
+                    $affectedRows += $this->aUser->save($con);
                 }
-                $this->setWatchlist($this->aWatchlist);
+                $this->setUser($this->aUser);
             }
 
             if ($this->aItem !== null) {
@@ -606,9 +606,9 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aWatchlist !== null) {
-                if (!$this->aWatchlist->validate($columns)) {
-                    $failureMap = array_merge($failureMap, $this->aWatchlist->getValidationFailures());
+            if ($this->aUser !== null) {
+                if (!$this->aUser->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aUser->getValidationFailures());
                 }
             }
 
@@ -702,8 +702,8 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
             $keys[2] => $this->getItemId(),
         );
         if ($includeForeignObjects) {
-            if (null !== $this->aWatchlist) {
-                $result['Watchlist'] = $this->aWatchlist->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            if (null !== $this->aUser) {
+                $result['User'] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aItem) {
                 $result['Item'] = $this->aItem->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -922,7 +922,7 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
      * @return                 Watchlist The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setWatchlist(User $v = null)
+    public function setUser(User $v = null)
     {
         if ($v === null) {
             $this->setUserId(NULL);
@@ -930,7 +930,7 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
             $this->setUserId($v->getId());
         }
 
-        $this->aWatchlist = $v;
+        $this->aUser = $v;
 
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the User object, it will not be re-added.
@@ -950,20 +950,20 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
      * @return                 User The associated User object.
      * @throws PropelException
      */
-    public function getWatchlist(PropelPDO $con = null)
+    public function getUser(PropelPDO $con = null)
     {
-        if ($this->aWatchlist === null && ($this->user_id !== null)) {
-            $this->aWatchlist = UserQuery::create()->findPk($this->user_id, $con);
+        if ($this->aUser === null && ($this->user_id !== null)) {
+            $this->aUser = UserQuery::create()->findPk($this->user_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aWatchlist->addWatchlists($this);
+                $this->aUser->addWatchlists($this);
              */
         }
 
-        return $this->aWatchlist;
+        return $this->aUser;
     }
 
     /**
@@ -986,7 +986,7 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the Item object, it will not be re-added.
         if ($v !== null) {
-            $v->addWatchlist($this);
+            $v->addOnWatchlist($this);
         }
 
 
@@ -1010,7 +1010,7 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aItem->addWatchlists($this);
+                $this->aItem->addOnWatchlists($this);
              */
         }
 
@@ -1047,7 +1047,7 @@ abstract class BaseWatchlist extends BaseObject implements Persistent
         if ($deep) {
         } // if ($deep)
 
-        $this->aWatchlist = null;
+        $this->aUser = null;
         $this->aItem = null;
     }
 

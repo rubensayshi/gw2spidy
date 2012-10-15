@@ -8,7 +8,7 @@ CREATE TABLE `watchlist`
     `user_id` INTEGER NOT NULL,
     `item_id` INTEGER NOT NULL,
     PRIMARY KEY (`id`),
-    INDEX `watchlist_FI_1` (`user_id`),
+    UNIQUE INDEX `unique_user_item` (`user_id`, `item_id`),
     INDEX `watchlist_FI_2` (`item_id`),
     CONSTRAINT `watchlist_FK_1`
         FOREIGN KEY (`user_id`)
@@ -16,7 +16,7 @@ CREATE TABLE `watchlist`
     CONSTRAINT `watchlist_FK_2`
         FOREIGN KEY (`item_id`)
         REFERENCES `item` (`data_id`)
-) ENGINE=InnoDB;
+) ENGINE=MyISAM;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

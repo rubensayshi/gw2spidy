@@ -13,6 +13,8 @@ use \PropelCollection;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
+use GW2Spidy\DB\Item;
+use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\User;
 use GW2Spidy\DB\UserPeer;
 use GW2Spidy\DB\UserQuery;
@@ -86,6 +88,11 @@ abstract class BaseUser extends BaseObject implements Persistent
     protected $collWatchlistsPartial;
 
     /**
+     * @var        PropelObjectCollection|Item[] Collection to store aggregation of Item objects.
+     */
+    protected $collItems;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      * @var        boolean
@@ -98,6 +105,12 @@ abstract class BaseUser extends BaseObject implements Persistent
      * @var        boolean
      */
     protected $alreadyInValidation = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $itemsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -399,6 +412,7 @@ abstract class BaseUser extends BaseObject implements Persistent
 
             $this->collWatchlists = null;
 
+            $this->collItems = null;
         } // if (deep)
     }
 
@@ -521,6 +535,26 @@ abstract class BaseUser extends BaseObject implements Persistent
                 }
                 $affectedRows += 1;
                 $this->resetModified();
+            }
+
+            if ($this->itemsScheduledForDeletion !== null) {
+                if (!$this->itemsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    $pk = $this->getPrimaryKey();
+                    foreach ($this->itemsScheduledForDeletion->getPrimaryKeys(false) as $remotePk) {
+                        $pks[] = array($pk, $remotePk);
+                    }
+                    WatchlistQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+                    $this->itemsScheduledForDeletion = null;
+                }
+
+                foreach ($this->getItems() as $item) {
+                    if ($item->isModified()) {
+                        $item->save($con);
+                    }
+                }
             }
 
             if ($this->watchlistsScheduledForDeletion !== null) {
@@ -1113,7 +1147,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                 $this->initWatchlists();
             } else {
                 $collWatchlists = WatchlistQuery::create(null, $criteria)
-                    ->filterByWatchlist($this)
+                    ->filterByUser($this)
                     ->find($con);
                 if (null !== $criteria) {
                     if (false !== $this->collWatchlistsPartial && count($collWatchlists)) {
@@ -1161,7 +1195,7 @@ abstract class BaseUser extends BaseObject implements Persistent
         $this->watchlistsScheduledForDeletion = $this->getWatchlists(new Criteria(), $con)->diff($watchlists);
 
         foreach ($this->watchlistsScheduledForDeletion as $watchlistRemoved) {
-            $watchlistRemoved->setWatchlist(null);
+            $watchlistRemoved->setUser(null);
         }
 
         $this->collWatchlists = null;
@@ -1198,7 +1232,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                 }
 
                 return $query
-                    ->filterByWatchlist($this)
+                    ->filterByUser($this)
                     ->count($con);
             }
         } else {
@@ -1232,7 +1266,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     protected function doAddWatchlist($watchlist)
     {
         $this->collWatchlists[]= $watchlist;
-        $watchlist->setWatchlist($this);
+        $watchlist->setUser($this);
     }
 
     /**
@@ -1247,7 +1281,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                 $this->watchlistsScheduledForDeletion->clear();
             }
             $this->watchlistsScheduledForDeletion[]= $watchlist;
-            $watchlist->setWatchlist(null);
+            $watchlist->setUser(null);
         }
     }
 
@@ -1274,6 +1308,174 @@ abstract class BaseUser extends BaseObject implements Persistent
         $query->joinWith('Item', $join_behavior);
 
         return $this->getWatchlists($query, $con);
+    }
+
+    /**
+     * Clears out the collItems collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addItems()
+     */
+    public function clearItems()
+    {
+        $this->collItems = null; // important to set this to NULL since that means it is uninitialized
+        $this->collItemsPartial = null;
+    }
+
+    /**
+     * Initializes the collItems collection.
+     *
+     * By default this just sets the collItems collection to an empty collection (like clearItems());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initItems()
+    {
+        $this->collItems = new PropelObjectCollection();
+        $this->collItems->setModel('Item');
+    }
+
+    /**
+     * Gets a collection of Item objects related by a many-to-many relationship
+     * to the current object by way of the watchlist cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this User is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      PropelPDO $con Optional connection object
+     *
+     * @return PropelObjectCollection|Item[] List of Item objects
+     */
+    public function getItems($criteria = null, PropelPDO $con = null)
+    {
+        if (null === $this->collItems || null !== $criteria) {
+            if ($this->isNew() && null === $this->collItems) {
+                // return empty collection
+                $this->initItems();
+            } else {
+                $collItems = ItemQuery::create(null, $criteria)
+                    ->filterByUser($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    return $collItems;
+                }
+                $this->collItems = $collItems;
+            }
+        }
+
+        return $this->collItems;
+    }
+
+    /**
+     * Sets a collection of Item objects related by a many-to-many relationship
+     * to the current object by way of the watchlist cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      PropelCollection $items A Propel collection.
+     * @param      PropelPDO $con Optional connection object
+     */
+    public function setItems(PropelCollection $items, PropelPDO $con = null)
+    {
+        $this->clearItems();
+        $currentItems = $this->getItems();
+
+        $this->itemsScheduledForDeletion = $currentItems->diff($items);
+
+        foreach ($items as $item) {
+            if (!$currentItems->contains($item)) {
+                $this->doAddItem($item);
+            }
+        }
+
+        $this->collItems = $items;
+    }
+
+    /**
+     * Gets the number of Item objects related by a many-to-many relationship
+     * to the current object by way of the watchlist cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      PropelPDO $con Optional connection object
+     *
+     * @return int the number of related Item objects
+     */
+    public function countItems($criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        if (null === $this->collItems || null !== $criteria) {
+            if ($this->isNew() && null === $this->collItems) {
+                return 0;
+            } else {
+                $query = ItemQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByUser($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collItems);
+        }
+    }
+
+    /**
+     * Associate a Item object to this object
+     * through the watchlist cross reference table.
+     *
+     * @param  Item $item The Watchlist object to relate
+     * @return void
+     */
+    public function addItem(Item $item)
+    {
+        if ($this->collItems === null) {
+            $this->initItems();
+        }
+        if (!$this->collItems->contains($item)) { // only add it if the **same** object is not already associated
+            $this->doAddItem($item);
+
+            $this->collItems[]= $item;
+        }
+    }
+
+    /**
+     * @param	Item $item The item object to add.
+     */
+    protected function doAddItem($item)
+    {
+        $watchlist = new Watchlist();
+        $watchlist->setItem($item);
+        $this->addWatchlist($watchlist);
+    }
+
+    /**
+     * Remove a Item object to this object
+     * through the watchlist cross reference table.
+     *
+     * @param      Item $item The Watchlist object to relate
+     * @return void
+     */
+    public function removeItem(Item $item)
+    {
+        if ($this->getItems()->contains($item)) {
+            $this->collItems->remove($this->collItems->search($item));
+            if (null === $this->itemsScheduledForDeletion) {
+                $this->itemsScheduledForDeletion = clone $this->collItems;
+                $this->itemsScheduledForDeletion->clear();
+            }
+            $this->itemsScheduledForDeletion[]= $item;
+        }
     }
 
     /**
@@ -1312,12 +1514,21 @@ abstract class BaseUser extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collItems) {
+                foreach ($this->collItems as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         if ($this->collWatchlists instanceof PropelCollection) {
             $this->collWatchlists->clearIterator();
         }
         $this->collWatchlists = null;
+        if ($this->collItems instanceof PropelCollection) {
+            $this->collItems->clearIterator();
+        }
+        $this->collItems = null;
     }
 
     /**
