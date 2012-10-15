@@ -194,7 +194,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          */
         $controllers->get("/{format}/listings/{dataId}/{type}/{page}", function(Request $request, $format, $dataId, $type, $page) use($app) {
 
-            $itemsperpage = 100;
+            $itemsperpage = 250;
             $page = intval($page > 0 ? $page : 1);
 
             if (!($item = ItemQuery::create()->findPk($dataId))) {
