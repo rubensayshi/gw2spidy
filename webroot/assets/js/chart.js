@@ -96,7 +96,7 @@ var GW2SpidyChart = function(url, container, set_options) {
     var render = function(data) {
         $.each(data, function(k, serie) {
             if (serie.type == 'column') {
-                v = $.extend(true, {}, v, {
+                vserie = $.extend(true, {}, serie, {
                    dataGrouping : {
                        approximation : 'average'
                    }
