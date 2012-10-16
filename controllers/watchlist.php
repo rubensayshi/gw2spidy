@@ -50,9 +50,13 @@ $app->get("/watchlist/add/{dataId}", function (Request $request, $dataId) use ($
             $w->save();
         }
     }
-    //TODO: check what happens when referer is disabled in browser
-    $uri = $request->headers->get('referer') ?: $app['url_generator']->generate('item', array('dataId' => $dataId));
-    return $app->redirect($uri);
+
+    $uri = $request->headers->get('referer');
+    if ($uri && preg_match('/\/login/', $uri)) {
+        $uri = null;
+    }
+
+    return $app->redirect($uri ?: $app['url_generator']->generate('watchlist'));
 })
 ->assert('dataId', '\d+')
 ->bind('watchlistaddpost');
