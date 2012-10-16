@@ -1,4 +1,7 @@
 <?php
+use GW2Spidy\Security\CustomAuthenticationSuccessHandler;
+use GW2Spidy\Security\CustomLogoutSuccessHandler;
+
 use Symfony\Component\HttpFoundation\Request;
 
 use Symfony\Bridge\Twig\Extension\SecurityExtension;
@@ -62,6 +65,28 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
         array('^/admin', 'ROLE_ADMIN'),
     ),
 ));
+
+$app['security.authentication.success_handler._proto'] = $app->protect(function ($name, $options) use ($app) {
+    return $app->share(function () use ($name, $options, $app) {
+        $handler = new CustomAuthenticationSuccessHandler(
+                $app['security.http_utils'],
+                $options
+        );
+        $handler->setProviderKey($name);
+
+        return $handler;
+    });
+});
+
+$app['security.authentication.logout_handler._proto'] = $app->protect(function ($name, $options) use ($app) {
+    return $app->share(function () use ($name, $options, $app) {
+        return new CustomLogoutSuccessHandler(
+            $app['security.http_utils'],
+            isset($options['target_url']) ? $options['target_url'] : '/'
+        );
+    });
+});
+
 // hit the security.firewall_map and the security so they initialize properly before Twig tries to use them in some odd way
 $app['security.firewall_map'];
 $app['security'];
@@ -73,10 +98,6 @@ $app['user'] = $app->share(function() use ($app) {
 
     return $user;
 });
-$app['isLoggedIn'] = $app->share(function() use ($app) {
-    return (boolean)$app['user'];
-});
-
 // register providers
 $app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
@@ -94,8 +115,10 @@ $app['twig']->addExtension(new GW2MoneyExtension());
 $app['twig']->addExtension(new ItemListRoutingExtension($app['url_generator']));
 
 $app->before(function(Request $request) use ($app) {
+    $app['isLoggedIn'] = (boolean)$request->cookies->get('logged_in', null);
+
     if (!$request->isXmlHttpRequest() && $request->getMethod() == 'GET' && !preg_match("/^\/login/", $request->getRequestUri())) {
-        $app['session']->set('_security.target_path', $request->getRequestUri());
+        $app['session']->set('_security.main.target_path', $request->getRequestUri());
     }
 });
 
