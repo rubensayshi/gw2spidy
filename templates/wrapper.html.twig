@@ -100,6 +100,20 @@
                         </form>
                         <li class="divider-vertical"></li>
                     </ul>
+
+                    <ul class="nav pull-right">
+                        <li class="divider-vertical"></li>
+                            {% if app.isLoggedIn %}
+                                <li>
+                                    <a href="{{ path('logout') }}">Logout</a>
+                                </li>
+                            {% else %}
+                                <li {% if app.isLoginActive %}class="active"{% endif %}>
+                                    <a href="{{ path('login') }}">Login</a>
+                                </li>
+                            {% endif %}
+                        <li class="divider-vertical"></li>
+                    </ul>
                 </div>
             </div>
         </div>

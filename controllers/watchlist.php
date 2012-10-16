@@ -36,7 +36,7 @@ use GW2Spidy\Util\Functions;
  * ----------------------
  */
 $app->post("/watchlist/add", function (Request $request) use ($app) {
-    if (!$app['security']->getToken() || !($user = $app['security']->getToken()->getUser()) || !$user instanceof User) {
+    if (!($user = $app['user'])) {
         return $app->redirect($app['url_generator']->generate('login'));
     }
 
@@ -62,7 +62,7 @@ $app->post("/watchlist/add", function (Request $request) use ($app) {
  * ----------------------
  */
 $app->post("/watchlist/remove", function (Request $request) use ($app) {
-    if (!$app['security']->getToken() || !($user = $app['security']->getToken()->getUser()) || !$user instanceof User) {
+    if (!($user = $app['user'])) {
         return $app->redirect($app['url_generator']->generate('login'));
     }
 
@@ -82,7 +82,7 @@ $app->post("/watchlist/remove", function (Request $request) use ($app) {
  * ----------------------
  */
 $app->get("/watchlist/{page}", function(Request $request, $page) use($app) {
-    if (!$app['security']->getToken() || !($user = $app['security']->getToken()->getUser()) || !$user instanceof User) {
+    if (!($user = $app['user'])) {
         return $app->redirect($app['url_generator']->generate('login'));
     }
 

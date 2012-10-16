@@ -66,6 +66,17 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 $app['security.firewall_map'];
 $app['security'];
 
+$app['user'] = $app->share(function() use ($app) {
+    if (!$app['security']->getToken() || !($user = $app['security']->getToken()->getUser()) || !$user instanceof User) {
+        return null;
+    }
+
+    return $user;
+});
+$app['isLoggedIn'] = $app->share(function() use ($app) {
+    return (boolean)$app['user'];
+});
+
 // register providers
 $app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());

@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
  * ----------------------
  */
 $app->get("/login", function(Request $request) use ($app) {
+    $app->setLoginActive();
+
     if ($app['security']->getToken() && ($user = $app['security']->getToken()->getUser()) && $user instanceof User) {
         return $app->redirect($app['url_generator']->generate('homepage'));
     }
@@ -30,6 +32,8 @@ $app->get("/login", function(Request $request) use ($app) {
  * ----------------------
  */
 $app->match("/register", function(Request $request) use ($app) {
+    $app->setLoginActive();
+
     $error    = null;
     $username = null;
     $email    = null;
