@@ -16,6 +16,7 @@ h1 {
     font-size: 26px;
     line-height: 32px;
     border-bottom: 1px solid grey;
+    margin-bottom: 5px;
 }
 
 .well {

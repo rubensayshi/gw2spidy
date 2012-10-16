@@ -3,6 +3,7 @@
 {% block htmltitle %}{{ parent() }} | Register{% endblock %}
 {% block content %}
 
+<h1>Register</h1>
 <form class="form" action="{{ path('register') }}" method="post">
     {% if error %}
         <div class="alert alert-danger">{{ error | nl2br }}</div>
@@ -33,7 +34,8 @@
     </div>
     <div class="control-group">
         <div class="controls">
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-primary">Register</button> <br />
+            Already have an account? <a href="{{ path('login') }}">Login here</a>
         </div>
     </div>
 </form>

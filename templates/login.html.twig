@@ -3,6 +3,7 @@
 {% block htmltitle %}{{ parent() }} | Login{% endblock %}
 {% block content %}
 
+<h1>Login</h1>
 <form class="form" action="{{ path('login_check') }}" method="post">
     <input type="hidden" name="_target_path" value="{{ target_path }}" />
     {{ error }}
@@ -20,7 +21,8 @@
     </div>
     <div class="control-group">
         <div class="controls">
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" class="btn btn-primary">Login</button> <br />
+            Don't have an account yet? <a href="{{ path('register') }}">Register one now</a>
         </div>
     </div>
 </form>
