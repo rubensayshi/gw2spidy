@@ -40,22 +40,18 @@ $app->post("/watchlist/add", function (Request $request) use ($app) {
         return $app->redirect($app['url_generator']->generate('login'));
     }
 
-    $data_id = $request->get("data_id");
-    if($data_id){
-
-        // TODO: Test if item is valid item!
-
+    if (($dataId = $request->get("data_id")) && ($item = ItemQuery::create()->findPk($dataId))) {
         // check unique
-        if (!WatchlistQuery::create()->filterByUser($user)->filterByItemId($data_id)->count()) {
+        if (!WatchlistQuery::create()->filterByUser($user)->filterByItem($item)->count()) {
             $w = new Watchlist();
             $w->setUser($user);
-            $w->setItemId($data_id);
+            $w->setItemId($dataId);
 
             $w->save();
         }
     }
     //TODO: check what happens when referer is disabled in browser
-    $uri = $request->headers->get('referer') ?: $app['url_generator']->generate('item', array('dataId' => $data_id));
+    $uri = $request->headers->get('referer') ?: $app['url_generator']->generate('item', array('dataId' => $dataId));
     return $app->redirect($uri);
 })
 ->bind('watchlistaddpost');
@@ -70,13 +66,9 @@ $app->post("/watchlist/remove", function (Request $request) use ($app) {
         return $app->redirect($app['url_generator']->generate('login'));
     }
 
-    $data_id = $request->get("data_id");
-    if($data_id){
-
-        // TODO: Test if item is valid item!
-
+    if (($dataId = $request->get("data_id")) && ($item = ItemQuery::create()->findPk($dataId))) {
         $w = WatchlistQuery::create();
-        $w->filterByItemId($data_id);
+        $w->filterByItem($item);
         $w->filterByUser($user);
         $w->delete();
     }
