@@ -58,7 +58,7 @@ while ($run < $max) {
 
     if (!$slot) {
         print "no slots, sleeping [4.5] ... \n";
-        usleep(4500);
+        usleep(4.5 * 1000 * 1000);
 
         continue;
     }

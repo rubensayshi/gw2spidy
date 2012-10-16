@@ -1,17 +1,10 @@
 <?php
 
-use GW2Spidy\DB\ItemQuery;
-
-use GW2Spidy\NewQueue\ItemListingDBQueueItem;
-
-/**
- * process queue items
- */
-
 use GW2Spidy\GW2SessionManager;
-
 use GW2Spidy\TradingPostSpider;
-
+use GW2Spidy\DB\ItemQuery;
+use GW2Spidy\DB\SellListingQuery;
+use GW2Spidy\NewQueue\ItemListingDBQueueItem;
 use GW2Spidy\NewQueue\ItemDBQueueWorker;
 use GW2Spidy\NewQueue\RequestSlotManager;
 use GW2Spidy\NewQueue\ItemListingDBQueueManager;
@@ -30,6 +23,20 @@ if (!$item) die("failed to find item");
 var_dump($item->getName(), $item->getItemTypeId());
 
 $queueItem = new ItemListingDBQueueItem($item);
-var_dump($queueItem->getItemPriority());
+var_dump($queueItem->getItem()->getQueuePriority());
+
+if (isset($argv[2]) && strstr("search", $argv[2])) {
+    $queueItem = array($queueItem);
+}
+
+var_dump(is_array($queueItem));
 
 $queueWorker->work($queueItem);
+
+$l = SellListingQuery::create()
+        ->filterByItemId($item->getDataId())
+        ->orderByListingDatetime(\Criteria::DESC)
+        ->limit(1)
+        ->findOne();
+
+var_dump($l->toArray());

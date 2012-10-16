@@ -5,6 +5,7 @@ namespace GW2Spidy\NewQueue;
 use \DateTime;
 use \DateInterval;
 use \Criteria;
+use \Exception;
 
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemType;
@@ -19,20 +20,73 @@ use GW2Spidy\Util\Functions;
 use GW2Spidy\TradingPostSpider;
 
 
-class ItemListingDBQueueWorker {
-    protected $manager;
+class ItemListingDBQueueWorker extends BaseWorker {
+    public function work($workload) {
+        $items = array();
 
-    public function __construct(ItemListingDBQueueManager $manager) {
-        $this->manager = $manager;
+        if ($workload instanceof ItemListingDBQueueItem) {
+            $item = $workload->getItem();
+            $items[$item->getDataId()] = $workload->getItem();
+
+            $this->updateListings($item);
+        } else {
+            $ids = array();
+            foreach ($workload as $queueItem) {
+                $item = $queueItem->getItem();
+                $items[$item->getDataId()] = $queueItem->getItem();
+            }
+
+            $this->massUpdateListings($items);
+        }
+
+        foreach ($items as $item) {
+            $this->updateTrending($item);
+        }
     }
 
-    public function work(ItemListingDBQueueItem $queueItem) {
-        $this->updateListings($queueItem);
-        $this->updateTrending($queueItem);
+    public function massUpdateListings($items) {
+        if ($itemsData = TradingPostSpider::getInstance()->getItemsByIds(array_keys($items))) {
+            $exceptions = array();
+
+            foreach ($itemsData as $itemData) {
+                try {
+                    $this->updateListingFromItemData($itemData, $items[$itemData['data_id']]);
+                } catch (Exception $e) {
+                    if (strstr("CurlRequest failed [[ 401 ]]", $e->getMessage())) {
+                        continue;
+                    }
+
+                    $exceptions[] = $e;
+                }
+            }
+
+            if (count($exceptions) == 1) {
+                throw $exceptions[0];
+            } else if (count($exceptions) > 1) {
+                $s = "";
+                foreach ($exceptions as $e) {
+                    $s .= $e->getMessage() . " \n ------------ \n";
+                }
+
+                throw new Exception("Multiple Exceptions were thrown: \n {$s}");
+            }
+        }
+    }
+    public function updateListingFromItemData($itemData, $item = null) {
+        // this seems to be removed items o.O?
+        if (!isset($itemData['name']) && !isset($itemData['rarity']) && !isset($itemData['restriction_level']) && isset($itemData['data_id'])) {
+            return;
+        }
+
+        // this seems to be items no longer on the TP
+        if (!isset($itemData['sale_availability']) && !isset($itemData['offer_availability'])) {
+            return;
+        }
+
+        $this->processListingsFromItemData($itemData, $item);
     }
 
-    protected function updateListings(ItemListingDBQueueItem $queueItem) {
-        $item = $queueItem->getItem();
+    protected function updateListings(Item $item) {
         $now  = new DateTime();
 
         $listings = TradingPostSpider::getInstance()->getAllListingsById($item->getDataId());
@@ -64,6 +118,8 @@ class ItemListingDBQueueWorker {
             $item->setMinSaleUnitPrice($lowestSell['unit_price']);
         }
 
+        $item->setSaleAvailability($q);
+
         $sellListing->save();
 
         $q = 0;
@@ -88,23 +144,14 @@ class ItemListingDBQueueWorker {
             $item->setMaxOfferUnitPrice($lowestBuy['unit_price']);
         }
 
+        $item->setOfferAvailability($q);
+
         $buyListing->save();
 
         $item->save();
     }
 
-    protected function updateTrending(ItemListingDBQueueItem $queueItem) {
-        $item = $queueItem->getItem();
-
-        if ($queueItem->getItemPriority() > ItemListingDBQueueItem::ONE_HOUR) {
-            $item->setSalePriceChangeLastHour(0);
-            $item->setOfferPriceChangeLastHour(0);
-
-            $item->save();
-
-            return;
-        }
-
+    protected function updateTrending(Item $item) {
         $onehourago = new DateTime();
         $onehourago->sub(new \DateInterval('PT1H'));
 

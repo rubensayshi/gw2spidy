@@ -17,7 +17,7 @@ use GW2Spidy\DB\ItemType;
 abstract class BaseSpider extends Singleton {
     protected $gw2session;
 
-    protected function getSession() {
+    public function getSession() {
         if (is_null($this->gw2session)) {
             $this->gw2session = GW2SessionManager::getInstance()->getSession();
         }

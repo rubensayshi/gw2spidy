@@ -29,19 +29,25 @@ class CurlRequest {
         CURLOPT_CONNECTTIMEOUT => 10,
         CURLOPT_HEADER         => true,
     );
-    protected static $defaultHeaders = array(
-        "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language: en-us,en;q=0.5",
-        // while we can get raw, we don't have to gunzip the response <3
-        "Accept-Encoding: deflate",
-        "Connection: keep-alive",
-        "User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1",
-    );
+    protected static function getDefaultHeaders() {
+        $headers = array(
+            "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            // while we can get raw, we don't have to gunzip the response <3
+            "Accept-Encoding: deflate",
+            "Connection: keep-alive",
+            "User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1",
+        );
+
+        // use configured language but fallback to en
+        $headers[] = "Accept-Language: ".getAppConfig('request-language').",en;q=0.5";
+
+        return $headers;
+    }
 
     public function __construct($url, $options = array(), $headers = array()) {
         $this->url     = $url;
         $this->options = $options + self::$defaultOptions;
-        $this->headers = $headers + self::$defaultHeaders;
+        $this->headers = $headers + self::getDefaultHeaders();
         $this->cookies = array();
     }
 

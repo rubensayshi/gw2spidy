@@ -22,6 +22,14 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getItemsByIds(array $ids) {
+        /*
+         * Shroud gave me an alternative way of fetching this which avoids the buggy cache
+         *  unfortunatly he gave it to me after I agreed not to share it so that's why this weird snippet is here
+         */
+        if (getAppConfig("gw2spidy.use_shroud_magic") && class_exists("\\ShroudMagic\\ShroudMagicSpiderHelper")) {
+            return \ShroudMagic\ShroudMagicSpiderHelper::getItemsByIds($this, $ids);
+        }
+
         $ids = array_map('urlencode', $ids);
 
         $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/search.json?ids=".implode(",", $ids)."")

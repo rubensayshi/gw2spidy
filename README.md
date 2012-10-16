@@ -30,11 +30,18 @@ Date/time data
 As usual I didn't really think about timezones when I started this project, but now that multiple people forked the project and that I'm exporting data to some people it suddently matters ... 
 All data is stored in the server's timezone, however I've made sure that data going out (charts and API) are converted to UTC (and Highcharts converts it to the browsers timezone).
 
+Mailing List
+============
+Please join the [Google Groups Mailing List](https://groups.google.com/forum/#!forum/gw2spidy) for gw2spidy so that I can keep you up-to-date of any (major) changes / new versions of the Codebase!
 
 Environment setup
 =================
 I'll provide you with some short setup instructions to make your life easier if you want to run the code for yourself or contribute.
 There's also a INSTALL file which contains a snippet I copy paste when I setup my VM, it should suffice ;-)
+
+#### A LOT has changed and most likely will continue a while longer
+Join the the IRC channel and we can talk!  
+Me (Drakie) and other people already involved for a while are happy to share our knowledge and help you, specially if you consider contributing!
 
 Linux
 -----
@@ -103,7 +110,7 @@ That way I can control the flood a bit better, from the technicaly side this is 
 
 Background Queues
 -----------------
-All spidering work is done in background process / daemons and the heavy lifting is done with a few queues, the queues process also handles the previously mentioned request slots.
+All crawling work is done in background process / daemons and the heavy lifting is done with a few queues, the queues process also handles the previously mentioned request slots.
 This is also done using Redis sorted sets.
 
 Config / Env
@@ -128,32 +135,78 @@ RequestSlots Setup
 ------------------
 Run `tools/setup-request-slots.php` to create the initial request slots, you can also run this during development to reinitiate the slots so you can instantly use them again if they are all on cooldown.
 
-First Spider Run
-----------------
-Some stuff changed recently so if it's giving you a hard time just come to the IRC channel and ask me for help ;)  
+Building The Item Database
+--------------------------
 The first time you'll have to run `daemons/worker-types.php` to fetch all the item (sub)types (after that I run it nightly, just to ensure there aren't any changes, none in the past month).  
 After that is done, run `daemons/fill-queue-item-db.php`, this will enqueue a job for each (sub)type to start fetch item information.  
-Then run `daemons/worker-queue-item-db.php`, you'll have to do it a few times since it fetches 1 page (10 items) per queue-item and there are about 600~650 pages of items.
+Then run `daemons/worker-queue-item-db.php`, you'll have to do it a few times since it fetches 1 page (10 items) per queue-item, about ~22 times.
 
 Ater this you should have a full item database, without any listings yet.
 
-Now you should run `daemons/fill-queue-item-listing-db.php`, this will put 1 queue-item for every item into the queue (other queue then fill-queue-item-db).  
+Crawling The Tradingpost
+------------------------
+The crawling can be done in 3 ways and I'm gonna explain them a bit before continueing your journey how to use GW2Spidy ;)
 
-ItemListingDB Worker
---------------------
-With the `daemons/worker-queue-item-listing-db.php` you will pop items off the listing queue and process them, this is done 1 item at a time.  
-There's a priority system in place so that some items (like weapons above certain rarity / level) are processed more often then others (like salvage kits, which nobody buys from the TP ...).  
+### listings.json
+A request to **/ws/listings.json?id=<item-id>** gives back all the buy and sell listings for a single item.  
+Atm I grab the lowest and don't even store the other except summing up their total quantity, this is because I'm not using the other listings and the database is getting to big to just carelessly store them.  
 
-These queue-items are automatically requeue'd with their priority so you should never have to run `daemons/fill-queue-item-listing-db.php` again.  
-However if the script fails we might sometimes loose a queue-item or new items might be added to the database at some point so there's a `daemons/supervise-queue-item-listing-db.php` script which makes sure that the queue is still filled properly.
+This method is always the most accurate and guaranteed to work because it's what the game relies on heavily.  
+
+The disadvantage of this method is that we have to do 1 request for every item to update their price, with around 20k items and ArenaNet who prefers if we could stay near 5 requests / second we can't do more frequent updates then 1 per hour this way.  
+I created a priority system (read below) to update more interesting items more often then the less interesting items to work with this.  
+Another problem with this method is that we need a session_key from the game client, read below for more information GW2 Sessions.
+
+### search.json
+A request to **/ws/search.json?type=<type-id>&page=<page>** is what we also use to build up the item database and gives us data for 10 items in 1 request.  
+However ArenaNet had a lot of bugs which made the prices unreliable (ingame too), so I started using listings.json a few weeks ago!  
+They however fixed the bugs in the past patch for this method and we can use it again to build listings data on too.  
+
+### search.json?ids=
+There's another way to use search.json, namely a request to **/ws/search.json?ids=<csv-ids-max-250>** which allows us to get up to 250 items in 1 request!  
+This was (even more) buggy too and ArenaNet hasn't fixed it propely yet, mostly because they themselves only use them when you click on an item on the homepage of the TP (click the Unidentified Dye ingame, you'll notice the price is wrong).  
+
+I got a tip from *shroud* how to get around this bug, but he didn't want me to share it with anyone because he feels it might allow a lot of other people to use this to play the market a bit too well.  
+I respect that and am really happy he at least shared it with me for gw2spidy, because 250 items in request is superb to the other 2 methods, by a large margin! 
+
+### Choices To Make
+So for the real gw2spidy database I want to use the *search.json?ids=* method and I build the code so that I can use it and still have a fallback to *listings.json* incase ArenaNet messes up again and I know *listings.json* will always be as accurate as possible.  
+However since ArenaNet only fixed the normal *search.json* without the *shroud-magic* the *search.json?ids=* method ain't really viable for other people to use, unless you like weird unaccurate spikes in your data once in a while.  
+
+Before all this madness, I always used the normal *search.json*, I sugest others should do that too atm until I can either release *shrouds* magic or ArenaNet fixes it themselves.  
+Or use *listings.json* but you'll have a lot lower frequency!
+
+### How To Configure it
+The default config will use the *listings.json* method if you use the listingsDB worker, to match how it was working before I reimplemented all this, you can instead disabled 'use_listings-json' in the config to use *search.json?ids=* if you want too.  
+However, the best way atm to go is with the 'save_listing_from_item_data' enabled (default enabled) and only use the itemDB worker!
 
 ItemDB Worker
 -------------
-Incase new items appear in the tradingpost we rerun the `daemons/fill-queue-item-db.php` once in a while (nightly on the live site) and I always have 1 instance of `daemons/worker-queue-item-db.php` running to process that.  
+The ItemDB Worker itself is this script: `daemons/worker-queue-item-db.php`.  
+It processes items from the 'item-db-queue' queue and that queue is filled by `daemons/fill-queue-item-db.php`.  
+
+When you want to use the *search.json?ids=* or *listings.json* method this worker and queue are only to find new items, never seen before items on the tradingpost and in that case should just run the fill-queue script nightly and have 1 worker running to process that queue.  
+
+When you want to use the normal *search.json* method (you should atm) we'll (ab)use this worker and you should run the fill-queue script at a frequency at which you want your listing data to be at (15min ~ 30min is a fair frequency).  
+And you should have a couple (2~4) worker-queue scripts running to processes and keep up with your desired frequency, the queue should generally be empty before it's (re)filled.  
+
+ItemListingDB Worker
+--------------------
+The ItemListingDB Worker itself is this script: `daemons/worker-queue-item-listing-db.php`.  
+It will pop items off the listing queue and process them, these queue-items are automatically requeue'd with their priority so you should only haveto run `daemons/fill-queue-item-listing-db.php` once to get the initial batch in.  
+When 'use_listings-json' is enabled and there's a game session_key (see the GW2Session section below) it will just process 1 item at a time and use *listings.json* method to retrieve it.  
+When it's not enabled it will use *search.json?ids=* and process the configured 'items-per-request' amount of items at 1 time (max 250!).  
+
+However if the script fails we might sometimes loose a queue-item or new items might be added to the database at some point so there's a `daemons/supervise-queue-item-listing-db.php` script which makes sure that the queue is still filled properly.
+
+There's a priority system in place so that some items (like weapons above certain rarity / level) are processed more often then others (like salvage kits, which nobody buys from the TP ...).  
+See the Priority System section below for more info on that!
+
 
 Gem Worker
 ----------
 The `daemons/worker-gem.php` script does 2 requests to the gem-exchange site to retrieve the exchange rates and volume and then sleeps for 180 seconds (3 minutes).
+This script also requires a game session_key (see GW2Session section again).
 
 Running The Workers
 -------------------
@@ -163,15 +216,16 @@ They will also sleep if there are no slots available.
 Previously I used to run 4 workers in parallel using `while [ true ]; do php daemons/worker-queue-item-listing-db.php >> /var/log/gw2spidy/worker.1.log; echo "restart"; done;`  
 Where I replace the .1 with which number of the 4 it is so I got 4 logs to tail.
 
-I now added some bash scripts in the `bin` folder to `bin/start-workers.sh 4` and `bin/stop-workers.sh` to manage them.  
-You have to `mkdir -p /var/run/gw2spidy/` first though since I manage the processIDs there.  
-You should check the bash scripts and understand them before running them imo ;)
+I now added some bash scripts in the `bin` folder to `bin/start-workers.sh <num-listing-workers> <num-item-workers> <num-gem-workers>` and `bin/stop-workers.sh <now>` to manage them.  
+You should check the bash scripts and understand them before running them imo ;) but you could also trust me on my blue eyes and just run it xD
 
 Priority System
 ---------------
 Our amount of request we do are limited by our requestslot system, unfortunatly we're now bound by doing 1 item per request (previously we could combine up to 250).  
 So I created a priority system to process 'important' items more often, in the this spreadsheet I calculated the priorities:  
 https://docs.google.com/a/rubensayshi.com/spreadsheet/ccc?key=0Alq65aekWXJmdGotSmdBYXJPZ0NKbHBhdzVZMlh5Q1E#gid=0
+
+**this has been changed slightly, I need to update the spreadsheet and should write some stuff here soon**
 
 GW2 Sessions
 ============
@@ -191,8 +245,6 @@ I've added a table to the database named `gw2session` and a form on `/admin/sess
 
 **I don't know exactly what you can do with someone elses session_key** thus I rely on myself not slacking and updating the session_key regularly and will not accept other people giving me their session_key!  
 I know for a fact that combined with a charid you can place buy orders and such from outside of the game, so you should be careful with this information ;)  
-
-**As a fallback** I will be re-adding the use of the search lists for whenever there's no game session_key so at least some data can be gathered ...
 
 I do have a small tool (provided by someone else) that quickly grabs the session_key (by seaching for it in shared memory) without much hassle, I won't be sharing it publicly but you could consider joining the IRC channel and asking for it ;)
 

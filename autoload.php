@@ -19,6 +19,7 @@ if ($classMap) {
 }
 
 $loader->add('GW2Spidy', __DIR__.'/src');
+$loader->add('ShroudMagic', __DIR__.'/src');
 $loader->add('Predis',   __DIR__.'/vendor/nrk-predis/lib');
 $loader->add('Igorw',    __DIR__.'/vendor/igorw/src');
 

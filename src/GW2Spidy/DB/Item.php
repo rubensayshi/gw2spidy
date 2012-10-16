@@ -23,6 +23,12 @@ use GW2Spidy\Util\CacheHandler;
  * @package    propel.generator.gw2spidy
  */
 class Item extends BaseItem {
+    const PRIO_ONE   = 1;
+    const PRIO_TWO   = 2;
+    const PRIO_THREE = 3;
+    const PRIO_FOUR  = 5;
+    const PRIO_FIVE  = 10;
+
     const RARITY_COMMON     = 1;
     const RARITY_FINE       = 2;
     const RARITY_MASTERWORK = 3;
@@ -37,6 +43,84 @@ class Item extends BaseItem {
         }
 
         return true;
+    }
+
+    public function getQueuePriority() {
+        if ($this->getItemTypeId() === null) {
+            return self::PRIO_FIVE;
+        }
+
+        switch ($this->getItemType()->getTitle()) {
+            case 'Weapon':
+            case 'Armor':
+                if ($this->getRarity() >= 3) {
+                    if ($this->getRestrictionLevel() > 60) {
+                        return self::PRIO_ONE;
+                    } else if ($this->getRestrictionLevel() > 40) {
+                        return self::PRIO_TWO;
+                    } else {
+                        return self::PRIO_THREE;
+                    }
+                } else if ($this->getRarity() >= 2) {
+                    return self::PRIO_THREE;
+                } else {
+                    return self::PRIO_FIVE;
+                }
+
+                break;
+
+            case 'Gathering':
+            case 'Tool':
+                return self::PRIO_FIVE;
+
+                break;
+
+            case 'Trophy':
+                if ($this->getRarity() >= 2) {
+                    return self::PRIO_ONE;
+                } else {
+                    return self::PRIO_FIVE;
+                }
+
+                break;
+
+            case 'Gizmo':
+                if ($this->getRarity() >= 5) {
+                    return self::PRIO_TWO;
+                } else {
+                    return self::PRIO_THREE;
+                }
+
+                break;
+
+            case 'Mini':
+            case 'Bag':
+            case 'Crafting Material':
+                return self::PRIO_ONE;
+
+                break;
+
+            case 'Container':
+                if ($this->getRarity() >= 2) {
+                    return self::PRIO_ONE;
+                } else {
+                    return self::PRIO_TWO;
+                }
+
+                break;
+
+            case 'Consumable':
+            case 'Upgrade Component':
+            case 'Trinket':
+                return self::PRIO_TWO;
+
+                break;
+
+            default:
+                throw new Exception("Unknown type {$this->getItemType()->getTitle()}");
+
+                break;
+        }
     }
 
     public function getRarityName() {

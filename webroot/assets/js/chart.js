@@ -6,6 +6,11 @@ var GW2SpidyChart = function(url, container, set_options) {
     var $container = $(container);
     var container  = $container[0];
 
+    var roundNumber = function(num, dec) {
+        var result = Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
+        return result;
+    };
+
     var options = {
         chart : {
             type: 'line',
@@ -28,7 +33,7 @@ var GW2SpidyChart = function(url, container, set_options) {
                 // build the values
                 $.each(items, function (key, item) {
                     var series = item.series;
-                    var y = series.options.gw2money ? formatGW2Money(item.y) : item.y;
+                    var y = series.options.gw2money ? formatGW2Money(item.y) : roundNumber(item.y, 2);
                     s.push('<span style="color:'+ series.color +'">' + series.name + '</span>: <b>' + y + '</b> <br />');
                 });
 
@@ -89,6 +94,16 @@ var GW2SpidyChart = function(url, container, set_options) {
     };
 
     var render = function(data) {
+        $.each(data, function(k, serie) {
+            if (serie.type == 'column') {
+                $.extend(true, serie, {
+                   dataGrouping : {
+                       approximation : 'average'
+                   }
+                });
+            }
+        });
+
         // Create the chart
         var chart = new Highcharts.StockChart($.extend(true, {}, options, {
             series : data

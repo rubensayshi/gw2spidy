@@ -15,14 +15,32 @@ class ItemListingDBQueueManager {
         return 'item-listing-db-queue';
     }
 
-    protected function returnItem($queueItem) {
+    public function getLowestPrio() {
+        // pop the hotest item off $queueKey which is between -inf and +inf with limit 0,1
+        $items = $this->client->zRangeByScore($this->getQueueName(), '-inf', '+inf', array('withscores' => true, 'limit' => array(0, 1)));
+
+        // grab the item we popped off
+        $result = $items ? $items[0] : null;
+
+        // no item :(
+        if (is_null($result)) {
+            return 0;
+        }
+
+        $queueItem = $result[0];
+        $priority  = $result[1];
+
+        return $priority;
+    }
+
+    protected function returnItem($queueItem, $priority) {
         $queueItem = $this->queueItemFromIdentifier($queueItem);
 
         if (!($queueItem instanceof ItemListingDBQueueItem)) {
             return null;
         }
 
-        $this->requeue($queueItem);
+        $this->requeue($queueItem, $priority);
 
         return $queueItem;
     }
@@ -40,14 +58,18 @@ class ItemListingDBQueueManager {
             $this->client->watch($queueKey);
 
             // pop the hotest item off $queueKey which is between -inf and +inf with limit 0,1
-            $items = $this->client->zRangeByScore($queueKey, '-inf', '+inf', array('limit' => array(0, 1)));
+            $items = $this->client->zRangeByScore($queueKey, '-inf', '+inf', array('withscores' => true, 'limit' => array(0, 1)));
+
             // grab the item we popped off
-            $queueItem = $items ? $items[0] : null;
+            $result = $items ? $items[0] : null;
 
             // no item :(
-            if (is_null($queueItem)) {
+            if (is_null($result)) {
                 return null;
             }
+
+            $queueItem = $result[0];
+            $priority  = $result[1];
 
             // start transaction
             $tx = $this->client->multi();
@@ -61,7 +83,7 @@ class ItemListingDBQueueManager {
             // check if the zrem command removed 1 (or more)
             // if it did we can use this item
             if ($results[0] >= 1) {
-                return $this->returnItem($queueItem);
+                return $this->returnItem($queueItem, $priority);
             }
 
             // if we didn't get a usable slot we retry
@@ -70,12 +92,12 @@ class ItemListingDBQueueManager {
         return null;
     }
 
-    public function enqueue(ItemListingDBQueueItem $queueItem) {
-        return $this->client->zadd($this->getQueueName(), $queueItem->getPriority(), $queueItem->getIdentifier());
+    public function enqueue(ItemListingDBQueueItem $queueItem, $priority = 0) {
+        return $this->client->zadd($this->getQueueName(), $priority + $queueItem->getPriority(), $queueItem->getIdentifier());
     }
 
-    public function requeue(ItemListingDBQueueItem $queueItem) {
-        return $this->enqueue(clone $queueItem);
+    public function requeue(ItemListingDBQueueItem $queueItem, $priority) {
+        return $this->enqueue(clone $queueItem, $priority);
     }
 
     public function purge() {

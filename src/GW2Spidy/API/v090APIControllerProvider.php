@@ -121,7 +121,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
         $controllers->get("/{format}/items/{typeId}/{page}", function(Request $request, $format, $typeId, $page) use($app) {
 
             $itemsperpage = 100;
-            $page = $page > 0 ? $page : 1;
+            $page = intval($page > 0 ? $page : 1);
 
             $q = ItemQuery::create();
 
@@ -194,8 +194,8 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          */
         $controllers->get("/{format}/listings/{dataId}/{type}/{page}", function(Request $request, $format, $dataId, $type, $page) use($app) {
 
-            $itemsperpage = 100;
-            $page = $page > 0 ? $page : 1;
+            $itemsperpage = 250;
+            $page = intval($page > 0 ? $page : 1);
 
             if (!($item = ItemQuery::create()->findPk($dataId))) {
                 return $app->abort(404, "Item Not Found [{$dataId}].");
@@ -287,7 +287,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
         $controllers->get("/{format}/recipes/{discId}/{page}", function(Request $request, $format, $discId, $page) use($app) {
 
             $itemsperpage = 100;
-            $page = $page > 0 ? $page : 1;
+            $page = intval($page > 0 ? $page : 1);
 
             $q = RecipeQuery::create();
 

@@ -14,18 +14,34 @@ cnf = {
     "chartbeat-id"       : null,
     "chartbeat-domain"   : null,
     "password-salt"      : "YOU-SHOULD-CHANGE-THIS-IN-LIVE-ENVS",
+    "request-language"   : "en",
 
     /*
      * gw2spidy settings
      */
     "gw2spidy" : {
+        "request-slots" : {
+            "count"    : 100,
+            "cooldown" : 30
+        },
         "tradingpost_url" : "https://tradingpost-live.ncplatform.net",
         "gemexchange_url" : "https://exchange-live.ncplatform.net",
         "auth_url"        : "https://account.guildwars2.com",
 
         "api_secrets"     : {},
+        "admin_secret"    : null,
 
-        "admin_secret"    : null
+        /*
+         * this controls how the crawling is done
+         *  save_listing_from_item_data 	- when true during the worker-queue-item-db we'll also save listings from that data
+         *  use_listings-json				- when true we'll use listings.json in worker-queue-item-listings-db, only possible with game sessionkey though
+         *  								- when false we'll use search.json?ids=    and the amount of IDs is decided with items-per-request
+         *  use_shroud_magic				- someone shared a better way to get search.json?ids= with me, but didn't want me to share it ... this enables that method
+         */
+        "use_listings-json" : true,
+        "use_shroud_magic"  : false,
+        "save_listing_from_item_data" : true,
+        "items-per-request" : 100
     },
 
     /*
