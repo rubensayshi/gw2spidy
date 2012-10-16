@@ -13,7 +13,7 @@ cnf = {
     "google-analytics-id": null,
     "chartbeat-id"       : null,
     "chartbeat-domain"   : null,
-    "gauges-id"          : "5073f1f6613f5d73ad00006a",
+    "password-salt"      : "YOU-SHOULD-CHANGE-THIS-IN-LIVE-ENVS",
 
     /*
      * gw2spidy settings

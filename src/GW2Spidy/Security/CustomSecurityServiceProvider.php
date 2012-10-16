@@ -2,20 +2,15 @@
 
 namespace GW2Spidy\Security;
 
-use Silex\Provider\SecurityServiceProvider;
-
-use Silex\Application;
-
-use Silex\ServiceProviderInterface;
-use GW2Spidy\Security\CustomAuthenticationSuccessHandler;
-use GW2Spidy\Security\CustomLogoutSuccessHandler;
-
-use Symfony\Component\HttpFoundation\Request;
-
-use Symfony\Bridge\Twig\Extension\SecurityExtension;
-
 use GW2Spidy\DB\User;
 use GW2Spidy\UserProvider;
+
+use Silex\Application;
+use Silex\Provider\SecurityServiceProvider;
+use Silex\ServiceProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bridge\Twig\Extension\SecurityExtension;
+
 
 class CustomSecurityServiceProvider implements ServiceProviderInterface {
     public function register(Application $app) {

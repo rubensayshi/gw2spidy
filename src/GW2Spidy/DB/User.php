@@ -47,7 +47,7 @@ class User extends BaseUser implements UserInterface {
      * @return string The salt
     */
     public function getSalt() {
-        return "mysalt-ursalt";
+        return getAppConfig('password-salt');
     }
 
     /**
