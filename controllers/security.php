@@ -12,9 +12,13 @@ use Symfony\Component\HttpFoundation\Request;
  * ----------------------
  */
 $app->get("/login", function(Request $request) use ($app) {
+    if ($app['security']->getToken() && ($user = $app['security']->getToken()->getUser()) && $user instanceof User) {
+        return $app->redirect($app['url_generator']->generate('homepage'));
+    }
+
     return $app['twig']->render('login.html.twig', array(
-            'error'         => $app['security.last_error']($request),
-            'last_username' => $app['session']->get('_security.last_username'),
+        'error'         => $app['security.last_error']($request),
+        'last_username' => $app['session']->get('_security.last_username'),
     ));
 })
 ->bind('login');
