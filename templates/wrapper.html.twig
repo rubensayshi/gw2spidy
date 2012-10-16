@@ -100,11 +100,6 @@
                         </form>
                         <li class="divider-vertical"></li>
                     </ul>
-                    <a class="pull-right dkr-icon" href="http://www.darkreavers.co.uk" title="Dark Reavers Guild" target="_blank">Dark Reavers Guild</a>
-                    <a class="pull-right twitter-icon" href="https://twitter.com/gw2spidy" title="Twitter GW2Spidy" target="_blank">Twitter GW2Spidy</a>
-                    <a class="pull-right gw2db-icon" href="http://www.gw2db.com" title="Powered By GW2DB" target="_blank">
-						<img src="{{ versioned_asset('/assets/img/powered_gw2db_onDark.png') }}" width="82" height="40" />
-					</a>
                 </div>
             </div>
         </div>
@@ -115,10 +110,16 @@
         <div class="footer-spacer"></div>
         <div class="row-fluid footer-row navbar">
             <div class="navbar-inner">
-                <div>
+                <div style="position: relative;">
+                    <a class="gw2db-icon" href="http://www.gw2db.com" title="Powered By GW2DB" target="_blank">
+						<img src="{{ versioned_asset('/assets/img/powered_gw2db_onDark.png') }}" width="82" height="40" />
+					</a>
+					<a class="twitter-icon" href="https://twitter.com/gw2spidy" title="Twitter @GW2Spidy" target="_blank">Twitter @GW2Spidy</a>
+                </div>
+                <div style="position: absolute; left: 0px;">
                     <span><a href="https://github.com/rubensayshi/gw2spidy">open source project</a> by <a href="http://www.guildwars2guru.com/user/39936-drakie/">Drakie</a> / <a href="https://github.com/rubensayshi">rubensayshi</a></span>
                 </div>
-                <div style="float: right;">
+                <div style="position: absolute; right: 0px;">
                     <span title="&copy; 2011 ArenaNet, Inc. All rights reserved. NCsoft, the interlocking NC logo, ArenaNet, Arena.net, Guild Wars, Guild Wars Factions, Factions, Guild Wars Nightfall, Nightfall, Guild Wars: Eye of the North, Guild Wars Eye of the North, Eye of the North, Guild Wars 2, and all associated logos and designs are trademarks or registered trademarks of NCsoft Corporation. All other trademarks are the property of their respective owners.">&copy; 2011 ArenaNet, Inc. All rights reserved.</span>
                     {% set pagestats %}
                         this page took {{ app.time | number_format(5) }} seconds
@@ -130,6 +131,7 @@
                     <span style="font-size: 80%" title="{{- pagestats | clean_whitespace | e('html') -}}">
                         page generated @ {{ now('H:i') }}
                     </span>
+                </div>
                 </div>
         </div>
     </div>

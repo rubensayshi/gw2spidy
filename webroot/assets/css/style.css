@@ -228,9 +228,17 @@ h1 {
     margin: 0 -20px;
 }
 
+.footer-row.navbar .navbar-inner {
+    position: relative; 
+    text-align: center;
+}
+.footer-row.navbar .navbar-inner {
+    position: relative; 
+    text-align: center;
+}
+
 .footer-row.navbar .navbar-inner > div {
-    float: left;
-    display: block;
+    display: inline-block;
     padding: 9px 10px 11px;
     line-height: 19px;
     color: #999999;
@@ -243,6 +251,32 @@ h1 {
     color: #999999;
     text-decoration: none;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.gw2db-icon {
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    left: -40px;
+    width: 82px;
+    height: 40px;
+}
+
+.twitter-icon {
+    display: inline-block;
+    margin-left: 10px;
+    background-image: url('../img/twitter-icon-gray.png');
+    height: 30px;
+    width: 36px;
+    text-indent: -1999px;
+    overflow: hidden;
+    position: absolute;
+    top: 6px;
+    left: 40px;
+}
+
+.twitter-icon:hover {
+    background-image: url('../img/twitter-icon.png');
 }
 /* ----------------
  * [END] some magic for sticky footer
@@ -295,35 +329,6 @@ h1 {
         width: 100% !important;
     }
 }
-
-.dkr-icon {
-    display: inline-block;
-    background-image: url('../img/dkr.png');
-    height: 39px;
-    width: 49px;
-    text-indent: -1999px;
-    overflow: hidden;
-}
-
-.gw2db-icon {
-    display: inline-block;
-}
-
-.twitter-icon {
-    display: inline-block;
-    margin-top: 5px;
-    margin-right: 10px;
-    background-image: url('../img/twitter-icon-gray.png');
-    height: 30px;
-    width: 36px;
-    text-indent: -1999px;
-    overflow: hidden;
-}
-
-.twitter-icon:hover {
-    background-image: url('../img/twitter-icon.png');
-}
-
 
 /* ----------------
  * [START] tweet plugin style
