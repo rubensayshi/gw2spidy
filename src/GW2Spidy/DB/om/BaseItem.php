@@ -31,6 +31,8 @@ use GW2Spidy\DB\RecipeIngredientQuery;
 use GW2Spidy\DB\RecipeQuery;
 use GW2Spidy\DB\SellListing;
 use GW2Spidy\DB\SellListingQuery;
+use GW2Spidy\DB\Watchlist;
+use GW2Spidy\DB\WatchlistQuery;
 
 /**
  * Base class that represents a row from the 'item' table.
@@ -226,6 +228,12 @@ abstract class BaseItem extends BaseObject implements Persistent
     protected $collBuyListingsPartial;
 
     /**
+     * @var        PropelObjectCollection|Watchlist[] Collection to store aggregation of Watchlist objects.
+     */
+    protected $collWatchlists;
+    protected $collWatchlistsPartial;
+
+    /**
      * @var        PropelObjectCollection|Recipe[] Collection to store aggregation of Recipe objects.
      */
     protected $collRecipes;
@@ -273,6 +281,12 @@ abstract class BaseItem extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $buyListingsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $watchlistsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -1162,6 +1176,8 @@ abstract class BaseItem extends BaseObject implements Persistent
 
             $this->collBuyListings = null;
 
+            $this->collWatchlists = null;
+
             $this->collRecipes = null;
         } // if (deep)
     }
@@ -1389,6 +1405,23 @@ abstract class BaseItem extends BaseObject implements Persistent
 
             if ($this->collBuyListings !== null) {
                 foreach ($this->collBuyListings as $referrerFK) {
+                    if (!$referrerFK->isDeleted()) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->watchlistsScheduledForDeletion !== null) {
+                if (!$this->watchlistsScheduledForDeletion->isEmpty()) {
+                    WatchlistQuery::create()
+                        ->filterByPrimaryKeys($this->watchlistsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->watchlistsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collWatchlists !== null) {
+                foreach ($this->collWatchlists as $referrerFK) {
                     if (!$referrerFK->isDeleted()) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1696,6 +1729,14 @@ abstract class BaseItem extends BaseObject implements Persistent
                     }
                 }
 
+                if ($this->collWatchlists !== null) {
+                    foreach ($this->collWatchlists as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
 
             $this->alreadyInValidation = false;
         }
@@ -1863,6 +1904,9 @@ abstract class BaseItem extends BaseObject implements Persistent
             }
             if (null !== $this->collBuyListings) {
                 $result['BuyListings'] = $this->collBuyListings->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collWatchlists) {
+                $result['Watchlists'] = $this->collWatchlists->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -2153,6 +2197,12 @@ abstract class BaseItem extends BaseObject implements Persistent
                 }
             }
 
+            foreach ($this->getWatchlists() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addWatchlist($relObj->copy($deepCopy));
+                }
+            }
+
             //unflag object copy
             $this->startCopy = false;
         } // if ($deepCopy)
@@ -2329,6 +2379,9 @@ abstract class BaseItem extends BaseObject implements Persistent
         }
         if ('BuyListing' == $relationName) {
             $this->initBuyListings();
+        }
+        if ('Watchlist' == $relationName) {
+            $this->initWatchlists();
         }
     }
 
@@ -3211,6 +3264,238 @@ abstract class BaseItem extends BaseObject implements Persistent
     }
 
     /**
+     * Clears out the collWatchlists collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addWatchlists()
+     */
+    public function clearWatchlists()
+    {
+        $this->collWatchlists = null; // important to set this to NULL since that means it is uninitialized
+        $this->collWatchlistsPartial = null;
+    }
+
+    /**
+     * reset is the collWatchlists collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialWatchlists($v = true)
+    {
+        $this->collWatchlistsPartial = $v;
+    }
+
+    /**
+     * Initializes the collWatchlists collection.
+     *
+     * By default this just sets the collWatchlists collection to an empty array (like clearcollWatchlists());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initWatchlists($overrideExisting = true)
+    {
+        if (null !== $this->collWatchlists && !$overrideExisting) {
+            return;
+        }
+        $this->collWatchlists = new PropelObjectCollection();
+        $this->collWatchlists->setModel('Watchlist');
+    }
+
+    /**
+     * Gets an array of Watchlist objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Item is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Watchlist[] List of Watchlist objects
+     * @throws PropelException
+     */
+    public function getWatchlists($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collWatchlistsPartial && !$this->isNew();
+        if (null === $this->collWatchlists || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collWatchlists) {
+                // return empty collection
+                $this->initWatchlists();
+            } else {
+                $collWatchlists = WatchlistQuery::create(null, $criteria)
+                    ->filterByItem($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collWatchlistsPartial && count($collWatchlists)) {
+                      $this->initWatchlists(false);
+
+                      foreach($collWatchlists as $obj) {
+                        if (false == $this->collWatchlists->contains($obj)) {
+                          $this->collWatchlists->append($obj);
+                        }
+                      }
+
+                      $this->collWatchlistsPartial = true;
+                    }
+
+                    return $collWatchlists;
+                }
+
+                if($partial && $this->collWatchlists) {
+                    foreach($this->collWatchlists as $obj) {
+                        if($obj->isNew()) {
+                            $collWatchlists[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collWatchlists = $collWatchlists;
+                $this->collWatchlistsPartial = false;
+            }
+        }
+
+        return $this->collWatchlists;
+    }
+
+    /**
+     * Sets a collection of Watchlist objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      PropelCollection $watchlists A Propel collection.
+     * @param      PropelPDO $con Optional connection object
+     */
+    public function setWatchlists(PropelCollection $watchlists, PropelPDO $con = null)
+    {
+        $this->watchlistsScheduledForDeletion = $this->getWatchlists(new Criteria(), $con)->diff($watchlists);
+
+        foreach ($this->watchlistsScheduledForDeletion as $watchlistRemoved) {
+            $watchlistRemoved->setItem(null);
+        }
+
+        $this->collWatchlists = null;
+        foreach ($watchlists as $watchlist) {
+            $this->addWatchlist($watchlist);
+        }
+
+        $this->collWatchlists = $watchlists;
+        $this->collWatchlistsPartial = false;
+    }
+
+    /**
+     * Returns the number of related Watchlist objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      PropelPDO $con
+     * @return int             Count of related Watchlist objects.
+     * @throws PropelException
+     */
+    public function countWatchlists(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collWatchlistsPartial && !$this->isNew();
+        if (null === $this->collWatchlists || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collWatchlists) {
+                return 0;
+            } else {
+                if($partial && !$criteria) {
+                    return count($this->getWatchlists());
+                }
+                $query = WatchlistQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByItem($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collWatchlists);
+        }
+    }
+
+    /**
+     * Method called to associate a Watchlist object to this object
+     * through the Watchlist foreign key attribute.
+     *
+     * @param    Watchlist $l Watchlist
+     * @return   Item The current object (for fluent API support)
+     */
+    public function addWatchlist(Watchlist $l)
+    {
+        if ($this->collWatchlists === null) {
+            $this->initWatchlists();
+            $this->collWatchlistsPartial = true;
+        }
+        if (!$this->collWatchlists->contains($l)) { // only add it if the **same** object is not already associated
+            $this->doAddWatchlist($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Watchlist $watchlist The watchlist object to add.
+     */
+    protected function doAddWatchlist($watchlist)
+    {
+        $this->collWatchlists[]= $watchlist;
+        $watchlist->setItem($this);
+    }
+
+    /**
+     * @param	Watchlist $watchlist The watchlist object to remove.
+     */
+    public function removeWatchlist($watchlist)
+    {
+        if ($this->getWatchlists()->contains($watchlist)) {
+            $this->collWatchlists->remove($this->collWatchlists->search($watchlist));
+            if (null === $this->watchlistsScheduledForDeletion) {
+                $this->watchlistsScheduledForDeletion = clone $this->collWatchlists;
+                $this->watchlistsScheduledForDeletion->clear();
+            }
+            $this->watchlistsScheduledForDeletion[]= $watchlist;
+            $watchlist->setItem(null);
+        }
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Item is new, it will return
+     * an empty collection; or if this Item has previously
+     * been saved, it will retrieve related Watchlists from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Item.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      PropelPDO $con optional connection object
+     * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Watchlist[] List of Watchlist objects
+     */
+    public function getWatchlistsJoinWatchlist($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = WatchlistQuery::create(null, $criteria);
+        $query->joinWith('Watchlist', $join_behavior);
+
+        return $this->getWatchlists($query, $con);
+    }
+
+    /**
      * Clears out the collRecipes collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -3445,6 +3730,11 @@ abstract class BaseItem extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collWatchlists) {
+                foreach ($this->collWatchlists as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collRecipes) {
                 foreach ($this->collRecipes as $o) {
                     $o->clearAllReferences($deep);
@@ -3468,6 +3758,10 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->collBuyListings->clearIterator();
         }
         $this->collBuyListings = null;
+        if ($this->collWatchlists instanceof PropelCollection) {
+            $this->collWatchlists->clearIterator();
+        }
+        $this->collWatchlists = null;
         if ($this->collRecipes instanceof PropelCollection) {
             $this->collRecipes->clearIterator();
         }

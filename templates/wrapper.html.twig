@@ -89,6 +89,10 @@
                             </ul>
                         </li>
                         <li class="divider-vertical"></li>
+                        <li>
+                            <a href="{{ path('watchlist') }}">Watchlist</a>
+                        </li>
+                        <li class="divider-vertical"></li>
                         <li {% if app.isGemActive %}class="active"{% endif %}>
                             <a href="{{ path('gem') }}">Gem Exchange</a>
                         </li>
@@ -184,9 +188,13 @@
                     $input.css('display', 'none');
                 });
             });
+            
+            // find the watchlist form and execute it
+            $('.watchlist').click(function() {
+                $(this).find('.watchlist-form').submit();
+            });
         });
         </script>
-    </script>
 
     <script type='text/javascript'>
         $(function() {

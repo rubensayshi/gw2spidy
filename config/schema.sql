@@ -239,5 +239,39 @@ CREATE TABLE `gw2session`
     PRIMARY KEY (`session_key`)
 ) ENGINE=MyISAM;
 
+-- ---------------------------------------------------------------------
+-- user
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user`;
+
+CREATE TABLE `user`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+-- ---------------------------------------------------------------------
+-- watchlist
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `watchlist`;
+
+CREATE TABLE `watchlist`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `user_id` INTEGER NOT NULL,
+    `item_id` INTEGER NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `watchlist_FI_1` (`user_id`),
+    INDEX `watchlist_FI_2` (`item_id`),
+    CONSTRAINT `watchlist_FK_1`
+        FOREIGN KEY (`user_id`)
+        REFERENCES `user` (`id`),
+    CONSTRAINT `watchlist_FK_2`
+        FOREIGN KEY (`item_id`)
+        REFERENCES `item` (`data_id`)
+) ENGINE=MyISAM;
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

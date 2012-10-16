@@ -1,5 +1,6 @@
 <?php
-
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
 /**
  * using Silex micro framework
  *  this file contains all routing and the 'controllers' using lambda functions
@@ -40,6 +41,7 @@ $app['twig']->addExtension(new VersionedAssetsRoutingExtension());
 $app['twig']->addExtension(new GW2MoneyExtension());
 $app['twig']->addExtension(new ItemListRoutingExtension($app['url_generator']));
 
+$app['debug'] = true;
 /*
  * it's not very clean and silex-like but following are some includes to split up all the routing / functionality
  *  instead of using their mounting stuff, because it's just to much trouble
@@ -63,6 +65,9 @@ require "{$root}/controllers/gems.php";
 
 // search
 require "{$root}/controllers/search.php";
+
+// watchlist
+require "{$root}/controllers/watchlist.php";
 
 // api stuff
 require "{$root}/controllers/api.php";
