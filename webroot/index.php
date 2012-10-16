@@ -1,4 +1,6 @@
 <?php
+use Symfony\Component\HttpFoundation\Request;
+
 use Symfony\Bridge\Twig\Extension\SecurityExtension;
 
 use GW2Spidy\DB\User;
@@ -79,6 +81,12 @@ $app['twig']->addExtension(new GenericHelpersExtension());
 $app['twig']->addExtension(new VersionedAssetsRoutingExtension());
 $app['twig']->addExtension(new GW2MoneyExtension());
 $app['twig']->addExtension(new ItemListRoutingExtension($app['url_generator']));
+
+$app->before(function(Request $request) use ($app) {
+    if ($request->getMethod() == 'GET' && !preg_match("/^\/login/", $request->getRequestUri())) {
+        $app['session']->set('_security.target_path', $request->getRequestUri());
+    }
+});
 
 /*
  * it's not very clean and silex-like but following are some includes to split up all the routing / functionality

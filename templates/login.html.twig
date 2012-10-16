@@ -4,6 +4,7 @@
 {% block content %}
 
 <form class="form" action="{{ path('login_check') }}" method="post">
+    <input type="hidden" name="_target_path" value="{{ target_path }}" />
     {{ error }}
     <div class="control-group">
         <label class="control-label" for=""loginUsername">Username</label>
