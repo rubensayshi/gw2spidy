@@ -52,12 +52,12 @@
                         </li>
                         <li class="divider-vertical"></li>
                         <li class="dropdown {% if app.isBrowseActive %}active{% endif %}">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="{{ path('types') }}" data-target="#">ITEMS <b class="caret"></b></a>
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="{{ path('types') }}" data-target="#">ITEMS <i class="icon-chevron-down"></i></a>
                             <ul class="dropdown-menu">
                                 {% for type in app.displayTypes %}
                                     {% if type.title %}
                                         <li class="dropdown">
-                                            <a href="{{ path('type', {type: type.id}) }}">{{ type }} {% if not type.displaySubTypes.isEmpty %}<i class="icon-arrow-right"></i>{% endif %}</a>
+                                            <a href="{{ path('type', {type: type.id}) }}">{{ type }} {% if not type.displaySubTypes.isEmpty %} <i class="icon-chevron-right"></i>{% endif %}</a>
                                             {% if not type.displaySubTypes.isEmpty %}
                                                 <ul class="dropdown-menu sub-menu">
                                                     {% for subtype in type.displaySubTypes %}
@@ -74,7 +74,7 @@
                         </li>
                         <li class="divider-vertical"></li>
                         <li class="dropdown {% if app.isCraftingActive %}active{% endif %}">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#" data-target="#">Crafting <b class="caret"></b></a>
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#" data-target="#">Crafting <i class="icon-chevron-down"></i></a>
                             <ul class="dropdown-menu">
                                 {% for discipline in app.disciplines %}
                                     <li>
