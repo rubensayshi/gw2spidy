@@ -19,14 +19,10 @@
             <i class="icon icon-share"></i> link ingame
         </span>
     </div>
-    
-    <div title="click to add to watchlist" class="watchlist" style="display: block; float: right; position: relative; top: -18px; right: 15px;">
-        <form class="watchlist-form" action="{{ path('watchlistaddpost') }}" method="post"> 
-            <input value="{{ item.dataId }}" name="data_id" type="hidden" />
-        </form>
-        <span style="cursor: pointer;">
-            <i class="icon icon-plus"></i> add to watchlist
-        </span>
+    <div title="click to add to watchlist" class="watchlist" style="display: block; float: right; margin-right: 15px;">
+       <a href="{{ path('watchlistaddpost', {dataId: item.dataId}) }}">
+           <i class="icon icon-plus"></i> add to watchlist
+        </a>
     </div>
     <div style="float: left;">
         <table class="table" style="width: 200px;">

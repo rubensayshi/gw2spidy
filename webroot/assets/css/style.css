@@ -416,3 +416,8 @@ h1 {
     background-image: url('../img/gold.png');  
 }
 
+.watchlist a,
+.watchlist a:hover {
+    text-decoration: none;
+    color: inherit;
+}

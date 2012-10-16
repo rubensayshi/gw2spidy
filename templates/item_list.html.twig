@@ -96,11 +96,7 @@ Watchlist
             {{ _self.th_sortable('Min Sale Offer', 'min_sale_unit_price', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Max Buy Offer', 'max_offer_unit_price', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Margin', 'margin', current_sort, current_sort_order, _context) }}
-            {%if watchlist is defined%}
-            <th class="type">Action</th>
-            {%else%}
-            <th class="type">Action</th>
-            {%endif%}
+            <th class="action">Action</th>
         </thead>
         {% for item in items %}
             <tr class="item">
@@ -123,23 +119,17 @@ Watchlist
                 <td class="min_sale_unit_price" title="{{ item.saleAvailability }} sales available">{{ item.minSaleUnitPrice | gw2money }}</td>
                 <td class="max_offer_unit_price" title="{{ item.offerAvailability }} offers available">{{ item.maxOfferUnitPrice | gw2money }}</td>
                 <td class="margin">{{ item.margin | gw2money }}</td>
-                {%if watchlist is defined%}
-                <td class="type watchlist">
-                    <form class="watchlist-form" action="{{ path('watchlistremovepost') }}" method="post"> 
-                    <input value="{{ item.dataId }}" name="data_id" type="hidden" />
-                    </form>
-                    <span style="cursor: pointer;">
-                        <i class="icon icon-remove" title="remove from watchlist"></i> 
-                    </span>
+                {%if watchlist is defined %}
+                <td class="watchlist">
+                    <a href="{{ path('watchlistremovepost', {dataId : item.dataId}) }}">
+                        <i class="icon icon-remove" title="remove from watchlist"></i>
+                    </a>
                 </td>
                 {% else %}
-                <td class="type watchlist">
-                    <form class="watchlist-form" action="{{ path('watchlistaddpost') }}" method="post"> 
-                    <input value="{{ item.dataId }}" name="data_id" type="hidden" />
-                    </form>
-                    <span style="cursor: pointer;">
-                        <i class="icon icon-plus" title="add to watchlist"></i> 
-                    </span>
+                <td class="watchlist">
+                    <a href="{{ path('watchlistaddpost', {dataId : item.dataId}) }}">
+                        <i class="icon icon-plus" title="add to watchlist"></i>
+                    </a>
                 </td>
                 {%endif%}
             </tr>

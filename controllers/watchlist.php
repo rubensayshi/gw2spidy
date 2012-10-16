@@ -35,12 +35,12 @@ use GW2Spidy\Util\Functions;
  *  route /watchlistadd POST
  * ----------------------
  */
-$app->post("/watchlist/add", function (Request $request) use ($app) {
+$app->get("/watchlist/add/{dataId}", function (Request $request, $dataId) use ($app) {
     if (!($user = $app['user'])) {
         return $app->redirect($app['url_generator']->generate('login'));
     }
 
-    if (($dataId = $request->get("data_id")) && ($item = ItemQuery::create()->findPk($dataId))) {
+    if ($item = ItemQuery::create()->findPk($dataId)) {
         // check unique
         if (!WatchlistQuery::create()->filterByUser($user)->filterByItem($item)->count()) {
             $w = new Watchlist();
@@ -54,6 +54,7 @@ $app->post("/watchlist/add", function (Request $request) use ($app) {
     $uri = $request->headers->get('referer') ?: $app['url_generator']->generate('item', array('dataId' => $dataId));
     return $app->redirect($uri);
 })
+->assert('dataId', '\d+')
 ->bind('watchlistaddpost');
 
 /**
@@ -61,12 +62,12 @@ $app->post("/watchlist/add", function (Request $request) use ($app) {
  *  route /watchlistremove POST
  * ----------------------
  */
-$app->post("/watchlist/remove", function (Request $request) use ($app) {
+$app->get("/watchlist/remove/{dataId}", function (Request $request, $dataId) use ($app) {
     if (!($user = $app['user'])) {
         return $app->redirect($app['url_generator']->generate('login'));
     }
 
-    if (($dataId = $request->get("data_id")) && ($item = ItemQuery::create()->findPk($dataId))) {
+    if ($item = ItemQuery::create()->findPk($dataId)) {
         $w = WatchlistQuery::create();
         $w->filterByItem($item);
         $w->filterByUser($user);
@@ -74,6 +75,7 @@ $app->post("/watchlist/remove", function (Request $request) use ($app) {
     }
     return $app->redirect($app['url_generator']->generate('watchlist'));
 })
+->assert('dataId', '\d+')
 ->bind('watchlistremovepost');
 
 /**
