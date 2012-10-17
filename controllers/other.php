@@ -1,6 +1,7 @@
 <?php
 
 use \DateTime;
+use \DateInterval;
 
 use GW2Spidy\Application;
 use GW2Spidy\GW2SessionManager;
@@ -23,12 +24,17 @@ $app->get("/", function() use($app) {
     // workaround for now to set active menu item
     $app->setHomeActive();
 
+    $onehourago = new DateTime();
+    $onehourago->sub(new DateInterval('PT1H'));
+
     $trendingUp = ItemQuery::create()
+                        ->filterByLastPriceChanged($onehourago, \Criteria::GREATER_EQUAL)
                         ->addDescendingOrderByColumn("sale_price_change_last_hour")
                         ->limit(3)
                         ->find();
 
     $trendingDown = ItemQuery::create()
+                        ->filterByLastPriceChanged($onehourago, \Criteria::GREATER_EQUAL)
                         ->addAscendingOrderByColumn("sale_price_change_last_hour")
                         ->limit(3)
                         ->find();
