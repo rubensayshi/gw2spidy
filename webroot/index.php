@@ -21,6 +21,8 @@ use GW2Spidy\Twig\GenericHelpersExtension;
 
 require dirname(__FILE__) . '/../autoload.php';
 
+Request::trustProxyData();
+
 // initiate the application, check config to enable debug / sql logging when needed
 $app = Application::getInstance();
 

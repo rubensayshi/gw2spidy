@@ -77,7 +77,7 @@ class CustomSecurityServiceProvider implements ServiceProviderInterface {
         });
 
         $app->before(function(Request $request) use ($app) {
-            $app['isLoggedIn'] = (boolean)$request->cookies->get('logged_in', null);
+            $app['isLoggedIn'] = (boolean)$app['user'] && $request->cookies->get('logged_in', null);
 
             if (!$request->isXmlHttpRequest() && $request->getMethod() == 'GET' && !preg_match("/^\/login/", $request->getRequestUri())) {
                 $app['session']->set('_security.main.target_path', $request->getRequestUri());

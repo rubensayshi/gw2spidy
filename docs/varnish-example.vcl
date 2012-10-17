@@ -5,17 +5,31 @@ backend default {
 }
 
 sub vcl_recv {
-    if (!req.http.host ~ "gw2spidy.com$") {
-            return(pipe);    
+    if (!req.http.host ~ "gw2spidy") {
+            return(pass);    
     }
 
+    set req.backend = default;
+    if (req.http.X-Forwarded-Proto == "https" ) {
+        set req.http.X-Forwarded-Port = "443";
+    } else {
+        set req.http.X-Forwarded-Port = "80";
+    }
+        
+    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist") {
+        return(pass);
+    } else {
+        unset req.http.cookie;
+    }
+    
 #   error 500 "More downtime ... TP is down anyway ... need to get my shit sorted sorry ...";
 
-    unset req.http.cookie;
-    
-    if (req.url ~ "no_cache") {
-        return(pipe);
+    if (req.url ~ "no_cache" || req.http.Authorization || req.http.cookie) {
+        # Not cacheable by default
+        return(pass);
     }
+
+    return(lookup);
 }
 
 sub vcl_fetch {
@@ -23,6 +37,11 @@ sub vcl_fetch {
     set beresp.grace = 1h;
 
     unset beresp.http.expires;
+    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist") {
+        return(deliver);
+    } else {
+        unset beresp.http.set-cookie;    
+    }
 
     # homepage, trending and gem data
     if (req.url ~ "^/$") {
@@ -57,28 +76,28 @@ sub vcl_fetch {
     
     # API
     if (req.url ~ "^/api") {
-    	# the old invite-only API
-	    if (!(req.url ~ "^/api/v0.9")) {
-	        set beresp.ttl = 15m;
-	    } else {
-	        set beresp.ttl = 1h;
-	        
-	        if (req.url ~ "^api/v.*/.+/types" || req.url ~ "^api/v.*/.+/disciplines" || req.url ~ "^api/v.*/.+/rarities") {
-	            set beresp.ttl = 24h;
-	        }
-	        if (req.url ~ "^api/v.*/.+/items" || req.url ~ "^api/v.*/.+/recipes") {
-	            set beresp.ttl = 24h;
-	        }
-	        if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/" || req.url ~ "^api/v.*/.+/listings/") {
-	            set beresp.ttl = 15m;
-	        }
-	        if (req.url ~ "^api/v.*/.+/item-search/") {
-	            set beresp.ttl = 1h;
-	        }
-	        if (req.url ~ "^api/v.*/.+/gem-price" || req.url ~ "^api/v.*/.+/gem-history/") {
-	            set beresp.ttl = 15m;
-	        }
-	    }
+        # the old invite-only API
+        if (!(req.url ~ "^/api/v0.9")) {
+            set beresp.ttl = 15m;
+        } else {
+            set beresp.ttl = 1h;
+            
+            if (req.url ~ "^api/v.*/.+/types" || req.url ~ "^api/v.*/.+/disciplines" || req.url ~ "^api/v.*/.+/rarities") {
+                set beresp.ttl = 24h;
+            }
+            if (req.url ~ "^api/v.*/.+/items" || req.url ~ "^api/v.*/.+/recipes") {
+                set beresp.ttl = 24h;
+            }
+            if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/" || req.url ~ "^api/v.*/.+/listings/") {
+                set beresp.ttl = 15m;
+            }
+            if (req.url ~ "^api/v.*/.+/item-search/") {
+                set beresp.ttl = 1h;
+            }
+            if (req.url ~ "^api/v.*/.+/gem-price" || req.url ~ "^api/v.*/.+/gem-history/") {
+                set beresp.ttl = 15m;
+            }
+        }
     }
 
     if (req.http.host ~ "^beta.gw2spidy.com$" && !(req.url ~ "api")) {
@@ -86,19 +105,46 @@ sub vcl_fetch {
     }
 }
 
-sub vcl_hit {
+# The data on which the hashing will take place
+sub vcl_hash {
+    hash_data(req.url);
 
+    if (req.http.host) {
+        hash_data(req.http.host);
+    } else {
+        hash_data(server.ip);
+    }
+
+    # hash cookies for object with auth
+    if (req.http.Cookie) {
+        hash_data(req.http.Cookie);
+    }
+
+    # If the client supports compression, keep that in a different cache
+    if (req.http.Accept-Encoding) {
+        hash_data(req.http.Accept-Encoding);
+    }
+
+    return (hash);
 }
-
-sub vcl_miss {
-
-}
-
-
+ 
+# The routine when we deliver the HTTP request to the user
+# Last chance to modify headers that are sent to the client
 sub vcl_deliver {
-    if (obj.hits > 0) {
+    if (obj.hits > 0) { 
         set resp.http.X-Varnish-Cache = "HIT";
     } else {
         set resp.http.X-Varnish-Cache = "MISS";
     }
+
+    # Remove some headers: PHP version
+    unset resp.http.X-Powered-By;
+    # Remove some headers: Apache version & OS
+    unset resp.http.Server;
+    unset resp.http.X-Drupal-Cache;
+    unset resp.http.X-Varnish;
+    unset resp.http.Via;
+    unset resp.http.Link;
+
+    return (deliver);
 }
