@@ -29,12 +29,14 @@ $app->get("/", function() use($app) {
 
     $trendingUp = ItemQuery::create()
                         ->filterByLastPriceChanged($onehourago, \Criteria::GREATER_EQUAL)
+                        ->filterBySalePriceChangeLastHour(500, \Criteria::LESS_EQUAL)
                         ->addDescendingOrderByColumn("sale_price_change_last_hour")
                         ->limit(3)
                         ->find();
 
     $trendingDown = ItemQuery::create()
                         ->filterByLastPriceChanged($onehourago, \Criteria::GREATER_EQUAL)
+                        ->filterBySalePriceChangeLastHour(500, \Criteria::LESS_EQUAL)
                         ->addAscendingOrderByColumn("sale_price_change_last_hour")
                         ->limit(3)
                         ->find();
