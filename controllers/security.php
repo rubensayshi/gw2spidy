@@ -25,6 +25,44 @@ $app->get("/login", function(Request $request) use ($app) {
 })
 ->bind('login');
 
+$app->match('/hybridauth', function(Request $request) {
+    $config = dirname(__DIR__) . '/config/hybridauth-config.php';
+
+    require_once dirname(__DIR__) . '/vendor/hybridauth/Hybrid/Auth.php';
+    require_once dirname(__DIR__) . '/vendor/hybridauth/Hybrid/Endpoint.php';
+
+    return Hybrid_Endpoint::process();
+});
+
+/**
+ * ----------------------
+ *  route /social_login
+ * ----------------------
+ */
+$app->get("/social_login", function(Request $request) use ($app) {
+    $config = dirname(__DIR__) . '/config/hybridauth-config.php';
+
+    require_once dirname(__DIR__) . '/vendor/hybridauth/Hybrid/Auth.php';
+
+    if (!($provider = $request->get('provider'))) {
+        return $app->redirect($app['url_generator']->generate('login'));
+    }
+
+    try {
+        $hybridAuth = new Hybrid_Auth($config);
+        $adapter = $hybridAuth->authenticate($provider);
+
+        $profile = $adapter->getUserProfile();
+
+        var_dump($profile);
+    } catch (\Exception $e) {
+        var_dump($e);
+    }
+
+
+})
+->bind('social_login');
+
 /**
  * ----------------------
  *  route /register
