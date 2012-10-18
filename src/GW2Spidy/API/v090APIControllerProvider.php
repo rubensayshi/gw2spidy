@@ -56,12 +56,12 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             if ($format == 'csv') {
                 ob_start();
 
-                echo "id,name,parent_id\n";
+                echo "id,name,parent_id\r\n";
 
                 foreach ($results as $result) {
-                    echo "{$result['id']},{$result['name']},\n";
+                    echo "{$result['id']},{$result['name']},\r\n";
                     foreach ($result['subtypes'] as $subresult) {
-                        echo "{$subresult['id']},{$subresult['name']},{$result['id']}\n";
+                        echo "{$subresult['id']},{$subresult['name']},{$result['id']}\r\n";
                     }
                 }
 
