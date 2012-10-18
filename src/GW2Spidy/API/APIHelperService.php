@@ -56,10 +56,10 @@ class APIHelperService {
         }
 
         if (count($results)) {
-            echo implode(',', array_keys(reset($results))) . "\n";
+            echo implode(',', array_keys(reset($results))) . "\r\n";
 
             foreach ($results as $result) {
-                echo implode(',', $result) . "\n";
+                echo implode(',', $result) . "\r\n";
             }
         }
 
