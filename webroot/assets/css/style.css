@@ -232,10 +232,6 @@ h1 {
     position: relative; 
     text-align: center;
 }
-.footer-row.navbar .navbar-inner {
-    position: relative; 
-    text-align: center;
-}
 
 .footer-row.navbar .navbar-inner > div {
     display: inline-block;
