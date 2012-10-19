@@ -84,6 +84,9 @@ class APIHelperService {
             'min_sale_unit_price' => $item->getMinSaleUnitPrice(),
             'offer_availability' => $item->getOfferAvailability(),
             'sale_availability' => $item->getSaleAvailability(),
+            'gw2db_external_id' => $item->getGW2DBExternalId(),
+            'sale_price_change_last_hour' => $item->getSalePriceChangeLastHour(),
+        	'offer_price_change_last_hour' => $item->getOfferPriceChangeLastHour(),
         );
 
         return $data;
