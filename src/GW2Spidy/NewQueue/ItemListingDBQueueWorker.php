@@ -116,6 +116,8 @@ class ItemListingDBQueueWorker extends BaseWorker {
         if ($lowestSell) {
             $sellListing->setUnitPrice($lowestSell['unit_price']);
             $item->setMinSaleUnitPrice($lowestSell['unit_price']);
+        } else {
+            $sellListing->setUnitPrice($item->getMinSaleUnitPrice());
         }
 
         $item->setSaleAvailability($q);
@@ -137,11 +139,13 @@ class ItemListingDBQueueWorker extends BaseWorker {
         $buyListing->setItem($item);
         $buyListing->setListingDatetime($now);
         $buyListing->setQuantity($q);
-        $sellListing->setListings($l);
+        $buyListing->setListings($l);
 
         if ($lowestBuy) {
             $buyListing->setUnitPrice($lowestBuy['unit_price']);
             $item->setMaxOfferUnitPrice($lowestBuy['unit_price']);
+        } else {
+            $buyListing->setUnitPrice($item->getMaxOfferUnitPrice());
         }
 
         $item->setOfferAvailability($q);
