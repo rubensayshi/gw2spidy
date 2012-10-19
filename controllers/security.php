@@ -1,5 +1,9 @@
 <?php
 
+use Symfony\Component\HttpFoundation\Cookie;
+
+use GW2Spidy\DB\UserQuery;
+
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 use GW2Spidy\DB\User;
@@ -25,6 +29,12 @@ $app->get("/login", function(Request $request) use ($app) {
 })
 ->bind('login');
 
+/**
+ * ----------------------
+ *  route /hybridauth
+ *  end point for the hybridauth lib to recieve callbacks on
+ * ----------------------
+ */
 $app->match('/hybridauth', function(Request $request) {
     $config = dirname(__DIR__) . '/config/hybridauth-config.php';
 
@@ -54,11 +64,43 @@ $app->get("/social_login", function(Request $request) use ($app) {
 
         $profile = $adapter->getUserProfile();
 
-        var_dump($profile);
-    } catch (\Exception $e) {
-        var_dump($e);
-    }
+        $q = UserQuery::create()
+                ->filterByHybridAuthProviderId($provider)
+                ->filterByHybridAuthId($profile->identifier)
+                ;
 
+        $user = $q->findOne();
+
+        if (!$user) {
+            $base = "ABCDEFGHKLMNOPQRSTWXYZabcdefghjkmnpqrstwxyz123456789";
+            $pass = "";
+            for ($i = 0; $i < 10; $i++) {
+                $pass .= $base{mt_rand(0, strlen($base)-1)};
+            }
+
+            $user = new User();
+            $user->setHybridAuthProviderId($provider);
+            $user->setHybridAuthId($profile->identifier);
+            $user->setEmail($profile->email);
+            $user->setUsername("{$provider}::{$profile->identifier}");
+            $encoder = $app['security.encoder_factory']->getEncoder($user);
+            $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
+
+            $user->save();
+        }
+
+        // force login
+        $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+        $app['security']->setToken($token);
+
+        $response = $app->redirect($app['session']->get('_security.main.target_path') ?: $app['url_generator']->generate('homepage'));
+        $app['session']->set('_security.main.target_path', '');
+        $response->headers->setCookie(new Cookie('logged_in', true));
+
+        return $response;
+    } catch (\Exception $e) {
+        return $app->redirect($app['url_generator']->generate('login'));
+    }
 
 })
 ->bind('social_login');
@@ -96,7 +138,6 @@ $app->match("/register", function(Request $request) use ($app) {
             $user = new User();
             $user->setUsername($username);
             $user->setEmail($email);
-            $user->setRoles('USER_ROLE');
 
             // save encoded passwd
             $encoder = $app['security.encoder_factory']->getEncoder($user);
@@ -109,7 +150,10 @@ $app->match("/register", function(Request $request) use ($app) {
                 $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
                 $app['security']->setToken($token);
 
-                return $app->redirect($app['url_generator']->generate('homepage'));
+                $response = $app->redirect($app['url_generator']->generate('homepage'));
+                $response->headers->setCookie(new Cookie('logged_in', true));
+
+                return $response;
             } else {
                 foreach ($user->getValidationFailures() as $failure) {
                     $error .= $failure->getMessage() . "\n";

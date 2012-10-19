@@ -77,10 +77,21 @@ class CustomSecurityServiceProvider implements ServiceProviderInterface {
         });
 
         $app->before(function(Request $request) use ($app) {
-            $app['isLoggedIn'] = (boolean)$app['user'] && $request->cookies->get('logged_in', null);
+            $app['isLoggedIn'] = $request->cookies->get('logged_in', null);
 
-            if (!$request->isXmlHttpRequest() && $request->getMethod() == 'GET' && !preg_match("/^\/login/", $request->getRequestUri())) {
-                $app['session']->set('_security.main.target_path', $request->getRequestUri());
+            $ignoreUrls = array('/login/', '/register/', '/hybridauth/');
+            if (!$request->isXmlHttpRequest() && $request->getMethod() == 'GET') {
+                $ignore = false;
+                foreach ($ignoreUrls as $i) {
+                    if (preg_match($i, $request->getRequestUri())) {
+                        $ignore = true;
+                        break;
+                    }
+                }
+
+                if (!$ignore) {
+                    $app['session']->set('_security.main.target_path', $request->getRequestUri());
+                }
             }
         });
     }

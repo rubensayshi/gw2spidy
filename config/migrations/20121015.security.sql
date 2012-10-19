@@ -8,7 +8,9 @@ CREATE TABLE `user`
     `username` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
-    `roles` VARCHAR(255) DEFAULT '',
+    `roles` VARCHAR(255) DEFAULT 'USER_ROLE',
+    `hybrid_auth_provider_id` VARCHAR(50),
+    `hybrid_auth_id` VARCHAR(255),
     PRIMARY KEY (`id`),
     UNIQUE INDEX `unique_username` (`username`),
     UNIQUE INDEX `unique_email` (`email`)

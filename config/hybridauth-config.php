@@ -13,7 +13,7 @@
 
 return
 	array(
-		"base_url" => "http://3mip.localtunnel.com/hybridauth",
+		"base_url" => "http://4yg4.localtunnel.com/hybridauth",
 
 		"providers" => array (
 			// openid providers
