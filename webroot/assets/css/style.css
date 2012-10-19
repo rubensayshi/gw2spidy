@@ -417,3 +417,16 @@ h1 {
     text-decoration: none;
     color: inherit;
 }
+
+.social_login .btn i {
+    width: 23px; 
+    font-size: 27px; 
+    height: 20px;
+    position: relative;
+    top: 3px;
+}
+.social_login .btn span {
+    margin-left: 10px;
+    width: 80px;
+    display: inline-block;
+}

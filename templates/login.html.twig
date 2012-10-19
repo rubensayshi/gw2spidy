@@ -3,9 +3,9 @@
 {% block htmltitle %}{{ parent() }} | Login{% endblock %}
 {% block content %}
 
-<h1>Login</h1>
 <div class="row-fluid">
-    <div class="span4">
+    <div class="span6">
+        <h1>Account Login</h1>
         <form class="form" action="{{ path('login_check') }}" method="post">
             {{ error }}
             <div class="control-group">
@@ -28,10 +28,20 @@
             </div>
         </form>
     </div>
-    <div class="span4">
-        <a href="{{ path('social_login', {'provider': 'facebook'}) }}">fb</a><br />
-        <a href="{{ path('social_login', {'provider': 'twitter'}) }}" >tw</a><br />
-        <a href="{{ path('social_login', {'provider': 'google'}) }}">goo</a>
+    <div class="span6 social_login">
+        <h1>Social Login</h1>
+        <a href="{{ path('social_login', {'provider': 'facebook'}) }}" class="btn btn-large">
+            <i class="icon-facebook"></i><span>Facebook</psan>
+        </a><br />
+        <a href="{{ path('social_login', {'provider': 'twitter'}) }}" class="btn btn-large">
+            <i class="icon-twitter"></i><span>Twitter</span>
+        </a><br />
+        <a href="{{ path('social_login', {'provider': 'google'}) }}" class="btn btn-large">
+            <i class="icon-google-plus"></i><span>Google+</span>
+        </a><br />
+        <a href="{{ path('social_login', {'provider': 'github'}) }}" class="btn btn-large">
+            <i class="icon-github"></i><span>Github</span>
+        </a><br />
     </div>
 </div>
 
