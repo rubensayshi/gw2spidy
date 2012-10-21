@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\GemExchangeDataset;
+
 use \DateTime;
 
 use GW2Spidy\Application;
@@ -49,28 +51,23 @@ $app->get("/gem_chart", function() use($app) {
     /*---------------------
      *  BUY GEMS WITH GOLD
     *----------------------*/
-    $goldToGem = GoldToGemRateQuery::getChartDatasetData();
+    $goldToGem = new GemExchangeDataset(GemExchangeDataset::TYPE_GOLD_TO_GEM);
     $chart[] = array(
-        'data'     => $goldToGem['raw'],
+        'data'     => $goldToGem->getRawDataForChart(),
         'name'     => "Gold To Gems Raw Data",
     	'visible'  => true,
         'gw2money' => true,
     );
     $chart[] = array(
-    	'data'     => $goldToGem['daily'],
+        'data'     => $goldToGem->getDailyMvAvgDataForChart(),
     	'name'     => "Gold To Gems Daily Average",
     	'visible'  => true,
         'gw2money' => true,
     );
+    if (false) {
     $chart[] = array(
-    	'data'     => $goldToGem['weekly'],
+        'data'     => $goldToGem->getWeeklyMvAvgDataForChart(),
     	'name'     => "Gold To Gems Weekly Average",
-    	'visible'  => false,
-        'gw2money' => true,
-    );
-    $chart[] = array(
-    	'data'     => $goldToGem['monthly'],
-    	'name'     => "Gold To Gems 30-day Average",
     	'visible'  => false,
         'gw2money' => true,
     );
@@ -78,31 +75,26 @@ $app->get("/gem_chart", function() use($app) {
     /*---------------------
      *  SELL GEMS FOR GOLD
     *----------------------*/
-    $gemToGold = GemToGoldRateQuery::getChartDatasetData();
+    $goldToGem = new GemExchangeDataset(GemExchangeDataset::TYPE_GOLD_TO_GEM);
     $chart[] = array(
-        'data'     => $gemToGold['raw'],
+        'data'     => $goldToGem->getRawDataForChart(),
         'name'     => "Gems to Gold Raw Data",
     	'visible'  => true,
         'gw2money' => true,
     );
     $chart[] = array(
-    	'data'     => $gemToGold['daily'],
+        'data'     => $goldToGem->getDailyMvAvgDataForChart(),
     	'name'     => "Gems to Gold Daily Average",
     	'visible'  => true,
         'gw2money' => true,
     );
     $chart[] = array(
-    	'data'     => $gemToGold['weekly'],
+        'data'     => $goldToGem->getWeeklyMvAvgDataForChart(),
     	'name'     => "Gems to Gold Weekly Average",
     	'visible'  => false,
         'gw2money' => true,
     );
-    $chart[] = array(
-    	'data'     => $gemToGold['monthly'],
-    	'name'     => "Gems to Gold 30-day Average",
-    	'visible'  => false,
-        'gw2money' => true,
-    );
+    }
 
     $content = json_encode($chart);
 
