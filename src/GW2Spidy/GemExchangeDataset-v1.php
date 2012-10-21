@@ -14,14 +14,14 @@ use GW2Spidy\DB\GemToGoldRateQuery;
  * weekly and monthly
  *
  */
-class GemExchangeDataset {
+class GemExchangeDatasetv1 {
     const TYPE_GOLD_TO_GEM = 'gold_to_gem';
     const TYPE_GEM_TO_GOLD = 'gem_to_gold';
-    const DATE_INT_FORMAT       = 'YmdHis';
-    const DATE_INT_FORMAT_HOUR  = 'YmdH';
-    const DATE_INT_FORMAT_DAY   = 'Ymd';
-    const DATE_INT_FORMAT_WEEK  = 'YW';
-    const DATE_INT_FORMAT_MONTH = 'Ym';
+    const DATE_KEY_FORMAT       = 'YmdHis';
+    const DATE_KEY_FORMAT_HOUR  = 'YmdH';
+    const DATE_KEY_FORMAT_DAY   = 'Ymd';
+    const DATE_KEY_FORMAT_WEEK  = 'YW';
+    const DATE_KEY_FORMAT_MONTH = 'Ym';
 
     protected $type;
     protected $lastUpdated = null;
@@ -34,63 +34,11 @@ class GemExchangeDataset {
     protected $hours = array();
     protected $days  = array();
 
-    protected $noMvAvg           = array();
-    protected $noMvAgeTsByHour = array();
-
     protected $dailyMvAvg  = array(); // 1 tick per hour
     protected $weeklyMvAvg = array(); // 1 tick per day
 
     public function __construct($type) {
         $this->type = $type;
-    }
-
-    public static function tsHour($ts) {
-        return ceil($ts / 3600) * 3600;
-    }
-    public static function tsDay($ts) {
-        return ceil($ts / 86400) * 86400;
-    }
-
-    protected function processTick(DateTime $date, $rate) {
-        $ts   = $date->getTimestamp();
-        $tsHr = self::tsHour($ts);
-
-        // get the previous tick
-        end($this->noMvAvg);
-        $prevTs = key($this->noMvAvg);
-
-        // add to noMvAvg
-        $this->noMvAgeTsByHour[$tsHr][] = $ts;
-        $this->noMvAvg[$ts] = array($ts * 1000, $rate);
-
-        // replace all ticks older then 24 hours with just 1 (averaged) tick per hour
-        //  but we process this from the previous tick onwards, saves a lot of looping since we already did it for the previous tick
-        if ($prevTs) {
-
-
-            $thresMin = self::tsHour($prevTs - 86400);
-            $thresMax = self::tsHour($ts - 86400);
-
-            while ($thresMin < $thresMax) {
-                $thisTsHour = self::tsHour($thresMin);
-                $thisHour   = array();
-
-                if (isset($this->noMvAgeTsByHour[$thisTsHour]) && count($this->noMvAgeTsByHour[$thisTsHour]) > 1) {
-                    foreach ($this->noMvAgeTsByHour[$thisTsHour] as $tickTs) {
-                        $thisHour[] = $this->noMvAvg[$tickTs][1];
-                        unset($this->noMvAvg[$tickTs]);
-                    }
-
-                    $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, array_sum($thisHour) / count($thisHour));
-                    $this->noMvAgeTsByHour[$thisTsHour] = array($thisTsHour);
-                }
-
-                $thresMin += 3600;
-            }
-        }
-
-        // replace noMvAvg by hourly ticks for < 24 hours
-
     }
 
     protected function updateDataset() {
@@ -113,11 +61,27 @@ class GemExchangeDataset {
 
         $rates = $q->find();
 
-        foreach ($rates as $rateEntry) {
-            $this->processTick(new DateTime("{$rateEntry['rateDatetime']}"), intval($rateEntry['rate']));
-        }
+        // we need to keep track of the stuff we touch, they need to be recalculated
+        $hoursTouched  = array();
+        $daysTouched   = array();
 
-        return;
+        foreach ($rates as $rateEntry) {
+            $rate     = $rateEntry['rate'];
+            $date     = new DateTime("{$rateEntry['rateDatetime']}");
+            $key      = $date->format(self::DATE_KEY_FORMAT);
+            $hourKey  = $date->format(self::DATE_KEY_FORMAT_HOUR);
+
+            // for a fresh instance we need to fix this
+            if (!$start) {
+                $start = clone $date;
+            }
+
+            $this->raw[$key] = $rate;
+            $this->hours[$hourKey][$key] = $rate;
+
+            // track the hour we touched
+            $hoursTouched[] = $hourKey;
+        }
 
         $end = end($rates);
         $end = new DateTime("{$end['rateDatetime']}");
@@ -173,12 +137,10 @@ class GemExchangeDataset {
         $this->days  = array_slice($this->days,  -7, 1, true);
     }
 
-    public function getNoMvAvgDataForChart() {
+    public function getRawDataForChart() {
         $this->updateDataset();
 
-        ksort($this->noMvAvg);
-
-        return array_values($this->noMvAvg);
+        return $this->raw;
     }
 
     public function getDailyMvAvgDataForChart() {

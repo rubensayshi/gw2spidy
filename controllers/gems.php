@@ -53,47 +53,47 @@ $app->get("/gem_chart", function() use($app) {
     *----------------------*/
     $goldToGem = new GemExchangeDataset(GemExchangeDataset::TYPE_GOLD_TO_GEM);
     $chart[] = array(
-        'data'     => $goldToGem->getRawDataForChart(),
+        'data'     => $goldToGem->getNoMvAvgDataForChart(),
         'name'     => "Gold To Gems Raw Data",
     	'visible'  => true,
         'gw2money' => true,
     );
-    $chart[] = array(
-        'data'     => $goldToGem->getDailyMvAvgDataForChart(),
-    	'name'     => "Gold To Gems Daily Average",
-    	'visible'  => true,
-        'gw2money' => true,
-    );
     if (false) {
-    $chart[] = array(
-        'data'     => $goldToGem->getWeeklyMvAvgDataForChart(),
-    	'name'     => "Gold To Gems Weekly Average",
-    	'visible'  => false,
-        'gw2money' => true,
-    );
+        $chart[] = array(
+            'data'     => $goldToGem->getDailyMvAvgDataForChart(),
+        	'name'     => "Gold To Gems Daily Average",
+        	'visible'  => true,
+            'gw2money' => true,
+        );
+        $chart[] = array(
+            'data'     => $goldToGem->getWeeklyMvAvgDataForChart(),
+        	'name'     => "Gold To Gems Weekly Average",
+        	'visible'  => false,
+            'gw2money' => true,
+        );
 
-    /*---------------------
-     *  SELL GEMS FOR GOLD
-    *----------------------*/
-    $goldToGem = new GemExchangeDataset(GemExchangeDataset::TYPE_GOLD_TO_GEM);
-    $chart[] = array(
-        'data'     => $goldToGem->getRawDataForChart(),
-        'name'     => "Gems to Gold Raw Data",
-    	'visible'  => true,
-        'gw2money' => true,
-    );
-    $chart[] = array(
-        'data'     => $goldToGem->getDailyMvAvgDataForChart(),
-    	'name'     => "Gems to Gold Daily Average",
-    	'visible'  => true,
-        'gw2money' => true,
-    );
-    $chart[] = array(
-        'data'     => $goldToGem->getWeeklyMvAvgDataForChart(),
-    	'name'     => "Gems to Gold Weekly Average",
-    	'visible'  => false,
-        'gw2money' => true,
-    );
+        /*---------------------
+         *  SELL GEMS FOR GOLD
+        *----------------------*/
+        $goldToGem = new GemExchangeDataset(GemExchangeDataset::TYPE_GOLD_TO_GEM);
+        $chart[] = array(
+            'data'     => $goldToGem->getRawDataForChart(),
+            'name'     => "Gems to Gold Raw Data",
+        	'visible'  => true,
+            'gw2money' => true,
+        );
+        $chart[] = array(
+            'data'     => $goldToGem->getDailyMvAvgDataForChart(),
+        	'name'     => "Gems to Gold Daily Average",
+        	'visible'  => true,
+            'gw2money' => true,
+        );
+        $chart[] = array(
+            'data'     => $goldToGem->getWeeklyMvAvgDataForChart(),
+        	'name'     => "Gems to Gold Weekly Average",
+        	'visible'  => false,
+            'gw2money' => true,
+        );
     }
 
     $content = json_encode($chart);
