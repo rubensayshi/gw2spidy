@@ -28,4 +28,7 @@ class DatasetManager extends Singleton {
         return $dataset;
     }
 
+    public function purgeCache() {
+        $this->cache->purge();
+    }
 }

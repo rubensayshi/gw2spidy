@@ -94,6 +94,6 @@ class RedisCacheHandler {
             return null;
         }
 
-        return $this->client->del($this->baseKey, $key);
+        return $this->client->del($this->baseKey);
     }
 }
