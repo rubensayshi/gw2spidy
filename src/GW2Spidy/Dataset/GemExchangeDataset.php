@@ -230,12 +230,15 @@ class GemExchangeDataset {
                         unset($this->noMvAvg[$tickTs]);
                         unset($this->dailyMvAvg[$tickTs]);
                         unset($this->weeklyMvAvg[$tickTs]);
+                        unset($this->pastWeek[$tickTs]);
                     }
 
                     // insert hourly ticks
                     $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyNoMvAvg[$thisTsHour]);
                     $this->dailyMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyDailyMvAvg[$thisTsHour]);
                     $this->weeklyMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyWeeklyMvAvg[$thisTsHour]);
+                    $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyNoMvAvg[$thisTsHour]);
+                    $this->pastWeek[$thisTsHour] = $this->hourlyNoMvAvg[$thisTsHour];
                     $this->tsByHour[$thisTsHour] = array($thisTsHour);
                 }
 
