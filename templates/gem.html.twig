@@ -21,6 +21,6 @@
     </ul>
 {% endif %}
 
-{%  include "chart_placeholder.html.twig" with {url: path('gem_chart'), hideLegend: hideLegend} %}
+{%  include "chart_placeholder.html.twig" with {url: path('gem_chart'), hideLegend: hideLegend, legendWidth : 600} %}
 
 {% endblock %}
