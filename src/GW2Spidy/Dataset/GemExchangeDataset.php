@@ -19,9 +19,9 @@ class GemExchangeDataset {
     /*
      * just easy constants to make the code more readable
      */
-    const TS_ONE_HOUR = self::TS_ONE_HOUR;
-    const TS_ONE_DAY  = self::TS_ONE_DAY;
-    const TS_ONE_WEEK = self::TS_ONE_WEEK;
+    const TS_ONE_HOUR = 3600;
+    const TS_ONE_DAY  = 86400;
+    const TS_ONE_WEEK = 604800;
 
     /**
      * one of the self::TYPE_ constants
