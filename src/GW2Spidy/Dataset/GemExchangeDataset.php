@@ -109,9 +109,9 @@ class GemExchangeDataset {
         }
 
         // fake 5 days ago so we can test new ticks being added
-        $fake = new DateTime();
-        $fake->sub(new DateInterval('P5D'));
-        $q->filterByRateDatetime($fake, \Criteria::LESS_THAN);
+        // $fake = new DateTime();
+        // $fake->sub(new DateInterval('P5D'));
+        // $q->filterByRateDatetime($fake, \Criteria::LESS_THAN);
 
         // ensure ordered data, makes our life a lot easier
         $q->orderByRateDatetime(\Criteria::ASC);
