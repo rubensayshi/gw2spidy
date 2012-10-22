@@ -1,11 +1,13 @@
 <?php
 
-use GW2Spidy\GemExchangeDataset;
 
 use \DateTime;
 
 use GW2Spidy\Application;
 use Symfony\Component\HttpFoundation\Request;
+
+use GW2Spidy\Dataset\DatasetManager;
+use GW2Spidy\Dataset\GemExchangeDataset;
 
 use GW2Spidy\DB\DisciplineQuery;
 use GW2Spidy\DB\ItemSubTypeQuery;
@@ -51,7 +53,7 @@ $app->get("/gem_chart", function() use($app) {
     /*---------------------
      *  BUY GEMS WITH GOLD
     *----------------------*/
-    $goldToGem = new GemExchangeDataset(GemExchangeDataset::TYPE_GOLD_TO_GEM);
+    $goldToGem = DatasetManager::getInstance()->getGemDataset(GemExchangeDataset::TYPE_GOLD_TO_GEM);
     $chart[] = array(
         'data'     => $goldToGem->getNoMvAvgDataForChart(),
         'name'     => "Gold To Gems Raw Data",

@@ -1,6 +1,6 @@
 <?php
 
-namespace GW2Spidy;
+namespace GW2Spidy\Dataset;
 
 use \DateTime;
 use \DateInterval;
@@ -66,8 +66,6 @@ class GemExchangeDataset {
         // replace all ticks older then 24 hours with just 1 (averaged) tick per hour
         //  but we process this from the previous tick onwards, saves a lot of looping since we already did it for the previous tick
         if ($prevTs) {
-
-
             $thresMin = self::tsHour($prevTs - 86400);
             $thresMax = self::tsHour($ts - 86400);
 
@@ -76,7 +74,7 @@ class GemExchangeDataset {
                 $thisHour   = array();
 
                 if (isset($this->noMvAgeTsByHour[$thisTsHour]) && count($this->noMvAgeTsByHour[$thisTsHour]) > 1) {
-                    foreach ($this->noMvAgeTsByHour[$thisTsHour] as $tickTs) {
+                    foreach (array_unique($this->noMvAgeTsByHour[$thisTsHour]) as $tickTs) {
                         $thisHour[] = $this->noMvAvg[$tickTs][1];
                         unset($this->noMvAvg[$tickTs]);
                     }
@@ -89,14 +87,14 @@ class GemExchangeDataset {
             }
         }
 
-        // replace noMvAvg by hourly ticks for < 24 hours
-
     }
 
-    protected function updateDataset() {
+    public function updateDataset() {
         if ($this->updated) {
             return;
         }
+
+        $t = microtime(true);
 
         $end   = null;
         $start = $this->lastUpdated;
@@ -104,7 +102,6 @@ class GemExchangeDataset {
         $q = $this->type == self::TYPE_GEM_TO_GOLD ? GemToGoldRateQuery::create() : GoldToGemRateQuery::create();
         $q->select(array('rateDatetime', 'rate'));
 
-        $q->filterByRateDatetime(date("Y-m-d 00:00:00", strtotime("-2weeks")), \Criteria::GREATER_EQUAL);
         if ($start) {
             $q->filterByRateDatetime($start, \Criteria::GREATER_THAN);
         }
@@ -114,7 +111,16 @@ class GemExchangeDataset {
         $rates = $q->find();
 
         foreach ($rates as $rateEntry) {
-            $this->processTick(new DateTime("{$rateEntry['rateDatetime']}"), intval($rateEntry['rate']));
+            $date = new DateTime("{$rateEntry['rateDatetime']}");
+            $rate = intval($rateEntry['rate']);
+
+            $end = $date;
+
+            $this->processTick($date, $rate);
+        }
+
+        if ($end) {
+            $this->lastUpdated = $end;
         }
 
         return;
