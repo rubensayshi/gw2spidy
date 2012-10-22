@@ -27,18 +27,16 @@ class GemExchangeDataset {
     protected $lastUpdated = null;
     protected $updated = false;
 
-    protected $raw    = array();
-    protected $hourly = array();
-    protected $daily  = array();
+    protected $noMvAvg         = array();
+    protected $dailyMvAvg      = array(); // 1 tick per hour
+    protected $tsByHour        = array();
 
-    protected $hours = array();
-    protected $days  = array();
+    protected $hourlyNoMvAvg    = array();
+    protected $hourlyDailyMvAvg = array();
 
-    protected $noMvAvg           = array();
-    protected $noMvAgeTsByHour = array();
+    protected $past24Hours     = array();
 
-    protected $dailyMvAvg  = array(); // 1 tick per hour
-    protected $weeklyMvAvg = array(); // 1 tick per day
+    protected $weeklyMvAvg = array(); // 1 tick per hour
 
     public function __construct($type) {
         $this->type = $type;
@@ -60,10 +58,14 @@ class GemExchangeDataset {
         $prevTs = key($this->noMvAvg);
 
         // add to noMvAvg
-        $this->noMvAgeTsByHour[$tsHr][] = $ts;
+        $this->tsByHour[$tsHr][] = $ts;
         $this->noMvAvg[$ts] = array($ts * 1000, $rate);
 
-        // replace all ticks older then 24 hours with just 1 (averaged) tick per hour
+        // add to past 24 hours
+        $this->past24Hours[$ts] = $rate;
+
+        // remove ticks from the past24hour cache
+        // and replace all ticks older then 24 hours with just 1 (averaged) tick per hour
         //  but we process this from the previous tick onwards, saves a lot of looping since we already did it for the previous tick
         if ($prevTs) {
             $thresMin = self::tsHour($prevTs - 86400);
@@ -73,20 +75,37 @@ class GemExchangeDataset {
                 $thisTsHour = self::tsHour($thresMin);
                 $thisHour   = array();
 
-                if (isset($this->noMvAgeTsByHour[$thisTsHour]) && count($this->noMvAgeTsByHour[$thisTsHour]) > 1) {
-                    foreach (array_unique($this->noMvAgeTsByHour[$thisTsHour]) as $tickTs) {
-                        $thisHour[] = $this->noMvAvg[$tickTs][1];
+                if (isset($this->tsByHour[$thisTsHour])) {
+                    // (re)calculate the average of this ticks hour
+                    $hourNoMvAvg = array();
+                    $hourDailyMvAvg = array();
+                    foreach ($this->tsByHour[$thisTsHour] as $tickTs) {
+                        $hourNoMvAvg[] = $this->noMvAvg[$tickTs][1];
+                        $hourDailyMvAvg[] = $this->dailyMvAvg[$tickTs][1];
+                    }
+                    $this->hourlyNoMvAvg[$thisTsHour] =array_sum($hourNoMvAvg) / count($hourNoMvAvg);
+                    $this->hourlyDailyMvAvg[$thisTsHour] =array_sum($hourDailyMvAvg) / count($hourDailyMvAvg);
+
+                    foreach (array_unique($this->tsByHour[$thisTsHour]) as $tickTs) {
+                        unset($this->past24Hours[$tickTs]);
                         unset($this->noMvAvg[$tickTs]);
+                        unset($this->dailyMvAvg[$tickTs]);
                     }
 
-                    $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, array_sum($thisHour) / count($thisHour));
-                    $this->noMvAgeTsByHour[$thisTsHour] = array($thisTsHour);
+                    $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyNoMvAvg[$thisTsHour]);
+                    $this->dailyMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyDailyMvAvg[$thisTsHour]);
+                    $this->tsByHour[$thisTsHour] = array($thisTsHour);
                 }
 
                 $thresMin += 3600;
             }
         }
 
+        // calculate new mv avg tick
+        if (count($this->past24Hours)) {
+            $dailyMvAvg = array_sum($this->past24Hours) / count($this->past24Hours);
+            $this->dailyMvAvg[$ts] = array($ts * 1000, $dailyMvAvg);
+        }
     }
 
     public function updateDataset() {
@@ -105,6 +124,8 @@ class GemExchangeDataset {
         if ($start) {
             $q->filterByRateDatetime($start, \Criteria::GREATER_THAN);
         }
+
+        // $q->filterByRateDatetime('2012-10-12 00:00:00', \Criteria::LESS_THAN);
 
         $q->orderByRateDatetime(\Criteria::ASC);
 
@@ -190,7 +211,9 @@ class GemExchangeDataset {
     public function getDailyMvAvgDataForChart() {
         $this->updateDataset();
 
-        return $this->dailyMvAvg;
+        ksort($this->dailyMvAvg);
+
+        return array_values($this->dailyMvAvg);
     }
 
     public function getWeeklyMvAvgDataForChart() {

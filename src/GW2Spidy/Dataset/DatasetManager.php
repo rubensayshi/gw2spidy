@@ -7,6 +7,7 @@ use GW2Spidy\Util\Singleton;
 
 class DatasetManager extends Singleton {
     protected $cache;
+    protected $useCache = false;
 
     public function __construct() {
         $this->cache = RedisCacheHandler::getInstance('datasets', true);
@@ -16,7 +17,7 @@ class DatasetManager extends Singleton {
         $cacheKey = "gem_{$type}";
         $dataset  = $this->cache->get($cacheKey);
 
-        if (!$dataset) {
+        if (!$this->useCache || !$dataset) {
             $dataset = new GemExchangeDataset($type);
         }
 

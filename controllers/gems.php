@@ -60,13 +60,13 @@ $app->get("/gem_chart", function() use($app) {
     	'visible'  => true,
         'gw2money' => true,
     );
+    $chart[] = array(
+        'data'     => $goldToGem->getDailyMvAvgDataForChart(),
+    	'name'     => "Gold To Gems Daily Average",
+    	'visible'  => true,
+        'gw2money' => true,
+    );
     if (false) {
-        $chart[] = array(
-            'data'     => $goldToGem->getDailyMvAvgDataForChart(),
-        	'name'     => "Gold To Gems Daily Average",
-        	'visible'  => true,
-            'gw2money' => true,
-        );
         $chart[] = array(
             'data'     => $goldToGem->getWeeklyMvAvgDataForChart(),
         	'name'     => "Gold To Gems Weekly Average",
