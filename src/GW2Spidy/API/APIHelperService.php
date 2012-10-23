@@ -94,7 +94,7 @@ class APIHelperService {
 
     public function buildRecipeDataArray(Recipe $recipe) {
         $data = array(
-            "date_id"              => $recipe->getDataId(),
+            "data_id"              => $recipe->getDataId(),
             "name"                 => $recipe->getName(),
             "result_count"         => $recipe->getCount(),
         	"result_item_data_id"  => $recipe->getResultItemId(),
