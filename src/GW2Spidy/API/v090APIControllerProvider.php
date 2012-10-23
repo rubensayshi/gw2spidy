@@ -136,6 +136,26 @@ class v090APIControllerProvider implements ControllerProviderInterface {
                 $q->filterByItemType($type);
             }
 
+            if (($sortTrending = $request->get('sort_trending')) && in_array($sortTrending, array('sale', 'offer'))) {
+                $q->filterBySaleAvailability(200, \Criteria::GREATER_THAN);
+                $q->filterByOfferAvailability(200, \Criteria::GREATER_THAN);
+                if ($sortTrending == 'sale') {
+                    $q->orderBySalePriceChangeLastHour(\Criteria::DESC);
+                } else if ($sortTrending == 'offer') {
+                    $q->orderByOfferPriceChangeLastHour(\Criteria::DESC);
+                }
+            }
+
+            if ($filterIds = $request->get('filter_ids')) {
+                $filterIds = array_unique(array_filter(array_map('intval', explode(",", $filterIds))));
+
+                if (count($filterIds) > $itemsperpage) {
+                    return $app->abort(400, "More IDs in filter_ids than allowed.");
+                }
+
+                $q->filterByDataId($filterIds, \Criteria::IN);
+            }
+
             $total = $q->count();
 
             if ($total > 0) {
