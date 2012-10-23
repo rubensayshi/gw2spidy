@@ -23,7 +23,7 @@ class ItemDBQueueWorker extends BaseWorker {
         }
     }
 
-    protected function buildItemDB($type, $subtype, $offset) {
+    public function buildItemDB($type, $subtype, $offset) {
         var_dump((string)$type, (string)$subtype, $offset) . "\n\n";
 
         $items = TradingPostSpider::getInstance()->getItemList($type, $subtype, $offset);
@@ -40,11 +40,6 @@ class ItemDBQueueWorker extends BaseWorker {
     public function storeItemData($itemData, ItemType $type = null, ItemSubType $subtype = null, $item = null) {
         // this seems to be removed items o.O?
         if (!isset($itemData['name']) && !isset($itemData['rarity']) && !isset($itemData['restriction_level']) && isset($itemData['data_id'])) {
-            return;
-        }
-
-        // this seems to be items no longer on the TP
-        if (!isset($itemData['sale_availability']) && !isset($itemData['offer_availability'])) {
             return;
         }
 
