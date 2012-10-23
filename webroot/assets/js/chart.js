@@ -62,6 +62,9 @@ var GW2SpidyChart = function(url, container, set_options) {
             ],
             selected : 2
         },
+        xAxis : {
+            ordinal: false
+        },
         yAxis : [
              {
                  title : { text : 'coin', style : { color : '#AA4643'} },
