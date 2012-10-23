@@ -118,57 +118,51 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
 
     /*----------------
      *  SELL LISTINGS
+    *----------------*/
+    $sellListings = DatasetManager::getInstance()->getItemDataset($item, ItemDataset::TYPE_SELL_LISTING);
+    $chart[] = array(
+            'data'     => $sellListings->getNoMvAvgDataForChart(),
+            'name'     => "Sell Listings Raw Data",
+            'visible'  => true,
+            'gw2money' => true,
+    );
+    $chart[] = array(
+            'data'     => $sellListings->getDailyMvAvgDataForChart(),
+            'name'     => "Sell Listings 1 Day Mv Avg",
+            'visible'  => true,
+            'gw2money' => true,
+    );
+    $chart[] = array(
+            'data'     => $sellListings->getWeeklyMvAvgDataForChart(),
+            'name'     => "Sell Listings 7 Day Mv Avg",
+            'visible'  => false,
+            'gw2money' => true,
+    );
+
+    /*----------------
+     *  BUY LISTINGS
      *----------------*/
-    $goldToGem = DatasetManager::getInstance()->getItemDataset($item, ItemDataset::TYPE_SELL_LISTING);
+    $buyListings = DatasetManager::getInstance()->getItemDataset($item, ItemDataset::TYPE_BUY_LISTING);
     $chart[] = array(
-        'data'     => $goldToGem->getNoMvAvgDataForChart(),
-        'name'     => "Sell Listings Raw Data",
+        'data'     => $buyListings->getNoMvAvgDataForChart(),
+        'name'     => "Buy Listings Raw Data",
     	'visible'  => true,
         'gw2money' => true,
     );
     $chart[] = array(
-        'data'     => $goldToGem->getDailyMvAvgDataForChart(),
-    	'name'     => "Sell Listings 1 Day Mv Avg",
+        'data'     => $buyListings->getDailyMvAvgDataForChart(),
+    	'name'     => "Buy Listings 1 Day Mv Avg",
     	'visible'  => true,
         'gw2money' => true,
     );
     $chart[] = array(
-        'data'     => $goldToGem->getWeeklyMvAvgDataForChart(),
-    	'name'     => "Sell Listings 7 Day Mv Avg",
+        'data'     => $buyListings->getWeeklyMvAvgDataForChart(),
+    	'name'     => "Buy Listings 7 Day Mv Avg",
     	'visible'  => false,
         'gw2money' => true,
     );
 
     if (false) {
-        /*---------------
-         *  BUY LISTINGS
-         *---------------*/
-        $buyListings = BuyListingQuery::getChartDatasetDataForItem($item);
-        $chart[] = array(
-            'data'     => $buyListings['raw'],
-            'name'     => "Buy Listings Raw Data",
-        	'visible'  => false,
-            'gw2money' => true,
-        );
-        $chart[] = array(
-        	'data'     => $buyListings['daily'],
-        	'name'     => "Buy Listings Daily Average",
-        	'visible'  => true,
-            'gw2money' => true,
-        );
-        $chart[] = array(
-        	'data'     => $buyListings['weekly'],
-        	'name'     => "Buy Listings Weekly Average",
-        	'visible'  => false,
-            'gw2money' => true,
-        );
-        $chart[] = array(
-        	'data'     => $buyListings['monthly'],
-        	'name'     => "Buy Listings 30-day Average",
-        	'visible'  => false,
-            'gw2money' => true,
-        );
-
         /*---------------
          *  VOLUME
          *---------------*/
