@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\Dataset;
 
+use GW2Spidy\Application;
+
 use GW2Spidy\DB\Item;
 
 use \DateTime;
