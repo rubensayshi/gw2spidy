@@ -62,13 +62,13 @@ $app->get("/gem_chart", function() use($app) {
     );
     $chart[] = array(
         'data'     => $goldToGem->getDailyMvAvgDataForChart(),
-    	'name'     => "Gold To Gems Daily Average",
+    	'name'     => "Gold To Gems 1 Day Mv Avg",
     	'visible'  => true,
         'gw2money' => true,
     );
     $chart[] = array(
         'data'     => $goldToGem->getWeeklyMvAvgDataForChart(),
-    	'name'     => "Gold To Gems Weekly Average",
+    	'name'     => "Gold To Gems 7 Day Mv Avg",
     	'visible'  => false,
         'gw2money' => true,
     );
@@ -85,13 +85,13 @@ $app->get("/gem_chart", function() use($app) {
     );
     $chart[] = array(
         'data'     => $gemToGold->getDailyMvAvgDataForChart(),
-    	'name'     => "Gems to Gold Daily Average",
+    	'name'     => "Gems to Gold 1 Day Mv Avg",
     	'visible'  => true,
         'gw2money' => true,
     );
     $chart[] = array(
         'data'     => $gemToGold->getWeeklyMvAvgDataForChart(),
-    	'name'     => "Gems to Gold Weekly Average",
+    	'name'     => "Gems to Gold 7 Day Mv Avg",
     	'visible'  => false,
         'gw2money' => true,
     );
