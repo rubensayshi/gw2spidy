@@ -12,33 +12,7 @@ use \DateTimeZone;
 use GW2Spidy\DB\BuyListingQuery;
 use GW2Spidy\DB\SellListingQuery;
 
-class ItemDataset extends BaseDataset {
-    /*
-     * different posible type of datasets we can have
-     */
-    const TYPE_SELL_LISTING = 'sell_listing';
-    const TYPE_BUY_LISTING  = 'buy_listing';
-
-    /**
-     * @var  int    $itemId
-     */
-    protected $itemId;
-
-    /**
-     * one of the self::TYPE_ constants
-     * @var $type
-     */
-    protected $type;
-
-    /**
-     * @param  int       $itemId
-     * @param  string    $type        should be one of self::TYPE_
-     */
-    public function __construct($itemId, $type) {
-        $this->itemId = $itemId;
-        $this->type = $type;
-    }
-
+class ItemVolumeDataset extends ItemDataset {
     /**
      * update the current dataset with new values from the database
      *  if posible only with values since our lastUpdated moment
@@ -54,7 +28,7 @@ class ItemDataset extends BaseDataset {
 
         $q = $this->type == self::TYPE_SELL_LISTING ? SellListingQuery::create() : BuyListingQuery::create();
         $q->select(array('listingDatetime'))
-          ->withColumn('MIN(unit_price)', 'min_unit_price')
+          ->withColumn('SUM(quantity)', 'quantity')
           ->groupBy('listingDatetime')
           ->filterByItemId($this->itemId);
 
@@ -78,7 +52,7 @@ class ItemDataset extends BaseDataset {
         $listings = $q->find();
         foreach ($listings as $listing) {
             $date = new DateTime("{$listing['listingDatetime']}");
-            $rate = intval($listing['min_unit_price']);
+            $rate = intval($listing['quantity']);
 
             $end = $date;
 

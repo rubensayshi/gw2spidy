@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\Dataset\ItemVolumeDataset;
+
 use GW2Spidy\Dataset\ItemDataset;
 
 use GW2Spidy\Dataset\DatasetManager;
@@ -121,22 +123,22 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     *----------------*/
     $sellListings = DatasetManager::getInstance()->getItemDataset($item, ItemDataset::TYPE_SELL_LISTING);
     $chart[] = array(
-            'data'     => $sellListings->getNoMvAvgDataForChart(),
-            'name'     => "Sell Listings Raw Data",
-            'visible'  => true,
-            'gw2money' => true,
+        'data'     => $sellListings->getNoMvAvgDataForChart(),
+        'name'     => "Sell Listings Raw Data",
+        'visible'  => true,
+        'gw2money' => true,
     );
     $chart[] = array(
-            'data'     => $sellListings->getDailyMvAvgDataForChart(),
-            'name'     => "Sell Listings 1 Day Mv Avg",
-            'visible'  => true,
-            'gw2money' => true,
+        'data'     => $sellListings->getDailyMvAvgDataForChart(),
+        'name'     => "Sell Listings 1 Day Mv Avg",
+        'visible'  => true,
+        'gw2money' => true,
     );
     $chart[] = array(
-            'data'     => $sellListings->getWeeklyMvAvgDataForChart(),
-            'name'     => "Sell Listings 7 Day Mv Avg",
-            'visible'  => false,
-            'gw2money' => true,
+        'data'     => $sellListings->getWeeklyMvAvgDataForChart(),
+        'name'     => "Sell Listings 7 Day Mv Avg",
+        'visible'  => false,
+        'gw2money' => true,
     );
 
     /*----------------
@@ -162,39 +164,43 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
         'gw2money' => true,
     );
 
-    if (false) {
-        /*---------------
-         *  VOLUME
-         *---------------*/
-        $chart[] = array(
-        	'data'    => $sellListings['cnt'],
-        	'name'    => "Sell Listings Volume",
-        	'visible' => false,
-            'yAxis'   => 1,
-            'type'    => 'column',
-        );
-        $chart[] = array(
-        	'data'    => $sellListings['daily_cnt'],
-        	'name'    => "Sell Listings Volume Daily Avg",
-        	'visible' => true,
-            'yAxis'   => 1,
-            'type'    => 'column',
-        );
-        $chart[] = array(
-        	'data'    => $buyListings['cnt'],
-        	'name'    => "Buy Listings Volume",
-        	'visible' => false,
-            'yAxis'   => 1,
-            'type'    => 'column',
-        );
-        $chart[] = array(
-        	'data'    => $buyListings['daily_cnt'],
-        	'name'    => "Buy Listings Volume Daily Avg",
-        	'visible' => true,
-            'yAxis'   => 1,
-            'type'    => 'column',
-        );
-    }
+    /*---------------
+     *  VOLUME SELL
+     *---------------*/
+    $sellListings = DatasetManager::getInstance()->getItemVolumeDataset($item, ItemVolumeDataset::TYPE_SELL_LISTING);
+    $chart[] = array(
+        'data'     => $sellListings->getNoMvAvgDataForChart(),
+    	'name'    => "Sell Listings Volume",
+    	'visible' => false,
+        'yAxis'   => 1,
+        'type'    => 'column',
+    );
+    $chart[] = array(
+        'data'     => $sellListings->getDailyMvAvgDataForChart(),
+    	'name'    => "Sell Listings Volume 1 Day Mv Avg",
+    	'visible' => true,
+        'yAxis'   => 1,
+        'type'    => 'column',
+    );
+
+    /*---------------
+     *  VOLUME BUY
+     *---------------*/
+    $buyListings = DatasetManager::getInstance()->getItemVolumeDataset($item, ItemVolumeDataset::TYPE_BUY_LISTING);
+    $chart[] = array(
+        'data'     => $buyListings->getNoMvAvgDataForChart(),
+    	'name'    => "Buy Listings Volume",
+    	'visible' => false,
+        'yAxis'   => 1,
+        'type'    => 'column',
+    );
+    $chart[] = array(
+        'data'     => $buyListings->getDailyMvAvgDataForChart(),
+    	'name'    => "Buy Listings Volume 1 Day Mv Avg",
+    	'visible' => true,
+        'yAxis'   => 1,
+        'type'    => 'column',
+    );
 
     $content = json_encode($chart);
 
