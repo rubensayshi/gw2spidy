@@ -73,7 +73,7 @@ sub vcl_fetch {
 	            set beresp.ttl = 15m;
 	        }
 	        if (req.url ~ "^api/v.*/.+/item-search/") {
-	            set beresp.ttl = 1h;
+	            set beresp.ttl = 15m;
 	        }
 	        if (req.url ~ "^api/v.*/.+/gem-price" || req.url ~ "^api/v.*/.+/gem-history/") {
 	            set beresp.ttl = 15m;
