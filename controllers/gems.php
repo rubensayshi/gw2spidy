@@ -52,7 +52,7 @@ $app->get("/gem_chart", function() use($app) {
 
     /*---------------------
      *  BUY GEMS WITH GOLD
-    *----------------------*/
+     *----------------------*/
     $goldToGem = DatasetManager::getInstance()->getGemDataset(GemExchangeDataset::TYPE_GOLD_TO_GEM);
     $chart[] = array(
         'data'     => $goldToGem->getNoMvAvgDataForChart(),
@@ -72,31 +72,29 @@ $app->get("/gem_chart", function() use($app) {
     	'visible'  => false,
         'gw2money' => true,
     );
-    if (false) {
 
-        /*---------------------
-         *  SELL GEMS FOR GOLD
-        *----------------------*/
-        $goldToGem = new GemExchangeDataset(GemExchangeDataset::TYPE_GOLD_TO_GEM);
-        $chart[] = array(
-            'data'     => $goldToGem->getRawDataForChart(),
-            'name'     => "Gems to Gold Raw Data",
-        	'visible'  => true,
-            'gw2money' => true,
-        );
-        $chart[] = array(
-            'data'     => $goldToGem->getDailyMvAvgDataForChart(),
-        	'name'     => "Gems to Gold Daily Average",
-        	'visible'  => true,
-            'gw2money' => true,
-        );
-        $chart[] = array(
-            'data'     => $goldToGem->getWeeklyMvAvgDataForChart(),
-        	'name'     => "Gems to Gold Weekly Average",
-        	'visible'  => false,
-            'gw2money' => true,
-        );
-    }
+    /*---------------------
+     *  SELL GEMS FOR GOLD
+     *----------------------*/
+    $gemToGold = DatasetManager::getInstance()->getGemDataset(GemExchangeDataset::TYPE_GEM_TO_GOLD);
+    $chart[] = array(
+        'data'     => $gemToGold->getNoMvAvgDataForChart(),
+        'name'     => "Gems to Gold Raw Data",
+    	'visible'  => true,
+        'gw2money' => true,
+    );
+    $chart[] = array(
+        'data'     => $gemToGold->getDailyMvAvgDataForChart(),
+    	'name'     => "Gems to Gold Daily Average",
+    	'visible'  => true,
+        'gw2money' => true,
+    );
+    $chart[] = array(
+        'data'     => $gemToGold->getWeeklyMvAvgDataForChart(),
+    	'name'     => "Gems to Gold Weekly Average",
+    	'visible'  => false,
+        'gw2money' => true,
+    );
 
     $content = json_encode($chart);
 

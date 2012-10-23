@@ -19,9 +19,9 @@ class GemExchangeDataset {
     /*
      * just easy constants to make the code more readable
      */
-    const TS_ONE_HOUR = self::TS_ONE_HOUR;
-    const TS_ONE_DAY  = self::TS_ONE_DAY;
-    const TS_ONE_WEEK = self::TS_ONE_WEEK;
+    const TS_ONE_HOUR = 3600;
+    const TS_ONE_DAY  = 86400;
+    const TS_ONE_WEEK = 604800;
 
     /**
      * one of the self::TYPE_ constants
@@ -109,9 +109,9 @@ class GemExchangeDataset {
         }
 
         // fake 5 days ago so we can test new ticks being added
-        $fake = new DateTime();
-        $fake->sub(new DateInterval('P5D'));
-        $q->filterByRateDatetime($fake, \Criteria::LESS_THAN);
+        // $fake = new DateTime();
+        // $fake->sub(new DateInterval('P5D'));
+        // $q->filterByRateDatetime($fake, \Criteria::LESS_THAN);
 
         // ensure ordered data, makes our life a lot easier
         $q->orderByRateDatetime(\Criteria::ASC);
@@ -230,12 +230,15 @@ class GemExchangeDataset {
                         unset($this->noMvAvg[$tickTs]);
                         unset($this->dailyMvAvg[$tickTs]);
                         unset($this->weeklyMvAvg[$tickTs]);
+                        unset($this->pastWeek[$tickTs]);
                     }
 
                     // insert hourly ticks
                     $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyNoMvAvg[$thisTsHour]);
                     $this->dailyMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyDailyMvAvg[$thisTsHour]);
                     $this->weeklyMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyWeeklyMvAvg[$thisTsHour]);
+                    $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyNoMvAvg[$thisTsHour]);
+                    $this->pastWeek[$thisTsHour] = $this->hourlyNoMvAvg[$thisTsHour];
                     $this->tsByHour[$thisTsHour] = array($thisTsHour);
                 }
 
