@@ -136,6 +136,26 @@ class v090APIControllerProvider implements ControllerProviderInterface {
                 $q->filterByItemType($type);
             }
 
+            if (($sortTrending = $request->get('sort_trending')) && in_array($sortTrending, array('sale', 'offer'))) {
+                $q->filterBySaleAvailability(200, \Criteria::GREATER_THAN);
+                $q->filterByOfferAvailability(200, \Criteria::GREATER_THAN);
+                if ($sortTrending == 'sale') {
+                    $q->orderBySalePriceChangeLastHour(\Criteria::DESC);
+                } else if ($sortTrending == 'offer') {
+                    $q->orderByOfferPriceChangeLastHour(\Criteria::DESC);
+                }
+            }
+
+            if ($filterIds = $request->get('filter_ids')) {
+                $filterIds = array_unique(array_filter(array_map('intval', explode(",", $filterIds))));
+
+                if (count($filterIds) > $itemsperpage) {
+                    return $app->abort(400, "More IDs in filter_ids than allowed.");
+                }
+
+                $q->filterByDataId($filterIds, \Criteria::IN);
+            }
+
             $total = $q->count();
 
             if ($total > 0) {
@@ -255,13 +275,24 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          *  route /item-search
          * ----------------------
          */
-        $controllers->get("/{format}/item-search/{name}", function(Request $request, $format, $name) use($app) {
-
-            $itemsperpage = 10;
+        $controllers->get("/{format}/item-search/{name}/{page}", function(Request $request, $format, $name, $page) use($app) {
+            $itemsperpage = 50;
+            $page = intval($page > 0 ? $page : 1);
 
             $q = ItemQuery::create();
             $q->filterByName("%{$name}%");
-            $q->limit($itemsperpage);
+
+            $total = $q->count();
+
+            if ($total > 0) {
+                $lastpage = ceil($total / $itemsperpage);
+            } else {
+                $page     = 1;
+                $lastpage = 1;
+            }
+
+            $q->offset($itemsperpage * ($page-1))
+              ->limit($itemsperpage);
 
             $count = $q->count();
 
@@ -271,13 +302,17 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             }
 
             $response = array(
-                    'count'     => $count,
-                    'results'   => $results
+                'count'     => $count,
+                'page'      => $page,
+                'last_page' => $lastpage,
+                'total'     => $total,
+                'results'   => $results
             );
 
             return $app['api-helper']->outputResponse($request, $response, $format, "item-search-{$page}");
         })
-        ->assert('format', 'csv|json');
+        ->assert('format', 'csv|json')
+        ->assert('page', '\d*');
 
         /**
          * ----------------------
