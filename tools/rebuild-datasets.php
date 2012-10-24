@@ -25,9 +25,11 @@ if (isset($argv[1], $argv[2])) {
 }
 
 $dm = DatasetManager::getInstance();
-
 $q = ItemQuery::create();
-$q->where("data_id % {$modmod} = {$modnum}");
+
+if ($modnum && $modmod) {
+    $q->where("data_id % {$modmod} = {$modnum}");
+}
 
 var_dump(mytime());
 
