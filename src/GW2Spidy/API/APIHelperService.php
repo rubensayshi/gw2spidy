@@ -67,7 +67,9 @@ class APIHelperService {
     }
 
     public function outputResponseJSON(Request $request, $response) {
-        return json_encode($response);
+        $json = json_encode($response);
+
+        return ($jsonp = $request->get('jsonp')) ? "{$jsonp}({$json})" : $json;
     }
 
     public function buildItemDataArray(Item $item) {
@@ -94,7 +96,7 @@ class APIHelperService {
 
     public function buildRecipeDataArray(Recipe $recipe) {
         $data = array(
-            "date_id"              => $recipe->getDataId(),
+            "data_id"              => $recipe->getDataId(),
             "name"                 => $recipe->getName(),
             "result_count"         => $recipe->getCount(),
         	"result_item_data_id"  => $recipe->getResultItemId(),
