@@ -15,6 +15,10 @@ class DatasetManager extends Singleton {
         $this->cache = RedisCacheHandler::getInstance('datasets', true);
     }
 
+    public function setUseCache($useCache = true) {
+        $this->useCache = false;
+    }
+
     public function getGemDataset($type) {
         $cacheKey = "gem_{$type}";
         $dataset  = $this->cache->get($cacheKey);

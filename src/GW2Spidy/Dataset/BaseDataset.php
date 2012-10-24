@@ -31,6 +31,13 @@ abstract class BaseDataset {
     protected $updated = false;
 
     /**
+     * boolean to check weither or not the dataset is completely up-to-date
+     *
+     * @var boolean $uptodate
+     */
+    public $uptodate = false;
+
+    /**
      * threshold from where we start aggregating by hour
      *
      * @var  int    $hourlyThreshold

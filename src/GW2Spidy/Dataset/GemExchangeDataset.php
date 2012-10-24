@@ -40,7 +40,7 @@ class GemExchangeDataset extends BaseDataset {
             return;
         }
 
-        $limit = 2000;
+        $limit = 5000;
         $end   = null;
         $start = $this->lastUpdated;
 
@@ -74,7 +74,7 @@ class GemExchangeDataset extends BaseDataset {
             $this->processTick($date, $rate);
         }
 
-        if (count($rates) == $limit) {
+        if (!($this->uptodate = count($rates) != $limit)) {
             $app = Application::getInstance();
             $app['no_cache'] = true;
         }

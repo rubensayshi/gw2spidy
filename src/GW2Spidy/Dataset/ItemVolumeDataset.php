@@ -22,7 +22,7 @@ class ItemVolumeDataset extends ItemDataset {
             return;
         }
 
-        $limit = 2000;
+        $limit = 5000;
         $end   = null;
         $start = $this->lastUpdated;
 
@@ -59,7 +59,7 @@ class ItemVolumeDataset extends ItemDataset {
             $this->processTick($date, $rate);
         }
 
-        if (count($listings) == $limit) {
+        if (!($this->uptodate = count($listings) != $limit)) {
             $app = Application::getInstance();
             $app['no_cache'] = true;
         }

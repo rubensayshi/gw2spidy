@@ -48,7 +48,7 @@ class ItemDataset extends BaseDataset {
             return;
         }
 
-        $limit = 2000;
+        $limit = 5000;
         $end   = null;
         $start = $this->lastUpdated;
 
@@ -85,7 +85,7 @@ class ItemDataset extends BaseDataset {
             $this->processTick($date, $rate);
         }
 
-        if (count($listings) == $limit) {
+        if (!($this->uptodate = count($listings) != $limit)) {
             $app = Application::getInstance();
             $app['no_cache'] = true;
         }
