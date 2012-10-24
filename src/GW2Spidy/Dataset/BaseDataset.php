@@ -30,6 +30,13 @@ abstract class BaseDataset {
      */
     protected $updated = false;
 
+    /**
+     * threshold from where we start aggregating by hour
+     *
+     * @var  int    $hourlyThreshold
+     */
+    protected $hourlyThreshold = self::TS_ONE_DAY;
+
     /*
      * final datasets used for output
      */
@@ -151,8 +158,8 @@ abstract class BaseDataset {
              * aggregate ticks older then 24 hours into 1 tick per hour (averaged out for that hour)
              *  we do this exactly the same for all datasets so that they all align nicely
              */
-            $thresMin = self::tsHour($prevTs - self::TS_ONE_DAY);
-            $thresMax = self::tsHour($ts - self::TS_ONE_DAY);
+            $thresMin = self::tsHour($prevTs - $this->hourlyThreshold);
+            $thresMax = self::tsHour($ts - $this->hourlyThreshold);
             while ($thresMin < $thresMax) {
                 $thisTsHour = self::tsHour($thresMin);
                 $thisHour   = array();

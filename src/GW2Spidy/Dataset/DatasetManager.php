@@ -45,6 +45,21 @@ class DatasetManager extends Singleton {
         return $dataset;
     }
 
+    public function getItemVolumeDataset(Item $item, $type) {
+        $cacheKey = "item_v_{$item->getDataId()}_{$type}";
+        $dataset  = $this->cache->get($cacheKey);
+
+        if (!$this->useCache || !$dataset) {
+            $dataset = new ItemVolumeDataset($item->getDataId(), $type);
+        }
+
+        $dataset->updateDataset();
+
+        $this->cache->set($cacheKey, $dataset);
+
+        return $dataset;
+    }
+
     public function purgeCache() {
         $this->cache->purge();
     }
