@@ -79,7 +79,10 @@ sub vcl_fetch {
 	        if (req.url ~ "^api/v.*/.+/items" || req.url ~ "^api/v.*/.+/recipes") {
 	            set beresp.ttl = 24h;
 	        }
-	        if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/" || req.url ~ "^api/v.*/.+/listings/") {
+            if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/") {
+                set beresp.ttl = 3m;
+            }
+	        if (req.url ~ "^api/v.*/.+/listings/") {
 	            set beresp.ttl = 15m;
 	        }
 	        if (req.url ~ "^api/v.*/.+/item-search/") {
