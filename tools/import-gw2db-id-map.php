@@ -50,11 +50,12 @@ foreach ($data as $i => $row) {
     if ($stmt->rowCount() <= 0 && strpos($row['Name'], "Recipe: ") === false) {
         if (ItemQuery::create()->filterByDataId($row['DataID'])->count() == 0) {
 
-            if (!GW2DBItemArchiveQuery::create()->findPk($row['ID'])) {
+            if (!($i = GW2DBItemArchiveQuery::create()->findPk($row['ID']))) {
                 $i = new GW2DBItemArchive();
-                $i->fromArray($row, BasePeer::TYPE_FIELDNAME);
-                $i->save();
             }
+
+            $i->fromArray($row, BasePeer::TYPE_FIELDNAME);
+            $i->save();
         }
     }
 }
