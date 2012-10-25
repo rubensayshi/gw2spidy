@@ -23,6 +23,16 @@ sub vcl_fetch {
     set beresp.grace = 1h;
 
     unset beresp.http.expires;
+    
+    if (beresp.http.x-varnish-no-cache) {
+       set beresp.ttl = 0s;
+       return (deliver);
+    }
+    
+    if (beresp.status > 404 || beresp.status == 301 || beresp.status == 500) {
+       set beresp.ttl = 1m;
+       return (deliver);
+    }
 
     # homepage, trending and gem data
     if (req.url ~ "^/$") {
