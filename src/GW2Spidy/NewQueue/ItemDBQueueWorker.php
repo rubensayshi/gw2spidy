@@ -59,6 +59,10 @@ class ItemDBQueueWorker extends BaseWorker {
             if (($p = Functions::almostEqualCompare($updateItemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
                 $item->fromArray($updateItemData, \BasePeer::TYPE_FIELDNAME);
 
+                if (isset($updateItemData['level'])) {
+                    $item->setRestrictionLevel($updateItemData['level']);
+                }
+
                 if ($type) {
                     $item->setItemType($type);
                 }
@@ -71,6 +75,10 @@ class ItemDBQueueWorker extends BaseWorker {
         } else {
             $item = new Item();
             $item->fromArray($updateItemData, \BasePeer::TYPE_FIELDNAME);
+
+            if (isset($updateItemData['level'])) {
+                $item->setRestrictionLevel($updateItemData['level']);
+            }
 
             if ($type) {
                 $item->setItemType($type);
