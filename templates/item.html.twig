@@ -9,7 +9,21 @@
 	<div style="float: left;">
 		{% include "item_snippet.html.twig" with {'item': item, 'tag': 'div'} %}
 	</div>
-    <a target="_blank" title="View this item on GW2DB" data-notooltip="true" style="display: block; float: right; text-align: center; position: relative; top: -20px; right: -30px;" href="{{ gw2db(item) }}">
+    <div style="float: right;">
+        {% if app['google_ad_client'] %}
+        <script type="text/javascript">
+        <!--
+        google_ad_client = "{{ app['google_ad_client'] }}";
+        /* sidebar - bottom */
+        google_ad_slot = "4271138383";
+        google_ad_width = 200;
+        google_ad_height = 200;
+        //-->
+        </script>
+        <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+        {% endif %}
+    </div>
+    <a target="_blank" title="View this item on GW2DB" data-notooltip="true" style="display: block; float: right; text-align: center; position: relative; top: -20px; right: 0px;" href="{{ gw2db(item) }}">
     	<img src="{{ versioned_asset('/assets/img/powered_gw2db_onLight.png') }}" /><br />
     	<small style="font-size: 9px;">click to open gw2db</small>
     </a>
