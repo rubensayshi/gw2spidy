@@ -15,7 +15,7 @@ sudo apt-get -y install mysql-server-5.5
 # ##########
 mysqladmin -uroot -proot create gw2spidy
 mysql -uroot -proot gw2spidy < config/schema.sql
-echo -e"myenv\ndev\ndefault" > config/cnf/env
+echo -e "myenv\ndev\ndefault" > config/cnf/env
 cp config/cnf/example-custom-cnf.json config/cnf/myenv.json
 
 # ##########
