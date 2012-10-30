@@ -39,7 +39,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 
 // register custom twig extensions
 $app['twig']->addExtension(new GenericHelpersExtension());
-$app['twig']->addExtension(new VersionedAssetsRoutingExtension());
+$app['twig']->addExtension(new VersionedAssetsRoutingExtension($app['url_generator']));
 $app['twig']->addExtension(new GW2MoneyExtension());
 $app['twig']->addExtension(new ItemListRoutingExtension($app['url_generator']));
 
