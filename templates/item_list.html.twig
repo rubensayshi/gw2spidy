@@ -56,7 +56,8 @@
    --------------- #}
 {% macro th_sortable(title, key, current_sort, current_sort_order, parent_context, extra_classes) %}
     {# set the inverted order if we're already sorting by this key #}
-    {% set sort_order = current_sort == key ? (current_sort_order == 'desc' ? 'asc' : 'desc') : 'asc' %}
+    {% set default_sort = key in ['name'] ? 'asc' : 'desc' %}
+    {% set sort_order = current_sort == key ? (current_sort_order == 'desc' ? 'asc' : 'desc') : default_sort %}
 
     <th class="{{ key }} {{ extra_classes }}">
         <a href="{{ item_list_path(parent_context, {('sort_' ~ key): sort_order}) }}">
@@ -93,6 +94,8 @@
             <th class="type">Type</th>
             {{ _self.th_sortable('Min Sale Offer', 'min_sale_unit_price', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Max Buy Offer', 'max_offer_unit_price', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Sale Avail', 'sale_availability', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Offer Avail', 'offer_availability', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Margin', 'margin', current_sort, current_sort_order, _context) }}
         </thead>
         {% for item in items %}
@@ -115,6 +118,8 @@
                 </td>
                 <td class="min_sale_unit_price" title="{{ item.saleAvailability }} sales available">{{ item.minSaleUnitPrice | gw2money }}</td>
                 <td class="max_offer_unit_price" title="{{ item.offerAvailability }} offers available">{{ item.maxOfferUnitPrice | gw2money }}</td>
+                <td class="min_sale_unit_price">{{ item.saleAvailability }}</td>
+                <td class="max_offer_unit_price">{{ item.offerAvailability }}</td>
                 <td class="margin">{{ item.margin | gw2money }}</td>
             </tr>
         {% endfor %}
