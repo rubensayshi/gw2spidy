@@ -77,7 +77,7 @@ sub vcl_fetch {
 	            set beresp.ttl = 24h;
 	        }
 	        if (req.url ~ "^api/v.*/.+/items" || req.url ~ "^api/v.*/.+/recipes") {
-	            set beresp.ttl = 24h;
+	            set beresp.ttl = 15m;
 	        }
             if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/") {
                 set beresp.ttl = 3m;
