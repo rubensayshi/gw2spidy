@@ -118,7 +118,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          *  route /items
          * ----------------------
          */
-        $controllers->get("/{format}/items/{typeId}/{page}", function(Request $request, $format, $typeId, $page) use($app) {
+        $controllers->match("/{format}/items/{typeId}/{page}", function(Request $request, $format, $typeId, $page) use($app) {
 
             $itemsperpage = 100;
             $page = intval($page > 0 ? $page : 1);
