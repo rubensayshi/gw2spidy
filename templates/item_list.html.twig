@@ -70,37 +70,39 @@
 {% endmacro %}
 
 {% block content %}
-    <div style="float: right;">
-        {% if app['google_ad_client'] %}
-        <script type="text/javascript">
-        <!--
-        google_ad_client = "{{ app['google_ad_client'] }}";
-        /* Medium Rectangle (300 x 250) */
-        google_ad_slot = "5148573296";
-        google_ad_width = 300;
-        google_ad_height = 250;
-        //-->
-        </script>
-        <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-        {% endif %}
-    </div>
-    {{ _self.pager(page, lastpage, _context) }}
-
-    <div class="form-horizontal" style="float: left; margin-top: -9px;">
-        <div class="control-group">
-            <label class="control-label" for="rarity_filter">Filter by rarity:</label>
-            <div class="controls">
-                <select name="rarity_filter" id="rarity_filter">
-                    <option value="" data-href="{{ item_list_path(_context, {rarity_filter: null}) }}">No filter</option>
-                    {% for rarity, rarityname in {1: 'Common', 2: 'Fine', 3: 'Masterwork', 4: 'Rare', 5: 'Exotic', 6: 'Legendary'} %}
-                        <option class="{{ rarityname | rarity_css_class }}" {% if rarity == rarity_filter %}selected{% endif %} value="{{ rarity }}" data-href="{{ item_list_path(_context, {rarity_filter: rarity}) }}">{{ rarityname }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+    <div class="clearfix">
+        <div style="float: right;">
+            {% if app['google_ad_client'] %}
+            <script type="text/javascript">
+            <!--
+            google_ad_client = "{{ app['google_ad_client'] }}";
+            /* Medium Rectangle (300 x 250) */
+            google_ad_slot = "5148573296";
+            google_ad_width = 300;
+            google_ad_height = 250;
+            //-->
+            </script>
+            <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+            {% endif %}
         </div>
-        <div class="control-group">
-            <div class="controls">
-                <p>More filters coming soon ...</p>
+        {{ _self.pager(page, lastpage, _context) }}
+
+        <div class="form-horizontal" style="float: left; margin-top: -9px;">
+            <div class="control-group">
+                <label class="control-label" for="rarity_filter">Filter by rarity:</label>
+                <div class="controls">
+                    <select name="rarity_filter" id="rarity_filter">
+                        <option value="" data-href="{{ item_list_path(_context, {rarity_filter: null}) }}">No filter</option>
+                        {% for rarity, rarityname in {1: 'Common', 2: 'Fine', 3: 'Masterwork', 4: 'Rare', 5: 'Exotic', 6: 'Legendary'} %}
+                            <option class="{{ rarityname | rarity_css_class }}" {% if rarity == rarity_filter %}selected{% endif %} value="{{ rarity }}" data-href="{{ item_list_path(_context, {rarity_filter: rarity}) }}">{{ rarityname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <p>More filters coming soon ...</p>
+                </div>
             </div>
         </div>
     </div>
