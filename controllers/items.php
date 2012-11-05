@@ -122,6 +122,7 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
      *  SELL LISTINGS
     *----------------*/
     $sellListings = DatasetManager::getInstance()->getItemDataset($item, ItemDataset::TYPE_SELL_LISTING);
+    $sellListings = DatasetManager::getInstance()->getItemVolumeDataset($item, ItemVolumeDataset::TYPE_SELL_LISTING);
     $chart[] = array(
         'data'     => $sellListings->getNoMvAvgDataForChart(),
         'name'     => "Sell Listings Raw Data",
@@ -135,16 +136,18 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
         'gw2money' => true,
     );
     $chart[] = array(
-        'data'     => $sellListings->getWeeklyMvAvgDataForChart(),
-        'name'     => "Sell Listings 7 Day Mv Avg",
-        'visible'  => false,
-        'gw2money' => true,
+        'data'     => $sellListings->getNoMvAvgDataForChart(),
+    	'name'    => "Sell Listings Volume",
+    	'visible' => false,
+        'yAxis'   => 1,
+        'type'    => 'column',
     );
 
     /*----------------
      *  BUY LISTINGS
      *----------------*/
     $buyListings = DatasetManager::getInstance()->getItemDataset($item, ItemDataset::TYPE_BUY_LISTING);
+    $buyListings = DatasetManager::getInstance()->getItemVolumeDataset($item, ItemVolumeDataset::TYPE_BUY_LISTING);
     $chart[] = array(
         'data'     => $buyListings->getNoMvAvgDataForChart(),
         'name'     => "Buy Listings Raw Data",
@@ -158,23 +161,16 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
         'gw2money' => true,
     );
     $chart[] = array(
-        'data'     => $buyListings->getWeeklyMvAvgDataForChart(),
-    	'name'     => "Buy Listings 7 Day Mv Avg",
-    	'visible'  => false,
-        'gw2money' => true,
-    );
-
-    /*---------------
-     *  VOLUME SELL
-     *---------------*/
-    $sellListings = DatasetManager::getInstance()->getItemVolumeDataset($item, ItemVolumeDataset::TYPE_SELL_LISTING);
-    $chart[] = array(
-        'data'     => $sellListings->getNoMvAvgDataForChart(),
-    	'name'    => "Sell Listings Volume",
+        'data'     => $buyListings->getNoMvAvgDataForChart(),
+    	'name'    => "Buy Listings Volume",
     	'visible' => false,
         'yAxis'   => 1,
         'type'    => 'column',
     );
+
+    /*---------------
+     *  MV AVG VOLUME SELL
+     *---------------*/
     $chart[] = array(
         'data'     => $sellListings->getDailyMvAvgDataForChart(),
     	'name'    => "Sell Listings Volume 1 Day Mv Avg",
@@ -184,16 +180,8 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
     );
 
     /*---------------
-     *  VOLUME BUY
+     *  MV AVG VOLUME BUY
      *---------------*/
-    $buyListings = DatasetManager::getInstance()->getItemVolumeDataset($item, ItemVolumeDataset::TYPE_BUY_LISTING);
-    $chart[] = array(
-        'data'     => $buyListings->getNoMvAvgDataForChart(),
-    	'name'    => "Buy Listings Volume",
-    	'visible' => false,
-        'yAxis'   => 1,
-        'type'    => 'column',
-    );
     $chart[] = array(
         'data'     => $buyListings->getDailyMvAvgDataForChart(),
     	'name'    => "Buy Listings Volume 1 Day Mv Avg",
