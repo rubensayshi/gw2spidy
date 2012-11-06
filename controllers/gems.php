@@ -66,12 +66,6 @@ $app->get("/gem_chart", function() use($app) {
     	'visible'  => true,
         'gw2money' => true,
     );
-    $chart[] = array(
-        'data'     => $goldToGem->getWeeklyMvAvgDataForChart(),
-    	'name'     => "Gold To Gems 7 Day Mv Avg",
-    	'visible'  => false,
-        'gw2money' => true,
-    );
 
     /*---------------------
      *  SELL GEMS FOR GOLD
@@ -87,12 +81,6 @@ $app->get("/gem_chart", function() use($app) {
         'data'     => $gemToGold->getDailyMvAvgDataForChart(),
     	'name'     => "Gems to Gold 1 Day Mv Avg",
     	'visible'  => true,
-        'gw2money' => true,
-    );
-    $chart[] = array(
-        'data'     => $gemToGold->getWeeklyMvAvgDataForChart(),
-    	'name'     => "Gems to Gold 7 Day Mv Avg",
-    	'visible'  => false,
         'gw2money' => true,
     );
 

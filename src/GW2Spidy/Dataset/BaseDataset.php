@@ -49,7 +49,6 @@ abstract class BaseDataset {
      */
     protected $noMvAvg         = array();
     protected $dailyMvAvg      = array();
-    protected $weeklyMvAvg     = array();
 
     /**
      * the timestamps grouped by their hour
@@ -62,7 +61,6 @@ abstract class BaseDataset {
      */
     protected $hourlyNoMvAvg     = array();
     protected $hourlyDailyMvAvg  = array();
-    protected $hourlyWeeklyMvAvg = array();
 
     /*
      * cache datasets to avoid having to filter the whole dataset all the time
@@ -115,9 +113,6 @@ abstract class BaseDataset {
         // add to past 24 hours
         $this->past24Hours[$ts] = $rate;
 
-        // add to past 24 hours
-        $this->pastWeek[$ts] = $rate;
-
         /*
          * we process the gap between the previous tick and our tick
          * since everything before the previous tick has already been processed!
@@ -143,25 +138,6 @@ abstract class BaseDataset {
             }
 
             /*
-             * remove ticks from the pastWeek cache if they're older then a week
-             *  but younger then what the previous tick should have already removed
-             */
-            $thresMin = self::tsHour($prevTs - self::TS_ONE_WEEK);
-            $thresMax = self::tsHour($ts - self::TS_ONE_WEEK);
-            while ($thresMin < $thresMax) {
-                $thisTsHour = self::tsHour($thresMin);
-                $thisHour   = array();
-
-                if (isset($this->tsByHour[$thisTsHour])) {
-                    foreach (array_unique($this->tsByHour[$thisTsHour]) as $tickTs) {
-                        unset($this->pastWeek[$tickTs]);
-                    }
-                }
-
-                $thresMin += self::TS_ONE_HOUR;
-            }
-
-            /*
              * aggregate ticks older then 24 hours into 1 tick per hour (averaged out for that hour)
              *  we do this exactly the same for all datasets so that they all align nicely
              */
@@ -175,30 +151,23 @@ abstract class BaseDataset {
                     // (re)calculate the average of this ticks hour
                     $hourNoMvAvg = array();
                     $hourDailyMvAvg = array();
-                    $hourWeeklyMvAvg = array();
                     foreach ($this->tsByHour[$thisTsHour] as $tickTs) {
                         $hourNoMvAvg[] = $this->noMvAvg[$tickTs][1];
                         $hourDailyMvAvg[] = $this->dailyMvAvg[$tickTs][1];
-                        $hourWeeklyMvAvg[] = $this->weeklyMvAvg[$tickTs][1];
                     }
                     $this->hourlyNoMvAvg[$thisTsHour] = array_sum($hourNoMvAvg) / count($hourNoMvAvg);
                     $this->hourlyDailyMvAvg[$thisTsHour] = array_sum($hourDailyMvAvg) / count($hourDailyMvAvg);
-                    $this->hourlyWeeklyMvAvg[$thisTsHour] = array_sum($hourWeeklyMvAvg) / count($hourWeeklyMvAvg);
 
                     // remove old ticks
                     foreach (array_unique($this->tsByHour[$thisTsHour]) as $tickTs) {
                         unset($this->noMvAvg[$tickTs]);
                         unset($this->dailyMvAvg[$tickTs]);
-                        unset($this->weeklyMvAvg[$tickTs]);
-                        unset($this->pastWeek[$tickTs]);
                     }
 
                     // insert hourly ticks
                     $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyNoMvAvg[$thisTsHour]);
                     $this->dailyMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyDailyMvAvg[$thisTsHour]);
-                    $this->weeklyMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyWeeklyMvAvg[$thisTsHour]);
                     $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyNoMvAvg[$thisTsHour]);
-                    $this->pastWeek[$thisTsHour] = $this->hourlyNoMvAvg[$thisTsHour];
                     $this->tsByHour[$thisTsHour] = array($thisTsHour);
                 }
 
@@ -210,12 +179,6 @@ abstract class BaseDataset {
         if (count($this->past24Hours)) {
             $dailyMvAvg = array_sum($this->past24Hours) / count($this->past24Hours);
             $this->dailyMvAvg[$ts] = array($ts * 1000, $dailyMvAvg);
-        }
-
-        // calculate new weekly mv avg tick
-        if (count($this->pastWeek)) {
-            $weeklyMvAvg = array_sum($this->pastWeek) / count($this->pastWeek);
-            $this->weeklyMvAvg[$ts] = array($ts * 1000, $weeklyMvAvg);
         }
     }
 
@@ -235,20 +198,11 @@ abstract class BaseDataset {
         return array_values($this->dailyMvAvg);
     }
 
-    public function getWeeklyMvAvgDataForChart() {
-        $this->updateDataset();
-
-        ksort($this->weeklyMvAvg);
-
-        return array_values($this->weeklyMvAvg);
-    }
-
     /**
      * clean up any interal cache vars we had
      *  and mark updated = false so next time the object is retrieved from cache it will be updated again
      */
     public function __wakeup() {
-        $this->hourlyWeeklyMvAvg = array();
         $this->hourlyDailyMvAvg = array();
         $this->hourlyNoMvAvg = array();
         $this->updated = false;

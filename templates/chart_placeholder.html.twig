@@ -2,12 +2,14 @@
 {% set title = title is defined ? title : '' %}
 {% set title = title == '' and item is defined ? item.name : title %}
 {% set hideLegend = hideLegend is defined ? hideLegend : false %}
+{% set legendItemWidth = legendItemWidth is defined ? legendItemWidth : 265 %}
 
 <div id="container" style="height: 500px; width: 100%; min-width: 450px;"></div>
 <script type="text/javascript">
     var chart = new GW2SpidyChart('{{ url }}', $('#container'), {
         legend : {
-            enabled : {{ hideLegend ? 'false' : 'true' }}
+            enabled : {{ hideLegend ? 'false' : 'true' }},
+            itemWidth : {{ legendItemWidth }},
         }
     });
 </script>
