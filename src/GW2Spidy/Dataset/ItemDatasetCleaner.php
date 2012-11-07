@@ -59,14 +59,16 @@ class ItemDatasetCleaner {
         $count = 0;
         $con = \Propel::getConnection();
 
-        $q = $this->type == self::TYPE_SELL_LISTING ? SellListingQuery::create() : BuyListingQuery::create();
-        $q->select(array('id', 'listingDatetime', 'unitPrice', 'listings', 'quantity'))
-          ->filterByItemId($this->itemId);
+        $table = $this->type == self::TYPE_SELL_LISTING ? 'sell_listing' : 'buy_listing';
+        $stmt = $con->prepare("
+                SELECT
+                    id, listing_datetime AS listingDatetime, unit_price AS unitPrice, listings, quantity
+                FROM {$table}
+                WHERE item_id = {$this->itemId}
+                ORDER BY listing_datetime ASC");
 
-        // ensure ordered data, makes our life a lot easier
-        $q->orderByListingDatetime(\Criteria::ASC);
-
-        $listings = $q->find();
+        $stmt->execute();
+        $listings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         $ticks = array();
         $tsByHour = array();
@@ -126,6 +128,8 @@ class ItemDatasetCleaner {
 
             $count++;
         }
+
+        unset($ticks, $tsByHour);
 
         return $count;
     }

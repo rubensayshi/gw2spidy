@@ -26,6 +26,7 @@ var_dump(mytime());
 foreach ($items as $dataId) {
     $cleaner = new ItemDatasetCleaner($dataId, ItemDatasetCleaner::TYPE_SELL_LISTING);
     $count = $cleaner->clean();
+    unset($cleaner);
 
-    echo "[{$dataId}] cleaned [{$count}] in ".mytime()."\n";
+    echo "[{$dataId}] cleaned [{$count}] in ".mytime().", mem @ [".memory_get_usage(true)."] \n";
 }
