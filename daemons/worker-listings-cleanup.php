@@ -29,5 +29,5 @@ foreach ($items as $dataId) {
     unset($cleaner);
 
     echo "[{$dataId}] cleaned [{$count}] in ".mytime().", mem @ [".memory_get_usage(true)."] \n";
-    ob_flush();
+    @ob_flush();
 }

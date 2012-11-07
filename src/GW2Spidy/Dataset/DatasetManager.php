@@ -9,7 +9,7 @@ use GW2Spidy\Util\Singleton;
 
 class DatasetManager extends Singleton {
     protected $cache;
-    protected $useCache = false;
+    protected $useCache = true;
 
     public function __construct() {
         $this->cache = RedisCacheHandler::getInstance('datasets', true);
