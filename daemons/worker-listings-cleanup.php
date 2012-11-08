@@ -28,6 +28,13 @@ foreach ($items as $dataId) {
     $count = $cleaner->clean();
     unset($cleaner);
 
-    echo "[{$dataId}] cleaned [{$count}] in ".mytime().", mem @ [".memory_get_usage(true)."] \n";
+    echo "[{$dataId}][sell] cleaned [{$count}] hours in ".mytime().", mem @ [".memory_get_usage(true)."] \n";
+    @ob_flush();
+
+    $cleaner = new ItemDatasetCleaner($dataId, ItemDatasetCleaner::TYPE_BUY_LISTING);
+    $count = $cleaner->clean();
+    unset($cleaner);
+
+    echo "[{$dataId}][buy] cleaned [{$count}] hours in ".mytime().", mem @ [".memory_get_usage(true)."] \n";
     @ob_flush();
 }
