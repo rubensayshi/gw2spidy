@@ -9,24 +9,30 @@ class RedisCacheHandler {
     protected $enabled = true;
     protected $baseKey;
     protected $serialize;
+    protected $gzip;
 
     protected $client;
 
-    public function __construct($key, $serialize = true) {
+    const FLAG_NONE = 0; // bitmask
+    const FLAG_COMPRESSION = 1; // bitmask
+    const FLAG_SERIALIZE = 2; // bitmask
+
+    public function __construct($key, $serialize = false, $gzip = false) {
         $this->client = new Client();
         $this->baseKey = substr(md5(getAppEnv()->getEnv() . $key), 0, 10);
         $this->serialize = $serialize;
+        $this->gzip = $gzip;
     }
 
     /**
      * @return RedisCacheHandler
      */
-    static public function getInstance($key, $serialize = true) {
-        if (!isset(static::$instances[$key][(int)$serialize])) {
-            static::$instances[$key][(int)$serialize] = new static($key, $serialize);
+    static public function getInstance($key, $serialize = false, $gzip = false) {
+        if (!isset(static::$instances[$key][(int)$serialize][(int)$gzip])) {
+            static::$instances[$key][(int)$serialize][(int)$gzip] = new static($key, $serialize, $gzip);
         }
 
-        return static::$instances[$key][(int)$serialize];
+        return static::$instances[$key][(int)$serialize][(int)$gzip];
     }
 
     public function getEnabled() {
@@ -38,11 +44,54 @@ class RedisCacheHandler {
     }
 
     public function returnValue($val) {
-        return $this->serialize ? unserialize($val) : $val;
+        if ($val === null || $val === false || (!$this->gzip && !$this->serialize)) {
+            return $val;
+        }
+
+        $flags = unpack("C", substr($val, 0, 1));
+        $flags = current($flags);
+
+        $val = substr($val, 1);
+
+        if ($this->gzip && $this->hasFlag($flags, self::FLAG_COMPRESSION)) {
+            $val = gzinflate($val);
+        }
+
+        if ($this->serialize && $this->hasFlag($flags, self::FLAG_SERIALIZE)) {
+            $val = unserialize($val);
+        }
+
+        return $val;
     }
 
     public function prepareValue($val) {
-        return $this->serialize ? serialize($val) : $val;
+        if ($val === null || $val === false || (!$this->gzip && !$this->serialize)) {
+            return $val;
+        }
+
+        $flags = self::FLAG_NONE;
+
+        if ($this->serialize && !is_string($val)) {
+            $val = serialize($val);
+            $this->setFlag($flags, self::FLAG_SERIALIZE);
+        }
+
+        if ($this->gzip) {
+            $val = gzdeflate($val);
+            $this->setFlag($flags, self::FLAG_COMPRESSION);
+        }
+
+        $flags = pack("C", $flags);
+
+        return $flags . $val;
+    }
+
+    private function hasFlag($flags, $flag) {
+        return ($flags & $flag) != 0;
+    }
+
+    private function setFlag(&$flags, $flag) {
+        $flags |= $flag;
     }
 
     public function decrement($key, $value = 1) {
