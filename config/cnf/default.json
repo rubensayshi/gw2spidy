@@ -15,6 +15,7 @@ cnf = {
     "chartbeat-domain"   : null,
     "google_ad_client"   : null,
     "request-language"   : "en",
+    "apc_clear_cache_host" : null,
 
     /*
      * gw2spidy settings

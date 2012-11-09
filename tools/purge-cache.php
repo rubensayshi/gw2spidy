@@ -12,7 +12,7 @@ CacheHandler::getInstance("purge")->purge();
 
 DatasetManager::getInstance()->purgeCache();
 
-if (function_exists('apc_clear_cache')) {
+if (function_exists('apc_clear_cache') && ($host = getAppConfig("apc_clear_cache_host"))) {
     $hash = md5(uniqid());
     $targetDir = dirname(dirname(__FILE__)) . "/webroot/tmp";
     $target = "{$targetDir}/{$hash}.php";
@@ -23,7 +23,7 @@ if (function_exists('apc_clear_cache')) {
 
     copy(dirname(__FILE__) . "/clear_apc_cache.php", $target);
 
-    $url = "http://localhost/tmp/{$hash}.php";
+    $url = "http://{$host}/tmp/{$hash}.php";
     $result = json_decode(file_get_contents($url), true);
 
     if (isset($result['success']) && $result['success']) {
