@@ -17,7 +17,7 @@
         calculate how many pages we can display before and after the curently active page
          - add a [...] link (eating up 1 page number) if there's an overflow
        --------------- #}
-    {% set maxpages = 20 %}
+    {% set maxpages = 17 %}
     {% set before = ((maxpages / 2) | floor) %}
     {% set before = page <= before ? page -1 : before %}
     {% set after = maxpages - before - 1 %}

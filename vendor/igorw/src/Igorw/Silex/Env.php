@@ -34,20 +34,22 @@ class Env {
                     }
                 }
 
-                if (!$this->envs && file_exists($this->getEnvFile())) {
-                    if (!is_readable($this->getEnvFile())) {
-                        throw new \Exception("Env file is there but not readable.");
-                    }
-
-                    if ($envs = file_get_contents($this->getEnvFile())) {
-                        if ($envs = array_reverse(array_filter(array_map('trim', explode("\n", $envs))))) {
-                            $this->envs = $envs;
-
-                            $this->atemptStoreInCache($this->envs);
+                if (!$this->envs) {
+                    if (file_exists($this->getEnvFile())) {
+                        if (!is_readable($this->getEnvFile())) {
+                            throw new \Exception("Env file is there but not readable.");
                         }
+
+                        if ($envs = file_get_contents($this->getEnvFile())) {
+                            if ($envs = array_reverse(array_filter(array_map('trim', explode("\n", $envs))))) {
+                                $this->envs = $envs;
+
+                                $this->atemptStoreInCache($this->envs);
+                            }
+                        }
+                    } else {
+                        throw new \Exception("No `env` file found, read the README on how to setup the (new style) config!");
                     }
-                } else {
-                    throw new \Exception("No `env` file found, read the README on how to setup the (new style) config!");
                 }
             }
         }

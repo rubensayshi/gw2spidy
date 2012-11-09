@@ -38,10 +38,6 @@ class APIHelperService {
         } else if ($format == 'json') {
             header('Content-type: application/json');
         }
-
-        if (!$this->app['debug']) {
-            header("Content-disposition: attachment; filename={$name}.{$format}");
-        }
     }
 
     public function outputResponseCSV(Request $request, $response) {
@@ -104,6 +100,7 @@ class APIHelperService {
             "result_item_max_offer_unit_price" => $recipe->getResultItem()->getMaxOfferUnitPrice(),
             "result_item_min_sale_unit_price"  => $recipe->getResultItem()->getMinSaleUnitPrice(),
             "crafting_cost"		   => $recipe->getCost(),
+            "rating"	     	   => $recipe->getRating(),
         );
 
         return $data;
