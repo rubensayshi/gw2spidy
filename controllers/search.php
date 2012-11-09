@@ -32,7 +32,7 @@ use GW2Spidy\Util\Functions;
  */
 $app->post("/search", function (Request $request) use ($app) {
     // redirect to the GET with the search in the URL
-    return $app->redirect($app['url_generator']->generate('search', array('search' => trim($request->get('search'))));
+    return $app->redirect($app['url_generator']->generate('search', array('search' => trim($request->get('search')))));
 })
 ->bind('searchpost');
 
