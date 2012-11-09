@@ -38,10 +38,6 @@ class APIHelperService {
         } else if ($format == 'json') {
             header('Content-type: application/json');
         }
-
-        if (!$this->app['debug']) {
-            header("Content-disposition: attachment; filename={$name}.{$format}");
-        }
     }
 
     public function outputResponseCSV(Request $request, $response) {
