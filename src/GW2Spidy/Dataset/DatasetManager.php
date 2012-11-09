@@ -12,7 +12,7 @@ class DatasetManager extends Singleton {
     protected $useCache = true;
 
     public function __construct() {
-        $this->cache = RedisCacheHandler::getInstance('datasets', true, true);
+        $this->cache = RedisCacheHandler::getInstance('datasets', true);
     }
 
     public function setUseCache($useCache = true) {
