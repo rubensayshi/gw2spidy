@@ -8,11 +8,17 @@ use GW2Spidy\Util\CacheHandler;
 require dirname(__FILE__) . '/../autoload.php';
 
 // memcache is completely purged this way
-CacheHandler::getInstance("purge")->purge();
+if (array_intersect(array('-m', '--all'), $argv)) {
+    CacheHandler::getInstance("purge")->purge();
+    echo "cleared memcache \n";
+}
 
-DatasetManager::getInstance()->purgeCache();
+if (array_intersect(array('-d', '--all'), $argv)) {
+    DatasetManager::getInstance()->purgeCache();
+    echo "cleared dataset \n";
+}
 
-if (function_exists('apc_clear_cache') && ($host = getAppConfig("apc_clear_cache_host"))) {
+if (array_intersect(array('-a', '--all'), $argv) && function_exists('apc_clear_cache') && ($host = getAppConfig("apc_clear_cache_host"))) {
     $hash = md5(uniqid());
     $targetDir = dirname(dirname(__FILE__)) . "/webroot/tmp";
     $target = "{$targetDir}/{$hash}.php";
