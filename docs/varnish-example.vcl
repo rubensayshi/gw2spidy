@@ -1,4 +1,3 @@
-
 backend default {
     .host = "localhost";
     .port = "8080";
@@ -11,8 +10,13 @@ sub vcl_recv {
 
 #   error 500 "More downtime ... TP is down anyway ... need to get my shit sorted sorry ...";
 
+    # remove all the cookies \o/
     unset req.http.cookie;
-    
+
+    if (req.url ~ "^/tmp/.*\.sql\.gz$") {
+        return(pipe);
+    }
+
     if (req.url ~ "no_cache") {
         return(pipe);
     }
@@ -67,31 +71,34 @@ sub vcl_fetch {
     
     # API
     if (req.url ~ "^/api") {
-    	# the old invite-only API
-	    if (!(req.url ~ "^/api/v0.9")) {
-	        set beresp.ttl = 15m;
-	    } else {
-	        set beresp.ttl = 1h;
-	        
-	        if (req.url ~ "^api/v.*/.+/types" || req.url ~ "^api/v.*/.+/disciplines" || req.url ~ "^api/v.*/.+/rarities") {
-	            set beresp.ttl = 24h;
-	        }
-	        if (req.url ~ "^api/v.*/.+/items" || req.url ~ "^api/v.*/.+/recipes") {
-	            set beresp.ttl = 15m;
-	        }
-            if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/") {
-                set beresp.ttl = 3m;
+        # the old invite-only API
+        if (!(req.url ~ "^/api/v0.9")) {
+            set beresp.ttl = 15m;
+        } else {
+            set beresp.ttl = 1h;
+            
+            if (req.url ~ "^api/v.*/.+/types" || req.url ~ "^api/v.*/.+/disciplines" || req.url ~ "^api/v.*/.+/rarities") {
+                set beresp.ttl = 24h;
             }
-	        if (req.url ~ "^api/v.*/.+/listings/") {
-	            set beresp.ttl = 15m;
-	        }
-	        if (req.url ~ "^api/v.*/.+/item-search/") {
-	            set beresp.ttl = 15m;
-	        }
-	        if (req.url ~ "^api/v.*/.+/gem-price" || req.url ~ "^api/v.*/.+/gem-history/") {
-	            set beresp.ttl = 15m;
-	        }
-	    }
+            if (req.url ~ "^api/v.*/.+/all-items") {
+                set beresp.ttl = 5m;
+            }
+            if (req.url ~ "^api/v.*/.+/items" || req.url ~ "^api/v.*/.+/recipes") {
+                set beresp.ttl = 15m;
+            }
+            if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/") {
+                set beresp.ttl = 5m;
+            }
+            if (req.url ~ "^api/v.*/.+/listings/") {
+                set beresp.ttl = 15m;
+            }
+            if (req.url ~ "^api/v.*/.+/item-search/") {
+                set beresp.ttl = 15m;
+            }
+            if (req.url ~ "^api/v.*/.+/gem-price" || req.url ~ "^api/v.*/.+/gem-history/") {
+                set beresp.ttl = 15m;
+            }
+        }
     }
 
     if (req.http.host ~ "^beta.gw2spidy.com$" && !(req.url ~ "api")) {
