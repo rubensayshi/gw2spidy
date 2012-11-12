@@ -68,23 +68,23 @@ class APIHelperService {
         return ($jsonp = $request->get('jsonp')) ? "{$jsonp}({$json})" : $json;
     }
 
-    public function buildItemDataArray(Item $item) {
+    public function buildItemDataArray(array $item) {
         $data = array(
-            'data_id' => $item->getDataId(),
-            'name' => $item->getName(),
-            'rarity' => $item->getRarity(),
-            'restriction_level' => $item->getRestrictionLevel(),
-            'img' => $item->getImg(),
-            'type_id' => $item->getItemTypeId(),
-            'sub_type_id' => $item->getItemSubTypeId(),
-            'price_last_changed' => $this->dateAsUTCString($item->getLastPriceChanged()),
-            'max_offer_unit_price' => $item->getMaxOfferUnitPrice(),
-            'min_sale_unit_price' => $item->getMinSaleUnitPrice(),
-            'offer_availability' => $item->getOfferAvailability(),
-            'sale_availability' => $item->getSaleAvailability(),
-            'gw2db_external_id' => $item->getGW2DBExternalId(),
-            'sale_price_change_last_hour' => $item->getSalePriceChangeLastHour(),
-        	'offer_price_change_last_hour' => $item->getOfferPriceChangeLastHour(),
+            'data_id' => $item['DataId'],
+            'name' => $item['Name'],
+            'rarity' => $item['Rarity'],
+            'restriction_level' => $item['RestrictionLevel'],
+            'img' => $item['Img'],
+            'type_id' => $item['ItemTypeId'],
+            'sub_type_id' => $item['ItemSubTypeId'],
+            'price_last_changed' => $this->dateAsUTCString($item['LastPriceChanged']),
+            'max_offer_unit_price' => $item['MaxOfferUnitPrice'],
+            'min_sale_unit_price' => $item['MinSaleUnitPrice'],
+            'offer_availability' => $item['OfferAvailability'],
+            'sale_availability' => $item['SaleAvailability'],
+            'gw2db_external_id' => $item['Gw2dbExternalId'],
+            'sale_price_change_last_hour' => $item['SalePriceChangeLastHour'],
+        	'offer_price_change_last_hour' => $item['OfferPriceChangeLastHour'],
         );
 
         return $data;

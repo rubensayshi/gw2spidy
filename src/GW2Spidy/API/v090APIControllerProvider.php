@@ -115,6 +115,43 @@ class v090APIControllerProvider implements ControllerProviderInterface {
 
         /**
          * ----------------------
+         *  route /all-items
+         * ----------------------
+         */
+        $controllers->match("/{format}/all-items/{typeId}", function(Request $request, $format, $typeId) use($app) {
+            $t = microtime(true);
+            $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
+
+            if (in_array($typeId, array('all', '*all*'))) {
+                $typeId = null;
+            }
+            if (!is_null($typeId)) {
+                if (!($type = ItemTypeQuery::create()->findPk($typeId))) {
+                    return $app->abort(404, "Invalid type [{$typeId}]");
+                }
+
+                $q->filterByItemType($type);
+            }
+
+            $count = $q->count();
+
+            $results = array();
+            foreach ($q->find() as $item) {
+                $results[] = $app['api-helper']->buildItemDataArray($item);
+            }
+
+            $response = array(
+                'count'     => $count,
+                'results'   => $results
+            );
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "all-items-{$typeId}");
+        })
+        ->assert('format', 'csv|json')
+        ->assert('typeId', '\d+|\*?all\*?');
+
+        /**
+         * ----------------------
          *  route /items
          * ----------------------
          */
@@ -123,7 +160,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             $itemsperpage = 100;
             $page = intval($page > 0 ? $page : 1);
 
-            $q = ItemQuery::create();
+            $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
 
             if (in_array($typeId, array('all', '*all*'))) {
                 $typeId = null;
@@ -195,8 +232,9 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          * ----------------------
          */
         $controllers->get("/{format}/item/{dataId}", function(Request $request, $format, $dataId) use($app) {
-
-            if (!($item = ItemQuery::create()->findPk($dataId))) {
+            $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
+            $q->filterByPrimaryKey($dataId);
+            if (!($item = $q->findOne())) {
                 return $app->abort(404, "Item Not Found [{$dataId}].");
             }
 
@@ -279,7 +317,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             $itemsperpage = 50;
             $page = intval($page > 0 ? $page : 1);
 
-            $q = ItemQuery::create();
+            $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
             $q->filterByName("%{$name}%");
 
             $total = $q->count();
