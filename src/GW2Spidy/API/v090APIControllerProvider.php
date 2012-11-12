@@ -294,11 +294,12 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             }
 
             $response = array(
-                'count'     => $count,
-                'page'      => $page,
-                'last_page' => $lastpage,
-                'total'     => $total,
-                'results'   => $results
+                'sell-or-buy' => $type,
+                'count'       => $count,
+                'page'        => $page,
+                'last_page'   => $lastpage,
+                'total'       => $total,
+                'results'     => $results
             );
 
             return $app['api-helper']->outputResponse($request, $response, $format, "item-listings-{$dataId}-{$type}-{$page}");
