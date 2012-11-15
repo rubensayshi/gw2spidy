@@ -70,21 +70,21 @@ class APIHelperService {
 
     public function buildItemDataArray(array $item) {
         $data = array(
-            'data_id' => $item['DataId'],
+            'data_id' => intval($item['DataId']),
             'name' => $item['Name'],
-            'rarity' => $item['Rarity'],
-            'restriction_level' => $item['RestrictionLevel'],
+            'rarity' => intval($item['Rarity']),
+            'restriction_level' => intval($item['RestrictionLevel']),
             'img' => $item['Img'],
-            'type_id' => $item['ItemTypeId'],
-            'sub_type_id' => $item['ItemSubTypeId'],
+            'type_id' => intval($item['ItemTypeId']),
+            'sub_type_id' => intval($item['ItemSubTypeId']),
             'price_last_changed' => $this->dateAsUTCString($item['LastPriceChanged']),
-            'max_offer_unit_price' => $item['MaxOfferUnitPrice'],
-            'min_sale_unit_price' => $item['MinSaleUnitPrice'],
-            'offer_availability' => $item['OfferAvailability'],
-            'sale_availability' => $item['SaleAvailability'],
-            'gw2db_external_id' => $item['Gw2dbExternalId'],
-            'sale_price_change_last_hour' => $item['SalePriceChangeLastHour'],
-        	'offer_price_change_last_hour' => $item['OfferPriceChangeLastHour'],
+            'max_offer_unit_price' => intval($item['MaxOfferUnitPrice']),
+            'min_sale_unit_price' => intval($item['MinSaleUnitPrice']),
+            'offer_availability' => intval($item['OfferAvailability']),
+            'sale_availability' => intval($item['SaleAvailability']),
+            'gw2db_external_id' => intval($item['Gw2dbExternalId']),
+            'sale_price_change_last_hour' => intval($item['SalePriceChangeLastHour']),
+        	'offer_price_change_last_hour' => intval($item['OfferPriceChangeLastHour']),
         );
 
         return $data;
