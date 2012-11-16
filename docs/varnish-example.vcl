@@ -75,31 +75,34 @@ sub vcl_fetch {
         if (!(req.url ~ "^/api/v0.9")) {
             set beresp.ttl = 15m;
         } else {
-            set beresp.ttl = 1h;
+            set beresp.ttl = 2h;
             
-            if (req.url ~ "^api/v.*/.+/types" || req.url ~ "^api/v.*/.+/disciplines" || req.url ~ "^api/v.*/.+/rarities") {
+            if (req.url ~ "^/api/v.*/.+/types" || req.url ~ "^/api/v.*/.+/disciplines" || req.url ~ "^/api/v.*/.+/rarities") {
                 set beresp.ttl = 24h;
             }
-            if (req.url ~ "^api/v.*/.+/all-items") {
+            if (req.url ~ "^/api/v.*/.+/all-items") {
                 set beresp.ttl = 5m;
             }
-            if (req.url ~ "^api/v.*/.+/items" || req.url ~ "^api/v.*/.+/recipes") {
+            if (req.url ~ "^/api/v.*/.+/items" || req.url ~ "^/api/v.*/.+/recipes") {
                 set beresp.ttl = 15m;
             }
-            if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/") {
+            if (req.url ~ "^/api/v.*/.+/item/" || req.url ~ "^/api/v.*/.+/recipe/") {
                 set beresp.ttl = 5m;
             }
-            if (req.url ~ "^api/v.*/.+/listings/") {
+            if (req.url ~ "^/api/v.*/.+/listings/") {
                 set beresp.ttl = 15m;
             }
-            if (req.url ~ "^api/v.*/.+/item-search/") {
+            if (req.url ~ "^/api/v.*/.+/item-search/") {
                 set beresp.ttl = 15m;
             }
-            if (req.url ~ "^api/v.*/.+/gem-price" || req.url ~ "^api/v.*/.+/gem-history/") {
+            if (req.url ~ "^/api/v.*/.+/gem-price" || req.url ~ "^/api/v.*/.+/gem-history/") {
                 set beresp.ttl = 15m;
             }
         }
     }
+
+    set beresp.http.X-Varnish-TTL = beresp.ttl;
+
 
     if (req.http.host ~ "^beta.gw2spidy.com$" && !(req.url ~ "api")) {
         set beresp.ttl = 0s;
@@ -122,3 +125,4 @@ sub vcl_deliver {
         set resp.http.X-Varnish-Cache = "MISS";
     }
 }
+
