@@ -321,6 +321,12 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
             $q->filterByName("%{$name}%");
 
+            if ($q->count() == 0 && $name != trim($name)) {
+                $name = trim($name);
+                $q = ItemQuery::create();
+                $q->filterByName("%{$name}%");
+            }
+
             $total = $q->count();
 
             if ($total > 0) {
@@ -331,7 +337,8 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             }
 
             $q->offset($itemsperpage * ($page-1))
-              ->limit($itemsperpage);
+              ->limit($itemsperpage)
+              ->addAscendingOrderByColumn('name');
 
             $count = $q->count();
 
