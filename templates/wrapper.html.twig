@@ -24,6 +24,7 @@
     <script type="text/javascript" src="{{ versioned_asset('/assets/js/gw2money.js') }}"></script>
     <script type="text/javascript" src="{{ versioned_asset('/assets/js/item-history.js') }}"></script>
     <script type="text/javascript" src="{{ versioned_asset('/assets/js/js-flash-messages.js') }}"></script>
+    <script type="text/javascript" src="{{ versioned_asset('/assets/js/watchlist.js') }}"></script>
 
     <link href="{{ versioned_asset('/assets/css/bootstrap.css') }}" rel="stylesheet" />
     <link href="{{ versioned_asset('/assets/css/bootstrap-responsive.css') }}" rel="stylesheet" />
@@ -106,11 +107,11 @@
                         <li class="divider-vertical"></li>
                             {% if app.isLoggedIn %}
                                 <li>
-                                    <a href="{{ path('logout') }}">Logout</a>
+                                    <a class="js-logout" href="{{ path('logout') }}">Logout</a>
                                 </li>
                             {% else %}
                                 <li {% if app.isLoginActive %}class="active"{% endif %}>
-                                    <a href="{{ path('login') }}">Login</a>
+                                    <a class="js-login" href="{{ path('login') }}">Login</a>
                                 </li>
                             {% endif %}
                         <li class="divider-vertical"></li>

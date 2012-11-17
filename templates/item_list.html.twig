@@ -1,9 +1,10 @@
 {% extends "content_wide.html.twig" %}
 
+{% set watchlist = watchlist is defined ? watchlist : false %}
 {% block htmltitle %}
 {{ parent() }} | {% if search is defined %}
 "{{ search }}" Search Results
-{% elseif watchlist is defined %}
+{% elseif watchlist %}
 Watchlist
 {% elseif type is defined %}
 {{ type }} {% if subtype %} - {{ subtype }}{% endif %}
@@ -99,7 +100,7 @@ Watchlist
             <th class="action">Action</th>
         </thead>
         {% for item in items %}
-            <tr class="item">
+            <tr class="item" data-id="{{ item.dataId }}">
                 <td class="info">
                     <a data-tooltip-href="http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}" href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
                         <img class="image" src="{{ item.img }}" width="32" height="32" /> {{ item.name }}
@@ -119,19 +120,16 @@ Watchlist
                 <td class="min_sale_unit_price" title="{{ item.saleAvailability }} sales available">{{ item.minSaleUnitPrice | gw2money }}</td>
                 <td class="max_offer_unit_price" title="{{ item.offerAvailability }} offers available">{{ item.maxOfferUnitPrice | gw2money }}</td>
                 <td class="margin">{{ item.margin | gw2money }}</td>
-                {%if watchlist is defined %}
-                <td class="watchlist">
-                    <a href="{{ path('watchlistremovepost', {dataId : item.dataId}) }}">
-                        <i class="icon icon-remove" title="remove from watchlist"></i>
+                <td class="watchlist js-watchlist">
+                    {% if not watchlist %}
+                        <a class="js-watchlist-add" href="{{ path('watchlistaddpost', {dataId : item.dataId}) }}">
+                            <i class="icon icon-plus" title="add to watchlist"></i>
+                        </a>
+                    {% endif %}
+                    <a class="js-watchlist-remove{% if not watchlist %} hide{% endif %}" href="{{ path('watchlistremovepost', {dataId : item.dataId}) }}">
+                        <i class="icon icon-minus" title="remove from watchlist"></i>
                     </a>
                 </td>
-                {% else %}
-                <td class="watchlist">
-                    <a href="{{ path('watchlistaddpost', {dataId : item.dataId}) }}">
-                        <i class="icon icon-plus" title="add to watchlist"></i>
-                    </a>
-                </td>
-                {%endif%}
             </tr>
         {% endfor %}
     </table>

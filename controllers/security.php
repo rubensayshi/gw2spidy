@@ -93,7 +93,8 @@ $app->get("/social_login", function(Request $request) use ($app) {
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
         $app['security']->setToken($token);
 
-        $response = $app->redirect($app['session']->get('_security.main.target_path') ?: $app['url_generator']->generate('homepage'));
+        // $response = $app->redirect($app['session']->get('_security.main.target_path') ?: $app['url_generator']->generate('homepage'));
+        $response = $app->redirect($app['url_generator']->generate('watchlist'));
         $app['session']->set('_security.main.target_path', '');
         $response->headers->setCookie(new Cookie('logged_in', true));
 
