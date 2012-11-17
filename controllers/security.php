@@ -99,6 +99,11 @@ $app->get("/social_login", function(Request $request) use ($app) {
 
         return $response;
     } catch (\Exception $e) {
+        // throw database errors, they are a real problem and not just a failed HybridAuth login
+        if ($e instanceof PropelException) {
+            throw $e;
+        }
+
         return $app->redirect($app['url_generator']->generate('login'));
     }
 
