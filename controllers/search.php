@@ -51,6 +51,12 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
     $q = ItemQuery::create();
     $q->filterByName("%{$search}%");
 
+    if ($q->count() == 0 && $search != trim($search)) {
+        $search = trim($search);
+        $q = ItemQuery::create();
+        $q->filterByName("%{$search}%");
+    }
+
     if ($page == 1 && $q->count() == 1) {
         $item = $q->findOne();
         return $app->redirect($app['url_generator']->generate('item', array('dataId' => $item->getDataId())));

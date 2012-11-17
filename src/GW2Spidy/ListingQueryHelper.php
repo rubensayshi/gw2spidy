@@ -3,12 +3,24 @@
 namespace GW2Spidy;
 
 
+use GW2Spidy\Util\CacheHandler;
+
 use \DateTime;
 use \DateTimeZone;
 use GW2Spidy\Util\ApplicationCache;
 use GW2Spidy\DB\Item;
 
 class ListingQueryHelper {
+	protected static $cache = null;
+
+	protected static function getGemCache() {
+		if (is_null(self::$cache)) {
+			self::$cache = CacheHandler::getInstance('gem_chart');
+		}
+
+		return self::$cache;
+	}
+
     public static function getChartDatasetDataForItem(Item $item, \ModelCriteria $q) {
         $data = array(
         	'raw'     => array(),
@@ -91,6 +103,8 @@ class ListingQueryHelper {
         	'weekly'  => array(),
         	'monthly' => array(),
         );
+
+        $cache = self::getGemCache();
 
         $rates = $q->select(array('rateDatetime', 'rate'))
                    ->filterByRateDatetime(date("Y-m-d 00:00:00", strtotime("-1 week")), \Criteria::GREATER_EQUAL)

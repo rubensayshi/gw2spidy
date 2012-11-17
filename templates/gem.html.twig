@@ -7,20 +7,37 @@
 
 {% block content %}
 
-{% if not included %}
-	<h1>Gem Exchange Rate</h1>
-{% endif %}
+<div class="clearfix">
+	{% if not included %}
+		<h1>Gem Exchange Rate</h1>
+		<div style="float: right;">
+		    {% if app['google_ad_client'] %}
+		    <script type="text/javascript">
+		    <!--
+		    google_ad_client = "{{ app['google_ad_client'] }}";
+		    /* Medium Rectangle (300 x 250) */
+		    google_ad_slot = "5148573296";
+		    google_ad_width = 300;
+		    google_ad_height = 250;
+		    //-->
+		    </script>
+		    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+		    {% endif %}
+		</div>
+	{% endif %}
 
-<p>The graph below displays how much ingame currency you can buy with 100 gems. </p>
-{% if gemtogold is defined %}
-    <ul>
-        <li>100 gems sells for {{ gemtogold | gw2money }}.</li>
-        <li>100 gems costs {{ goldtogem | gw2money }} to buy.</li>
-        <li>100 gems costs {{ usdtogem | number_format(2, '.', ',') }} USD to buy.</li>
-        <li>{{ (10000) | gw2money }} costs {{ usdtogold | number_format(2, '.', ',') }} USD to buy through gems.</li>
-    </ul>
-{% endif %}
+	<p>The graph below displays how much ingame currency you can buy with 100 gems. </p>
+	{% if gemtogold is defined %}
+	    <ul>
+	        <li>100 gems sells for {{ gemtogold | gw2money }}.</li>
+	        <li>100 gems costs {{ goldtogem | gw2money }} to buy.</li>
+	        <li>100 gems costs {{ usdtogem | number_format(2, '.', ',') }} USD to buy.</li>
+	        <li>{{ (10000) | gw2money }} costs {{ usdtogold | number_format(2, '.', ',') }} USD to buy through gems.</li>
+	    </ul>
+	{% endif %}
 
-{%  include "chart_placeholder.html.twig" with {url: path('gem_chart'), hideLegend: hideLegend} %}
+</div>
+
+{%  include "chart_placeholder.html.twig" with {url: path('gem_chart'), hideLegend: hideLegend, legendItemWidth: 400} %}
 
 {% endblock %}

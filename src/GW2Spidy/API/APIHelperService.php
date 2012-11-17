@@ -38,10 +38,6 @@ class APIHelperService {
         } else if ($format == 'json') {
             header('Content-type: application/json');
         }
-
-        if (!$this->app['debug']) {
-            header("Content-disposition: attachment; filename={$name}.{$format}");
-        }
     }
 
     public function outputResponseCSV(Request $request, $response) {
@@ -67,23 +63,28 @@ class APIHelperService {
     }
 
     public function outputResponseJSON(Request $request, $response) {
-        return json_encode($response);
+        $json = json_encode($response);
+
+        return ($jsonp = $request->get('jsonp')) ? "{$jsonp}({$json})" : $json;
     }
 
-    public function buildItemDataArray(Item $item) {
+    public function buildItemDataArray(array $item) {
         $data = array(
-            'data_id' => $item->getDataId(),
-            'name' => $item->getName(),
-            'rarity' => $item->getRarity(),
-            'restriction_level' => $item->getRestrictionLevel(),
-            'img' => $item->getImg(),
-            'type_id' => $item->getItemTypeId(),
-            'sub_type_id' => $item->getItemSubTypeId(),
-            'price_last_changed' => $this->dateAsUTCString($item->getLastPriceChanged()),
-            'max_offer_unit_price' => $item->getMaxOfferUnitPrice(),
-            'min_sale_unit_price' => $item->getMinSaleUnitPrice(),
-            'offer_availability' => $item->getOfferAvailability(),
-            'sale_availability' => $item->getSaleAvailability(),
+            'data_id' => intval($item['DataId']),
+            'name' => $item['Name'],
+            'rarity' => intval($item['Rarity']),
+            'restriction_level' => intval($item['RestrictionLevel']),
+            'img' => $item['Img'],
+            'type_id' => intval($item['ItemTypeId']),
+            'sub_type_id' => intval($item['ItemSubTypeId']),
+            'price_last_changed' => $this->dateAsUTCString($item['LastPriceChanged']),
+            'max_offer_unit_price' => intval($item['MaxOfferUnitPrice']),
+            'min_sale_unit_price' => intval($item['MinSaleUnitPrice']),
+            'offer_availability' => intval($item['OfferAvailability']),
+            'sale_availability' => intval($item['SaleAvailability']),
+            'gw2db_external_id' => intval($item['Gw2dbExternalId']),
+            'sale_price_change_last_hour' => intval($item['SalePriceChangeLastHour']),
+        	'offer_price_change_last_hour' => intval($item['OfferPriceChangeLastHour']),
         );
 
         return $data;
@@ -91,7 +92,7 @@ class APIHelperService {
 
     public function buildRecipeDataArray(Recipe $recipe) {
         $data = array(
-            "date_id"              => $recipe->getDataId(),
+            "data_id"              => $recipe->getDataId(),
             "name"                 => $recipe->getName(),
             "result_count"         => $recipe->getCount(),
         	"result_item_data_id"  => $recipe->getResultItemId(),
@@ -99,6 +100,7 @@ class APIHelperService {
             "result_item_max_offer_unit_price" => $recipe->getResultItem()->getMaxOfferUnitPrice(),
             "result_item_min_sale_unit_price"  => $recipe->getResultItem()->getMinSaleUnitPrice(),
             "crafting_cost"		   => $recipe->getCost(),
+            "rating"	     	   => $recipe->getRating(),
         );
 
         return $data;

@@ -7,6 +7,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
 class VersionedAssetsRoutingExtension extends \Twig_Extension {
+    protected $generator;
+
+    public function __construct(UrlGeneratorInterface $generator) {
+        $this->generator = $generator;
+    }
+
     public function getFunctions() {
         return array(
             'versioned_asset' => new \Twig_Function_Method($this, 'getAssetPath'),
@@ -17,12 +23,14 @@ class VersionedAssetsRoutingExtension extends \Twig_Extension {
         return Application::getInstance()->getVersionString();
     }
 
-    public function getAssetPath($name, $parameters = array()) {
+    public function getAssetPath($path, $parameters = array()) {
         if ($version = $this->getVersionString()) {
-            return str_replace("/assets/", "/assets/v{$this->getVersionString()}/", $name);
-        } else {
-            return $name;
+            $path = str_replace("/assets/", "/assets/v{$this->getVersionString()}/", $path);
         }
+
+        $context = $this->generator->getContext();
+
+        return "{$context->getBaseUrl()}{$path}";
     }
 
     public function getName() {

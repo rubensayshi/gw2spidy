@@ -78,11 +78,6 @@ class ItemListingDBQueueWorker extends BaseWorker {
             return;
         }
 
-        // this seems to be items no longer on the TP
-        if (!isset($itemData['sale_availability']) && !isset($itemData['offer_availability'])) {
-            return;
-        }
-
         $this->processListingsFromItemData($itemData, $item);
     }
 

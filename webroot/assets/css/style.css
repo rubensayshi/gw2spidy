@@ -381,16 +381,9 @@ h1 {
     margin-bottom: 5px;
 }
 
-.sidebar .item-history-list .db-tooltip .db-summary > *,
-.sidebar .item-history-list .db-tooltip .db-summary > .db-weaponInfo .db-weaponRarity {
+.db-tooltip .db-summary .db-value {
     display: none;
 }
-.sidebar .item-history-list .db-tooltip .db-summary > .db-title,
-.sidebar .item-history-list .db-tooltip .db-summary > .db-armorType,
-.sidebar .item-history-list .db-tooltip .db-summary > .db-weaponInfo {
-    display: block;
-}
-
 .gw2money-copper,
 .gw2money-silver,
 .gw2money-gold {

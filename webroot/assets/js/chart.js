@@ -50,7 +50,7 @@ var GW2SpidyChart = function(url, container, set_options) {
             floating: false,
             verticalAlign: "top",
             width: 800,
-            itemWidth: 200
+            itemWidth: 265
         },
         rangeSelector : {
             buttons: [
@@ -61,6 +61,9 @@ var GW2SpidyChart = function(url, container, set_options) {
                 {type: 'all',             text: 'all'}
             ],
             selected : 2
+        },
+        xAxis : {
+            ordinal: false
         },
         yAxis : [
              {

@@ -14,7 +14,9 @@ cnf = {
     "chartbeat-id"       : null,
     "chartbeat-domain"   : null,
     "password-salt"      : "YOU-SHOULD-CHANGE-THIS-IN-LIVE-ENVS",
+    "google_ad_client"   : null,
     "request-language"   : "en",
+    "apc_clear_cache_host" : null,
 
 	/*
 	 * hybrid auth config
