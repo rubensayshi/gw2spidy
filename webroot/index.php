@@ -12,8 +12,6 @@ use GW2Spidy\Util\Functions;
 use GW2Spidy\Application;
 use GW2Spidy\Security\CustomSecurityServiceProvider;
 
-
-use Symfony\Component\HttpFoundation\Request;
 use GW2Spidy\Twig\VersionedAssetsRoutingExtension;
 use GW2Spidy\Twig\ItemListRoutingExtension;
 use GW2Spidy\Twig\GW2MoneyExtension;
