@@ -55,7 +55,7 @@ $app->get("/social_login", function(Request $request) use ($app) {
     require_once dirname(__DIR__) . '/vendor/hybridauth/Hybrid/Auth.php';
 
     if (!($provider = $request->get('provider'))) {
-        return $app->redirect($app['url_generator']->generate('login'));
+        return $app->redirect($app['url_generator']->generate('login', array('fail' => 'provider_not_found'));
     }
 
     try {
@@ -105,7 +105,7 @@ $app->get("/social_login", function(Request $request) use ($app) {
             throw $e;
         }
 
-        return $app->redirect($app['url_generator']->generate('login'));
+        return $app->redirect($app['url_generator']->generate('login', array('fail' => 'exception'));
     }
 
 })
