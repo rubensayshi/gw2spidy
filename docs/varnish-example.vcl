@@ -15,10 +15,22 @@ sub vcl_recv {
         set req.http.X-Forwarded-Port = "80";
     }
         
-    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist") {
+    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist" || req.url ~ "^/social_login" || req.url ~ "^/hybridauth") {
         return(pass);
     } else {
-        unset req.http.cookie;
+	    if (req.http.Cookie) {
+		    set req.http.Cookie = ";" req.http.Cookie;
+		    set req.http.Cookie = regsuball(req.http.Cookie, "; +", ";");
+		    set req.http.Cookie = regsuball(req.http.Cookie, ";(logged_in)=", "; \1=");
+		    set req.http.Cookie = regsuball(req.http.Cookie, ";[^ ][^;]*", "");
+		    set req.http.Cookie = regsuball(req.http.Cookie, "^[; ]+|[; ]+$", "");
+		
+		    if (req.http.Cookie == "") {
+		        remove req.http.Cookie;
+		    }
+	    } else {
+        	unset req.http.cookie;
+        }
     }
     
     # uncomment to have varnish serve an error page
@@ -40,7 +52,7 @@ sub vcl_fetch {
     set beresp.grace = 1h;
 
     unset beresp.http.expires;
-    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist") {
+    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist"|| req.url ~ "^/social_login" || req.url ~ "^/hybridauth") {
         return(deliver);
     } else {
         unset beresp.http.set-cookie;   
