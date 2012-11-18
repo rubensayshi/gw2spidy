@@ -41,7 +41,7 @@ return
 
 			"Twitter" => array (
 				"enabled" => true,
-				"keys"    => array ( "key" => getAppConfig("hybrid_auth.twitter_id"), "secret" => getAppConfig("hybrid_auth.twitter_secret"))
+				"keys"    => array ( "key" => getAppConfig("hybrid_auth.twitter_key"), "secret" => getAppConfig("hybrid_auth.twitter_secret"))
 			),
 
 			// windows live
