@@ -19,6 +19,10 @@ if (array_intersect(array('-d', '--all'), $argv)) {
 }
 
 if (array_intersect(array('-a', '--all'), $argv) && function_exists('apc_clear_cache') && ($host = getAppConfig("apc_clear_cache_host"))) {
+    apc_clear_cache();
+    apc_clear_cache('user');
+    apc_clear_cache('opcode');
+
     $hash = md5(uniqid());
     $targetDir = dirname(dirname(__FILE__)) . "/webroot/tmp";
     $target = "{$targetDir}/{$hash}.php";
