@@ -24,7 +24,7 @@ class ItemListRoutingExtension extends \Twig_Extension {
             $name = 'search';
             $parameters['search'] = $context['search'];
         }
-        else if (array_key_exists('watchlist', $context)) {
+        else if (array_key_exists('watchlist', $context) && $context['watchlist']) {
             $name = 'watchlist';
             $parameters['watchlist'] = $context['watchlist'];
         }

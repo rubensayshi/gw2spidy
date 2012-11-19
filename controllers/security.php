@@ -55,7 +55,7 @@ $app->get("/social_login", function(Request $request) use ($app) {
     require_once dirname(__DIR__) . '/vendor/hybridauth/Hybrid/Auth.php';
 
     if (!($provider = $request->get('provider'))) {
-        return $app->redirect($app['url_generator']->generate('login'));
+        return $app->redirect($app['url_generator']->generate('login', array('fail' => 'provider_not_found')));
     }
 
     try {
@@ -93,13 +93,19 @@ $app->get("/social_login", function(Request $request) use ($app) {
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
         $app['security']->setToken($token);
 
-        $response = $app->redirect($app['session']->get('_security.main.target_path') ?: $app['url_generator']->generate('homepage'));
+        // $response = $app->redirect($app['session']->get('_security.main.target_path') ?: $app['url_generator']->generate('homepage'));
+        $response = $app->redirect($app['url_generator']->generate('watchlist'));
         $app['session']->set('_security.main.target_path', '');
         $response->headers->setCookie(new Cookie('logged_in', true));
 
         return $response;
     } catch (\Exception $e) {
-        return $app->redirect($app['url_generator']->generate('login'));
+        // throw database errors, they are a real problem and not just a failed HybridAuth login
+        if ($e instanceof PropelException) {
+            throw $e;
+        }
+
+        return $app->redirect($app['url_generator']->generate('login', array('fail' => 'exception')));
     }
 
 })

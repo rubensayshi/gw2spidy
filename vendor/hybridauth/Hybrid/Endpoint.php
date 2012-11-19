@@ -200,6 +200,8 @@ class Hybrid_Endpoint {
 
 				// Check if Hybrid_Auth session already exist
 				if ( ! $storage->config( "CONFIG" ) ) {
+			        Hybrid_Logger::error( "Endpoint: hauth_endpoint config is not defined!" );
+
 					header( "HTTP/1.0 404 Not Found" );
 					die( "You cannot access this page directly." );
 				}

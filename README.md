@@ -84,6 +84,9 @@ The spidering code uses a custom brew queue and some custom brew system to make 
 Both the queue and the slots are build using Redis (Predis library is already included in the `vendor` folder).  
 Previously I was using MySQL for this, but using MySQL was a lot heavier on load and using Redis it's also slightly faster!  
 
+**You need to install redis-server and it needs to be version 2.2 or higher**  
+If you're using debian you need to build from source, ubuntu has an updated package with apt-get ;-)
+
 Silex / Twig / Predis
 ---------------------
 Just some PHP libs, already included in the `vendor` folder.

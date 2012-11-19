@@ -79,7 +79,7 @@ class CustomSecurityServiceProvider implements ServiceProviderInterface {
         $app->before(function(Request $request) use ($app) {
             $app['isLoggedIn'] = $request->cookies->get('logged_in', null);
 
-            $ignoreUrls = array('/login/', '/register/', '/hybridauth/');
+            $ignoreUrls = array('/login/', '/register/', '/hybridauth/', '/favicon/');
             if (!$request->isXmlHttpRequest() && $request->getMethod() == 'GET') {
                 $ignore = false;
                 foreach ($ignoreUrls as $i) {

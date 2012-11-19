@@ -1,4 +1,3 @@
-
 backend default {
     .host = "localhost";
     .port = "8080";
@@ -16,17 +15,33 @@ sub vcl_recv {
         set req.http.X-Forwarded-Port = "80";
     }
         
-    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist") {
+    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist" || req.url ~ "^/social_login" || req.url ~ "^/hybridauth") {
         return(pass);
     } else {
-        unset req.http.cookie;
+	    if (req.http.Cookie) {
+		    set req.http.Cookie = ";" req.http.Cookie;
+		    set req.http.Cookie = regsuball(req.http.Cookie, "; +", ";");
+		    set req.http.Cookie = regsuball(req.http.Cookie, ";(logged_in)=", "; \1=");
+		    set req.http.Cookie = regsuball(req.http.Cookie, ";[^ ][^;]*", "");
+		    set req.http.Cookie = regsuball(req.http.Cookie, "^[; ]+|[; ]+$", "");
+		
+		    if (req.http.Cookie == "") {
+		        remove req.http.Cookie;
+		    }
+	    } else {
+        	unset req.http.cookie;
+        }
     }
     
-#   error 500 "More downtime ... TP is down anyway ... need to get my shit sorted sorry ...";
+    # uncomment to have varnish serve an error page
+	# error 500 "Some simple error message here";
 
-    if (req.url ~ "no_cache" || req.http.Authorization || req.http.cookie) {
-        # Not cacheable by default
-        return(pass);
+    if (req.url ~ "^/tmp/.*\.sql\.gz$") {
+        return(pipe);
+    }
+
+    if (req.url ~ "no_cache") {
+        return(pipe);
     }
 
     return(lookup);
@@ -37,10 +52,20 @@ sub vcl_fetch {
     set beresp.grace = 1h;
 
     unset beresp.http.expires;
-    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist") {
+    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist"|| req.url ~ "^/social_login" || req.url ~ "^/hybridauth") {
         return(deliver);
     } else {
-        unset beresp.http.set-cookie;    
+        unset beresp.http.set-cookie;   
+    }
+    
+    if (beresp.http.x-varnish-no-cache) {
+       set beresp.ttl = 0s;
+       return (deliver);
+    }
+    
+    if (beresp.status > 404 || beresp.status == 301) {
+       set beresp.ttl = 1m;
+       return (deliver);
     }
 
     # homepage, trending and gem data
@@ -80,25 +105,34 @@ sub vcl_fetch {
         if (!(req.url ~ "^/api/v0.9")) {
             set beresp.ttl = 15m;
         } else {
-            set beresp.ttl = 1h;
+            set beresp.ttl = 2h;
             
-            if (req.url ~ "^api/v.*/.+/types" || req.url ~ "^api/v.*/.+/disciplines" || req.url ~ "^api/v.*/.+/rarities") {
+            if (req.url ~ "^/api/v.*/.+/types" || req.url ~ "^/api/v.*/.+/disciplines" || req.url ~ "^/api/v.*/.+/rarities") {
                 set beresp.ttl = 24h;
             }
-            if (req.url ~ "^api/v.*/.+/items" || req.url ~ "^api/v.*/.+/recipes") {
-                set beresp.ttl = 24h;
+            if (req.url ~ "^/api/v.*/.+/all-items") {
+                set beresp.ttl = 5m;
             }
-            if (req.url ~ "^api/v.*/.+/item/" || req.url ~ "^api/v.*/.+/recipe/" || req.url ~ "^api/v.*/.+/listings/") {
+            if (req.url ~ "^/api/v.*/.+/items" || req.url ~ "^/api/v.*/.+/recipes") {
                 set beresp.ttl = 15m;
             }
-            if (req.url ~ "^api/v.*/.+/item-search/") {
-                set beresp.ttl = 1h;
+            if (req.url ~ "^/api/v.*/.+/item/" || req.url ~ "^/api/v.*/.+/recipe/") {
+                set beresp.ttl = 5m;
             }
-            if (req.url ~ "^api/v.*/.+/gem-price" || req.url ~ "^api/v.*/.+/gem-history/") {
+            if (req.url ~ "^/api/v.*/.+/listings/") {
+                set beresp.ttl = 15m;
+            }
+            if (req.url ~ "^/api/v.*/.+/item-search/") {
+                set beresp.ttl = 15m;
+            }
+            if (req.url ~ "^/api/v.*/.+/gem-price" || req.url ~ "^/api/v.*/.+/gem-history/") {
                 set beresp.ttl = 15m;
             }
         }
     }
+
+    set beresp.http.X-Varnish-TTL = beresp.ttl;
+
 
     if (req.http.host ~ "^beta.gw2spidy.com$" && !(req.url ~ "api")) {
         set beresp.ttl = 0s;
@@ -148,3 +182,4 @@ sub vcl_deliver {
 
     return (deliver);
 }
+

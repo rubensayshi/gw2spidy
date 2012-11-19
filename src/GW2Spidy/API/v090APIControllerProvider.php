@@ -115,15 +115,12 @@ class v090APIControllerProvider implements ControllerProviderInterface {
 
         /**
          * ----------------------
-         *  route /items
+         *  route /all-items
          * ----------------------
          */
-        $controllers->get("/{format}/items/{typeId}/{page}", function(Request $request, $format, $typeId, $page) use($app) {
-
-            $itemsperpage = 100;
-            $page = intval($page > 0 ? $page : 1);
-
-            $q = ItemQuery::create();
+        $controllers->match("/{format}/all-items/{typeId}", function(Request $request, $format, $typeId) use($app) {
+            $t = microtime(true);
+            $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
 
             if (in_array($typeId, array('all', '*all*'))) {
                 $typeId = null;
@@ -134,6 +131,66 @@ class v090APIControllerProvider implements ControllerProviderInterface {
                 }
 
                 $q->filterByItemType($type);
+            }
+
+            $count = $q->count();
+
+            $results = array();
+            foreach ($q->find() as $item) {
+                $results[] = $app['api-helper']->buildItemDataArray($item);
+            }
+
+            $response = array(
+                'count'     => $count,
+                'results'   => $results
+            );
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "all-items-{$typeId}");
+        })
+        ->assert('format', 'csv|json')
+        ->assert('typeId', '\d+|\*?all\*?');
+
+        /**
+         * ----------------------
+         *  route /items
+         * ----------------------
+         */
+        $controllers->match("/{format}/items/{typeId}/{page}", function(Request $request, $format, $typeId, $page) use($app) {
+
+            $itemsperpage = 100;
+            $page = intval($page > 0 ? $page : 1);
+
+            $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
+
+            if (in_array($typeId, array('all', '*all*'))) {
+                $typeId = null;
+            }
+            if (!is_null($typeId)) {
+                if (!($type = ItemTypeQuery::create()->findPk($typeId))) {
+                    return $app->abort(404, "Invalid type [{$typeId}]");
+                }
+
+                $q->filterByItemType($type);
+            }
+
+            if (($sortTrending = $request->get('sort_trending')) && in_array($sortTrending, array('sale', 'offer'))) {
+                $q->filterBySaleAvailability(200, \Criteria::GREATER_THAN);
+                $q->filterByOfferAvailability(200, \Criteria::GREATER_THAN);
+                if ($sortTrending == 'sale') {
+                    $q->orderBySalePriceChangeLastHour(\Criteria::DESC);
+                } else if ($sortTrending == 'offer') {
+                    $q->orderByOfferPriceChangeLastHour(\Criteria::DESC);
+                }
+            }
+
+            if ($filterIds = $request->get('filter_ids')) {
+                $filterIds = array_unique(array_filter(array_map('intval', explode(",", $filterIds))));
+
+                if (count($filterIds) > $itemsperpage) {
+                    return $app->abort(400, "More IDs in filter_ids than allowed.");
+                }
+
+                $q->filterByDataId($filterIds, \Criteria::IN);
             }
 
             $total = $q->count();
@@ -175,8 +232,9 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          * ----------------------
          */
         $controllers->get("/{format}/item/{dataId}", function(Request $request, $format, $dataId) use($app) {
-
-            if (!($item = ItemQuery::create()->findPk($dataId))) {
+            $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
+            $q->filterByPrimaryKey($dataId);
+            if (!($item = $q->findOne())) {
                 return $app->abort(404, "Item Not Found [{$dataId}].");
             }
 
@@ -236,11 +294,12 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             }
 
             $response = array(
-                'count'     => $count,
-                'page'      => $page,
-                'last_page' => $lastpage,
-                'total'     => $total,
-                'results'   => $results
+                'sell-or-buy' => $type,
+                'count'       => $count,
+                'page'        => $page,
+                'last_page'   => $lastpage,
+                'total'       => $total,
+                'results'     => $results
             );
 
             return $app['api-helper']->outputResponse($request, $response, $format, "item-listings-{$dataId}-{$type}-{$page}");
@@ -255,13 +314,31 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          *  route /item-search
          * ----------------------
          */
-        $controllers->get("/{format}/item-search/{name}", function(Request $request, $format, $name) use($app) {
+        $controllers->get("/{format}/item-search/{name}/{page}", function(Request $request, $format, $name, $page) use($app) {
+            $itemsperpage = 50;
+            $page = intval($page > 0 ? $page : 1);
 
-            $itemsperpage = 10;
-
-            $q = ItemQuery::create();
+            $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
             $q->filterByName("%{$name}%");
-            $q->limit($itemsperpage);
+
+            if ($q->count() == 0 && $name != trim($name)) {
+                $name = trim($name);
+                $q = ItemQuery::create();
+                $q->filterByName("%{$name}%");
+            }
+
+            $total = $q->count();
+
+            if ($total > 0) {
+                $lastpage = ceil($total / $itemsperpage);
+            } else {
+                $page     = 1;
+                $lastpage = 1;
+            }
+
+            $q->offset($itemsperpage * ($page-1))
+              ->limit($itemsperpage)
+              ->addAscendingOrderByColumn('name');
 
             $count = $q->count();
 
@@ -271,13 +348,17 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             }
 
             $response = array(
-                    'count'     => $count,
-                    'results'   => $results
+                'count'     => $count,
+                'page'      => $page,
+                'last_page' => $lastpage,
+                'total'     => $total,
+                'results'   => $results
             );
 
             return $app['api-helper']->outputResponse($request, $response, $format, "item-search-{$page}");
         })
-        ->assert('format', 'csv|json');
+        ->assert('format', 'csv|json')
+        ->assert('page', '\d*');
 
         /**
          * ----------------------

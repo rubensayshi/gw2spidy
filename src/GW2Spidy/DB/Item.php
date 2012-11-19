@@ -36,6 +36,21 @@ class Item extends BaseItem {
     const RARITY_EXOTIC     = 5;
     const RARITY_LEGENDARY  = 6;
     const FALSE_POSITIVE = 'FALSE_POSITIVE';
+    
+    /* Type ids taken from the database */
+    const TYPE_ID_UPGRADE_COMPONENT = 17;
+    const TYPE_ID_CONTAINER = 4;
+    const TYPE_ID_GIZMO = 7;
+    const TYPE_ID_CRAFTING_MATERIAL = 5;
+    const TYPE_ID_MINI = 11;
+    const TYPE_ID_ARMOR = 0;
+    const TYPE_ID_GATHERING = 6;
+    const TYPE_ID_TRINKET = 15;
+    const TYPE_ID_BAG = 2;
+    const TYPE_ID_TROPHY = 16;
+    const TYPE_ID_CONSUMABLE = 3;
+    const TYPE_ID_WEAPON = 18;
+    const TYPE_ID_TOOL = 13;
 
     public function preSave() {
         if ($this->isColumnModified(ItemPeer::MIN_SALE_UNIT_PRICE) || $this->isColumnModified(ItemPeer::MAX_OFFER_UNIT_PRICE)) {
@@ -50,9 +65,9 @@ class Item extends BaseItem {
             return self::PRIO_FIVE;
         }
 
-        switch ($this->getItemType()->getTitle()) {
-            case 'Weapon':
-            case 'Armor':
+        switch ($this->getItemTypeId()) {
+            case self::TYPE_ID_WEAPON:
+            case self::TYPE_ID_ARMOR:
                 if ($this->getRarity() >= 3) {
                     if ($this->getRestrictionLevel() > 60) {
                         return self::PRIO_ONE;
@@ -69,13 +84,13 @@ class Item extends BaseItem {
 
                 break;
 
-            case 'Gathering':
-            case 'Tool':
+            case self::TYPE_ID_GATHERING:
+            case self::TYPE_ID_TOOL:
                 return self::PRIO_FIVE;
 
                 break;
 
-            case 'Trophy':
+            case self::TYPE_ID_TROPHY:
                 if ($this->getRarity() >= 2) {
                     return self::PRIO_ONE;
                 } else {
@@ -84,7 +99,7 @@ class Item extends BaseItem {
 
                 break;
 
-            case 'Gizmo':
+            case self::TYPE_ID_GIZMO:
                 if ($this->getRarity() >= 5) {
                     return self::PRIO_TWO;
                 } else {
@@ -93,14 +108,14 @@ class Item extends BaseItem {
 
                 break;
 
-            case 'Mini':
-            case 'Bag':
-            case 'Crafting Material':
+            case self::TYPE_ID_MINI:
+            case self::TYPE_ID_BAG:
+            case self::TYPE_ID_CRAFTING_MATERIAL:
                 return self::PRIO_ONE;
 
                 break;
 
-            case 'Container':
+            case self::TYPE_ID_CONTAINER:
                 if ($this->getRarity() >= 2) {
                     return self::PRIO_ONE;
                 } else {
@@ -109,15 +124,15 @@ class Item extends BaseItem {
 
                 break;
 
-            case 'Consumable':
-            case 'Upgrade Component':
-            case 'Trinket':
+            case self::TYPE_ID_CONSUMABLE:
+            case self::TYPE_ID_UPGRADE_COMPONENT:
+            case self::TYPE_ID_TRINKET:
                 return self::PRIO_TWO;
 
                 break;
 
             default:
-                throw new Exception("Unknown type {$this->getItemType()->getTitle()}");
+                throw new \Exception("Unknown type {$this->getItemType()->getTitle()}");
 
                 break;
         }

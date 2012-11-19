@@ -12,12 +12,12 @@ use GW2Spidy\Util\Functions;
 use GW2Spidy\Application;
 use GW2Spidy\Security\CustomSecurityServiceProvider;
 
-
-use Symfony\Component\HttpFoundation\Request;
 use GW2Spidy\Twig\VersionedAssetsRoutingExtension;
 use GW2Spidy\Twig\ItemListRoutingExtension;
 use GW2Spidy\Twig\GW2MoneyExtension;
 use GW2Spidy\Twig\GenericHelpersExtension;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__FILE__) . '/../autoload.php';
 
@@ -25,6 +25,7 @@ Request::trustProxyData();
 
 // initiate the application, check config to enable debug / sql logging when needed
 $app = Application::getInstance();
+$app['no_cache'] = false;
 
 // register config provider
 $app->register(new Igorw\Silex\ConfigServiceProvider(getAppConfig()));
@@ -47,7 +48,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 
 // register custom twig extensions
 $app['twig']->addExtension(new GenericHelpersExtension());
-$app['twig']->addExtension(new VersionedAssetsRoutingExtension());
+$app['twig']->addExtension(new VersionedAssetsRoutingExtension($app['url_generator']));
 $app['twig']->addExtension(new GW2MoneyExtension());
 $app['twig']->addExtension(new ItemListRoutingExtension($app['url_generator']));
 
@@ -83,6 +84,12 @@ require "{$root}/controllers/api.php";
 
 // login stuff
 require "{$root}/controllers/security.php";
+
+$app->after(function (Request $request, Response $response) use ($app) {
+    if ($app['no_cache']) {
+        $response->headers->set('X-Varnish-No-Cache', '1');
+    }
+});
 
 // bootstrap the app
 $app->run();

@@ -14,7 +14,22 @@ cnf = {
     "chartbeat-id"       : null,
     "chartbeat-domain"   : null,
     "password-salt"      : "YOU-SHOULD-CHANGE-THIS-IN-LIVE-ENVS",
+    "google_ad_client"   : null,
     "request-language"   : "en",
+    "apc_clear_cache_host" : null,
+
+	/*
+	 * hybrid auth config
+	 */
+	 "hybrid_auth" : {
+	 	"callback_url"    : "http://4gsd.localtunnel.com/hybridauth",
+	 	"google_id" 	  : "",
+	 	"google_secret"   : "",
+	 	"facebook_id" 	  : "",
+	 	"facebook_secret" : "",
+	 	"twitter_key" 	  : "",
+	 	"twitter_secret"  : ""
+	 },
 
     /*
      * gw2spidy settings

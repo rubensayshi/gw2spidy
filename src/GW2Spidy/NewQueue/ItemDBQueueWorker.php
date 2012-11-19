@@ -23,7 +23,7 @@ class ItemDBQueueWorker extends BaseWorker {
         }
     }
 
-    protected function buildItemDB($type, $subtype, $offset) {
+    public function buildItemDB($type, $subtype, $offset) {
         var_dump((string)$type, (string)$subtype, $offset) . "\n\n";
 
         $items = TradingPostSpider::getInstance()->getItemList($type, $subtype, $offset);
@@ -43,11 +43,6 @@ class ItemDBQueueWorker extends BaseWorker {
             return;
         }
 
-        // this seems to be items no longer on the TP
-        if (!isset($itemData['sale_availability']) && !isset($itemData['offer_availability'])) {
-            return;
-        }
-
         $now  = new \DateTime();
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
@@ -64,6 +59,10 @@ class ItemDBQueueWorker extends BaseWorker {
             if (($p = Functions::almostEqualCompare($updateItemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
                 $item->fromArray($updateItemData, \BasePeer::TYPE_FIELDNAME);
 
+                if (isset($updateItemData['level'])) {
+                    $item->setRestrictionLevel($updateItemData['level']);
+                }
+
                 if ($type) {
                     $item->setItemType($type);
                 }
@@ -76,6 +75,10 @@ class ItemDBQueueWorker extends BaseWorker {
         } else {
             $item = new Item();
             $item->fromArray($updateItemData, \BasePeer::TYPE_FIELDNAME);
+
+            if (isset($updateItemData['level'])) {
+                $item->setRestrictionLevel($updateItemData['level']);
+            }
 
             if ($type) {
                 $item->setItemType($type);

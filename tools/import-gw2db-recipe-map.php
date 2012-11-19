@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\NewQueue\ItemDBQueueWorker;
+
 use GW2Spidy\NewQueue\ItemDBQueueItem;
 
 use GW2Spidy\NewQueue\RequestSlotManager;
@@ -84,7 +86,7 @@ $max    = null;
 
 $tp = TradingPostSpider::getInstance();
 $slots = RequestSlotManager::getInstance();
-$worker = new ItemDBQueueItem();
+$worker = new ItemDBQueueWorker(null);
 
 $getItemByGW2DBID = function($gw2dbID) use ($tp, $slots, $worker) {
     $result = ItemQuery::create()->findOneByGw2dbId($gw2dbID);
@@ -112,7 +114,7 @@ foreach ($data as $i => $row) {
     try {
         echo "[{$i} / {$cnt}] \n";
 
-        if (RecipeQuery::create()->findByGw2dbId($row['ID'])->count() == 0) {
+        if (RecipeQuery::create()->findByGw2dbExternalId($row['ExternalID'])->count() == 0) {
             $r = new Recipe();
             $r->setDataId($row['DataID']);
             $r->setGw2dbId($row['ID']);
