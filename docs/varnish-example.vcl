@@ -16,17 +16,21 @@ sub vcl_recv {
     }
         
     if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist" || req.url ~ "^/social_login" || req.url ~ "^/hybridauth") {
-        return(pass);
+        return(pipe);
+    } elseif (req.url ~ "^/admin") {
+        return(pipe);
+    } elseif (req.url ~ "^/search$") {
+        return(pipe);
     } else {
-	    if (req.http.Cookie) {
-		    set req.http.Cookie = ";" req.http.Cookie;
-		    set req.http.Cookie = regsuball(req.http.Cookie, "; +", ";");
-		    set req.http.Cookie = regsuball(req.http.Cookie, ";(logged_in)=", "; \1=");
-		    set req.http.Cookie = regsuball(req.http.Cookie, ";[^ ][^;]*", "");
-		    set req.http.Cookie = regsuball(req.http.Cookie, "^[; ]+|[; ]+$", "");
+	    if (req.http.cookie) {
+		    set req.http.cookie = ";" + req.http.cookie;
+		    set req.http.cookie = regsuball(req.http.cookie, "; +", ";");
+		    set req.http.cookie = regsuball(req.http.cookie, ";(logged_in)=", "; \1=");
+		    set req.http.cookie = regsuball(req.http.cookie, ";[^ ][^;]*", "");
+		    set req.http.cookie = regsuball(req.http.cookie, "^[; ]+|[; ]+$", "");
 		
-		    if (req.http.Cookie == "") {
-		        remove req.http.Cookie;
+		    if (req.http.cookie == "") {
+		        remove req.http.cookie;
 		    }
 	    } else {
         	unset req.http.cookie;
@@ -53,6 +57,10 @@ sub vcl_fetch {
 
     unset beresp.http.expires;
     if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist"|| req.url ~ "^/social_login" || req.url ~ "^/hybridauth") {
+        return(deliver);
+    } elseif (req.url ~ "^/admin") {
+        return(deliver);
+    } elseif (req.url ~ "^/search$") {
         return(deliver);
     } else {
         unset beresp.http.set-cookie;   
@@ -150,8 +158,8 @@ sub vcl_hash {
     }
 
     # hash cookies for object with auth
-    if (req.http.Cookie) {
-        hash_data(req.http.Cookie);
+    if (req.http.cookie) {
+        hash_data(req.http.cookie);
     }
 
     # If the client supports compression, keep that in a different cache
