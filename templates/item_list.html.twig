@@ -146,7 +146,7 @@ Watchlist
                 <td class="min_sale_unit_price">{{ item.saleAvailability }}</td>
                 <td class="max_offer_unit_price">{{ item.offerAvailability }}</td>
                 <td class="margin">{{ item.margin | gw2money }}</td>
-                <td class="watchlist js-watchlist">
+                <td class="watchlist js-watchlist" data-id="{{ item.dataId }}">
                     {% if not watchlist %}
                         <a class="js-watchlist-add" href="{{ path('watchlistaddpost', {dataId : item.dataId}) }}">
                             <i class="icon icon-plus" title="add to watchlist"></i>

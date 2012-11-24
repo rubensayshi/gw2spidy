@@ -5,7 +5,7 @@
 
 {% block htmltitle %}{{ item.name }} | {{ parent() }}{% endblock %}
 {% block content %}
-<div class="clearfix">
+<div class="clearfix" data-id="{{ item.dataId }}">
 	<div style="float: left;">
 		{% include "item_snippet.html.twig" with {'item': item, 'tag': 'div'} %}
 	</div>
@@ -33,9 +33,12 @@
             <i class="icon icon-share"></i> link ingame
         </span>
     </div>
-    <div title="click to add to watchlist" class="watchlist" style="display: block; float: right; margin-right: 15px;">
-       <a href="{{ path('watchlistaddpost', {dataId: item.dataId}) }}">
-           <i class="icon icon-plus"></i> add to watchlist
+    <div class="watchlist js-watchlist" style="display: block; float: right; margin-right: 15px;">
+        <a class="js-watchlist-add" href="{{ path('watchlistaddpost', {dataId : item.dataId}) }}">
+            <i class="icon icon-plus" title="add to watchlist"></i> add to watchlist
+        </a>
+        <a class="js-watchlist-remove hide" href="{{ path('watchlistremovepost', {dataId : item.dataId}) }}">
+            <i class="icon icon-minus" title="remove from watchlist"></i> remove from watchlist
         </a>
     </div>
     <div style="float: left;">

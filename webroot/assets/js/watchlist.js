@@ -12,10 +12,11 @@ var GW2SpidyWatchlist = (function() {
         });
     	
         $(".js-watchlist-remove").each(function() {
-        	var id = $(this).closest('tr.item').data('id');
+        	var id = $(this).closest('[data-id]').data('id');
+        	
         	if (watchlist.indexOf(id) != -1) {
         		$(this).removeClass('hide');
-        		$(this).closest('tr.item').find('.js-watchlist-add').addClass('hide');
+        		$(this).closest('[data-id]').find('.js-watchlist-add').addClass('hide');
         	}
         	
         	if (!$(this).hasClass('hide')) {
@@ -24,12 +25,12 @@ var GW2SpidyWatchlist = (function() {
         });
         
         $(".js-watchlist-add").on('click', function(e) {
-        	var id = $(this).closest('tr.item').data('id');
+        	var id = $(this).closest('[data-id]').data('id');
         	addItem(id);
         });
         
         $(".js-watchlist-remove").on('click', function(e) {
-        	var id = $(this).closest('tr.item').data('id');
+        	var id = $(this).closest('[data-id]').data('id');
         	while ((k = watchlist.indexOf(id)) != -1) {
         		watchlist[k] = null;
         	}
