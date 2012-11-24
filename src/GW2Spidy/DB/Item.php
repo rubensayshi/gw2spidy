@@ -36,7 +36,7 @@ class Item extends BaseItem {
     const RARITY_EXOTIC     = 5;
     const RARITY_LEGENDARY  = 6;
     const FALSE_POSITIVE = 'FALSE_POSITIVE';
-    
+
     /* Type ids taken from the database */
     const TYPE_ID_UPGRADE_COMPONENT = 17;
     const TYPE_ID_CONTAINER = 4;
@@ -51,6 +51,14 @@ class Item extends BaseItem {
     const TYPE_ID_CONSUMABLE = 3;
     const TYPE_ID_WEAPON = 18;
     const TYPE_ID_TOOL = 13;
+
+    public function getBestPrice() {
+        if ($this->getVendorPrice()) {
+            return $this->getVendorPrice();
+        } else {
+            return $this->getMinSaleUnitPrice();
+        }
+    }
 
     public function preSave() {
         if ($this->isColumnModified(ItemPeer::MIN_SALE_UNIT_PRICE) || $this->isColumnModified(ItemPeer::MAX_OFFER_UNIT_PRICE)) {

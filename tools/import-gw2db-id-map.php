@@ -29,16 +29,13 @@ CacheHandler::getInstance("purge")->purge();
 $data = json_decode(file_get_contents($mapfilename), true);
 $cnt  = count($data);
 
-$stmt = Propel::getConnection()->prepare("UPDATE item SET gw2db_id = :gw2db_id, gw2db_external_id = :gw2db_external_id, name = :name WHERE data_id = :data_id");
+$stmt = Propel::getConnection()->prepare("UPDATE item SET gw2db_id = :gw2db_id,
+                                                          gw2db_external_id = :gw2db_external_id,
+                                                          name = :name,
+                                                          vendor_price = :vendor_price,
+                                                          karma_price = :karma_price
+                                                      WHERE data_id = :data_id");
 
-/*
- {
- "ID":499635,
- "ExternalID":7587,
- "DataID":130,
- "Name":"Traveler's Duelist's Mask of Vampirism"
- }
- */
 foreach ($data as $i => $row) {
     echo "[{$i} / {$cnt}] \n";
 
@@ -46,10 +43,24 @@ foreach ($data as $i => $row) {
         continue;
     }
 
+    $lowestPrice = null;
+    $lowestKarma = null;
+    if (isset($row['SoldBy']) && $row['SoldBy']) {
+        foreach($row['SoldBy'] as $r) {
+            if (isset($r['GoldCost']) && $r['GoldCost']) {
+                $lowestPrice = $r['GoldCost'];
+            } else if (isset($r['KarmaCost']) && $r['KarmaCost']) {
+                $lowestKarma = $r['KarmaCost'];
+            }
+        }
+    }
+
     $stmt->bindValue('name', $row['Name']);
     $stmt->bindValue('gw2db_id', $row['ID']);
     $stmt->bindValue('gw2db_external_id', $row['ExternalID']);
     $stmt->bindValue('data_id', $row['DataID']);
+    $stmt->bindValue('vendor_price', $lowestPrice);
+    $stmt->bindValue('karma_price', $lowestKarma);
 
     $stmt->execute();
     if ($stmt->rowCount() <= 0) {

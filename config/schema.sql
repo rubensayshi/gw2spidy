@@ -50,6 +50,8 @@ CREATE TABLE `item`
     `restriction_level` INTEGER NOT NULL,
     `rarity` INTEGER NOT NULL,
     `vendor_sell_price` INTEGER NOT NULL,
+    `vendor_price` INTEGER NOT NULL,
+    `karma_price` INTEGER NOT NULL,
     `img` VARCHAR(255) NOT NULL,
     `rarity_word` VARCHAR(255) NOT NULL,
     `item_type_id` INTEGER,

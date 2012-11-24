@@ -21,6 +21,8 @@
         <column name="restriction_level" type="integer" required="true" />
         <column name="rarity" type="integer" required="true" />
         <column name="vendor_sell_price" type="integer" required="true" />
+        <column name="vendor_price" type="integer" required="true" />
+        <column name="karma_price" type="integer" required="true" />
         <column name="img" type="varchar" size="255" required="true" />
         <column name="rarity_word" type="varchar" size="255" required="true" />
         <column name="item_type_id" type="integer" required="false" />
