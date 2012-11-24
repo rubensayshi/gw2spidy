@@ -3,7 +3,7 @@
 
 {% extends not included ? "content_wide.html.twig" : "empty_shell.html.twig" %}
 
-{% block htmltitle %}{{ parent() }} | {{ item.name }}{% endblock %}
+{% block htmltitle %}{{ item.name }} | {{ parent() }}{% endblock %}
 {% block content %}
 <div class="clearfix">
 	<div style="float: left;">
