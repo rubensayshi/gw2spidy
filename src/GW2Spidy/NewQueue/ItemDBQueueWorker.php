@@ -56,7 +56,13 @@ class ItemDBQueueWorker extends BaseWorker {
 
         var_dump($updateItemData['name']) . "\n\n";
         if ($item) {
-            if (($p = Functions::almostEqualCompare($updateItemData['name'], $item->getName())) > 50 || $item->getName() == "...") {
+            $p = Functions::almostEqualCompare($updateItemData['name'], $item->getName());
+
+            if ($p < 50) {
+                echo "Title for ID no longer matches! item [json::{$updateItemData['data_id']}::{$updateItemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}] [{$p}%]";
+            }
+
+            if ($updateItemData['name'] && $updateItemData['name'] != '...' && $updateItemData['name'] != 'Encrypted') {
                 $item->fromArray($updateItemData, \BasePeer::TYPE_FIELDNAME);
 
                 if (isset($updateItemData['level'])) {
@@ -69,8 +75,6 @@ class ItemDBQueueWorker extends BaseWorker {
                 if ($subtype) {
                     $item->setItemSubType($subtype);
                 }
-            } else {
-                throw new \Exception("Title for ID no longer matches! item [{$p}] [json::{$updateItemData['data_id']}::{$updateItemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}]", self::ERROR_CODE_NO_LONGER_EXISTS);
             }
         } else {
             $item = new Item();
