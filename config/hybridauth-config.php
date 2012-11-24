@@ -39,7 +39,8 @@ return
 
             "Facebook" => array (
                 "enabled" => true,
-                "keys"    => array ( "id" => getAppConfig("hybrid_auth.facebook_id"), "secret" => getAppConfig("hybrid_auth.facebook_secret"))
+                "keys"    => array ( "id" => getAppConfig("hybrid_auth.facebook_id"), "secret" => getAppConfig("hybrid_auth.facebook_secret")),
+                "scope"   => "email, user_about_me, user_birthday",
             ),
 
             "Twitter" => array (
