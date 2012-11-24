@@ -37,6 +37,8 @@ use GW2Spidy\DB\Watchlist;
  * @method     ItemQuery orderByRestrictionLevel($order = Criteria::ASC) Order by the restriction_level column
  * @method     ItemQuery orderByRarity($order = Criteria::ASC) Order by the rarity column
  * @method     ItemQuery orderByVendorSellPrice($order = Criteria::ASC) Order by the vendor_sell_price column
+ * @method     ItemQuery orderByVendorPrice($order = Criteria::ASC) Order by the vendor_price column
+ * @method     ItemQuery orderByKarmaPrice($order = Criteria::ASC) Order by the karma_price column
  * @method     ItemQuery orderByImg($order = Criteria::ASC) Order by the img column
  * @method     ItemQuery orderByRarityWord($order = Criteria::ASC) Order by the rarity_word column
  * @method     ItemQuery orderByItemTypeId($order = Criteria::ASC) Order by the item_type_id column
@@ -59,6 +61,8 @@ use GW2Spidy\DB\Watchlist;
  * @method     ItemQuery groupByRestrictionLevel() Group by the restriction_level column
  * @method     ItemQuery groupByRarity() Group by the rarity column
  * @method     ItemQuery groupByVendorSellPrice() Group by the vendor_sell_price column
+ * @method     ItemQuery groupByVendorPrice() Group by the vendor_price column
+ * @method     ItemQuery groupByKarmaPrice() Group by the karma_price column
  * @method     ItemQuery groupByImg() Group by the img column
  * @method     ItemQuery groupByRarityWord() Group by the rarity_word column
  * @method     ItemQuery groupByItemTypeId() Group by the item_type_id column
@@ -116,6 +120,8 @@ use GW2Spidy\DB\Watchlist;
  * @method     Item findOneByRestrictionLevel(int $restriction_level) Return the first Item filtered by the restriction_level column
  * @method     Item findOneByRarity(int $rarity) Return the first Item filtered by the rarity column
  * @method     Item findOneByVendorSellPrice(int $vendor_sell_price) Return the first Item filtered by the vendor_sell_price column
+ * @method     Item findOneByVendorPrice(int $vendor_price) Return the first Item filtered by the vendor_price column
+ * @method     Item findOneByKarmaPrice(int $karma_price) Return the first Item filtered by the karma_price column
  * @method     Item findOneByImg(string $img) Return the first Item filtered by the img column
  * @method     Item findOneByRarityWord(string $rarity_word) Return the first Item filtered by the rarity_word column
  * @method     Item findOneByItemTypeId(int $item_type_id) Return the first Item filtered by the item_type_id column
@@ -138,6 +144,8 @@ use GW2Spidy\DB\Watchlist;
  * @method     array findByRestrictionLevel(int $restriction_level) Return Item objects filtered by the restriction_level column
  * @method     array findByRarity(int $rarity) Return Item objects filtered by the rarity column
  * @method     array findByVendorSellPrice(int $vendor_sell_price) Return Item objects filtered by the vendor_sell_price column
+ * @method     array findByVendorPrice(int $vendor_price) Return Item objects filtered by the vendor_price column
+ * @method     array findByKarmaPrice(int $karma_price) Return Item objects filtered by the karma_price column
  * @method     array findByImg(string $img) Return Item objects filtered by the img column
  * @method     array findByRarityWord(string $rarity_word) Return Item objects filtered by the rarity_word column
  * @method     array findByItemTypeId(int $item_type_id) Return Item objects filtered by the item_type_id column
@@ -241,7 +249,7 @@ abstract class BaseItemQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID`, `MAX_OFFER_UNIT_PRICE`, `MIN_SALE_UNIT_PRICE`, `OFFER_AVAILABILITY`, `SALE_AVAILABILITY`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID`, `LAST_PRICE_CHANGED`, `SALE_PRICE_CHANGE_LAST_HOUR`, `OFFER_PRICE_CHANGE_LAST_HOUR` FROM `item` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `VENDOR_PRICE`, `KARMA_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID`, `MAX_OFFER_UNIT_PRICE`, `MIN_SALE_UNIT_PRICE`, `OFFER_AVAILABILITY`, `SALE_AVAILABILITY`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID`, `LAST_PRICE_CHANGED`, `SALE_PRICE_CHANGE_LAST_HOUR`, `OFFER_PRICE_CHANGE_LAST_HOUR` FROM `item` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -606,6 +614,88 @@ abstract class BaseItemQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ItemPeer::VENDOR_SELL_PRICE, $vendorSellPrice, $comparison);
+    }
+
+    /**
+     * Filter the query on the vendor_price column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByVendorPrice(1234); // WHERE vendor_price = 1234
+     * $query->filterByVendorPrice(array(12, 34)); // WHERE vendor_price IN (12, 34)
+     * $query->filterByVendorPrice(array('min' => 12)); // WHERE vendor_price > 12
+     * </code>
+     *
+     * @param     mixed $vendorPrice The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByVendorPrice($vendorPrice = null, $comparison = null)
+    {
+        if (is_array($vendorPrice)) {
+            $useMinMax = false;
+            if (isset($vendorPrice['min'])) {
+                $this->addUsingAlias(ItemPeer::VENDOR_PRICE, $vendorPrice['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($vendorPrice['max'])) {
+                $this->addUsingAlias(ItemPeer::VENDOR_PRICE, $vendorPrice['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::VENDOR_PRICE, $vendorPrice, $comparison);
+    }
+
+    /**
+     * Filter the query on the karma_price column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByKarmaPrice(1234); // WHERE karma_price = 1234
+     * $query->filterByKarmaPrice(array(12, 34)); // WHERE karma_price IN (12, 34)
+     * $query->filterByKarmaPrice(array('min' => 12)); // WHERE karma_price > 12
+     * </code>
+     *
+     * @param     mixed $karmaPrice The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByKarmaPrice($karmaPrice = null, $comparison = null)
+    {
+        if (is_array($karmaPrice)) {
+            $useMinMax = false;
+            if (isset($karmaPrice['min'])) {
+                $this->addUsingAlias(ItemPeer::KARMA_PRICE, $karmaPrice['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($karmaPrice['max'])) {
+                $this->addUsingAlias(ItemPeer::KARMA_PRICE, $karmaPrice['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::KARMA_PRICE, $karmaPrice, $comparison);
     }
 
     /**

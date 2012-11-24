@@ -50,6 +50,8 @@ class ItemTableMap extends TableMap
         $this->addColumn('RESTRICTION_LEVEL', 'RestrictionLevel', 'INTEGER', true, null, null);
         $this->addColumn('RARITY', 'Rarity', 'INTEGER', true, null, null);
         $this->addColumn('VENDOR_SELL_PRICE', 'VendorSellPrice', 'INTEGER', true, null, null);
+        $this->addColumn('VENDOR_PRICE', 'VendorPrice', 'INTEGER', true, null, null);
+        $this->addColumn('KARMA_PRICE', 'KarmaPrice', 'INTEGER', true, null, null);
         $this->addColumn('IMG', 'Img', 'VARCHAR', true, 255, null);
         $this->addColumn('RARITY_WORD', 'RarityWord', 'VARCHAR', true, 255, null);
         $this->addForeignKey('ITEM_TYPE_ID', 'ItemTypeId', 'INTEGER', 'item_type', 'ID', false, null, null);

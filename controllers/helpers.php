@@ -140,7 +140,8 @@ function buildRecipeTree($item, $recipe = null, $app) {
         'gw2db_href' => "http://www.gw2db.com/items/{$item->getGw2dbExternalId()}-" . Functions::slugify($item->getName()),
         'rarity' => $item->getRarityName(),
         'img'	=> $item->getImg(),
-        'price' => $item->getMinSaleUnitPrice()
+        'price' => $item->getBestPrice(),
+        'vendor' => !!$item->getVendorPrice()
     );
 
     if ($recipe) {

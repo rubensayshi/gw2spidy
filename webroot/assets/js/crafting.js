@@ -162,7 +162,7 @@ var CraftEntry = function(item, count, parent, path, last) {
             return $span;
         };
 
-        var $tpcost = renderOption('BUY', price, TP);
+        var $tpcost = renderOption(item.vendor ? 'VENDOR' : 'TP', price, TP);
         $price.append($tpcost);
 
         var $ccwrapper = renderOption('CRAFT', 0, CRAFT);

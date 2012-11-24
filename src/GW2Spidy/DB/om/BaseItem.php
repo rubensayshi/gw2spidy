@@ -114,6 +114,18 @@ abstract class BaseItem extends BaseObject implements Persistent
     protected $vendor_sell_price;
 
     /**
+     * The value for the vendor_price field.
+     * @var        int
+     */
+    protected $vendor_price;
+
+    /**
+     * The value for the karma_price field.
+     * @var        int
+     */
+    protected $karma_price;
+
+    /**
      * The value for the img field.
      * @var        string
      */
@@ -411,6 +423,28 @@ abstract class BaseItem extends BaseObject implements Persistent
     {
 
         return $this->vendor_sell_price;
+    }
+
+    /**
+     * Get the [vendor_price] column value.
+     * 
+     * @return   int
+     */
+    public function getVendorPrice()
+    {
+
+        return $this->vendor_price;
+    }
+
+    /**
+     * Get the [karma_price] column value.
+     * 
+     * @return   int
+     */
+    public function getKarmaPrice()
+    {
+
+        return $this->karma_price;
     }
 
     /**
@@ -752,6 +786,48 @@ abstract class BaseItem extends BaseObject implements Persistent
     } // setVendorSellPrice()
 
     /**
+     * Set the value of [vendor_price] column.
+     * 
+     * @param      int $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setVendorPrice($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->vendor_price !== $v) {
+            $this->vendor_price = $v;
+            $this->modifiedColumns[] = ItemPeer::VENDOR_PRICE;
+        }
+
+
+        return $this;
+    } // setVendorPrice()
+
+    /**
+     * Set the value of [karma_price] column.
+     * 
+     * @param      int $v new value
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setKarmaPrice($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->karma_price !== $v) {
+            $this->karma_price = $v;
+            $this->modifiedColumns[] = ItemPeer::KARMA_PRICE;
+        }
+
+
+        return $this;
+    } // setKarmaPrice()
+
+    /**
      * Set the value of [img] column.
      * 
      * @param      string $v new value
@@ -1090,19 +1166,21 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->restriction_level = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
             $this->rarity = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
             $this->vendor_sell_price = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
-            $this->img = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
-            $this->rarity_word = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-            $this->item_type_id = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
-            $this->item_sub_type_id = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
-            $this->max_offer_unit_price = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
-            $this->min_sale_unit_price = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
-            $this->offer_availability = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-            $this->sale_availability = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
-            $this->gw2db_id = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
-            $this->gw2db_external_id = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
-            $this->last_price_changed = ($row[$startcol + 18] !== null) ? (string) $row[$startcol + 18] : null;
-            $this->sale_price_change_last_hour = ($row[$startcol + 19] !== null) ? (int) $row[$startcol + 19] : null;
-            $this->offer_price_change_last_hour = ($row[$startcol + 20] !== null) ? (int) $row[$startcol + 20] : null;
+            $this->vendor_price = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+            $this->karma_price = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+            $this->img = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
+            $this->rarity_word = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+            $this->item_type_id = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
+            $this->item_sub_type_id = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+            $this->max_offer_unit_price = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+            $this->min_sale_unit_price = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+            $this->offer_availability = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
+            $this->sale_availability = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
+            $this->gw2db_id = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
+            $this->gw2db_external_id = ($row[$startcol + 19] !== null) ? (int) $row[$startcol + 19] : null;
+            $this->last_price_changed = ($row[$startcol + 20] !== null) ? (string) $row[$startcol + 20] : null;
+            $this->sale_price_change_last_hour = ($row[$startcol + 21] !== null) ? (int) $row[$startcol + 21] : null;
+            $this->offer_price_change_last_hour = ($row[$startcol + 22] !== null) ? (int) $row[$startcol + 22] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1111,7 +1189,7 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 21; // 21 = ItemPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 23; // 23 = ItemPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Item object", $e);
@@ -1508,6 +1586,12 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::VENDOR_SELL_PRICE)) {
             $modifiedColumns[':p' . $index++]  = '`VENDOR_SELL_PRICE`';
         }
+        if ($this->isColumnModified(ItemPeer::VENDOR_PRICE)) {
+            $modifiedColumns[':p' . $index++]  = '`VENDOR_PRICE`';
+        }
+        if ($this->isColumnModified(ItemPeer::KARMA_PRICE)) {
+            $modifiedColumns[':p' . $index++]  = '`KARMA_PRICE`';
+        }
         if ($this->isColumnModified(ItemPeer::IMG)) {
             $modifiedColumns[':p' . $index++]  = '`IMG`';
         }
@@ -1581,6 +1665,12 @@ abstract class BaseItem extends BaseObject implements Persistent
                         break;
                     case '`VENDOR_SELL_PRICE`':
 						$stmt->bindValue($identifier, $this->vendor_sell_price, PDO::PARAM_INT);
+                        break;
+                    case '`VENDOR_PRICE`':
+						$stmt->bindValue($identifier, $this->vendor_price, PDO::PARAM_INT);
+                        break;
+                    case '`KARMA_PRICE`':
+						$stmt->bindValue($identifier, $this->karma_price, PDO::PARAM_INT);
                         break;
                     case '`IMG`':
 						$stmt->bindValue($identifier, $this->img, PDO::PARAM_STR);
@@ -1831,42 +1921,48 @@ abstract class BaseItem extends BaseObject implements Persistent
                 return $this->getVendorSellPrice();
                 break;
             case 8:
-                return $this->getImg();
+                return $this->getVendorPrice();
                 break;
             case 9:
-                return $this->getRarityWord();
+                return $this->getKarmaPrice();
                 break;
             case 10:
-                return $this->getItemTypeId();
+                return $this->getImg();
                 break;
             case 11:
-                return $this->getItemSubTypeId();
+                return $this->getRarityWord();
                 break;
             case 12:
-                return $this->getMaxOfferUnitPrice();
+                return $this->getItemTypeId();
                 break;
             case 13:
-                return $this->getMinSaleUnitPrice();
+                return $this->getItemSubTypeId();
                 break;
             case 14:
-                return $this->getOfferAvailability();
+                return $this->getMaxOfferUnitPrice();
                 break;
             case 15:
-                return $this->getSaleAvailability();
+                return $this->getMinSaleUnitPrice();
                 break;
             case 16:
-                return $this->getGw2dbId();
+                return $this->getOfferAvailability();
                 break;
             case 17:
-                return $this->getGw2dbExternalId();
+                return $this->getSaleAvailability();
                 break;
             case 18:
-                return $this->getLastPriceChanged();
+                return $this->getGw2dbId();
                 break;
             case 19:
-                return $this->getSalePriceChangeLastHour();
+                return $this->getGw2dbExternalId();
                 break;
             case 20:
+                return $this->getLastPriceChanged();
+                break;
+            case 21:
+                return $this->getSalePriceChangeLastHour();
+                break;
+            case 22:
                 return $this->getOfferPriceChangeLastHour();
                 break;
             default:
@@ -1906,19 +2002,21 @@ abstract class BaseItem extends BaseObject implements Persistent
             $keys[5] => $this->getRestrictionLevel(),
             $keys[6] => $this->getRarity(),
             $keys[7] => $this->getVendorSellPrice(),
-            $keys[8] => $this->getImg(),
-            $keys[9] => $this->getRarityWord(),
-            $keys[10] => $this->getItemTypeId(),
-            $keys[11] => $this->getItemSubTypeId(),
-            $keys[12] => $this->getMaxOfferUnitPrice(),
-            $keys[13] => $this->getMinSaleUnitPrice(),
-            $keys[14] => $this->getOfferAvailability(),
-            $keys[15] => $this->getSaleAvailability(),
-            $keys[16] => $this->getGw2dbId(),
-            $keys[17] => $this->getGw2dbExternalId(),
-            $keys[18] => $this->getLastPriceChanged(),
-            $keys[19] => $this->getSalePriceChangeLastHour(),
-            $keys[20] => $this->getOfferPriceChangeLastHour(),
+            $keys[8] => $this->getVendorPrice(),
+            $keys[9] => $this->getKarmaPrice(),
+            $keys[10] => $this->getImg(),
+            $keys[11] => $this->getRarityWord(),
+            $keys[12] => $this->getItemTypeId(),
+            $keys[13] => $this->getItemSubTypeId(),
+            $keys[14] => $this->getMaxOfferUnitPrice(),
+            $keys[15] => $this->getMinSaleUnitPrice(),
+            $keys[16] => $this->getOfferAvailability(),
+            $keys[17] => $this->getSaleAvailability(),
+            $keys[18] => $this->getGw2dbId(),
+            $keys[19] => $this->getGw2dbExternalId(),
+            $keys[20] => $this->getLastPriceChanged(),
+            $keys[21] => $this->getSalePriceChangeLastHour(),
+            $keys[22] => $this->getOfferPriceChangeLastHour(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aItemType) {
@@ -2001,42 +2099,48 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->setVendorSellPrice($value);
                 break;
             case 8:
-                $this->setImg($value);
+                $this->setVendorPrice($value);
                 break;
             case 9:
-                $this->setRarityWord($value);
+                $this->setKarmaPrice($value);
                 break;
             case 10:
-                $this->setItemTypeId($value);
+                $this->setImg($value);
                 break;
             case 11:
-                $this->setItemSubTypeId($value);
+                $this->setRarityWord($value);
                 break;
             case 12:
-                $this->setMaxOfferUnitPrice($value);
+                $this->setItemTypeId($value);
                 break;
             case 13:
-                $this->setMinSaleUnitPrice($value);
+                $this->setItemSubTypeId($value);
                 break;
             case 14:
-                $this->setOfferAvailability($value);
+                $this->setMaxOfferUnitPrice($value);
                 break;
             case 15:
-                $this->setSaleAvailability($value);
+                $this->setMinSaleUnitPrice($value);
                 break;
             case 16:
-                $this->setGw2dbId($value);
+                $this->setOfferAvailability($value);
                 break;
             case 17:
-                $this->setGw2dbExternalId($value);
+                $this->setSaleAvailability($value);
                 break;
             case 18:
-                $this->setLastPriceChanged($value);
+                $this->setGw2dbId($value);
                 break;
             case 19:
-                $this->setSalePriceChangeLastHour($value);
+                $this->setGw2dbExternalId($value);
                 break;
             case 20:
+                $this->setLastPriceChanged($value);
+                break;
+            case 21:
+                $this->setSalePriceChangeLastHour($value);
+                break;
+            case 22:
                 $this->setOfferPriceChangeLastHour($value);
                 break;
         } // switch()
@@ -2071,19 +2175,21 @@ abstract class BaseItem extends BaseObject implements Persistent
         if (array_key_exists($keys[5], $arr)) $this->setRestrictionLevel($arr[$keys[5]]);
         if (array_key_exists($keys[6], $arr)) $this->setRarity($arr[$keys[6]]);
         if (array_key_exists($keys[7], $arr)) $this->setVendorSellPrice($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setImg($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setRarityWord($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setItemTypeId($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setItemSubTypeId($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setMaxOfferUnitPrice($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setMinSaleUnitPrice($arr[$keys[13]]);
-        if (array_key_exists($keys[14], $arr)) $this->setOfferAvailability($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setSaleAvailability($arr[$keys[15]]);
-        if (array_key_exists($keys[16], $arr)) $this->setGw2dbId($arr[$keys[16]]);
-        if (array_key_exists($keys[17], $arr)) $this->setGw2dbExternalId($arr[$keys[17]]);
-        if (array_key_exists($keys[18], $arr)) $this->setLastPriceChanged($arr[$keys[18]]);
-        if (array_key_exists($keys[19], $arr)) $this->setSalePriceChangeLastHour($arr[$keys[19]]);
-        if (array_key_exists($keys[20], $arr)) $this->setOfferPriceChangeLastHour($arr[$keys[20]]);
+        if (array_key_exists($keys[8], $arr)) $this->setVendorPrice($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setKarmaPrice($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setImg($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setRarityWord($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setItemTypeId($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setItemSubTypeId($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setMaxOfferUnitPrice($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setMinSaleUnitPrice($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setOfferAvailability($arr[$keys[16]]);
+        if (array_key_exists($keys[17], $arr)) $this->setSaleAvailability($arr[$keys[17]]);
+        if (array_key_exists($keys[18], $arr)) $this->setGw2dbId($arr[$keys[18]]);
+        if (array_key_exists($keys[19], $arr)) $this->setGw2dbExternalId($arr[$keys[19]]);
+        if (array_key_exists($keys[20], $arr)) $this->setLastPriceChanged($arr[$keys[20]]);
+        if (array_key_exists($keys[21], $arr)) $this->setSalePriceChangeLastHour($arr[$keys[21]]);
+        if (array_key_exists($keys[22], $arr)) $this->setOfferPriceChangeLastHour($arr[$keys[22]]);
     }
 
     /**
@@ -2103,6 +2209,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::RESTRICTION_LEVEL)) $criteria->add(ItemPeer::RESTRICTION_LEVEL, $this->restriction_level);
         if ($this->isColumnModified(ItemPeer::RARITY)) $criteria->add(ItemPeer::RARITY, $this->rarity);
         if ($this->isColumnModified(ItemPeer::VENDOR_SELL_PRICE)) $criteria->add(ItemPeer::VENDOR_SELL_PRICE, $this->vendor_sell_price);
+        if ($this->isColumnModified(ItemPeer::VENDOR_PRICE)) $criteria->add(ItemPeer::VENDOR_PRICE, $this->vendor_price);
+        if ($this->isColumnModified(ItemPeer::KARMA_PRICE)) $criteria->add(ItemPeer::KARMA_PRICE, $this->karma_price);
         if ($this->isColumnModified(ItemPeer::IMG)) $criteria->add(ItemPeer::IMG, $this->img);
         if ($this->isColumnModified(ItemPeer::RARITY_WORD)) $criteria->add(ItemPeer::RARITY_WORD, $this->rarity_word);
         if ($this->isColumnModified(ItemPeer::ITEM_TYPE_ID)) $criteria->add(ItemPeer::ITEM_TYPE_ID, $this->item_type_id);
@@ -2186,6 +2294,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         $copyObj->setRestrictionLevel($this->getRestrictionLevel());
         $copyObj->setRarity($this->getRarity());
         $copyObj->setVendorSellPrice($this->getVendorSellPrice());
+        $copyObj->setVendorPrice($this->getVendorPrice());
+        $copyObj->setKarmaPrice($this->getKarmaPrice());
         $copyObj->setImg($this->getImg());
         $copyObj->setRarityWord($this->getRarityWord());
         $copyObj->setItemTypeId($this->getItemTypeId());
@@ -3878,6 +3988,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         $this->restriction_level = null;
         $this->rarity = null;
         $this->vendor_sell_price = null;
+        $this->vendor_price = null;
+        $this->karma_price = null;
         $this->img = null;
         $this->rarity_word = null;
         $this->item_type_id = null;
