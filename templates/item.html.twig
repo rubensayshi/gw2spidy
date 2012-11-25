@@ -42,18 +42,24 @@
         </a>
     </div>
     <div style="float: left;">
-        <table class="table" style="width: 200px;">
+        <table class="table" style="width: 250px;">
             <tr>
                     <th>Sell Price: </th>
                     <td>{{ item.minSaleUnitPrice | gw2money }}</td>
             </tr>
             <tr>
-                    <th>Supply: </th>
-                    <td>{{ item.saleAvailability }}</td>
-            </tr>
-            <tr>
                     <th>Buy Price: </th>
                     <td>{{ item.maxOfferUnitPrice | gw2money }}</td>
+            </tr>
+            {% if item.vendorPrice %}
+            <tr>
+                    <th>Vendor Price: </th>
+                    <td>{{ item.vendorPrice | gw2money }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                    <th>Supply: </th>
+                    <td>{{ item.saleAvailability }}</td>
             </tr>
             <tr>
                     <th>Demand: </th>
