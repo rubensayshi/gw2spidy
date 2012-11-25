@@ -60,6 +60,24 @@ class Item extends BaseItem {
         }
     }
 
+    public function setName($v) {
+        $this->setCleanName($this->cleanName($v));
+
+        return parent::setName($v);
+    }
+
+    public function setTpName($v) {
+        $this->setTpCleanName($this->cleanName($v));
+
+        return parent::setTpName($v);
+    }
+
+    protected function cleanName($v) {
+        $v = str_replace('[s]', '', $v);
+
+        return $v;
+    }
+
     public function preSave() {
         if ($this->isColumnModified(ItemPeer::MIN_SALE_UNIT_PRICE) || $this->isColumnModified(ItemPeer::MAX_OFFER_UNIT_PRICE)) {
             $this->setLastPriceChanged(new \DateTime());

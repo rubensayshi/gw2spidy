@@ -16,6 +16,9 @@
         <column name="data_id" type="integer" required="true" primaryKey="true" />
         <column name="type_id" type="integer" required="true" />
         <column name="name" type="varchar" size="255" required="true" />
+        <column name="tp_name" type="varchar" size="255" required="true" />
+        <column name="clean_name" type="varchar" size="255" required="true" />
+        <column name="clean_tp_name" type="varchar" size="255" required="true" />
         <column name="gem_store_description" type="varchar" size="255" required="true" />
         <column name="gem_store_blurb" type="varchar" size="255" required="true" />
         <column name="restriction_level" type="integer" required="true" />
@@ -37,13 +40,20 @@
         <column name="last_price_changed" type="timestamp" />
         <column name="sale_price_change_last_hour" type="integer" default="0" />
         <column name="offer_price_change_last_hour" type="integer" default="0" />
-        
+                
         <foreign-key foreignTable="item_type" phpName="ItemType" refPhpName="Item">
             <reference local="item_type_id" foreign="id" />
         </foreign-key>
         <foreign-key foreignTable="item_sub_type" phpName="ItemSubType" refPhpName="Item">
             <reference local="item_sub_type_id" foreign="id" />
         </foreign-key>
+        
+        <index name="search_name">
+            <index-column name="name" />
+            <index-column name="tp_name" />
+            <index-column name="clean_name" />
+            <index-column name="clean_tp_name" />
+        </index>
     </table>
     <table name="gw2db_item_archive" phpName="GW2DBItemArchive">
         <column name="ID" type="integer" required="true" primaryKey="true" />
@@ -80,6 +90,10 @@
         <foreign-key foreignTable="item" phpName="ResultItem" refPhpName="ResultOfRecipe">
             <reference local="result_item_id" foreign="data_id" />
         </foreign-key>
+        
+        <index name="search_name">
+            <index-column name="name" />
+        </index>
     </table>
     <table name="recipe_ingredient" phpName="RecipeIngredient" isCrossRef="true">
         <column name="recipe_id" type="integer" required="true" primaryKey="true" />

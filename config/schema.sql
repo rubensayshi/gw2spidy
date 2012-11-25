@@ -45,6 +45,9 @@ CREATE TABLE `item`
     `data_id` INTEGER NOT NULL,
     `type_id` INTEGER NOT NULL,
     `name` VARCHAR(255) NOT NULL,
+    `tp_name` VARCHAR(255) NOT NULL,
+    `clean_name` VARCHAR(255) NOT NULL,
+    `clean_tp_name` VARCHAR(255) NOT NULL,
     `gem_store_description` VARCHAR(255) NOT NULL,
     `gem_store_blurb` VARCHAR(255) NOT NULL,
     `restriction_level` INTEGER NOT NULL,
@@ -66,6 +69,7 @@ CREATE TABLE `item`
     `sale_price_change_last_hour` INTEGER DEFAULT 0,
     `offer_price_change_last_hour` INTEGER DEFAULT 0,
     PRIMARY KEY (`data_id`),
+    INDEX `search_name` (`name`, `tp_name`, `clean_name`, `clean_tp_name`),
     INDEX `item_FI_1` (`item_type_id`),
     INDEX `item_FI_2` (`item_sub_type_id`),
     CONSTRAINT `item_FK_1`
@@ -125,6 +129,7 @@ CREATE TABLE `recipe`
     `gw2db_id` INTEGER,
     `gw2db_external_id` INTEGER,
     PRIMARY KEY (`data_id`),
+    INDEX `search_name` (`name`),
     INDEX `recipe_FI_1` (`discipline_id`),
     INDEX `recipe_FI_2` (`result_item_id`),
     CONSTRAINT `recipe_FK_1`

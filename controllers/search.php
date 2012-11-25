@@ -49,19 +49,36 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
     $recipes = (bool)$request->get('recipes', false);
     $page = $page > 0 ? $page : 1;
 
-    $q = $recipes ? RecipeQuery::create() : ItemQuery::create();
+    if ($recipes) {
+        $route = 'recipe';
+        $getQ = function($search) {
+            $q = RecipeQuery::create();
+            $q->filterByName("%{$search}%");
 
-    $q->filterByName("%{$search}%");
+            return $q;
+        };
+    } else {
+        $getQ = function($search) {
+            $q = ItemQuery::create();
+            $q->filterByName("%{$search}%")
+              ->orWhere("tp_name LIKE ?", "%{$search}%", \PDO::PARAM_STR)
+              ->orWhere("clean_name LIKE ?", "%{$search}%", \PDO::PARAM_STR)
+              ->orWhere("clean_tp_name LIKE ?", "%{$search}%", \PDO::PARAM_STR);
+
+            return $q;
+        };
+    }
+
+    $q = $getQ($search);
 
     if ($q->count() == 0 && $search != trim($search)) {
         $search = trim($search);
-        $q = $recipes ? RecipeQuery::create() : ItemQuery::create();
-        $q->filterByName("%{$search}%");
+        $q = $getQ($search);
     }
 
     if ($page == 1 && $q->count() == 1) {
         $item = $q->findOne();
-        return $app->redirect($app['url_generator']->generate($recipes ? 'recipe' : 'item', array('dataId' => $item->getDataId())));
+        return $app->redirect($app['url_generator']->generate($route, array('dataId' => $item->getDataId())));
     }
 
     if ($recipes) {

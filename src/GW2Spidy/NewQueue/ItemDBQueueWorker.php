@@ -54,7 +54,6 @@ class ItemDBQueueWorker extends BaseWorker {
         unset($updateItemData['max_offer_unit_price']);
         unset($updateItemData['offer_availability']);
 
-        var_dump($updateItemData['name']) . "\n\n";
         if ($item) {
             $p = Functions::almostEqualCompare($updateItemData['name'], $item->getName());
 
@@ -62,23 +61,17 @@ class ItemDBQueueWorker extends BaseWorker {
                 echo "Title for ID no longer matches! item [json::{$updateItemData['data_id']}::{$updateItemData['name']}] vs [db::{$item->getDataId()}::{$item->getName()}] [{$p}%]";
             }
 
-            if ($updateItemData['name'] && $updateItemData['name'] != '...' && $updateItemData['name'] != 'Encrypted') {
-                $item->fromArray($updateItemData, \BasePeer::TYPE_FIELDNAME);
-
-                if (isset($updateItemData['level'])) {
-                    $item->setRestrictionLevel($updateItemData['level']);
-                }
-
-                if ($type) {
-                    $item->setItemType($type);
-                }
-                if ($subtype) {
-                    $item->setItemSubType($subtype);
-                }
+            // dont update crap items
+            if (!$updateItemData['name'] || $updateItemData['name'] == '...' || $updateItemData['name'] == 'Encrypted') {
+                $updateItemData = null;
             }
         } else {
             $item = new Item();
+        }
+
+        if ($updateItemData) {
             $item->fromArray($updateItemData, \BasePeer::TYPE_FIELDNAME);
+            $item->setTpName($updateItemData['name']);
 
             if (isset($updateItemData['level'])) {
                 $item->setRestrictionLevel($updateItemData['level']);

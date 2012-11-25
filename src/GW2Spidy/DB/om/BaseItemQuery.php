@@ -32,6 +32,9 @@ use GW2Spidy\DB\Watchlist;
  * @method     ItemQuery orderByDataId($order = Criteria::ASC) Order by the data_id column
  * @method     ItemQuery orderByTypeId($order = Criteria::ASC) Order by the type_id column
  * @method     ItemQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ItemQuery orderByTpName($order = Criteria::ASC) Order by the tp_name column
+ * @method     ItemQuery orderByCleanName($order = Criteria::ASC) Order by the clean_name column
+ * @method     ItemQuery orderByCleanTpName($order = Criteria::ASC) Order by the clean_tp_name column
  * @method     ItemQuery orderByGemStoreDescription($order = Criteria::ASC) Order by the gem_store_description column
  * @method     ItemQuery orderByGemStoreBlurb($order = Criteria::ASC) Order by the gem_store_blurb column
  * @method     ItemQuery orderByRestrictionLevel($order = Criteria::ASC) Order by the restriction_level column
@@ -56,6 +59,9 @@ use GW2Spidy\DB\Watchlist;
  * @method     ItemQuery groupByDataId() Group by the data_id column
  * @method     ItemQuery groupByTypeId() Group by the type_id column
  * @method     ItemQuery groupByName() Group by the name column
+ * @method     ItemQuery groupByTpName() Group by the tp_name column
+ * @method     ItemQuery groupByCleanName() Group by the clean_name column
+ * @method     ItemQuery groupByCleanTpName() Group by the clean_tp_name column
  * @method     ItemQuery groupByGemStoreDescription() Group by the gem_store_description column
  * @method     ItemQuery groupByGemStoreBlurb() Group by the gem_store_blurb column
  * @method     ItemQuery groupByRestrictionLevel() Group by the restriction_level column
@@ -115,6 +121,9 @@ use GW2Spidy\DB\Watchlist;
  * @method     Item findOneByDataId(int $data_id) Return the first Item filtered by the data_id column
  * @method     Item findOneByTypeId(int $type_id) Return the first Item filtered by the type_id column
  * @method     Item findOneByName(string $name) Return the first Item filtered by the name column
+ * @method     Item findOneByTpName(string $tp_name) Return the first Item filtered by the tp_name column
+ * @method     Item findOneByCleanName(string $clean_name) Return the first Item filtered by the clean_name column
+ * @method     Item findOneByCleanTpName(string $clean_tp_name) Return the first Item filtered by the clean_tp_name column
  * @method     Item findOneByGemStoreDescription(string $gem_store_description) Return the first Item filtered by the gem_store_description column
  * @method     Item findOneByGemStoreBlurb(string $gem_store_blurb) Return the first Item filtered by the gem_store_blurb column
  * @method     Item findOneByRestrictionLevel(int $restriction_level) Return the first Item filtered by the restriction_level column
@@ -139,6 +148,9 @@ use GW2Spidy\DB\Watchlist;
  * @method     array findByDataId(int $data_id) Return Item objects filtered by the data_id column
  * @method     array findByTypeId(int $type_id) Return Item objects filtered by the type_id column
  * @method     array findByName(string $name) Return Item objects filtered by the name column
+ * @method     array findByTpName(string $tp_name) Return Item objects filtered by the tp_name column
+ * @method     array findByCleanName(string $clean_name) Return Item objects filtered by the clean_name column
+ * @method     array findByCleanTpName(string $clean_tp_name) Return Item objects filtered by the clean_tp_name column
  * @method     array findByGemStoreDescription(string $gem_store_description) Return Item objects filtered by the gem_store_description column
  * @method     array findByGemStoreBlurb(string $gem_store_blurb) Return Item objects filtered by the gem_store_blurb column
  * @method     array findByRestrictionLevel(int $restriction_level) Return Item objects filtered by the restriction_level column
@@ -249,7 +261,7 @@ abstract class BaseItemQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `VENDOR_PRICE`, `KARMA_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID`, `MAX_OFFER_UNIT_PRICE`, `MIN_SALE_UNIT_PRICE`, `OFFER_AVAILABILITY`, `SALE_AVAILABILITY`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID`, `LAST_PRICE_CHANGED`, `SALE_PRICE_CHANGE_LAST_HOUR`, `OFFER_PRICE_CHANGE_LAST_HOUR` FROM `item` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `TP_NAME`, `CLEAN_NAME`, `CLEAN_TP_NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `VENDOR_PRICE`, `KARMA_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID`, `MAX_OFFER_UNIT_PRICE`, `MIN_SALE_UNIT_PRICE`, `OFFER_AVAILABILITY`, `SALE_AVAILABILITY`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID`, `LAST_PRICE_CHANGED`, `SALE_PRICE_CHANGE_LAST_HOUR`, `OFFER_PRICE_CHANGE_LAST_HOUR` FROM `item` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -433,6 +445,93 @@ abstract class BaseItemQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ItemPeer::NAME, $name, $comparison);
+    }
+
+    /**
+     * Filter the query on the tp_name column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTpName('fooValue');   // WHERE tp_name = 'fooValue'
+     * $query->filterByTpName('%fooValue%'); // WHERE tp_name LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $tpName The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByTpName($tpName = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($tpName)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $tpName)) {
+                $tpName = str_replace('*', '%', $tpName);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::TP_NAME, $tpName, $comparison);
+    }
+
+    /**
+     * Filter the query on the clean_name column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCleanName('fooValue');   // WHERE clean_name = 'fooValue'
+     * $query->filterByCleanName('%fooValue%'); // WHERE clean_name LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $cleanName The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByCleanName($cleanName = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($cleanName)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $cleanName)) {
+                $cleanName = str_replace('*', '%', $cleanName);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::CLEAN_NAME, $cleanName, $comparison);
+    }
+
+    /**
+     * Filter the query on the clean_tp_name column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCleanTpName('fooValue');   // WHERE clean_tp_name = 'fooValue'
+     * $query->filterByCleanTpName('%fooValue%'); // WHERE clean_tp_name LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $cleanTpName The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function filterByCleanTpName($cleanTpName = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($cleanTpName)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $cleanTpName)) {
+                $cleanTpName = str_replace('*', '%', $cleanTpName);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ItemPeer::CLEAN_TP_NAME, $cleanTpName, $comparison);
     }
 
     /**
