@@ -3,8 +3,23 @@
 {% block htmltitle %}{{ parent() }} | Search{% endblock %}
 
 {% block content %}
-<h3>Search</h3>
-<form class="form-search" action="{{ path('searchpost') }}" method="POST">
-    <input type="text" name="search" class="search-query" placeholder="Search"> <input type="submit" class="btn btn-primary" value="GO" />
-</form>
+<div class="clearfix">
+    <div style="position: relative;">
+        <div style="position: absolute; top: 0px; left: 0px;">
+            <form class="form-search" action="{{ path('searchpost') }}" method="POST">
+                <input type="hidden" name="recipes" value="{{ recipes }}" />
+                <input type="text" name="search" class="search-query" value="{{ search }}" placeholder="Search"> <input type="submit" class="btn btn-primary" value="GO" />
+            </form>
+        </div>
+        <ul class="nav nav-tabs" style="padding-left: 300px;">
+          <li {% if not recipes %}class="active"{% endif %}>
+            <a href="{{ path('search', {'search' : search}) }}">Items</a>
+          </li>
+          <li {% if recipes %}class="active"{% endif %}>
+            <a href="{{ path('search', {'search' : search, 'recipes' : true}) }}">Recipes</a>
+          </li>
+        </ul>
+    </div>
+</div>
+{{ content | raw }}
 {% endblock %}

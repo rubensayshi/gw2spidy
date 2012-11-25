@@ -63,7 +63,11 @@ class ItemListRoutingExtension extends \Twig_Extension {
     }
 
     public function getRecipePath($context, $parameters = array()) {
-        if (array_key_exists('discipline', $context)) {
+        if (array_key_exists('search', $context)) {
+            $name = 'search';
+            $parameters['search'] = $context['search'];
+        }
+        else if (array_key_exists('discipline', $context)) {
             $name = 'crafting';
             $parameters['discipline'] = $context['discipline'] ? $context['discipline']->getId() : -1;
         } else {

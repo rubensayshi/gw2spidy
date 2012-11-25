@@ -1,4 +1,5 @@
-{% extends "content_wide.html.twig" %}
+{% set included = included is defined ? included : false %}
+{% extends not included ? "content_wide.html.twig" : "empty_shell.html.twig" %}
 
 {% set watchlist = watchlist is defined ? watchlist : false %}
 {% block htmltitle %}

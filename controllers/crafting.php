@@ -45,63 +45,8 @@ $app->get("/crafting/{discipline}/{page}", function(Request $request, $disciplin
         $q->filterByDiscipline($discipline);
     }
 
-    $sortByOptions = array('name', 'rating', 'cost', 'sell_price', 'profit');
-
-    foreach ($sortByOptions as $sortByOption) {
-        if ($request->get("sort_{$sortByOption}", null)) {
-            $sortOrder = $request->get("sort_{$sortByOption}", 'asc');
-            $sortBy    = $sortByOption;
-        }
-    }
-
-    $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'rating';
-    $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'desc';
-
-    if ($minLevelFilter = $request->get('min_level', null)) {
-        $q->filterByRating($minLevelFilter, \Criteria::GREATER_EQUAL);
-    }
-    if ($maxLevelFilter = $request->get('max_level', null)) {
-        $q->filterByRating($maxLevelFilter, \Criteria::LESS_EQUAL);
-    }
-
-    $count = $q->count();
-
-    if ($count > 0) {
-        $lastpage = ceil($count / $itemsperpage);
-        if ($page > $lastpage) {
-            $page = $lastpage;
-        }
-    } else {
-        $page     = 1;
-        $lastpage = 1;
-    }
-
-    $q->addSelectColumn("*");
-
-    $q->offset($itemsperpage * ($page-1))
-      ->limit($itemsperpage);
-
-    if ($sortOrder == 'asc') {
-        $q->addAscendingOrderByColumn($sortBy);
-    } else if ($sortOrder == 'desc') {
-        $q->addDescendingOrderByColumn($sortBy);
-    }
-
-    $recipes = $q->find();
-
-    return $app['twig']->render('recipe_list.html.twig', array(
-        'discipline' => $discipline,
-
-        'page'     => $page,
-        'lastpage' => $lastpage,
-        'recipes'  => $recipes,
-
-        'min_level' => $minLevelFilter,
-        'max_level' => $maxLevelFilter,
-
-        'current_sort'       => $sortBy,
-        'current_sort_order' => $sortOrder,
-    ));
+    // use generic function to render
+    return recipe_list($app, $request, $q, $page, 50, array('discipline' => $discipline));
 })
 ->assert('discipline', '-?\d*')
 ->assert('page',       '-?\d*')

@@ -1,8 +1,13 @@
-{% extends "content_wide.html.twig" %}
+{% set included = included is defined ? included : false %}
+{% extends not included ? "content_wide.html.twig" : "empty_shell.html.twig" %}
 
 {% block htmltitle %}
-{{ parent() }} | {{ discipline }} | Page {{ page }}
-{% endblock %}
+{{ parent() }} | {% if search is defined %}
+"{{ search }}" Search Results
+{% elseif discipline is defined %}
+{{ discipline }}
+{% endif %}
+ | Page {{ page }}{% endblock %}
 {% block htmlrobots %}noindex,follow{% endblock %}
 
 {# ---------------
