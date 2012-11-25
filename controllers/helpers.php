@@ -56,8 +56,14 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
     $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'name';
     $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'asc';
 
-    if (($rarityFilter = $request->get('rarity_filter', null)) !== null && in_array($rarityFilter, array(0,1,2,3,4,5,6))) {
+    if (($rarityFilter = $request->get('rarity_filter', null)) !== null && is_numeric($rarityFilter) && in_array($rarityFilter, array(0,1,2,3,4,5,6))) {
         $q->filterByRarity($rarityFilter);
+    }
+    if ($minLevelFilter = $request->get('min_level', null)) {
+        $q->filterByRestrictionLevel($minLevelFilter, \Criteria::GREATER_EQUAL);
+    }
+    if ($maxLevelFilter = $request->get('max_level', null)) {
+        $q->filterByRestrictionLevel($maxLevelFilter, \Criteria::LESS_EQUAL);
     }
 
     $count = $q->count();
@@ -92,6 +98,9 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
             'items'    => $items,
 
             'rarity_filter' => $rarityFilter,
+
+            'min_level' => $minLevelFilter,
+            'max_level' => $maxLevelFilter,
 
             'current_sort'       => $sortBy,
             'current_sort_order' => $sortOrder,

@@ -57,6 +57,13 @@ $app->get("/crafting/{discipline}/{page}", function(Request $request, $disciplin
     $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'rating';
     $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'desc';
 
+    if ($minLevelFilter = $request->get('min_level', null)) {
+        $q->filterByRating($minLevelFilter, \Criteria::GREATER_EQUAL);
+    }
+    if ($maxLevelFilter = $request->get('max_level', null)) {
+        $q->filterByRating($maxLevelFilter, \Criteria::LESS_EQUAL);
+    }
+
     $count = $q->count();
 
     if ($count > 0) {
@@ -88,6 +95,9 @@ $app->get("/crafting/{discipline}/{page}", function(Request $request, $disciplin
         'page'     => $page,
         'lastpage' => $lastpage,
         'recipes'  => $recipes,
+
+        'min_level' => $minLevelFilter,
+        'max_level' => $maxLevelFilter,
 
         'current_sort'       => $sortBy,
         'current_sort_order' => $sortOrder,

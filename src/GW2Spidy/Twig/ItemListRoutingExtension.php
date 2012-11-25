@@ -39,6 +39,12 @@ class ItemListRoutingExtension extends \Twig_Extension {
         if (isset($context['rarity_filter']) && !array_key_exists('rarity_filter', $parameters)) {
             $parameters['rarity_filter'] = $context['rarity_filter'];
         }
+        if (isset($context['min_level']) && !array_key_exists('min_level', $parameters)) {
+            $parameters['min_level'] = $context['min_level'];
+        }
+        if (isset($context['max_level']) && !array_key_exists('max_level', $parameters)) {
+            $parameters['max_level'] = $context['max_level'];
+        }
 
         $sortBy    = null;
         $sortOrder = null;
@@ -75,6 +81,12 @@ class ItemListRoutingExtension extends \Twig_Extension {
 
         if ((!$sortBy || !$sortOrder) && isset($context['current_sort'], $context['current_sort_order'])) {
             $parameters["sort_{$context['current_sort']}"] = $context['current_sort_order'];
+        }
+        if (isset($context['min_level']) && !array_key_exists('min_level', $parameters)) {
+            $parameters['min_level'] = $context['min_level'];
+        }
+        if (isset($context['max_level']) && !array_key_exists('max_level', $parameters)) {
+            $parameters['max_level'] = $context['max_level'];
         }
 
         return $this->generator->generate($name, $parameters, false);

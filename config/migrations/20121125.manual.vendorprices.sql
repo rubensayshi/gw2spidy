@@ -33,3 +33,7 @@ UPDATE item SET karma_price = 2 WHERE name LIKE 'Glass of Buttermilk';
 UPDATE item SET karma_price = 2 WHERE name LIKE 'Packet[s] of Yeast';
 UPDATE item SET karma_price = 2 WHERE name LIKE 'Rice Ball[s]';
 UPDATE item SET karma_price = 3 WHERE name LIKE 'Bowl[s] of Sour Cream';
+
+UPDATE item SET karma_price = 1000  WHERE name LIKE "Adept's Training Manual";
+UPDATE item SET karma_price = 10000 WHERE name LIKE "Master's Training Manual";
+UPDATE item SET karma_price = 20000 WHERE name LIKE "Grandmaster's Training Manual";
