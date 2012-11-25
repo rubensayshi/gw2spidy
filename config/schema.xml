@@ -139,4 +139,41 @@
         <column name="created" type="timestamp" required="true" />
         <column name="source" type="varchar" size="255" />
     </table>
+    <table name="user" phpName="User">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="username" type="varchar" size="255" required="true" />
+        <column name="email" type="varchar" size="255" required="true" />
+        <column name="password" type="varchar" size="255" />
+        <column name="roles" type="varchar" size="255" default="USER_ROLE" />
+        
+        <column name="hybrid_auth_provider_id" type="varchar" size="50" />
+        <column name="hybrid_auth_id" type="varchar" size="255" />
+        
+        <unique name="unique_username">
+            <unique-column name="username" />
+        </unique>
+        <validator column="username">
+            <rule name="unique" message="Username already exists!" />
+        </validator>
+        <validator column="email">
+            <rule name="unique" message="E-mail already exists!" />
+        </validator>
+    </table>
+    <table name="watchlist" phpName="Watchlist" isCrossRef="true">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="user_id" type="integer" required="true" />
+        <column name="item_id" type="integer" required="true" />
+        
+        <foreign-key foreignTable="user" phpName="User" refPhpName="Watchlist">
+            <reference local="user_id" foreign="id" />
+        </foreign-key>
+        <foreign-key foreignTable="item" phpName="Item" refPhpName="OnWatchlist">
+            <reference local="item_id" foreign="data_id" />
+        </foreign-key>
+        
+        <unique name="unique_user_item">
+            <unique-column name="user_id" />
+            <unique-column name="item_id" />
+        </unique>
+    </table>
 </database>

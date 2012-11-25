@@ -1,8 +1,11 @@
 {% extends "content_wide.html.twig" %}
 
+{% set watchlist = watchlist is defined ? watchlist : false %}
 {% block htmltitle %}
 {{ parent() }} | {% if search is defined %}
 "{{ search }}" Search Results
+{% elseif watchlist %}
+Watchlist
 {% elseif type is defined %}
 {{ type }} {% if subtype %} - {{ subtype }}{% endif %}
 {% endif %}
@@ -118,9 +121,10 @@
             {{ _self.th_sortable('Sale Avail', 'sale_availability', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Offer Avail', 'offer_availability', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Margin', 'margin', current_sort, current_sort_order, _context) }}
+            <th class="action">Action</th>
         </thead>
         {% for item in items %}
-            <tr class="item">
+            <tr class="item" data-id="{{ item.dataId }}">
                 <td class="info">
                     <a data-tooltip-href="http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}" href="{{ path('item', {dataId: item.dataId}) }}" class="name {{ item.rarityCssClass }}">
                         <img class="image" src="{{ item.img }}" width="32" height="32" /> {{ item.name }}
@@ -142,6 +146,16 @@
                 <td class="min_sale_unit_price">{{ item.saleAvailability }}</td>
                 <td class="max_offer_unit_price">{{ item.offerAvailability }}</td>
                 <td class="margin">{{ item.margin | gw2money }}</td>
+                <td class="watchlist js-watchlist" data-id="{{ item.dataId }}">
+                    {% if not watchlist %}
+                        <a class="js-watchlist-add" href="{{ path('watchlistaddpost', {dataId : item.dataId}) }}">
+                            <i class="icon icon-plus" title="add to watchlist"></i>
+                        </a>
+                    {% endif %}
+                    <a class="js-watchlist-remove{% if not watchlist %} hide{% endif %}" href="{{ path('watchlistremovepost', {dataId : item.dataId}) }}">
+                        <i class="icon icon-minus" title="remove from watchlist"></i>
+                    </a>
+                </td>
             </tr>
         {% endfor %}
     </table>

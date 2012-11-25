@@ -21,6 +21,8 @@ use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\Recipe;
 use GW2Spidy\DB\RecipeIngredient;
 use GW2Spidy\DB\SellListing;
+use GW2Spidy\DB\User;
+use GW2Spidy\DB\Watchlist;
 
 /**
  * Base class that represents a query for the 'item' table.
@@ -102,6 +104,10 @@ use GW2Spidy\DB\SellListing;
  * @method     ItemQuery leftJoinBuyListing($relationAlias = null) Adds a LEFT JOIN clause to the query using the BuyListing relation
  * @method     ItemQuery rightJoinBuyListing($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BuyListing relation
  * @method     ItemQuery innerJoinBuyListing($relationAlias = null) Adds a INNER JOIN clause to the query using the BuyListing relation
+ *
+ * @method     ItemQuery leftJoinOnWatchlist($relationAlias = null) Adds a LEFT JOIN clause to the query using the OnWatchlist relation
+ * @method     ItemQuery rightJoinOnWatchlist($relationAlias = null) Adds a RIGHT JOIN clause to the query using the OnWatchlist relation
+ * @method     ItemQuery innerJoinOnWatchlist($relationAlias = null) Adds a INNER JOIN clause to the query using the OnWatchlist relation
  *
  * @method     Item findOne(PropelPDO $con = null) Return the first Item matching the query
  * @method     Item findOneOrCreate(PropelPDO $con = null) Return the first Item matching the query, or a new Item object populated from the query conditions when no match is found
@@ -1656,6 +1662,80 @@ abstract class BaseItemQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related Watchlist object
+     *
+     * @param   Watchlist|PropelObjectCollection $watchlist  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return   ItemQuery The current query, for fluid interface
+     * @throws   PropelException - if the provided filter is invalid.
+     */
+    public function filterByOnWatchlist($watchlist, $comparison = null)
+    {
+        if ($watchlist instanceof Watchlist) {
+            return $this
+                ->addUsingAlias(ItemPeer::DATA_ID, $watchlist->getItemId(), $comparison);
+        } elseif ($watchlist instanceof PropelObjectCollection) {
+            return $this
+                ->useOnWatchlistQuery()
+                ->filterByPrimaryKeys($watchlist->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByOnWatchlist() only accepts arguments of type Watchlist or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the OnWatchlist relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ItemQuery The current query, for fluid interface
+     */
+    public function joinOnWatchlist($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('OnWatchlist');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'OnWatchlist');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the OnWatchlist relation Watchlist object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \GW2Spidy\DB\WatchlistQuery A secondary query class using the current class as primary query
+     */
+    public function useOnWatchlistQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinOnWatchlist($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'OnWatchlist', '\GW2Spidy\DB\WatchlistQuery');
+    }
+
+    /**
      * Filter the query by a related Recipe object
      * using the recipe_ingredient table as cross reference
      *
@@ -1669,6 +1749,23 @@ abstract class BaseItemQuery extends ModelCriteria
         return $this
             ->useIngredientQuery()
             ->filterByRecipe($recipe, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related User object
+     * using the watchlist table as cross reference
+     *
+     * @param   User $user the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return   ItemQuery The current query, for fluid interface
+     */
+    public function filterByUser($user, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useOnWatchlistQuery()
+            ->filterByUser($user, $comparison)
             ->endUse();
     }
 

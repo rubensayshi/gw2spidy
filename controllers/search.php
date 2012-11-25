@@ -63,7 +63,7 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
     }
 
     // use generic function to render
-    return item_list($app, $request, $q, $page, 25, array('search' => $search));
+    return item_list($app, $request, $q, $page, 25, array('search' => $search,'type'=>'search'));
 })
 ->assert('search',   '[^/]*')
 ->assert('page',     '-?\d*')
