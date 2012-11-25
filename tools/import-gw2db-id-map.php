@@ -92,3 +92,6 @@ foreach ($data as $i => $row) {
 }
 
 
+// ensure purged cache, otherwise everything goes to hell
+CacheHandler::getInstance("purge")->purge();
+
