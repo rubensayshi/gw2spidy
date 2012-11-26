@@ -2,6 +2,8 @@
 
 namespace GW2Spidy\API;
 
+use Symfony\Component\HttpFoundation\Response;
+
 use GW2Spidy\DB\Recipe;
 
 use \DateTime;
@@ -22,22 +24,19 @@ class APIHelperService {
     }
 
     public function outputResponse(Request $request, $response, $format, $name = null) {
-        $this->outputHeaders($format, $name);
+        $r = new Response();
+
         if ($format == 'json') {
-            return $this->outputResponseJSON($request, $response);
+            $r->setContent($this->outputResponseJSON($request, $response));
+            $r->headers->set("Content-type", "application/json", true);
         } else if ($format == 'csv') {
-            return $this->outputResponseCSV($request, $response);
+            $r->setContent($this->outputResponseCSV($request, $response));
+            $r->headers->set("Content-type", "text/csv", true);
+        } else {
+            return $this->app->abort(500);
         }
-    }
 
-    public function outputHeaders($format = 'json', $name = null) {
-        $name = ($name ?: 'gw2spidy-api') . '_' . date('Ymd-His');
-
-        if ($format == 'csv') {
-            header('Content-type: text/csv');
-        } else if ($format == 'json') {
-            header('Content-type: application/json');
-        }
+        return $r;
     }
 
     public function outputResponseCSV(Request $request, $response) {
