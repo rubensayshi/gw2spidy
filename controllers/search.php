@@ -58,6 +58,7 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
             return $q;
         };
     } else {
+        $route = 'item';
         $getQ = function($search) {
             $q = ItemQuery::create();
             $q->filterByName("%{$search}%")
