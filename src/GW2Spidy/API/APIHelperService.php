@@ -23,14 +23,14 @@ class APIHelperService {
         $this->app = $app;
     }
 
-    public function outputResponse(Request $request, $response, $format, $name = null) {
+    public function outputResponse(Request $request, $response, $format, $name = null, $direct = false) {
         $r = new Response();
 
         if ($format == 'json') {
-            $r->setContent($this->outputResponseJSON($request, $response));
+            $r->setContent($direct ? $response : $this->outputResponseJSON($request, $response));
             $r->headers->set("Content-type", "application/json", true);
         } else if ($format == 'csv') {
-            $r->setContent($this->outputResponseCSV($request, $response));
+            $r->setContent($direct ? $response : $this->outputResponseCSV($request, $response));
             $r->headers->set("Content-type", "text/csv", true);
         } else {
             return $this->app->abort(500);
@@ -64,7 +64,9 @@ class APIHelperService {
     public function outputResponseJSON(Request $request, $response) {
         $json = json_encode($response);
 
-        return ($jsonp = $request->get('jsonp')) ? "{$jsonp}({$json})" : $json;
+        $jsonp = $request->get('jsonp') ?: $jsonp = $request->get('callback');
+
+        return $jsonp ? "{$jsonp}({$json})" : $json;
     }
 
     public function buildItemDataArray(array $item) {

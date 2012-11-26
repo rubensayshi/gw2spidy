@@ -65,10 +65,11 @@ class v090APIControllerProvider implements ControllerProviderInterface {
                     }
                 }
 
-                return ob_get_clean();
+                return $app['api-helper']->outputResponse($request, ob_get_clean(), $format, "types", true);
             } else if ($format == 'json') {
-                return json_encode($response);
+                return $app['api-helper']->outputResponse($request, $response, $format, "types");
             }
+
         })
         ->assert('format', 'csv|json');
 
