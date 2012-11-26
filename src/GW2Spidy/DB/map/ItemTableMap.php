@@ -45,11 +45,16 @@ class ItemTableMap extends TableMap
         $this->addPrimaryKey('DATA_ID', 'DataId', 'INTEGER', true, null, null);
         $this->addColumn('TYPE_ID', 'TypeId', 'INTEGER', true, null, null);
         $this->addColumn('NAME', 'Name', 'VARCHAR', true, 255, null);
+        $this->addColumn('TP_NAME', 'TpName', 'VARCHAR', true, 255, null);
+        $this->addColumn('CLEAN_NAME', 'CleanName', 'VARCHAR', true, 255, null);
+        $this->addColumn('CLEAN_TP_NAME', 'CleanTpName', 'VARCHAR', true, 255, null);
         $this->addColumn('GEM_STORE_DESCRIPTION', 'GemStoreDescription', 'VARCHAR', true, 255, null);
         $this->addColumn('GEM_STORE_BLURB', 'GemStoreBlurb', 'VARCHAR', true, 255, null);
         $this->addColumn('RESTRICTION_LEVEL', 'RestrictionLevel', 'INTEGER', true, null, null);
         $this->addColumn('RARITY', 'Rarity', 'INTEGER', true, null, null);
         $this->addColumn('VENDOR_SELL_PRICE', 'VendorSellPrice', 'INTEGER', true, null, null);
+        $this->addColumn('VENDOR_PRICE', 'VendorPrice', 'INTEGER', true, null, null);
+        $this->addColumn('KARMA_PRICE', 'KarmaPrice', 'INTEGER', true, null, null);
         $this->addColumn('IMG', 'Img', 'VARCHAR', true, 255, null);
         $this->addColumn('RARITY_WORD', 'RarityWord', 'VARCHAR', true, 255, null);
         $this->addForeignKey('ITEM_TYPE_ID', 'ItemTypeId', 'INTEGER', 'item_type', 'ID', false, null, null);
@@ -77,7 +82,9 @@ class ItemTableMap extends TableMap
         $this->addRelation('Ingredient', 'GW2Spidy\\DB\\RecipeIngredient', RelationMap::ONE_TO_MANY, array('data_id' => 'item_id', ), null, null, 'Ingredients');
         $this->addRelation('SellListing', 'GW2Spidy\\DB\\SellListing', RelationMap::ONE_TO_MANY, array('data_id' => 'item_id', ), null, null, 'SellListings');
         $this->addRelation('BuyListing', 'GW2Spidy\\DB\\BuyListing', RelationMap::ONE_TO_MANY, array('data_id' => 'item_id', ), null, null, 'BuyListings');
+        $this->addRelation('OnWatchlist', 'GW2Spidy\\DB\\Watchlist', RelationMap::ONE_TO_MANY, array('data_id' => 'item_id', ), null, null, 'OnWatchlists');
         $this->addRelation('Recipe', 'GW2Spidy\\DB\\Recipe', RelationMap::MANY_TO_MANY, array(), null, null, 'Recipes');
+        $this->addRelation('User', 'GW2Spidy\\DB\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
     } // buildRelations()
 
 } // ItemTableMap

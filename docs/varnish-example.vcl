@@ -4,14 +4,41 @@ backend default {
 }
 
 sub vcl_recv {
-    if (!req.http.host ~ "gw2spidy.com$") {
-            return(pipe);    
+    if (!req.http.host ~ "gw2spidy") {
+            return(pass);    
     }
 
-#   error 500 "More downtime ... TP is down anyway ... need to get my shit sorted sorry ...";
-
-    # remove all the cookies \o/
-    unset req.http.cookie;
+    set req.backend = default;
+    if (req.http.X-Forwarded-Proto == "https" ) {
+        set req.http.X-Forwarded-Port = "443";
+    } else {
+        set req.http.X-Forwarded-Port = "80";
+    }
+        
+    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist" || req.url ~ "^/social_login" || req.url ~ "^/hybridauth") {
+        return(pipe);
+    } elseif (req.url ~ "^/admin") {
+        return(pipe);
+    } elseif (req.url ~ "^/search$") {
+        return(pipe);
+    } else {
+	    if (req.http.cookie) {
+		    set req.http.cookie = ";" + req.http.cookie;
+		    set req.http.cookie = regsuball(req.http.cookie, "; +", ";");
+		    set req.http.cookie = regsuball(req.http.cookie, ";(logged_in)=", "; \1=");
+		    set req.http.cookie = regsuball(req.http.cookie, ";[^ ][^;]*", "");
+		    set req.http.cookie = regsuball(req.http.cookie, "^[; ]+|[; ]+$", "");
+		
+		    if (req.http.cookie == "") {
+		        remove req.http.cookie;
+		    }
+	    } else {
+        	unset req.http.cookie;
+        }
+    }
+    
+    # uncomment to have varnish serve an error page
+	# error 500 "Some simple error message here";
 
     if (req.url ~ "^/tmp/.*\.sql\.gz$") {
         return(pipe);
@@ -20,6 +47,8 @@ sub vcl_recv {
     if (req.url ~ "no_cache") {
         return(pipe);
     }
+
+    return(lookup);
 }
 
 sub vcl_fetch {
@@ -27,13 +56,22 @@ sub vcl_fetch {
     set beresp.grace = 1h;
 
     unset beresp.http.expires;
+    if (req.url ~ "^/login" || req.url ~ "^/logout" || req.url ~ "^/watchlist"|| req.url ~ "^/social_login" || req.url ~ "^/hybridauth") {
+        return(deliver);
+    } elseif (req.url ~ "^/admin") {
+        return(deliver);
+    } elseif (req.url ~ "^/search$") {
+        return(deliver);
+    } else {
+        unset beresp.http.set-cookie;   
+    }
     
     if (beresp.http.x-varnish-no-cache) {
        set beresp.ttl = 0s;
        return (deliver);
     }
     
-    if (beresp.status > 404 || beresp.status == 301 || beresp.status == 500) {
+    if (beresp.status > 404 || beresp.status == 301) {
        set beresp.ttl = 1m;
        return (deliver);
     }
@@ -109,20 +147,47 @@ sub vcl_fetch {
     }
 }
 
-sub vcl_hit {
+# The data on which the hashing will take place
+sub vcl_hash {
+    hash_data(req.url);
 
+    if (req.http.host) {
+        hash_data(req.http.host);
+    } else {
+        hash_data(server.ip);
+    }
+
+    # hash cookies for object with auth
+    if (req.http.cookie) {
+        hash_data(req.http.cookie);
+    }
+
+    # If the client supports compression, keep that in a different cache
+    if (req.http.Accept-Encoding) {
+        hash_data(req.http.Accept-Encoding);
+    }
+
+    return (hash);
 }
-
-sub vcl_miss {
-
-}
-
-
+ 
+# The routine when we deliver the HTTP request to the user
+# Last chance to modify headers that are sent to the client
 sub vcl_deliver {
-    if (obj.hits > 0) {
+    if (obj.hits > 0) { 
         set resp.http.X-Varnish-Cache = "HIT";
     } else {
         set resp.http.X-Varnish-Cache = "MISS";
     }
+
+    # Remove some headers: PHP version
+    unset resp.http.X-Powered-By;
+    # Remove some headers: Apache version & OS
+    unset resp.http.Server;
+    unset resp.http.X-Drupal-Cache;
+    unset resp.http.X-Varnish;
+    unset resp.http.Via;
+    unset resp.http.Link;
+
+    return (deliver);
 }
 

@@ -37,7 +37,7 @@ class Recipe extends BaseRecipe {
         /* @var $ingredient RecipeIngredient */
         foreach ($this->getIngredients() as $ingredient) {
             $item      = $ingredient->getItem();
-            $tpcost    = $ingredient->getCount() * $item->getMinSaleUnitPrice();
+            $buycost   = $ingredient->getCount() * $item->getBestPrice();
             $craftcost = null;
 
             if ($item->getResultOfRecipes()->count() && $recipe = reset($item->getResultOfRecipes())) {
@@ -48,11 +48,11 @@ class Recipe extends BaseRecipe {
 
 
             if (!$craftcost) {
-                $cost = $tpcost;
-            } else if (!$tpcost || $forceCrafted) {
+                $cost = $buycost;
+            } else if (!$buycost || $forceCrafted) {
                 $cost = $craftcost;
             } else {
-                $cost = min($tpcost, $craftcost);
+                $cost = min($buycost, $craftcost);
             }
 
             $total += $cost;

@@ -16,11 +16,16 @@
         <column name="data_id" type="integer" required="true" primaryKey="true" />
         <column name="type_id" type="integer" required="true" />
         <column name="name" type="varchar" size="255" required="true" />
+        <column name="tp_name" type="varchar" size="255" required="true" />
+        <column name="clean_name" type="varchar" size="255" required="true" />
+        <column name="clean_tp_name" type="varchar" size="255" required="true" />
         <column name="gem_store_description" type="varchar" size="255" required="true" />
         <column name="gem_store_blurb" type="varchar" size="255" required="true" />
         <column name="restriction_level" type="integer" required="true" />
         <column name="rarity" type="integer" required="true" />
         <column name="vendor_sell_price" type="integer" required="true" />
+        <column name="vendor_price" type="integer" required="true" />
+        <column name="karma_price" type="integer" required="true" />
         <column name="img" type="varchar" size="255" required="true" />
         <column name="rarity_word" type="varchar" size="255" required="true" />
         <column name="item_type_id" type="integer" required="false" />
@@ -35,13 +40,20 @@
         <column name="last_price_changed" type="timestamp" />
         <column name="sale_price_change_last_hour" type="integer" default="0" />
         <column name="offer_price_change_last_hour" type="integer" default="0" />
-        
+                
         <foreign-key foreignTable="item_type" phpName="ItemType" refPhpName="Item">
             <reference local="item_type_id" foreign="id" />
         </foreign-key>
         <foreign-key foreignTable="item_sub_type" phpName="ItemSubType" refPhpName="Item">
             <reference local="item_sub_type_id" foreign="id" />
         </foreign-key>
+        
+        <index name="search_name">
+            <index-column name="name" />
+            <index-column name="tp_name" />
+            <index-column name="clean_name" />
+            <index-column name="clean_tp_name" />
+        </index>
     </table>
     <table name="gw2db_item_archive" phpName="GW2DBItemArchive">
         <column name="ID" type="integer" required="true" primaryKey="true" />
@@ -78,6 +90,10 @@
         <foreign-key foreignTable="item" phpName="ResultItem" refPhpName="ResultOfRecipe">
             <reference local="result_item_id" foreign="data_id" />
         </foreign-key>
+        
+        <index name="search_name">
+            <index-column name="name" />
+        </index>
     </table>
     <table name="recipe_ingredient" phpName="RecipeIngredient" isCrossRef="true">
         <column name="recipe_id" type="integer" required="true" primaryKey="true" />
@@ -136,5 +152,42 @@
         <column name="game_session" type="boolean" required="true" />
         <column name="created" type="timestamp" required="true" />
         <column name="source" type="varchar" size="255" />
+    </table>
+    <table name="user" phpName="User">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="username" type="varchar" size="255" required="true" />
+        <column name="email" type="varchar" size="255" required="true" />
+        <column name="password" type="varchar" size="255" />
+        <column name="roles" type="varchar" size="255" default="USER_ROLE" />
+        
+        <column name="hybrid_auth_provider_id" type="varchar" size="50" />
+        <column name="hybrid_auth_id" type="varchar" size="255" />
+        
+        <unique name="unique_username">
+            <unique-column name="username" />
+        </unique>
+        <validator column="username">
+            <rule name="unique" message="Username already exists!" />
+        </validator>
+        <validator column="email">
+            <rule name="unique" message="E-mail already exists!" />
+        </validator>
+    </table>
+    <table name="watchlist" phpName="Watchlist" isCrossRef="true">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="user_id" type="integer" required="true" />
+        <column name="item_id" type="integer" required="true" />
+        
+        <foreign-key foreignTable="user" phpName="User" refPhpName="Watchlist">
+            <reference local="user_id" foreign="id" />
+        </foreign-key>
+        <foreign-key foreignTable="item" phpName="Item" refPhpName="OnWatchlist">
+            <reference local="item_id" foreign="data_id" />
+        </foreign-key>
+        
+        <unique name="unique_user_item">
+            <unique-column name="user_id" />
+            <unique-column name="item_id" />
+        </unique>
     </table>
 </database>

@@ -32,7 +32,7 @@ use GW2Spidy\Util\Functions;
  */
 $app->post("/search", function (Request $request) use ($app) {
     // redirect to the GET with the search in the URL
-    return $app->redirect($app['url_generator']->generate('search', array('search' => $request->get('search'))));
+    return $app->redirect($app['url_generator']->generate('search', array('search' => $request->get('search'), 'recipes' => $request->get('recipes', false))));
 })
 ->bind('searchpost');
 
@@ -46,24 +46,53 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
         return $app->handle(Request::create("/searchform", 'GET'), HttpKernelInterface::SUB_REQUEST);
     }
 
+    $recipes = (bool)$request->get('recipes', false);
     $page = $page > 0 ? $page : 1;
 
-    $q = ItemQuery::create();
-    $q->filterByName("%{$search}%");
+    if ($recipes) {
+        $route = 'recipe';
+        $getQ = function($search) {
+            $q = RecipeQuery::create();
+            $q->filterByName("%{$search}%");
+
+            return $q;
+        };
+    } else {
+        $getQ = function($search) {
+            $q = ItemQuery::create();
+            $q->filterByName("%{$search}%")
+              ->orWhere("tp_name LIKE ?", "%{$search}%", \PDO::PARAM_STR)
+              ->orWhere("clean_name LIKE ?", "%{$search}%", \PDO::PARAM_STR)
+              ->orWhere("clean_tp_name LIKE ?", "%{$search}%", \PDO::PARAM_STR);
+
+            return $q;
+        };
+    }
+
+    $q = $getQ($search);
 
     if ($q->count() == 0 && $search != trim($search)) {
         $search = trim($search);
-        $q = ItemQuery::create();
-        $q->filterByName("%{$search}%");
+        $q = $getQ($search);
     }
 
     if ($page == 1 && $q->count() == 1) {
         $item = $q->findOne();
-        return $app->redirect($app['url_generator']->generate('item', array('dataId' => $item->getDataId())));
+        return $app->redirect($app['url_generator']->generate($route, array('dataId' => $item->getDataId())));
+    }
+
+    if ($recipes) {
+        $content = recipe_list($app, $request, $q, $page, 25, array('search' => $search, 'type'=>'search', 'included' => true));
+    } else {
+        $content = item_list($app, $request, $q, $page, 25, array('search' => $search, 'type'=>'search', 'included' => true));
     }
 
     // use generic function to render
-    return item_list($app, $request, $q, $page, 25, array('search' => $search));
+    return $app['twig']->render('search.html.twig', array(
+        'recipes' => $recipes,
+        'content' => $content,
+        'search'  => $search,
+    ));
 })
 ->assert('search',   '[^/]*')
 ->assert('page',     '-?\d*')
@@ -79,7 +108,7 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
  * ----------------------
  */
 $app->get("/searchform", function() use($app) {
-    return $app['twig']->render('search.html.twig', array());
+    return $app['twig']->render('search.html.twig', array('content' => '', 'search' => '', 'recipes' => false));
 })
 ->bind('searchform');
 

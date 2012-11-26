@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
 /**
  * using Silex micro framework
  *  this file contains all routing and the 'controllers' using lambda functions
@@ -8,6 +10,7 @@
 use GW2Spidy\Util\Functions;
 
 use GW2Spidy\Application;
+use GW2Spidy\Security\CustomSecurityServiceProvider;
 
 use GW2Spidy\Twig\VersionedAssetsRoutingExtension;
 use GW2Spidy\Twig\ItemListRoutingExtension;
@@ -17,6 +20,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__FILE__) . '/../autoload.php';
+
+Request::trustProxyData();
 
 // initiate the application, check config to enable debug / sql logging when needed
 $app = Application::getInstance();
@@ -28,7 +33,11 @@ $app->register(new Igorw\Silex\ConfigServiceProvider(getAppConfig()));
 // setup dev mode related stuff based on config
 $app['sql_logging'] && $app->enableSQLLogging();
 
+// register our custom security provider
+$app->register(new CustomSecurityServiceProvider());
+
 // register providers
+$app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path'    => dirname(__FILE__) . '/../templates',
@@ -67,8 +76,14 @@ require "{$root}/controllers/gems.php";
 // search
 require "{$root}/controllers/search.php";
 
+// watchlist
+require "{$root}/controllers/watchlist.php";
+
 // api stuff
 require "{$root}/controllers/api.php";
+
+// login stuff
+require "{$root}/controllers/security.php";
 
 $app->after(function (Request $request, Response $response) use ($app) {
     if ($app['no_cache']) {

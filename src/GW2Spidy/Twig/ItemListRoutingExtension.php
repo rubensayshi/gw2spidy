@@ -23,7 +23,12 @@ class ItemListRoutingExtension extends \Twig_Extension {
         if (array_key_exists('search', $context)) {
             $name = 'search';
             $parameters['search'] = $context['search'];
-        } else if (array_key_exists('type', $context)) {
+        }
+        else if (array_key_exists('watchlist', $context) && $context['watchlist']) {
+            $name = 'watchlist';
+            $parameters['watchlist'] = $context['watchlist'];
+        }
+        else if (array_key_exists('type', $context)) {
             $name = 'type';
             $parameters['type']    = $context['type'] ? $context['type']->getId() : -1;
             $parameters['subtype'] = $context['subtype'] ? $context['subtype']->getId() : -1;
@@ -33,6 +38,12 @@ class ItemListRoutingExtension extends \Twig_Extension {
 
         if (isset($context['rarity_filter']) && !array_key_exists('rarity_filter', $parameters)) {
             $parameters['rarity_filter'] = $context['rarity_filter'];
+        }
+        if (isset($context['min_level']) && !array_key_exists('min_level', $parameters)) {
+            $parameters['min_level'] = $context['min_level'];
+        }
+        if (isset($context['max_level']) && !array_key_exists('max_level', $parameters)) {
+            $parameters['max_level'] = $context['max_level'];
         }
 
         $sortBy    = null;
@@ -52,7 +63,11 @@ class ItemListRoutingExtension extends \Twig_Extension {
     }
 
     public function getRecipePath($context, $parameters = array()) {
-        if (array_key_exists('discipline', $context)) {
+        if (array_key_exists('search', $context)) {
+            $name = 'search';
+            $parameters['search'] = $context['search'];
+        }
+        else if (array_key_exists('discipline', $context)) {
             $name = 'crafting';
             $parameters['discipline'] = $context['discipline'] ? $context['discipline']->getId() : -1;
         } else {
@@ -70,6 +85,12 @@ class ItemListRoutingExtension extends \Twig_Extension {
 
         if ((!$sortBy || !$sortOrder) && isset($context['current_sort'], $context['current_sort_order'])) {
             $parameters["sort_{$context['current_sort']}"] = $context['current_sort_order'];
+        }
+        if (isset($context['min_level']) && !array_key_exists('min_level', $parameters)) {
+            $parameters['min_level'] = $context['min_level'];
+        }
+        if (isset($context['max_level']) && !array_key_exists('max_level', $parameters)) {
+            $parameters['max_level'] = $context['max_level'];
         }
 
         return $this->generator->generate($name, $parameters, false);

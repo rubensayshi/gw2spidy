@@ -56,8 +56,14 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
     $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'name';
     $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'asc';
 
-    if (($rarityFilter = $request->get('rarity_filter', null)) !== null && in_array($rarityFilter, array(0,1,2,3,4,5,6))) {
+    if (($rarityFilter = $request->get('rarity_filter', null)) !== null && is_numeric($rarityFilter) && in_array($rarityFilter, array(0,1,2,3,4,5,6))) {
         $q->filterByRarity($rarityFilter);
+    }
+    if ($minLevelFilter = $request->get('min_level', null)) {
+        $q->filterByRestrictionLevel($minLevelFilter, \Criteria::GREATER_EQUAL);
+    }
+    if ($maxLevelFilter = $request->get('max_level', null)) {
+        $q->filterByRestrictionLevel($maxLevelFilter, \Criteria::LESS_EQUAL);
     }
 
     $count = $q->count();
@@ -93,8 +99,79 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
 
             'rarity_filter' => $rarityFilter,
 
+            'min_level' => $minLevelFilter,
+            'max_level' => $maxLevelFilter,
+
             'current_sort'       => $sortBy,
             'current_sort_order' => $sortOrder,
+    ));
+};
+
+/**
+ * generic function used for /search and /crafting
+ *
+ * @param  Application   $app
+ * @param  Request       $request
+ * @param  ItemQuery     $q
+ * @param  int           $page
+ * @param  int           $itemsperpage
+ * @param  array         $tplVars
+ */
+function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, $itemsperpage, array $tplVars = array()) {
+    $sortByOptions = array('name', 'rating', 'cost', 'sell_price', 'profit');
+
+    foreach ($sortByOptions as $sortByOption) {
+        if ($request->get("sort_{$sortByOption}", null)) {
+            $sortOrder = $request->get("sort_{$sortByOption}", 'asc');
+            $sortBy    = $sortByOption;
+        }
+    }
+
+    $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'rating';
+    $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'desc';
+
+    if ($minLevelFilter = $request->get('min_level', null)) {
+        $q->filterByRating($minLevelFilter, \Criteria::GREATER_EQUAL);
+    }
+    if ($maxLevelFilter = $request->get('max_level', null)) {
+        $q->filterByRating($maxLevelFilter, \Criteria::LESS_EQUAL);
+    }
+
+    $count = $q->count();
+
+    if ($count > 0) {
+        $lastpage = ceil($count / $itemsperpage);
+        if ($page > $lastpage) {
+            $page = $lastpage;
+        }
+    } else {
+        $page     = 1;
+        $lastpage = 1;
+    }
+
+    $q->addSelectColumn("*");
+
+    $q->offset($itemsperpage * ($page-1))
+      ->limit($itemsperpage);
+
+    if ($sortOrder == 'asc') {
+        $q->addAscendingOrderByColumn($sortBy);
+    } else if ($sortOrder == 'desc') {
+        $q->addDescendingOrderByColumn($sortBy);
+    }
+
+    $recipes = $q->find();
+
+    return $app['twig']->render('recipe_list.html.twig', $tplVars + array(
+        'page'     => $page,
+        'lastpage' => $lastpage,
+        'recipes'  => $recipes,
+
+        'min_level' => $minLevelFilter,
+        'max_level' => $maxLevelFilter,
+
+        'current_sort'       => $sortBy,
+        'current_sort_order' => $sortOrder,
     ));
 };
 
@@ -140,7 +217,8 @@ function buildRecipeTree($item, $recipe = null, $app) {
         'gw2db_href' => "http://www.gw2db.com/items/{$item->getGw2dbExternalId()}-" . Functions::slugify($item->getName()),
         'rarity' => $item->getRarityName(),
         'img'	=> $item->getImg(),
-        'price' => $item->getMinSaleUnitPrice()
+        'price' => $item->getBestPrice(),
+        'vendor' => !!$item->getVendorPrice()
     );
 
     if ($recipe) {

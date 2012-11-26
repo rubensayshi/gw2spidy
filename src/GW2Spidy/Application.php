@@ -13,6 +13,7 @@ class Application extends \Silex\Application {
     protected $gemActive = false;
     protected $faqActive = false;
     protected $craftingActive = false;
+    protected $loginActive = false;
     protected $displayTypes = null;
     protected $disciplines = null;
 
@@ -90,6 +91,16 @@ class Application extends \Silex\Application {
         return $this->faqActive;
     }
 
+    public function setLoginActive($bool = true) {
+        $this->loginActive = $bool;
+
+        return $this;
+    }
+
+    public function isLoginActive() {
+        return $this->loginActive;
+    }
+
     public function setGemActive($bool = true) {
         $this->gemActive = $bool;
 
@@ -111,7 +122,7 @@ class Application extends \Silex\Application {
     }
 
     public function isBrowseActive() {
-        return !$this->isHomeActive() && !$this->isGemActive() && !$this->isCraftingActive() && !$this->isFAQActive();
+        return !$this->isHomeActive() && !$this->isGemActive() && !$this->isCraftingActive() && !$this->isFAQActive() && !$this->isLoginActive();
     }
 
     public function getDisplayTypes() {

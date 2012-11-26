@@ -1,8 +1,13 @@
-{% extends "content_wide.html.twig" %}
+{% set included = included is defined ? included : false %}
+{% extends not included ? "content_wide.html.twig" : "empty_shell.html.twig" %}
 
 {% block htmltitle %}
-{{ parent() }} | {{ discipline }} | Page {{ page }}
-{% endblock %}
+{{ parent() }} | {% if search is defined %}
+"{{ search }}" Search Results
+{% elseif discipline is defined %}
+{{ discipline }}
+{% endif %}
+ | Page {{ page }}{% endblock %}
 {% block htmlrobots %}noindex,follow{% endblock %}
 
 {# ---------------
@@ -80,11 +85,23 @@
             <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
             {% endif %}
         </div>
-
         {{ _self.pager(page, lastpage, _context) }}
 
-        <div>
-            <p>Filters coming soon ...</p>
+        <div class="form-horizontal" style="float: left; margin-top: -9px;">
+            <form action="" method="GET">
+                <div class="control-group">
+                    <label class="control-label" for="min_level">Level:</label>
+                    <div class="controls">
+                        <input class="input-mini" placeholder="min" type="text" name="min_level" id="min_level" value="{{ min_level }}" /> -
+                        <input class="input-mini" placeholder="max" type="text" name="max_level" id="max_level" value="{{ max_level }}" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                      <input type="submit" value="Filter" class="btn" />
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
