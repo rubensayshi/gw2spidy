@@ -51,8 +51,6 @@ class v090APIControllerProvider implements ControllerProviderInterface {
 
             $response = array('results' => $results);
 
-            $app['api-helper']->outputHeaders($format, 'types');
-
             if ($format == 'csv') {
                 ob_start();
 
