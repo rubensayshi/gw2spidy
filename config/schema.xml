@@ -15,10 +15,10 @@
     <table name="item" phpName="Item">
         <column name="data_id" type="integer" required="true" primaryKey="true" />
         <column name="type_id" type="integer" required="true" />
-        <column name="name" type="varchar" size="255" required="true" />
-        <column name="tp_name" type="varchar" size="255" required="true" />
-        <column name="clean_name" type="varchar" size="255" required="true" />
-        <column name="clean_tp_name" type="varchar" size="255" required="true" />
+        <column name="name" type="varchar" size="150" required="true" />
+        <column name="tp_name" type="varchar" size="150" required="true" />
+        <column name="clean_name" type="varchar" size="150" required="true" />
+        <column name="clean_tp_name" type="varchar" size="150" required="true" />
         <column name="gem_store_description" type="varchar" size="255" required="true" />
         <column name="gem_store_blurb" type="varchar" size="255" required="true" />
         <column name="restriction_level" type="integer" required="true" />

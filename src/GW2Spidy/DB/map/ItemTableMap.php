@@ -44,10 +44,10 @@ class ItemTableMap extends TableMap
         // columns
         $this->addPrimaryKey('DATA_ID', 'DataId', 'INTEGER', true, null, null);
         $this->addColumn('TYPE_ID', 'TypeId', 'INTEGER', true, null, null);
-        $this->addColumn('NAME', 'Name', 'VARCHAR', true, 255, null);
-        $this->addColumn('TP_NAME', 'TpName', 'VARCHAR', true, 255, null);
-        $this->addColumn('CLEAN_NAME', 'CleanName', 'VARCHAR', true, 255, null);
-        $this->addColumn('CLEAN_TP_NAME', 'CleanTpName', 'VARCHAR', true, 255, null);
+        $this->addColumn('NAME', 'Name', 'VARCHAR', true, 150, null);
+        $this->addColumn('TP_NAME', 'TpName', 'VARCHAR', true, 150, null);
+        $this->addColumn('CLEAN_NAME', 'CleanName', 'VARCHAR', true, 150, null);
+        $this->addColumn('CLEAN_TP_NAME', 'CleanTpName', 'VARCHAR', true, 150, null);
         $this->addColumn('GEM_STORE_DESCRIPTION', 'GemStoreDescription', 'VARCHAR', true, 255, null);
         $this->addColumn('GEM_STORE_BLURB', 'GemStoreBlurb', 'VARCHAR', true, 255, null);
         $this->addColumn('RESTRICTION_LEVEL', 'RestrictionLevel', 'INTEGER', true, null, null);
