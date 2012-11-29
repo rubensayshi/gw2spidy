@@ -67,7 +67,7 @@ class Item extends BaseItem {
     }
 
     public function setTpName($v) {
-        $this->setTpCleanName($this->cleanName($v));
+        $this->setCleanTpName($this->cleanName($v));
 
         return parent::setTpName($v);
     }
