@@ -43,28 +43,28 @@ class GemExchangeDataset extends BaseDataset {
         $limit = 5000;
         $end   = null;
         $start = $this->lastUpdated;
+        $con = \Propel::getConnection();
 
-        $q = $this->type == self::TYPE_GEM_TO_GOLD ? GemToGoldRateQuery::create() : GoldToGemRateQuery::create();
-        $q->select(array('rateDatetime', 'rate'));
+        $table = $this->type == self::TYPE_GEM_TO_GOLD ? 'gem_to_gold_rate' : 'gold_to_gem_rate';
 
+        $where = "";
         // only retrieve new ticks since last update
         if ($start) {
-            $q->filterByRateDatetime($start, \Criteria::GREATER_THAN);
+            $where = " WHERE rate_datetime > '{$start->format('Y-m-d H:i:s')}'";
         }
 
-        // fake 5 days ago so we can test new ticks being added
-        // $fake = new DateTime();
-        // $fake->sub(new DateInterval('P5D'));
-        // $q->filterByRateDatetime($fake, \Criteria::LESS_THAN);
+        $stmt = $con->prepare("
+                SELECT
+                rate_datetime AS rateDatetime,
+                rate
+                FROM {$table}
+                {$where}
+                ORDER BY rate_datetime ASC
+                LIMIT {$limit}");
 
-        // ensure ordered data, makes our life a lot easier
-        $q->orderByRateDatetime(\Criteria::ASC);
+        $stmt->execute();
+        $rates = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        // limit so on a complete cache flush we can ease into building up the cache again
-        $q->limit($limit);
-
-        // loop and process ticks
-        $rates = $q->find();
         foreach ($rates as $rateEntry) {
             $date = new DateTime("{$rateEntry['rateDatetime']}");
             $rate = intval($rateEntry['rate']);
