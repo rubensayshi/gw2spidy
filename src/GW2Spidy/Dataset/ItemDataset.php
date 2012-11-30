@@ -51,31 +51,30 @@ class ItemDataset extends BaseDataset {
         $limit = 5000;
         $end   = null;
         $start = $this->lastUpdated;
+        $con = \Propel::getConnection();
 
-        $q = $this->type == self::TYPE_SELL_LISTING ? SellListingQuery::create() : BuyListingQuery::create();
-        $q->select(array('listingDatetime'))
-          ->withColumn('MIN(unit_price)', 'min_unit_price')
-          ->groupBy('listingDatetime')
-          ->filterByItemId($this->itemId);
+        $table = $this->type == self::TYPE_SELL_LISTING ? 'sell_listing' : 'buy_listing';
 
+        $and = "";
         // only retrieve new ticks since last update
         if ($start) {
-            $q->filterByListingDatetime($start, \Criteria::GREATER_THAN);
+            $and = " AND listing_datetime > '{$start->format('Y-m-d H:i:s')}'";
         }
 
-        // fake 5 days ago so we can test new ticks being added
-        // $fake = new DateTime();
-        // $fake->sub(new DateInterval('P5D'));
-        // $q->filterByRateDatetime($fake, \Criteria::LESS_THAN);
+        $stmt = $con->prepare("
+                SELECT
+                listing_datetime AS listingDatetime,
+                MIN(unit_price) AS min_unit_price
+                FROM {$table}
+                WHERE item_id = {$this->itemId}
+                {$and}
+                GROUP BY listing_datetime
+                ORDER BY listing_datetime ASC
+                LIMIT {$limit}");
 
-        // ensure ordered data, makes our life a lot easier
-        $q->orderByListingDatetime(\Criteria::ASC);
+        $stmt->execute();
+        $listings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        // limit so on a complete cache flush we can ease into building up the cache again
-        $q->limit($limit);
-
-        // loop and process ticks
-        $listings = $q->find();
         foreach ($listings as $listing) {
             $date = new DateTime("{$listing['listingDatetime']}");
             $rate = intval($listing['min_unit_price']);
