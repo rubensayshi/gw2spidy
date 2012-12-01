@@ -286,3 +286,5 @@ Copyright and License - Apendix
 The above BSD license will allow you to use this open source project for anything you like.  
 However, I would very much appreciate it when you decide to use the code if you could contribute your improvements back to this project
 and / or contact me so that I'm aware (and proud) of my project being used by other people too :-)
+
+And Jermaine says hi!
