@@ -168,6 +168,10 @@ $app->get("/profit", function(Request $request) use($app) {
         $where .= " AND item_type_id = {$type}";
     }
 
+    if ($subtype = intval($request->get('subtype'))) {
+        $where .= " AND item_sub_type_id = {$subtype}";
+    }
+
     if ($blacklist = $request->get('blacklist')) {
         foreach (explode(",", $blacklist) as $blacklist) {
             $blacklist = Propel::getConnection()->quote("%{$blacklist}%", PDO::PARAM_STR);
