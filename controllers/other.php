@@ -109,11 +109,6 @@ $app->get("/admin/session", function(Request $request) use($app) {
  * ----------------------
  */
 $app->post("/admin/session", function(Request $request) use($app) {
-    $secret = trim($request->get('admin_secret', ''));
-    if (!$app['debug'] && (!$secret || !getAppConfig('gw2spidy.admin_secret') || $secret !== getAppConfig('gw2spidy.admin_secret'))) {
-        return '';
-    }
-
     $session_key  = $request->get('session_key');
     $game_session = (boolean)$request->get('game_session');
 
