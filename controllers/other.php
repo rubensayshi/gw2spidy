@@ -109,11 +109,6 @@ $app->get("/admin/session", function(Request $request) use($app) {
  * ----------------------
  */
 $app->post("/admin/session", function(Request $request) use($app) {
-    $secret = trim($request->get('admin_secret', ''));
-    if (!$app['debug'] && (!$secret || !getAppConfig('gw2spidy.admin_secret') || $secret !== getAppConfig('gw2spidy.admin_secret'))) {
-        return '';
-    }
-
     $session_key  = $request->get('session_key');
     $game_session = (boolean)$request->get('game_session');
 
@@ -171,6 +166,10 @@ $app->get("/profit", function(Request $request) use($app) {
 
     if ($type = intval($request->get('type'))) {
         $where .= " AND item_type_id = {$type}";
+    }
+
+    if ($subtype = intval($request->get('subtype'))) {
+        $where .= " AND item_sub_type_id = {$subtype}";
     }
 
     if ($blacklist = $request->get('blacklist')) {

@@ -44,7 +44,6 @@ cnf = {
         "auth_url"        : "https://account.guildwars2.com",
 
         "api_secrets"     : {},
-        "admin_secret"    : null,
 
         /*
          * this controls how the crawling is done
