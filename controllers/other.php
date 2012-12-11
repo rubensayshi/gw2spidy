@@ -112,6 +112,10 @@ $app->post("/admin/session", function(Request $request) use($app) {
     $session_key  = $request->get('session_key');
     $game_session = (boolean)$request->get('game_session');
 
+    if (preg_match('/s=(.+)/', $session_key, $a)) {
+        $session_key = $a[1];
+    }
+
     $gw2session = new GW2Session();
     $gw2session->setSessionKey($session_key);
     $gw2session->setGameSession($game_session);
