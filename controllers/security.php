@@ -84,7 +84,7 @@ $app->get("/social_login", function(Request $request) use ($app) {
             $user->setEmail($profile->email);
             $user->setUsername("{$provider}::{$profile->identifier}");
             $encoder = $app['security.encoder_factory']->getEncoder($user);
-            $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
+            $user->setPassword($encoder->encodePassword($pass, $user->getSalt()));
 
             $user->save();
         }
