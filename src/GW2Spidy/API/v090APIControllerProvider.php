@@ -254,17 +254,15 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             $itemsperpage = 250;
             $page = intval($page > 0 ? $page : 1);
 
-            if (!($item = ItemQuery::create()->findPk($dataId))) {
-                return $app->abort(404, "Item Not Found [{$dataId}].");
-            }
-
             $fields   = array();
             $listings = array();
             if ($type == 'sell') {
-                $q = SellListingQuery::create()->filterByItemId($item->getDataId());
+                $q = SellListingQuery::create()->select(SellListingPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
             } else {
-                $q = BuyListingQuery::create()->filterByItemId($item->getDataId());
+                $q = BuyListingQuery::create()->select(BuyListingPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
             }
+
+            $q->filterByItemId($dataId);
 
             $q->orderByListingDatetime(\ModelCriteria::DESC);
 
@@ -280,16 +278,17 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             $q->offset($itemsperpage * ($page-1))
               ->limit($itemsperpage);
 
-            $count = $q->count();
-
+            $count   = 0;
             $results = array();
             foreach ($q->find() as $listing) {
                 $results[] = array(
-                    "listing_datetime" => $app['api-helper']->dateAsUTCString($listing->getListingDatetime()),
-                    "unit_price"       => $listing->getUnitPrice(),
-                    "quantity"         => $listing->getQuantity(),
-                    "listings"         => $listing->getListings(),
+                    "listing_datetime" => $app['api-helper']->dateAsUTCString($listing['ListingDatetime']),
+                    "unit_price"       => $listing['UnitPrice'],
+                    "quantity"         => $listing['Quantity'],
+                    "listings"         => $listing['Listings']
                 );
+
+                $count++;
             }
 
             $response = array(
