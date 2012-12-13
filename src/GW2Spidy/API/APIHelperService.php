@@ -91,6 +91,17 @@ class APIHelperService {
         return $data;
     }
 
+    public function buildListingDataArray(array $listing) {
+        $data = array(
+            "listing_datetime" => $this->dateAsUTCString($listing['ListingDatetime']),
+            "unit_price"       => intval($listing['UnitPrice']),
+            "quantity"         => intval($listing['Quantity']),
+            "listings"         => intval($listing['Listings']),
+        );
+
+        return $data;
+    }
+
     public function buildRecipeDataArray(Recipe $recipe) {
         $data = array(
             "data_id"              => $recipe->getDataId(),

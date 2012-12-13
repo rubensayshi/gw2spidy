@@ -281,12 +281,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             $count   = 0;
             $results = array();
             foreach ($q->find() as $listing) {
-                $results[] = array(
-                    "listing_datetime" => $app['api-helper']->dateAsUTCString($listing['ListingDatetime']),
-                    "unit_price"       => $listing['UnitPrice'],
-                    "quantity"         => $listing['Quantity'],
-                    "listings"         => $listing['Listings']
-                );
+                $results[] = $app['api-helper']->buildListingDataArray($listing);
 
                 $count++;
             }
