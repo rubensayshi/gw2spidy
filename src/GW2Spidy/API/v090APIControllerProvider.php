@@ -322,7 +322,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
 
             if ($q->count() == 0 && $name != trim($name)) {
                 $name = trim($name);
-                $q = ItemQuery::create();
+                $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
                 $q->filterByName("%{$name}%");
             }
 
