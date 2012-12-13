@@ -10,22 +10,21 @@
         <strong>FLASH MESSAGES!</strong> <br />
         The messages you get to see here will keep showing up until you click the little × on the right side ;)
     </div>
-    <div id="flash-watchlist" class="alert alert-success">
+    <div id="flash-downtime" class="alert alert-success">
         <button type="button" class="close" data-dismiss="alert">×</button>
-        <strong>WATCHLIST!</strong><br />
-        Thanks to <i>TehGear</i> for setting up the base and myself for implementing the (social) login. <br />
-		So right now you're looking at the first version containing the <b>watchlist / favorites</b>! <br />
-		You can now login (using facebook/twitter/google if you like) and mark items as favorites so they end up on your watchlist! <br />
-		Based on this I can continue with features such as notifications etc. when prices go up / down!
-    </div>
-    <div id="flash-vendor-price-and-search" class="alert alert-success">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        <strong>Vendor Prices! And Search / Filters improved!</strong><br />
-        I added a way (for me) to manually set vendor prices for items and to import gw2db vendor prices once they have the data. <br />
-        Thanks to <i>Zhgch</i> for providing me with some prices for a bunch of items most of the basic stuff is covered! <br />
+        <strong>Downtime 2 night in a row, sad panda :-(</strong><br />
+        The downtime is caused by the server crashing down completely to the point where it needs a full restart to start working again.<br />
+        It's never easy to investigate this kind of problems, but it seems to be related to the server having a really hard time keeping up with the usage.<br />
         <br />
-        If you see some more prices missing, just tweet them to me or get on IRC or smt and I'll add them :-) <br />
+        I've improved some things (server configuration, script optimizations and some monitoring setup) to prevent problems or better find out what's going on.<br />
         <br />
-        I also added recipes to the search. And added level filters to both item and recipe lists (recipes it's the crafting level) \o/
+        The biggest chunk (like 90% or more) of the load on the server is caused by the API ( I never imagined this would become such an success xD ) and the past few days even more because somebody was doing requests for all the item listings at an insane rate.<br />
+        I talked to that person and he changed his script to be less heavy and also improved the performance of the listings API.<br />
+        <br />
+        I'll be closely monitoring the server tonight, hopefully the problems are already fixed and otherwise I can promise you I'll be right on top of it when anything goes wrong tonight!<br />
+        <br />
+        I'll also implement something to rate limit the API access a bit to at least prevent the amount of request reaching DOS attack levels like they were now :P<br />
+        <br />
+        Hope you can forgive me for letting it fail 2 evenings in a row and to offset this I'll ensure I get enough time this week to add a awesome new feature where you can play around with various filters to find the PERFECT list of items to sell / buy ;-)<br />
     </div>
 </div>
