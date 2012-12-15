@@ -33,12 +33,19 @@ class BaseWorker {
      * anet is changing their data structure every once in a while ...
      */
     protected function unifyItemData($itemData) {
-        $itemData['min_sale_unit_price']  = $itemData['min_sale_unit_price']  ?: $itemData['sell_price'];
-        $itemData['max_offer_unit_price'] = $itemData['max_offer_unit_price'] ?: $itemData['buy_price'];
-        $itemData['sale_availability']    = $itemData['sale_availability']    ?: $itemData['sell_count'];
-        $itemData['offer_availability']   = $itemData['offer_availability']   ?: $itemData['buy_price'];
+        $keys = array(
+            'min_sale_unit_price'   => 'sell_price',
+            'max_offer_unit_price'  => 'buy_price',
+            'sale_availability'     => 'sell_count',
+            'offer_availability'    => 'buy_count',
+            'restriction_level'     => 'level',
+        );
 
-        $itemData['restriction_level'] = $itemData['restriction_level'] ?: $itemData['level'];
+        foreach ($keys as $k => $k2) {
+            if (!isset($itemData[$k]) && isset($itemData[$k2])) {
+                $itemData[$k] = $itemData[$k2];
+            }
+        }
 
         return $itemData;
     }
