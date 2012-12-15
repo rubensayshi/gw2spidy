@@ -33,13 +33,12 @@ class BaseWorker {
      * anet is changing their data structure every once in a while ...
      */
     protected function unifyItemData($itemData) {
-        $itemdata['min_sale_unit_price']  = $itemdata['min_sale_unit_price'] ?: $itemdata['sell_price'];
-        $itemdata['max_offer_unit_price'] = $itemdata['max_offer_unit_price'] ?: $itemdata['buy_price'];
-        $itemdata['sale_availability']    = $itemdata['sale_availability'] ?: $itemdata['sell_count'];
-        $itemdata['offer_availability']   = $itemdata['offer_availability'] ?: $itemdata['buy_price'];
+        $itemData['min_sale_unit_price']  = $itemData['min_sale_unit_price']  ?: $itemData['sell_price'];
+        $itemData['max_offer_unit_price'] = $itemData['max_offer_unit_price'] ?: $itemData['buy_price'];
+        $itemData['sale_availability']    = $itemData['sale_availability']    ?: $itemData['sell_count'];
+        $itemData['offer_availability']   = $itemData['offer_availability']   ?: $itemData['buy_price'];
 
-        $itemdata['restriction_level'] = $itemdata['restriction_level'] ?: $itemdata['level'];
-        $itemdata['restriction_level'] = $itemdata['restriction_level'] ?: $itemdata['level'];
+        $itemData['restriction_level'] = $itemData['restriction_level'] ?: $itemData['level'];
 
         return $itemData;
     }
