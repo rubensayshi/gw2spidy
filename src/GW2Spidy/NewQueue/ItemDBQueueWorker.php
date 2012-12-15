@@ -38,6 +38,7 @@ class ItemDBQueueWorker extends BaseWorker {
     }
 
     public function storeItemData($itemData, ItemType $type = null, ItemSubType $subtype = null, $item = null) {
+        $itemData = $this->unifyItemData($itemData);
         // this seems to be removed items o.O?
         if (!isset($itemData['name']) && !isset($itemData['rarity']) && !isset($itemData['restriction_level']) && isset($itemData['data_id'])) {
             return;

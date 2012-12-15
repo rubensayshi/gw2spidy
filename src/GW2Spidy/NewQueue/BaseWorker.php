@@ -29,7 +29,23 @@ class BaseWorker {
         $this->manager = $manager;
     }
 
+    /**
+     * anet is changing their data structure every once in a while ...
+     */
+    protected function unifyItemData($itemData) {
+        $itemdata['min_sale_unit_price']  = $itemdata['min_sale_unit_price'] ?: $itemdata['sell_price'];
+        $itemdata['max_offer_unit_price'] = $itemdata['max_offer_unit_price'] ?: $itemdata['buy_price'];
+        $itemdata['sale_availability']    = $itemdata['sale_availability'] ?: $itemdata['sell_count'];
+        $itemdata['offer_availability']   = $itemdata['offer_availability'] ?: $itemdata['buy_price'];
+
+        $itemdata['restriction_level'] = $itemdata['restriction_level'] ?: $itemdata['level'];
+        $itemdata['restriction_level'] = $itemdata['restriction_level'] ?: $itemdata['level'];
+
+        return $itemData;
+    }
+
     protected function processListingsFromItemData($itemData, $item = null, $save = true) {
+        $itemData = $this->unifyItemData($itemData);
         $now  = new DateTime();
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
