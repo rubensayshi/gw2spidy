@@ -127,21 +127,21 @@ $app->get("/chart/{dataId}", function($dataId) use ($app) {
      *  MV AVG VOLUME SELL
     *---------------*/
     $chart[] = array(
-            'data'     => $sellListingsVolume->getDailyMvAvgDataForChart(),
-            'name'    => "Sell Listings Volume 1 Day Mv Avg",
-            'visible' => true,
-            'yAxis'   => 1,
-            'type'    => 'column',
+        'data'     => $sellListingsVolume->getDailyMvAvgDataForChart(),
+        'name'    => "Sell Listings Volume 1 Day Mv Avg",
+        'visible' => true,
+        'yAxis'   => 1,
+        'type'    => 'column',
     );
     /*---------------
      *  MV AVG VOLUME BUY
     *---------------*/
     $chart[] = array(
-            'data'     => $buyListingsVolume->getDailyMvAvgDataForChart(),
-            'name'    => "Buy Listings Volume 1 Day Mv Avg",
-            'visible' => true,
-            'yAxis'   => 1,
-            'type'    => 'column',
+        'data'     => $buyListingsVolume->getDailyMvAvgDataForChart(),
+        'name'    => "Buy Listings Volume 1 Day Mv Avg",
+        'visible' => true,
+        'yAxis'   => 1,
+        'type'    => 'column',
     );
 
     /*----------------
