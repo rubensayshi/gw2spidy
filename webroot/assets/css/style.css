@@ -384,6 +384,12 @@ h1 {
 .db-tooltip .db-summary .db-value {
     display: none;
 }
+.gw2money-fragment {
+	white-space: nowrap;
+}
+.gw2money-negative {
+	color: #DD2222;
+}
 .gw2money-copper,
 .gw2money-silver,
 .gw2money-gold {
