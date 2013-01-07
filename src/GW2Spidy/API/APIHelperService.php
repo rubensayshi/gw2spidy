@@ -54,6 +54,7 @@ class APIHelperService {
             echo implode(',', array_keys(reset($results))) . "\r\n";
 
             foreach ($results as $result) {
+                $result = array_map(array($this, 'escapeCSVValue'), $result);
                 echo implode(',', $result) . "\r\n";
             }
         }
@@ -123,5 +124,13 @@ class APIHelperService {
         $date->setTimezone(new DateTimeZone('UTC'));
 
         return "{$date->format("Y-m-d H:i:s")} UTC";
+    }
+
+    public function escapeCSVValue($val) {
+        if (is_string($val)) {
+            $val = '"' . $val . '"';
+        }
+
+        return $val;
     }
 }
