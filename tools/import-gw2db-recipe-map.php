@@ -110,7 +110,7 @@ $getItemByGW2DBID = function($gw2dbID) use ($tp, $slots, $worker) {
     return $result;
 };
 
-foreach ($data as $i => $row) {
+if (false) foreach ($data as $i => $row) {
     try {
         echo "[{$i} / {$cnt}] \n";
 
@@ -158,4 +158,7 @@ foreach ($data as $i => $row) {
 
 var_dump($failed);
 
+// fix wintersday recipes
+\Propel::getConnection()->exec("UPDATE recipe_ingredient SET count = 5 WHERE recipe_id IN(6761, 6762, 6737) AND item_id = 38143");
+\Propel::getConnection()->exec("UPDATE recipe_ingredient SET count = 3 WHERE recipe_id IN(6736, 6759, 6760) AND item_id = 38142");
 
