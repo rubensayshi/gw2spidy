@@ -66,6 +66,7 @@ class ItemListRoutingExtension extends \Twig_Extension {
         if (array_key_exists('search', $context)) {
             $name = 'search';
             $parameters['search'] = $context['search'];
+            $parameters['recipes'] = 1;
         }
         else if (array_key_exists('discipline', $context)) {
             $name = 'crafting';
