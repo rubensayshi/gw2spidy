@@ -417,7 +417,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          */
         $controllers->match("/{format}/all-recipes/{discId}", function(Request $request, $format, $discId) use($app) {
             $t = microtime(true);
-            $q = RecipeQuery::create()->select(RecipePeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
+            $q = RecipeQuery::create();
 
             if (in_array($discId, array('all', '*all*'))) {
                 $discId = null;
