@@ -411,7 +411,44 @@ class v090APIControllerProvider implements ControllerProviderInterface {
 
         /**
          * ----------------------
-         *  route /item
+         *  route /all-recipes
+         * ----------------------
+         */
+        $controllers->match("/{format}/all-recipes/{discId}", function(Request $request, $format, $discId) use($app) {
+            $t = microtime(true);
+            $q = RecipeQuery::create()->select(RecipePeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
+
+            if (in_array($discId, array('all', '*all*'))) {
+                $discId = null;
+            }
+            if (!is_null($discId)) {
+                if (!($disc = DisciplineQuery::create()->findPk($discId))) {
+                    return $app->abort(404, "Invalid discipline [{$discId}]");
+                }
+
+                $q->filterByDiscipline($disc);
+            }
+
+            $count = $q->count();
+
+            $results = array();
+            foreach ($q->find() as $recipe) {
+                $results[] = $app['api-helper']->buildRecipeDataArray($recipe);
+            }
+
+            $response = array(
+                'count'     => $count,
+                'results'   => $results
+            );
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "all-recipes-{$discId}");
+        })
+        ->assert('format', 'csv|json')
+        ->assert('typeId', '\d+|\*?all\*?');
+
+        /**
+         * ----------------------
+         *  route /recipe
          * ----------------------
          */
         $controllers->get("/{format}/recipe/{dataId}", function(Request $request, $format, $dataId) use($app) {
