@@ -19,6 +19,7 @@ use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\DB\SellListingQuery;
 use GW2Spidy\DB\WorkerQueueItemQuery;
 use GW2Spidy\DB\ItemPeer;
+use GW2Spidy\DB\RecipePeer;
 use GW2Spidy\DB\BuyListingPeer;
 use GW2Spidy\DB\SellListingPeer;
 use GW2Spidy\DB\BuyListingQuery;
