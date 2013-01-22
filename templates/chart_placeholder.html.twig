@@ -3,10 +3,14 @@
 {% set title = title == '' and item is defined ? item.name : title %}
 {% set hideLegend = hideLegend is defined ? hideLegend : false %}
 {% set legendItemWidth = legendItemWidth is defined ? legendItemWidth : 265 %}
+{% set navigatorIndex = navigatorIndex is defined ? navigatorIndex : 0 %}
 
 <div id="container" style="height: 500px; width: 100%; min-width: 450px;"></div>
 <script type="text/javascript">
     var chart = new GW2SpidyChart('{{ url }}', $('#container'), {
+        navigator : {
+            baseSeries : {{ navigatorIndex }}
+        },
         legend : {
             enabled : {{ hideLegend ? 'false' : 'true' }},
             itemWidth : {{ legendItemWidth }},

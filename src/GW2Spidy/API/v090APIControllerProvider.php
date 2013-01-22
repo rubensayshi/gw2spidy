@@ -251,7 +251,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          */
         $controllers->get("/{format}/listings/{dataId}/{type}/{page}", function(Request $request, $format, $dataId, $type, $page) use($app) {
 
-            $itemsperpage = 250;
+            $itemsperpage = 1000;
             $page = intval($page > 0 ? $page : 1);
 
             $fields   = array();
