@@ -442,6 +442,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             );
 
             return $app['api-helper']->outputResponse($request, $response, $format, "all-recipes-{$discId}");
+
         })
         ->assert('format', 'csv|json')
         ->assert('typeId', '\d+|\*?all\*?');
