@@ -118,7 +118,7 @@ sub vcl_fetch {
             if (req.url ~ "^/api/v.*/.+/types" || req.url ~ "^/api/v.*/.+/disciplines" || req.url ~ "^/api/v.*/.+/rarities") {
                 set beresp.ttl = 24h;
             }
-            if (req.url ~ "^/api/v.*/.+/all-items") {
+            if (req.url ~ "^/api/v.*/.+/all-items" || req.url ~ "^/api/v.*/.+/all-recipes") {
                 set beresp.ttl = 5m;
             }
             if (req.url ~ "^/api/v.*/.+/items" || req.url ~ "^/api/v.*/.+/recipes") {

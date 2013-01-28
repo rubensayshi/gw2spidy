@@ -40,7 +40,7 @@ class GemExchangeDataset extends BaseDataset {
             return;
         }
 
-        $limit = 5000;
+        $limit = 20000;
         $end   = null;
         $start = $this->lastUpdated;
         $con = \Propel::getConnection();
