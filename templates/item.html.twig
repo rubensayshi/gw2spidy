@@ -57,6 +57,12 @@
                     <td>{{ item.vendorPrice | gw2money }}</td>
             </tr>
             {% endif %}
+            {% if item.karmaPrice %}
+            <tr class="karma">
+                    <th>Karma Price: </th>
+                    <td>{{ item.karmaPrice | karma }}</td>
+            </tr>
+            {% endif %}
             <tr>
                     <th>Supply: </th>
                     <td>{{ item.saleAvailability }}</td>
