@@ -93,6 +93,9 @@ class ItemListRoutingExtension extends \Twig_Extension {
         if (isset($context['max_level']) && !array_key_exists('max_level', $parameters)) {
             $parameters['max_level'] = $context['max_level'];
         }
+        if (isset($context['hide_unlock_required']) && !array_key_exists('hide_unlock_required', $parameters)) {
+            $parameters['hide_unlock_required'] = $context['hide_unlock_required'];
+        }
 
         return $this->generator->generate($name, $parameters, false);
     }

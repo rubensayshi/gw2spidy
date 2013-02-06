@@ -8,7 +8,7 @@ var Crafting = function(item, container, summarycontainer) {
     var update = function() {
         var total = 0, sellprice = 0, listingfee = 0, transactionfee = 0, profit = 0;
 
-        sellprice      = $sumcont.find('.recipe_summary_sell_price').data('sell-price');
+        sellprice      = $sumcont.find('.recipe_summary_sell_price').data('sell-price') * item['multiplier'];
         transactionfee = Math.round(sellprice * 0.10);
         listingfee     = Math.round(sellprice * 0.05);
 

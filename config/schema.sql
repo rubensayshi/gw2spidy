@@ -126,6 +126,7 @@ CREATE TABLE `recipe`
     `sell_price` INTEGER,
     `profit` INTEGER,
     `updated` DATETIME,
+    `requires_unlock` INTEGER DEFAULT 0 NOT NULL,
     `gw2db_id` INTEGER,
     `gw2db_external_id` INTEGER,
     PRIMARY KEY (`data_id`),

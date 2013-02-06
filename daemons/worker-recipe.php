@@ -20,13 +20,17 @@ while (($recipes = $q->find()) && $recipes->count()) {
 
     /* @var $recipe GW2Spidy\DB\Recipe */
     foreach ($recipes as $recipe) {
-        $price = $recipe->calculatePrice();
+    	if(is_object($recipe->getResultItem())) {
+			$price = $recipe->calculatePrice();
 
-        $recipe->setCost($price);
-        $recipe->setSellPrice($recipe->getResultItem()->getMinSaleUnitPrice() * $recipe->getCount());
-        $recipe->setProfit(($recipe->getSellPrice() * 0.85) - $price);
+			$recipe->setCost($price);
+			$recipe->setSellPrice($recipe->getResultItem()->getMinSaleUnitPrice() * $recipe->getCount());
+			$recipe->setProfit(($recipe->getSellPrice() * 0.85) - $price);
 
-        $recipe->save();
+			$recipe->save();
+	    } else {
+	    	echo "Error with recipe (no resultitem): {$recipe->getName()}\n";
+	    }
 
         if (in_array('--dev', $argv)) {
             break;
