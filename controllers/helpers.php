@@ -127,7 +127,7 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
         }
     }
 
-    $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'rating';
+    $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'profit';
     $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'desc';
 
     if ($minLevelFilter = $request->get('min_level', null)) {
