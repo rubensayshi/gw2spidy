@@ -41,9 +41,9 @@ class Recipe extends BaseRecipe {
             $craftcost = null;
 
             if ($item->getResultOfRecipes()->count() && $recipe = reset($item->getResultOfRecipes())) {
-                $crafts = ceil($ingredient->getCount() / $recipe->getCount());
+                $crafts = $ingredient->getCount() / $recipe->getCount();
 
-                $craftcost = $recipe->calculatePrice($forceCrafted) * $crafts;
+                $craftcost = ceil($recipe->calculatePrice($forceCrafted) * $crafts);
             }
 
 
