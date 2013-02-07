@@ -146,13 +146,7 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
     }
     if ($maxLevelFilter = $request->get('max_level', null)) {
         $q->filterByRating($maxLevelFilter, \Criteria::LESS_EQUAL);
-<<<<<<< HEAD
-=======
     } */
-    if($hideLocked = $request->get('hide_unlock_required', null)) {
-    	$q->filterByRequiresUnlock(0, \Criteria::EQUAL);
->>>>>>> 8498239... Fixed level filter on recipes. Now the actual level of the resultitem is filtered
-    }
 
     $count = $q->count();
 
