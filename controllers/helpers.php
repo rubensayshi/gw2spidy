@@ -129,12 +129,29 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
 
     $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'rating';
     $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'desc';
-
+    
+    $minLevelFilter = $request->get('min_level', null);
+    $maxLevelFilter = $request->get('max_level', null);
+    if ($minLevelFilter || $maxLevelFilter) {
+        $iq = $q->useResultItemQuery();
+        if ($minLevelFilter)
+            $iq->filterByRestrictionLevel($minLevelFilter, \Criteria::GREATER_EQUAL);
+        if($maxLevelFilter)
+            $iq->filterByRestrictionLevel($maxLevelFilter, \Criteria::LESS_EQUAL);
+        $iq->endUse();
+    }
+    /* Disabled, TODO: create rarity filter
     if ($minLevelFilter = $request->get('min_level', null)) {
         $q->filterByRating($minLevelFilter, \Criteria::GREATER_EQUAL);
     }
     if ($maxLevelFilter = $request->get('max_level', null)) {
         $q->filterByRating($maxLevelFilter, \Criteria::LESS_EQUAL);
+<<<<<<< HEAD
+=======
+    } */
+    if($hideLocked = $request->get('hide_unlock_required', null)) {
+    	$q->filterByRequiresUnlock(0, \Criteria::EQUAL);
+>>>>>>> 8498239... Fixed level filter on recipes. Now the actual level of the resultitem is filtered
     }
 
     $count = $q->count();
