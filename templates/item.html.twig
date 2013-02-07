@@ -70,7 +70,7 @@
 
 <div class="clearfix">
 	{% if item.resultOfRecipes | length %}
-		<table class="table" style="width: 650px;">
+		<table class="table recipes" style="width: 650px;">
 			<tr>
 				<th>Created By</th>
 				<th>Cost</th>
@@ -92,7 +92,7 @@
 		</table>
 	{% endif %}
     {% if ingredientInRecipes | length %}
-		<table class="table" style="width: 650px;">
+		<table class="table recipes" style="width: 650px;">
 			<tr>
 				<th>Ingredient In</th>
 				<th>Cost</th>
@@ -124,6 +124,20 @@
 {% endspaceless %}
 {% endset %}
     window.GW2SpidyItemHistory.addItem({{ item.dataId }}, '{{- historySnippet | e('js') -}}');
+    $(function() {
+        rows = $('table.recipes tr');
+        if(rows.size() > 4) {
+            rows.last().after('<tr><td colspan=4 class="show-all"><input type="button" id="show" class="btn" value="Show All ('
+                                + (rows.size()-$('table.recipes').size()) +')" /></td></tr>');
+            rows.slice(4).hide();
+            $('#show').click(function() {
+                $(this).hide();
+                $('table.recipes tr:hidden').show();
+                return false;
+            });
+        }
+        
+    });
 </script>
 
 {% endblock %}
