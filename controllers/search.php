@@ -87,12 +87,22 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
     } else {
         $content = item_list($app, $request, $q, $page, 25, array('search' => $search, 'type'=>'search', 'included' => true));
     }
+    
+    $params = array();
+    if ($minLevelFilter = $request->get('min_level', null)) {
+        $params['min_level'] = $minLevelFilter;
+    }
+    if ($maxLevelFilter = $request->get('max_level', null)) {
+        $params['max_level'] = $maxLevelFilter;
+    }
 
     // use generic function to render
     return $app['twig']->render('search.html.twig', array(
         'recipes' => $recipes,
         'content' => $content,
         'search'  => $search,
+
+        'params' => $params,
     ));
 })
 ->assert('search',   '[^/]*')
