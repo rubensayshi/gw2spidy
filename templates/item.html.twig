@@ -90,9 +90,30 @@
 				</tr>
     		{% endfor %}
 		</table>
-	{% else %}
-		&nbsp;
 	{% endif %}
+    {% if ingredientInRecipes | length %}
+		<table class="table" style="width: 650px;">
+			<tr>
+				<th>Ingredient In</th>
+				<th>Cost</th>
+				<th>Profit</th>
+			</tr>
+    		{% for recipe in ingredientInRecipes %}
+    			<tr>
+    				<td style="width: 250px;">
+    					<a href="{{ path('recipe', {dataId : recipe.dataId}) }}">{{ recipe.name }}</a>
+    				</td>
+    				<td style="width: 115px;">
+						{{ recipe.cost | gw2money }}
+					</td>
+    				<td style="width: 115px;">
+						{{ recipe.profit | gw2money }}
+					</td>
+				</tr>
+    		{% endfor %}
+		</table>
+	{% endif %}
+	&nbsp;
 </div>
 {% include "chart_placeholder.html.twig" with {'item': item, 'hideLegend': hideLegend, 'navigatorIndex' : 3} %}
 
