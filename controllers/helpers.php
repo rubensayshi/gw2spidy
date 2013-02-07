@@ -140,13 +140,13 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
             $iq->filterByRestrictionLevel($maxLevelFilter, \Criteria::LESS_EQUAL);
         $iq->endUse();
     }
-    /* Disabled, TODO: create rarity filter
-    if ($minLevelFilter = $request->get('min_level', null)) {
-        $q->filterByRating($minLevelFilter, \Criteria::GREATER_EQUAL);
+    
+    if ($minRatingFilter = $request->get('min_rating', null)) {
+        $q->filterByRating($minRatingFilter, \Criteria::GREATER_EQUAL);
     }
-    if ($maxLevelFilter = $request->get('max_level', null)) {
-        $q->filterByRating($maxLevelFilter, \Criteria::LESS_EQUAL);
-    } */
+    if ($maxRatingFilter = $request->get('max_rating', null)) {
+        $q->filterByRating($maxRatingFilter, \Criteria::LESS_EQUAL);
+    }
 
     $count = $q->count();
 
@@ -180,6 +180,8 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
 
         'min_level' => $minLevelFilter,
         'max_level' => $maxLevelFilter,
+        'min_rating' => $minRatingFilter,
+        'max_rating' => $maxRatingFilter,
 
         'current_sort'       => $sortBy,
         'current_sort_order' => $sortOrder,
