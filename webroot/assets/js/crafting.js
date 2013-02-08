@@ -66,6 +66,7 @@ var CraftEntry = function(item, count, parent, path, last) {
     var parent = parent || null;
     var count  = count || 1;
     var price  = count * item.price;
+    var karma  = count * item.karma;
     var last   = last || false;
     var path   = path ? path.slice() : [];
         path.push(item.name);
@@ -208,8 +209,15 @@ var CraftEntry = function(item, count, parent, path, last) {
         if (!buyable && !craftable) {
             $ccwrapper.remove();
 
-            $tpcost.addClass('label-warning label-wide');
-            $tpcost.find('label .label-text').html('NOT CRAFTED, NOT SOLD');
+            $tpcost.addClass('label-wide');
+            if(true) {
+                $tpcost.addClass('label-karma');
+                $tpcost.find('label .label-text').html('KARMA VENDOR');
+                $tpcost.find('label .price').html(karma + ' <img alt="Karma" src="/assets/img/Karma.png" height="15" width="18">');
+            } else  {
+                $tpcost.addClass('label-warning');
+                $tpcost.find('label .label-text').html('NOT CRAFTED, NOT SOLD');
+            }
             $tpcost.find('input').attr('disabled', true);
         } else if (buyable && !craftable) {
             $ccwrapper.addClass('label-inverse label-not-crafted');
