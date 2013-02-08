@@ -136,7 +136,7 @@
         {% for recipe in recipes %}
             <tr class="recipe">
                 <td class="info">
-                    <a data-tooltip-href="{{ gw2db_recipe(recipe) }}" href="{{ path('recipe', {dataId: recipe.dataId}) }}">
+                    <a data-tooltip-href="{{ gw2db_recipe(recipe) }}" href="{{ path('recipe', {dataId: recipe.dataId}) }}" class="rarity-{{ recipe.getrarity }}">
                         <img class="image" src="{{ recipe.resultitem.img }}" width="32" height="32" /> {{ recipe.name }}
                     </a>
                 </td>

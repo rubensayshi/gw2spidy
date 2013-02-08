@@ -150,6 +150,11 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
     if($hideLocked = $request->get('hide_unlock_required', null)) {
     	$q->filterByRequiresUnlock(0, \Criteria::EQUAL);
     }
+    
+    $q->join('r.ResultItem')
+      ->withColumn('ResultItem.SaleAvailability','sale_availability')
+      ->withColumn('ResultItem.OfferAvailability','offer_availability')
+      ->withColumn('ResultItem.Rarity','rarity');
 
     
     if ($minSupplyFilter = $request->get('min_supply', null)) {

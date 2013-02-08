@@ -97,27 +97,33 @@ h1 {
 }
 
 .rarity-common,
-.rarity-common a {
+.rarity-common a,
+.rarity-1 {
     color: #4C4C4C !important;
 }
-.rarity-masterwork,
-.rarity-masterwork a {
-    color: #2DC50E !important;
-}
 .rarity-fine,
-.rarity-fine a {
+.rarity-fine a,
+.rarity-2 {
     color: #4F9DFE !important;
 }
-.rarity-exotic,
-.rarity-exotic a {
-    color: #CC6600 !important;
+.rarity-masterwork,
+.rarity-masterwork a,
+.rarity-3 {
+    color: #2DC50E !important;
 }
 .rarity-rare,
-.rarity-rare a {
+.rarity-rare a, 
+.rarity-4 {
     color: #FDA500 !important;
 }
+.rarity-exotic,
+.rarity-exotic a,
+.rarity-5 {
+    color: #CC6600 !important;
+}
 .rarity-legendary,
-.rarity-legendary a {
+.rarity-legendary a,
+.rarity-6 {
     color: #DD2222 !important;
 }
 
