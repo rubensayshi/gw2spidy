@@ -145,7 +145,7 @@ var CraftEntry = function(item, count, parent, path, last) {
                         .appendTo($itemWrap);
 
         var $title = $('<div data-tooltip-href="'+item.gw2db_href+'" class="item" title="' + item.name + '">')
-                        .html('<img width="24" src="'+item.img+'" /> '+count+'x <a href="'+item.href+'" class="rarity-'+item.rarity+'">'+item.name+'</a>')
+                        .html('<img width="24" src="'+item.img+'" /> '+count+'x <a href="'+item.href+'" class="rarity-'+item.rarity.toLowerCase()+'">'+item.name+'</a>')
                         .appendTo($item);
 
         var $price = $('<div class="options">')
