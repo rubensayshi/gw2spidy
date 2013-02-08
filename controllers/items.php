@@ -94,9 +94,7 @@ $app->get("/item/{dataId}", function($dataId) use ($app) {
     $item = ItemQuery::create()->findPK($dataId);
     $ingredientInRecipes = RecipeQuery::create()
         ->useIngredientQuery()
-            ->useItemQuery()
-                ->filterByPrimaryKey($dataId)
-            ->endUse()
+            ->filterByItemId($dataId)
         ->endUse()
         ->addDescendingOrderByColumn('profit')
         ->find();
