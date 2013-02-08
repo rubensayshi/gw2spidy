@@ -210,7 +210,7 @@ var CraftEntry = function(item, count, parent, path, last) {
             $ccwrapper.remove();
 
             $tpcost.addClass('label-wide');
-            if(true) {
+            if(karma > 0) {
                 $tpcost.addClass('label-karma');
                 $tpcost.find('label .label-text').html('KARMA VENDOR');
                 $tpcost.find('label .price').html(karma + ' <img alt="Karma" src="/assets/img/Karma.png" height="15" width="18">');
