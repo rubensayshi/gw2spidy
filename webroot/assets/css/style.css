@@ -432,3 +432,16 @@ h1 {
 td.show-all {
    text-align: center;
 }
+
+.control-group.combined .control-label {
+    width: auto;
+    margin-left: 10px;
+    margin-right: 15px;
+}
+.control-group.combined .controls {
+    margin: 0 15px;
+    float: left;
+}
+.control-group.filter .controls {
+    margin: 1px 25px;
+}

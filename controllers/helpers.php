@@ -151,6 +151,15 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
     	$q->filterByRequiresUnlock(0, \Criteria::EQUAL);
     }
 
+    
+    if ($minSupplyFilter = $request->get('min_supply', null)) {
+        $q->where('ResultItem.SaleAvailability >= ?', $minSupplyFilter);
+    }  
+    if ($maxSupplyFilter = $request->get('max_supply', null)) {
+        $q->where('ResultItem.SaleAvailability <= ?', $maxSupplyFilter);
+    }  
+      
+      
     $count = $q->count();
 
     if ($count > 0) {
@@ -186,6 +195,9 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
         'min_rating' => $minRatingFilter,
         'max_rating' => $maxRatingFilter,
         'hide_unlock_required' => $hideLocked,
+        
+        'min_supply' => $minSupplyFilter,
+        'max_supply' => $maxSupplyFilter,
 
         'current_sort'       => $sortBy,
         'current_sort_order' => $sortOrder,

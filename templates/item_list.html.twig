@@ -92,11 +92,11 @@ Watchlist
         {{ _self.pager(page, lastpage, _context) }}
 
 
-        <div class="form-horizontal" style="float: left; margin-top: -9px;">
+        <div class="form-horizontal">
             <form action="" method="GET">
-                <div class="control-group">
-                    <label class="control-label" for="rarity_filter">Rarity:</label>
+                <div class="control-group combined">
                     <div class="controls">
+                        <label class="control-label" for="rarity_filter">Rarity:</label>
                         <select name="rarity_filter" id="rarity_filter">
                             <option value="" data-href="{{ item_list_path(_context, {rarity_filter: null}) }}">No filter</option>
                             {% for rarity, rarityname in {1: 'Common', 2: 'Fine', 3: 'Masterwork', 4: 'Rare', 5: 'Exotic', 6: 'Legendary'} %}
@@ -104,15 +104,13 @@ Watchlist
                             {% endfor %}
                         </select>
                     </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="min_level">Level:</label>
                     <div class="controls">
+                        <label class="control-label" for="min_level">Level:</label>
                         <input class="input-mini" placeholder="min" type="text" name="min_level" id="min_level" value="{{ min_level }}" /> -
                         <input class="input-mini" placeholder="max" type="text" name="max_level" id="max_level" value="{{ max_level }}" />
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group filter">
                     <div class="controls">
                       <input type="submit" value="Filter" class="btn" />
                     </div>

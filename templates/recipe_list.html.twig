@@ -87,30 +87,35 @@
         </div>
         {{ _self.pager(page, lastpage, _context) }}
 
-        <div class="form-horizontal" style="float: left; margin-top: -9px;">
+        <div class="form-horizontal">
             <form action="" method="GET">
 				{% if search is defined %}<input type="hidden" name="recipes" id="recipes" value="1" />{% endif %}
-                <div class="control-group">
-                    <label class="control-label" for="min_level">Level:</label>
+                <div class="control-group combined">
                     <div class="controls">
+                        <label class="control-label" for="min_level">Level:</label>
                         <input class="input-mini" placeholder="min" type="text" name="min_level" id="min_level" value="{{ min_level }}" /> -
                         <input class="input-mini" placeholder="max" type="text" name="max_level" id="max_level" value="{{ max_level }}" />
                     </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="min_rating">Rating:</label>
+                    
                     <div class="controls">
+                        <label class="control-label" for="min_rating">Rating:</label>
                         <input class="input-mini" placeholder="min" type="text" name="min_rating" id="min_rating" value="{{ min_rating }}" /> -
                         <input class="input-mini" placeholder="max" type="text" name="max_rating" id="max_rating" value="{{ max_rating }}" />
                     </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="hide_unlock_required">Hide recipes that require an unlock:</label>
+                    
                     <div class="controls">
+                        <label class="control-label" for="min_rating">Supply:</label>
+                        <input class="input-mini" placeholder="min" type="text" name="min_supply" id="min_supply" value="{{ min_supply }}" /> -
+                        <input class="input-mini" placeholder="max" type="text" name="max_supply" id="max_supply" value="{{ max_supply }}" />
+                    </div>
+                    
+                    <div class="controls">
+                        <label class="control-label" for="hide_unlock_required">Hide recipes that require an unlock:</label>
                         <input type="checkbox" name="hide_unlock_required" id="hide_unlock_required" {% if hide_unlock_required %}checked="checked"{% endif %}>
                     </div>
                 </div>
-                <div class="control-group">
+                
+                <div class="control-group filter">
                     <div class="controls">
                       <input type="submit" value="Filter" class="btn" />
                     </div>
