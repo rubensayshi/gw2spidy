@@ -37,10 +37,13 @@ $bulk = Propel::getConnection()->prepare(
   
 // fix for some words where the plural is irregular
 $singular = array(
-    "Tomatoe"   => "Tomato",
-    "Cherrie"   => "Cherry",
-    "Peache"    => "Peach",
-    "Buttermilk"=> "Glass of Buttermilk"
+    "Tomatoe"       => "Tomato",
+    "Cherrie"       => "Cherry",
+    "Peache"        => "Peach",
+    "Buttermilk"    => "Glass of Buttermilk",
+    "Rice"          => "Rice Ball",
+    "Sour Cream"    => "Bowl[s] of Sour Cream",
+    "Sour Cream"    => "Packet[s] of Yeast",
 );
 
 foreach ($data as $i => $row) {
