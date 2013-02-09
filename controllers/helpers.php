@@ -276,7 +276,7 @@ function buildRecipeTree($item, $recipe = null, $app, $multiplier = 1) {
             $ingredientItem   = $ingredient->getItem();
             $ingredientRecipe = null;
 
-            $ingredientRecipes = $ingredientItem->getResultOfRecipes
+            $ingredientRecipes = $ingredientItem->getResultOfRecipes();
             
             $ingredientMultiplier = $multiplier;
             if (count($ingredientRecipes)) {
