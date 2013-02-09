@@ -136,6 +136,9 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
     if ($maxLevelFilter = $request->get('max_level', null)) {
         $q->filterByRating($maxLevelFilter, \Criteria::LESS_EQUAL);
     }
+    if($hideLocked = $request->get('hide_unlock_required', null)) {
+    	$q->filterByRequiresUnlock(0, \Criteria::EQUAL);
+    }
 
     $count = $q->count();
 
@@ -169,6 +172,7 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
 
         'min_level' => $minLevelFilter,
         'max_level' => $maxLevelFilter,
+        'hide_unlock_required' => $hideLocked,
 
         'current_sort'       => $sortBy,
         'current_sort_order' => $sortOrder,
@@ -209,7 +213,50 @@ function gem_summary() {
     );
 }
 
-function buildRecipeTree($item, $recipe = null, $app) {
+// see http://en.wikipedia.org/wiki/Greatest_common_divisor#Using_Euclid.27s_algorithm
+function gcd($a, $b) {
+   if($a <= 0 || $b <=0)
+       return 1;
+   if ($a == $b)
+       return $a;
+   return $a > $b ? gcd($a - $b, $b) : gcd($a, $b - $a);
+}
+
+// returns the amount of times we have to craft the base recipe in order to get a multiple of the required amount
+function multiplier($base, $multiple) {
+   return $base / gcd($base, $multiple);
+}
+
+function calculateRecipeMultiplier($item, $recipe = null) {
+    
+    if($recipe) {
+        $multiplier = 1;
+        
+        foreach ($recipe->getIngredients() as $ingredient) {
+            $ingredientItem   = $ingredient->getItem();
+            $ingredientRecipe = null;
+            
+            $ingredientRecipes = $ingredientItem->getResultOfRecipes();
+            
+            if (count($ingredientRecipes)) {
+                $ingredientRecipe = $ingredientRecipes[0];
+                
+                $baseCount = $ingredientRecipe->getCount() * calculateRecipeMultiplier($ingredientItem, $ingredientRecipe);
+                $multiplier *= multiplier($baseCount, $multiplier * $ingredient->getCount());        
+            }
+        }
+        
+        return $multiplier;
+    }
+    
+    return 1;
+}
+
+function buildMultiRecipeTree($item, $recipe = null, $app) {
+    return buildRecipeTree($item, $recipe, $app, calculateRecipeMultiplier($item, $recipe));
+}
+
+function buildRecipeTree($item, $recipe = null, $app, $multiplier = 1) {
     $tree = array(
         'id' => $item->getDataId(),
         'name' => $item->getName(),
@@ -218,28 +265,31 @@ function buildRecipeTree($item, $recipe = null, $app) {
         'rarity' => $item->getRarityName(),
         'img'	=> $item->getImg(),
         'price' => $item->getBestPrice(),
-        'vendor' => !!$item->getVendorPrice()
+        'vendor' => !!$item->getVendorPrice(),
+        'multiplier' => $multiplier
     );
-
+    
     if ($recipe) {
         $recipeTree = array();
-
+        
         foreach ($recipe->getIngredients() as $ingredient) {
             $ingredientItem   = $ingredient->getItem();
             $ingredientRecipe = null;
 
             $ingredientRecipes = $ingredientItem->getResultOfRecipes();
-
+            
+            $ingredientMultiplier = $multiplier;
             if (count($ingredientRecipes)) {
-                $ingredientRecipe = $ingredientRecipes[0];
+                $ingredientRecipe = $ingredientRecipes[0];                
+                $ingredientMultiplier /= multiplier($ingredientRecipe->getCount(), $ingredient->getCount());
             }
-
-            $recipeTree[] = array(buildRecipeTree($ingredientItem, $ingredientRecipe, $app), $ingredient->getCount());
+            
+            $recipeTree[] = array(buildRecipeTree($ingredientItem, $ingredientRecipe, $app, $ingredientMultiplier), $ingredient->getCount() * $multiplier);
         }
-
-        $tree['recipe'] = array('count' => $recipe->getCount(), 'ingredients' => $recipeTree);
+        
+        $tree['recipe'] = array('count' => $recipe->getCount() * $multiplier, 'ingredients' => $recipeTree);
     }
-
+    
     return $tree;
 }
 

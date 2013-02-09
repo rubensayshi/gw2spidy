@@ -118,6 +118,13 @@ abstract class BaseRecipe extends BaseObject implements Persistent
     protected $updated;
 
     /**
+     * The value for the requires_unlock field.
+     * Note: this column has a database default value of: 0
+     * @var        int
+     */
+    protected $requires_unlock;
+
+    /**
      * The value for the gw2db_id field.
      * @var        int
      */
@@ -186,6 +193,7 @@ abstract class BaseRecipe extends BaseObject implements Persistent
     {
         $this->rating = 0;
         $this->count = 1;
+        $this->requires_unlock = 0;
     }
 
     /**
@@ -333,6 +341,17 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         } else {
             return $dt->format($format);
         }
+    }
+
+    /**
+     * Get the [requires_unlock] column value.
+     * 
+     * @return   int
+     */
+    public function getRequiresUnlock()
+    {
+
+        return $this->requires_unlock;
     }
 
     /**
@@ -578,6 +597,27 @@ abstract class BaseRecipe extends BaseObject implements Persistent
     } // setUpdated()
 
     /**
+     * Set the value of [requires_unlock] column.
+     * 
+     * @param      int $v new value
+     * @return   Recipe The current object (for fluent API support)
+     */
+    public function setRequiresUnlock($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->requires_unlock !== $v) {
+            $this->requires_unlock = $v;
+            $this->modifiedColumns[] = RecipePeer::REQUIRES_UNLOCK;
+        }
+
+
+        return $this;
+    } // setRequiresUnlock()
+
+    /**
      * Set the value of [gw2db_id] column.
      * 
      * @param      int $v new value
@@ -637,6 +677,10 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                 return false;
             }
 
+            if ($this->requires_unlock !== 0) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -669,8 +713,9 @@ abstract class BaseRecipe extends BaseObject implements Persistent
             $this->sell_price = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
             $this->profit = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
             $this->updated = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-            $this->gw2db_id = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
-            $this->gw2db_external_id = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
+            $this->requires_unlock = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+            $this->gw2db_id = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
+            $this->gw2db_external_id = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -679,7 +724,7 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 12; // 12 = RecipePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 13; // 13 = RecipePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Recipe object", $e);
@@ -984,6 +1029,9 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         if ($this->isColumnModified(RecipePeer::UPDATED)) {
             $modifiedColumns[':p' . $index++]  = '`UPDATED`';
         }
+        if ($this->isColumnModified(RecipePeer::REQUIRES_UNLOCK)) {
+            $modifiedColumns[':p' . $index++]  = '`REQUIRES_UNLOCK`';
+        }
         if ($this->isColumnModified(RecipePeer::GW2DB_ID)) {
             $modifiedColumns[':p' . $index++]  = '`GW2DB_ID`';
         }
@@ -1030,6 +1078,9 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                         break;
                     case '`UPDATED`':
 						$stmt->bindValue($identifier, $this->updated, PDO::PARAM_STR);
+                        break;
+                    case '`REQUIRES_UNLOCK`':
+						$stmt->bindValue($identifier, $this->requires_unlock, PDO::PARAM_INT);
                         break;
                     case '`GW2DB_ID`':
 						$stmt->bindValue($identifier, $this->gw2db_id, PDO::PARAM_INT);
@@ -1221,9 +1272,12 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                 return $this->getUpdated();
                 break;
             case 10:
-                return $this->getGw2dbId();
+                return $this->getRequiresUnlock();
                 break;
             case 11:
+                return $this->getGw2dbId();
+                break;
+            case 12:
                 return $this->getGw2dbExternalId();
                 break;
             default:
@@ -1265,8 +1319,9 @@ abstract class BaseRecipe extends BaseObject implements Persistent
             $keys[7] => $this->getSellPrice(),
             $keys[8] => $this->getProfit(),
             $keys[9] => $this->getUpdated(),
-            $keys[10] => $this->getGw2dbId(),
-            $keys[11] => $this->getGw2dbExternalId(),
+            $keys[10] => $this->getRequiresUnlock(),
+            $keys[11] => $this->getGw2dbId(),
+            $keys[12] => $this->getGw2dbExternalId(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aDiscipline) {
@@ -1343,9 +1398,12 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                 $this->setUpdated($value);
                 break;
             case 10:
-                $this->setGw2dbId($value);
+                $this->setRequiresUnlock($value);
                 break;
             case 11:
+                $this->setGw2dbId($value);
+                break;
+            case 12:
                 $this->setGw2dbExternalId($value);
                 break;
         } // switch()
@@ -1382,8 +1440,9 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         if (array_key_exists($keys[7], $arr)) $this->setSellPrice($arr[$keys[7]]);
         if (array_key_exists($keys[8], $arr)) $this->setProfit($arr[$keys[8]]);
         if (array_key_exists($keys[9], $arr)) $this->setUpdated($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setGw2dbId($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setGw2dbExternalId($arr[$keys[11]]);
+        if (array_key_exists($keys[10], $arr)) $this->setRequiresUnlock($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setGw2dbId($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setGw2dbExternalId($arr[$keys[12]]);
     }
 
     /**
@@ -1405,6 +1464,7 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         if ($this->isColumnModified(RecipePeer::SELL_PRICE)) $criteria->add(RecipePeer::SELL_PRICE, $this->sell_price);
         if ($this->isColumnModified(RecipePeer::PROFIT)) $criteria->add(RecipePeer::PROFIT, $this->profit);
         if ($this->isColumnModified(RecipePeer::UPDATED)) $criteria->add(RecipePeer::UPDATED, $this->updated);
+        if ($this->isColumnModified(RecipePeer::REQUIRES_UNLOCK)) $criteria->add(RecipePeer::REQUIRES_UNLOCK, $this->requires_unlock);
         if ($this->isColumnModified(RecipePeer::GW2DB_ID)) $criteria->add(RecipePeer::GW2DB_ID, $this->gw2db_id);
         if ($this->isColumnModified(RecipePeer::GW2DB_EXTERNAL_ID)) $criteria->add(RecipePeer::GW2DB_EXTERNAL_ID, $this->gw2db_external_id);
 
@@ -1479,6 +1539,7 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         $copyObj->setSellPrice($this->getSellPrice());
         $copyObj->setProfit($this->getProfit());
         $copyObj->setUpdated($this->getUpdated());
+        $copyObj->setRequiresUnlock($this->getRequiresUnlock());
         $copyObj->setGw2dbId($this->getGw2dbId());
         $copyObj->setGw2dbExternalId($this->getGw2dbExternalId());
 
@@ -2078,6 +2139,7 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         $this->sell_price = null;
         $this->profit = null;
         $this->updated = null;
+        $this->requires_unlock = null;
         $this->gw2db_id = null;
         $this->gw2db_external_id = null;
         $this->alreadyInSave = false;

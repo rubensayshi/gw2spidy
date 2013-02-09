@@ -57,7 +57,7 @@
    --------------- #}
 {% macro th_sortable(title, key, current_sort, current_sort_order, parent_context, extra_classes) %}
     {# set the inverted order if we're already sorting by this key #}
-    {% set sort_order = current_sort == key ? (current_sort_order == 'desc' ? 'asc' : 'desc') : 'asc' %}
+    {% set sort_order = current_sort == key ? (current_sort_order == 'desc' ? 'asc' : 'desc') : 'desc' %}
 
     <th class="{{ key }} {{ extra_classes }}">
         <a href="{{ recipe_list_path(parent_context, {('sort_' ~ key): sort_order}) }}">
@@ -94,6 +94,12 @@
                     <div class="controls">
                         <input class="input-mini" placeholder="min" type="text" name="min_level" id="min_level" value="{{ min_level }}" /> -
                         <input class="input-mini" placeholder="max" type="text" name="max_level" id="max_level" value="{{ max_level }}" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="hide_unlock_required">Hide recipes that require an unlock:</label>
+                    <div class="controls">
+                        <input type="checkbox" name="hide_unlock_required" id="hide_unlock_required" {% if hide_unlock_required %}checked="checked"{% endif %}>
                     </div>
                 </div>
                 <div class="control-group">

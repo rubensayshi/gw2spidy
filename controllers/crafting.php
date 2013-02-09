@@ -72,7 +72,7 @@ $app->get("/recipe/{dataId}", function(Request $request, $dataId) use($app) {
     }
 
 
-    $tree = buildRecipeTree($item, $recipe, $app);
+    $tree = buildMultiRecipeTree($item, $recipe, $app);
 
     return $app['twig']->render('recipe.html.twig', array(
         'recipe' => $recipe,
