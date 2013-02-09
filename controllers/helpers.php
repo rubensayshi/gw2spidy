@@ -213,51 +213,47 @@ function gem_summary() {
     );
 }
 
-function gcd($n, $m) {
-   if ($n == 0 and $m == 0)
-       return 1; //avoid infinite recursion
-   if ($n == $m and $n >= 1)
-       return $n;
-   return $m < $n ? gcd($n-$m, $n) : gcd($n, $m-$n);
+// see http://en.wikipedia.org/wiki/Greatest_common_divisor#Using_Euclid.27s_algorithm
+function gcd($a, $b) {
+   if($a <= 0 || $b <=0)
+       return 1;
+   if ($a == $b)
+       return $a;
+   return $a > $b ? gcd($a - $b, $b) : gcd($a, $b - $a);
 }
 
-function lcm($n, $m) {
-   return $m * $n / gcd($n, $m);
+// returns the amount of times we have to craft the base recipe in order to get a multiple of the required amount
+function multiplier($base, $multiple) {
+   return $base / gcd($base, $multiple);
 }
 
 function calculateRecipeMultiplier($item, $recipe = null) {
-
-	if($recipe) {	
-		$multiplier = 1;
-			
+    
+    if($recipe) {
+        $multiplier = 1;
+        
         foreach ($recipe->getIngredients() as $ingredient) {
-        	$ingredientItem   = $ingredient->getItem();
+            $ingredientItem   = $ingredient->getItem();
             $ingredientRecipe = null;
-
+            
             $ingredientRecipes = $ingredientItem->getResultOfRecipes();
-
+            
             if (count($ingredientRecipes)) {
                 $ingredientRecipe = $ingredientRecipes[0];
                 
-                // if the least common multiple is bigger than the count in the recipe
-                $ingredientAmount = lcm($ingredientRecipe->getCount(), $ingredient->getCount());
-                if($ingredientAmount > $ingredient->getCount()) {
-                    // we need to increase the multiplier
-		            $multiplier = lcm($ingredientAmount / $ingredient->getCount(), $multiplier);
-                }
-                
-                $multiplier = lcm(calculateRecipeMultiplier($ingredientItem, $ingredientRecipe), $multiplier);
+                $baseCount = $ingredientRecipe->getCount() * calculateRecipeMultiplier($ingredientItem, $ingredientRecipe);
+                $multiplier *= multiplier($baseCount, $multiplier * $ingredient->getCount());        
             }
         }
-	
-		return $multiplier;
-	}
-		
-	return 1;
+        
+        return $multiplier;
+    }
+    
+    return 1;
 }
 
 function buildMultiRecipeTree($item, $recipe = null, $app) {
-	return buildRecipeTree($item, $recipe, $app, calculateRecipeMultiplier($item, $recipe));
+    return buildRecipeTree($item, $recipe, $app, calculateRecipeMultiplier($item, $recipe));
 }
 
 function buildRecipeTree($item, $recipe = null, $app, $multiplier = 1) {
@@ -272,34 +268,28 @@ function buildRecipeTree($item, $recipe = null, $app, $multiplier = 1) {
         'vendor' => !!$item->getVendorPrice(),
         'multiplier' => $multiplier
     );
-
+    
     if ($recipe) {
         $recipeTree = array();
-
+        
         foreach ($recipe->getIngredients() as $ingredient) {
             $ingredientItem   = $ingredient->getItem();
             $ingredientRecipe = null;
 
-            $ingredientRecipes = $ingredientItem->getResultOfRecipes();
-			
-			$ingredientMultiplier = $multiplier;
+            $ingredientRecipes = $ingredientItem->getResultOfRecipes
+            
+            $ingredientMultiplier = $multiplier;
             if (count($ingredientRecipes)) {
                 $ingredientRecipe = $ingredientRecipes[0];                
-                
-                // if the least common multiple is bigger than the count in the recipe
-                $ingredientAmount = lcm($ingredientRecipe->getCount(), $ingredient->getCount());
-                if($ingredientAmount > $ingredient->getCount()) {
-                    // we need to decrease the multiplier for the items in the sub-tree
-		            $ingredientMultiplier /= $ingredientAmount / $ingredient->getCount();
-                }
+                $ingredientMultiplier /= multiplier($ingredientRecipe->getCount(), $ingredient->getCount());
             }
             
             $recipeTree[] = array(buildRecipeTree($ingredientItem, $ingredientRecipe, $app, $ingredientMultiplier), $ingredient->getCount() * $multiplier);
         }
-
+        
         $tree['recipe'] = array('count' => $recipe->getCount() * $multiplier, 'ingredients' => $recipeTree);
     }
-
+    
     return $tree;
 }
 
