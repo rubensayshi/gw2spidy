@@ -27,12 +27,25 @@ UPDATE item SET vendor_price = 8  WHERE name LIKE 'Bag of Starch';
 UPDATE item SET vendor_price = 8  WHERE name LIKE 'Bag of Flour';
 UPDATE item SET vendor_price = 8  WHERE name LIKE 'Bottle of Soy Sauce';
 
-
+UPDATE gw2db_item_archive LEFT JOIN item
+     ON gw2db_item_archive.DataID = item.data_id
+    SET gw2db_item_archive.karma_price = 2,
+        item.karma_price = 2
+  WHERE gw2db_item_archive.Name IN ('Packet of Yeast','Packet[s] of Yeast');
+UPDATE gw2db_item_archive LEFT JOIN item
+     ON gw2db_item_archive.DataID = item.data_id
+    SET gw2db_item_archive.karma_price = 3,
+        item.karma_price = 3
+  WHERE gw2db_item_archive.Name IN ('Bowl of Sour Cream','Bowl[s] of Sour Cream');
+UPDATE gw2db_item_archive LEFT JOIN item
+     ON gw2db_item_archive.DataID = item.data_id
+    SET gw2db_item_archive.karma_price = 8,
+        item.karma_price = 8
+  WHERE gw2db_item_archive.Name IN ('Mango','Mango[s]');
+  
 -- automatically set by new script: UPDATE item SET karma_price = 2 WHERE name LIKE 'Cheese Wedge';
 -- automatically set by new script: UPDATE item SET karma_price = 2 WHERE name LIKE 'Glass of Buttermilk';
--- automatically set by new script: UPDATE item SET karma_price = 2 WHERE name LIKE 'Packet of Yeast';
 -- automatically set by new script: UPDATE item SET karma_price = 2 WHERE name LIKE 'Rice Ball';
--- automatically set by new script: UPDATE item SET karma_price = 3 WHERE name LIKE 'Bowl of Sour Cream';
 
 -- incorrect: UPDATE item SET karma_price = 1000  WHERE name LIKE "Adept's Training Manual";
 -- incorrect: UPDATE item SET karma_price = 10000 WHERE name LIKE "Master's Training Manual";
