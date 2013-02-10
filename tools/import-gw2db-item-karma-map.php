@@ -43,12 +43,12 @@ $singular = array(
     "Buttermilk"    => "Glass of Buttermilk",
     "Rice"          => "Rice Ball",
     "Sour Cream"    => "Bowl[s] of Sour Cream",
-    "Sour Cream"    => "Packet[s] of Yeast",
+    "Yeast"         => "Packet[s] of Yeast",
 );
 
 foreach ($data as $i => $row) {
       
-    if (strpos($row['Name'], "Recipe: ") !== false) {
+    if (preg_match('/Recipe(\[s\]): /',$row['Name']) {
         continue;
     }
     if($i % 100 == 0)
