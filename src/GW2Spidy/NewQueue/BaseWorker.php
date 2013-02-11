@@ -55,6 +55,8 @@ class BaseWorker {
         $now  = new DateTime();
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
+        $item->setLastUpdated($now);
+
         // ensure the expected keys are there
         $itemData['sale_availability']    = isset($itemData['sale_availability'])    ? $itemData['sale_availability']    : 0;
         $itemData['min_sale_unit_price']  = isset($itemData['min_sale_unit_price'])  ? $itemData['min_sale_unit_price']  : 0;

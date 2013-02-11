@@ -84,6 +84,8 @@ class ItemListingDBQueueWorker extends BaseWorker {
     protected function updateListings(Item $item) {
         $now  = new DateTime();
 
+        $item->setLastUpdated($now);
+
         $listings = TradingPostSpider::getInstance()->getAllListingsById($item->getDataId());
         $sell = $listings[TradingPostSpider::LISTING_TYPE_SELL];
         $buy  = $listings[TradingPostSpider::LISTING_TYPE_BUY];

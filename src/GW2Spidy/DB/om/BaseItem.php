@@ -212,6 +212,12 @@ abstract class BaseItem extends BaseObject implements Persistent
     protected $last_price_changed;
 
     /**
+     * The value for the last_updated field.
+     * @var        string
+     */
+    protected $last_updated;
+
+    /**
      * The value for the sale_price_change_last_hour field.
      * Note: this column has a database default value of: 0
      * @var        int
@@ -633,6 +639,44 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $dt = new DateTime($this->last_price_changed);
             } catch (Exception $x) {
                 throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->last_price_changed, true), $x);
+            }
+        }
+
+        if ($format === null) {
+            // Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+            return $dt;
+        } elseif (strpos($format, '%') !== false) {
+            return strftime($format, $dt->format('U'));
+        } else {
+            return $dt->format($format);
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [last_updated] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *							If format is NULL, then the raw DateTime object will be returned.
+     * @return mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getLastUpdated($format = 'Y-m-d H:i:s')
+    {
+        if ($this->last_updated === null) {
+            return null;
+        }
+
+
+        if ($this->last_updated === '0000-00-00 00:00:00') {
+            // while technically this is not a default value of NULL,
+            // this seems to be closest in meaning.
+            return null;
+        } else {
+            try {
+                $dt = new DateTime($this->last_updated);
+            } catch (Exception $x) {
+                throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->last_updated, true), $x);
             }
         }
 
@@ -1183,6 +1227,29 @@ abstract class BaseItem extends BaseObject implements Persistent
     } // setLastPriceChanged()
 
     /**
+     * Sets the value of [last_updated] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   Item The current object (for fluent API support)
+     */
+    public function setLastUpdated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->last_updated !== null || $dt !== null) {
+            $currentDateAsString = ($this->last_updated !== null && $tmpDt = new DateTime($this->last_updated)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+            $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+            if ($currentDateAsString !== $newDateAsString) {
+                $this->last_updated = $newDateAsString;
+                $this->modifiedColumns[] = ItemPeer::LAST_UPDATED;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setLastUpdated()
+
+    /**
      * Set the value of [sale_price_change_last_hour] column.
      * 
      * @param      int $v new value
@@ -1296,8 +1363,9 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->gw2db_id = ($row[$startcol + 21] !== null) ? (int) $row[$startcol + 21] : null;
             $this->gw2db_external_id = ($row[$startcol + 22] !== null) ? (int) $row[$startcol + 22] : null;
             $this->last_price_changed = ($row[$startcol + 23] !== null) ? (string) $row[$startcol + 23] : null;
-            $this->sale_price_change_last_hour = ($row[$startcol + 24] !== null) ? (int) $row[$startcol + 24] : null;
-            $this->offer_price_change_last_hour = ($row[$startcol + 25] !== null) ? (int) $row[$startcol + 25] : null;
+            $this->last_updated = ($row[$startcol + 24] !== null) ? (string) $row[$startcol + 24] : null;
+            $this->sale_price_change_last_hour = ($row[$startcol + 25] !== null) ? (int) $row[$startcol + 25] : null;
+            $this->offer_price_change_last_hour = ($row[$startcol + 26] !== null) ? (int) $row[$startcol + 26] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1306,7 +1374,7 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 26; // 26 = ItemPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 27; // 27 = ItemPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Item object", $e);
@@ -1751,6 +1819,9 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::LAST_PRICE_CHANGED)) {
             $modifiedColumns[':p' . $index++]  = '`LAST_PRICE_CHANGED`';
         }
+        if ($this->isColumnModified(ItemPeer::LAST_UPDATED)) {
+            $modifiedColumns[':p' . $index++]  = '`LAST_UPDATED`';
+        }
         if ($this->isColumnModified(ItemPeer::SALE_PRICE_CHANGE_LAST_HOUR)) {
             $modifiedColumns[':p' . $index++]  = '`SALE_PRICE_CHANGE_LAST_HOUR`';
         }
@@ -1839,6 +1910,9 @@ abstract class BaseItem extends BaseObject implements Persistent
                         break;
                     case '`LAST_PRICE_CHANGED`':
 						$stmt->bindValue($identifier, $this->last_price_changed, PDO::PARAM_STR);
+                        break;
+                    case '`LAST_UPDATED`':
+						$stmt->bindValue($identifier, $this->last_updated, PDO::PARAM_STR);
                         break;
                     case '`SALE_PRICE_CHANGE_LAST_HOUR`':
 						$stmt->bindValue($identifier, $this->sale_price_change_last_hour, PDO::PARAM_INT);
@@ -2104,9 +2178,12 @@ abstract class BaseItem extends BaseObject implements Persistent
                 return $this->getLastPriceChanged();
                 break;
             case 24:
-                return $this->getSalePriceChangeLastHour();
+                return $this->getLastUpdated();
                 break;
             case 25:
+                return $this->getSalePriceChangeLastHour();
+                break;
+            case 26:
                 return $this->getOfferPriceChangeLastHour();
                 break;
             default:
@@ -2162,8 +2239,9 @@ abstract class BaseItem extends BaseObject implements Persistent
             $keys[21] => $this->getGw2dbId(),
             $keys[22] => $this->getGw2dbExternalId(),
             $keys[23] => $this->getLastPriceChanged(),
-            $keys[24] => $this->getSalePriceChangeLastHour(),
-            $keys[25] => $this->getOfferPriceChangeLastHour(),
+            $keys[24] => $this->getLastUpdated(),
+            $keys[25] => $this->getSalePriceChangeLastHour(),
+            $keys[26] => $this->getOfferPriceChangeLastHour(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aItemType) {
@@ -2294,9 +2372,12 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->setLastPriceChanged($value);
                 break;
             case 24:
-                $this->setSalePriceChangeLastHour($value);
+                $this->setLastUpdated($value);
                 break;
             case 25:
+                $this->setSalePriceChangeLastHour($value);
+                break;
+            case 26:
                 $this->setOfferPriceChangeLastHour($value);
                 break;
         } // switch()
@@ -2347,8 +2428,9 @@ abstract class BaseItem extends BaseObject implements Persistent
         if (array_key_exists($keys[21], $arr)) $this->setGw2dbId($arr[$keys[21]]);
         if (array_key_exists($keys[22], $arr)) $this->setGw2dbExternalId($arr[$keys[22]]);
         if (array_key_exists($keys[23], $arr)) $this->setLastPriceChanged($arr[$keys[23]]);
-        if (array_key_exists($keys[24], $arr)) $this->setSalePriceChangeLastHour($arr[$keys[24]]);
-        if (array_key_exists($keys[25], $arr)) $this->setOfferPriceChangeLastHour($arr[$keys[25]]);
+        if (array_key_exists($keys[24], $arr)) $this->setLastUpdated($arr[$keys[24]]);
+        if (array_key_exists($keys[25], $arr)) $this->setSalePriceChangeLastHour($arr[$keys[25]]);
+        if (array_key_exists($keys[26], $arr)) $this->setOfferPriceChangeLastHour($arr[$keys[26]]);
     }
 
     /**
@@ -2384,6 +2466,7 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::GW2DB_ID)) $criteria->add(ItemPeer::GW2DB_ID, $this->gw2db_id);
         if ($this->isColumnModified(ItemPeer::GW2DB_EXTERNAL_ID)) $criteria->add(ItemPeer::GW2DB_EXTERNAL_ID, $this->gw2db_external_id);
         if ($this->isColumnModified(ItemPeer::LAST_PRICE_CHANGED)) $criteria->add(ItemPeer::LAST_PRICE_CHANGED, $this->last_price_changed);
+        if ($this->isColumnModified(ItemPeer::LAST_UPDATED)) $criteria->add(ItemPeer::LAST_UPDATED, $this->last_updated);
         if ($this->isColumnModified(ItemPeer::SALE_PRICE_CHANGE_LAST_HOUR)) $criteria->add(ItemPeer::SALE_PRICE_CHANGE_LAST_HOUR, $this->sale_price_change_last_hour);
         if ($this->isColumnModified(ItemPeer::OFFER_PRICE_CHANGE_LAST_HOUR)) $criteria->add(ItemPeer::OFFER_PRICE_CHANGE_LAST_HOUR, $this->offer_price_change_last_hour);
 
@@ -2472,6 +2555,7 @@ abstract class BaseItem extends BaseObject implements Persistent
         $copyObj->setGw2dbId($this->getGw2dbId());
         $copyObj->setGw2dbExternalId($this->getGw2dbExternalId());
         $copyObj->setLastPriceChanged($this->getLastPriceChanged());
+        $copyObj->setLastUpdated($this->getLastUpdated());
         $copyObj->setSalePriceChangeLastHour($this->getSalePriceChangeLastHour());
         $copyObj->setOfferPriceChangeLastHour($this->getOfferPriceChangeLastHour());
 
@@ -4169,6 +4253,7 @@ abstract class BaseItem extends BaseObject implements Persistent
         $this->gw2db_id = null;
         $this->gw2db_external_id = null;
         $this->last_price_changed = null;
+        $this->last_updated = null;
         $this->sale_price_change_last_hour = null;
         $this->offer_price_change_last_hour = null;
         $this->alreadyInSave = false;

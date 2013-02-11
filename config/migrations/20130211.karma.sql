@@ -5,5 +5,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 ALTER TABLE `recipe`
     ADD `requires_unlock` INTEGER DEFAULT 0 NOT NULL AFTER `updated`;
 
+ALTER TABLE `item`
+    ADD `last_updated` DATETIME AFTER `last_price_changed`;
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

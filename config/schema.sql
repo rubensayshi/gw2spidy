@@ -66,6 +66,7 @@ CREATE TABLE `item`
     `gw2db_id` INTEGER,
     `gw2db_external_id` INTEGER,
     `last_price_changed` DATETIME,
+    `last_updated` DATETIME,
     `sale_price_change_last_hour` INTEGER DEFAULT 0,
     `offer_price_change_last_hour` INTEGER DEFAULT 0,
     PRIMARY KEY (`data_id`),

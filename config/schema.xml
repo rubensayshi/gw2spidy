@@ -38,6 +38,7 @@
         <column name="gw2db_external_id" type="integer" />
         
         <column name="last_price_changed" type="timestamp" />
+        <column name="last_updated" type="timestamp" />
         <column name="sale_price_change_last_hour" type="integer" default="0" />
         <column name="offer_price_change_last_hour" type="integer" default="0" />
                 
