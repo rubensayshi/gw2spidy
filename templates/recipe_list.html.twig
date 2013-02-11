@@ -57,7 +57,7 @@
    --------------- #}
 {% macro th_sortable(title, key, current_sort, current_sort_order, parent_context, extra_classes) %}
     {# set the inverted order if we're already sorting by this key #}
-    {% set sort_order = current_sort == key ? (current_sort_order == 'desc' ? 'asc' : 'desc') : 'asc' %}
+    {% set sort_order = current_sort == key ? (current_sort_order == 'desc' ? 'asc' : 'desc') : 'desc' %}
 
     <th class="{{ key }} {{ extra_classes }}">
         <a href="{{ recipe_list_path(parent_context, {('sort_' ~ key): sort_order}) }}">
