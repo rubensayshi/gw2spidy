@@ -89,6 +89,7 @@
 
         <div class="form-horizontal" style="float: left; margin-top: -9px;">
             <form action="" method="GET">
+				{% if search is defined %}<input type="hidden" name="recipes" id="recipes" value="1" />{% endif %}
                 <div class="control-group">
                     <label class="control-label" for="min_level">Level:</label>
                     <div class="controls">
