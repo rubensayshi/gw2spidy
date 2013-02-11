@@ -1,5 +1,6 @@
 {% set included = included is defined ? included : false %}
 {% set hideLegend = hideLegend is defined ? hideLegend : false %}
+{% set karma_item = item.saleAvailability <= 0 and item.karmaPrice > 0 %}
 
 {% extends not included ? "content_wide.html.twig" : "empty_shell.html.twig" %}
 
@@ -43,14 +44,16 @@
     </div>
     <div style="float: left;">
         <table class="table" style="width: 250px;">
-            <tr>
-                    <th>Sell Price: </th>
-                    <td>{{ item.minSaleUnitPrice | gw2money }}</td>
-            </tr>
-            <tr>
-                    <th>Buy Price: </th>
-                    <td>{{ item.maxOfferUnitPrice | gw2money }}</td>
-            </tr>
+            {% if not karma_item %}
+                <tr>
+                        <th>Sell Price: </th>
+                        <td>{{ item.minSaleUnitPrice | gw2money }}</td>
+                </tr>
+                <tr>
+                        <th>Buy Price: </th>
+                        <td>{{ item.maxOfferUnitPrice | gw2money }}</td>
+                </tr>
+            {% endif %}
             {% if item.vendorPrice %}
             <tr>
                     <th>Vendor Price: </th>
@@ -63,18 +66,20 @@
                     <td>{{ item.karmaPrice | karma }}</td>
             </tr>
             {% endif %}
-            <tr>
-                <th>Last updated: </th>
-                <td>{{ item.lastUpdated }}</td>
-            </tr>
-            <tr>
-                    <th>Supply: </th>
-                    <td>{{ item.saleAvailability }}</td>
-            </tr>
-            <tr>
-                    <th>Demand: </th>
-                    <td>{{ item.offerAvailability }}</td>
-            </tr>
+            {% if not karma_item %}
+                <tr>
+                    <th>Last updated: </th>
+                    <td>{{ item.lastUpdated }}</td>
+                </tr>
+                <tr>
+                        <th>Supply: </th>
+                        <td>{{ item.saleAvailability }}</td>
+                </tr>
+                <tr>
+                        <th>Demand: </th>
+                        <td>{{ item.offerAvailability }}</td>
+                </tr>
+            {% endif %}
         </table>
     </div>
 
@@ -125,8 +130,8 @@
 	{% endif %}
 	&nbsp;
 </div>
-{% if item.saleAvailability <= 0 and item.karmaPrice > 0 %}
-    <h3>This item is a karma vendor sold item and not available on the tradingpost!</h3>
+{% if karma_item %}
+    <h3>This item is only available by spending <img src="/assets/img/Karma.png" /> karma at a vendor and not available on the tradingpost!</h3>
 {% else %}
     {% include "chart_placeholder.html.twig" with {'item': item, 'hideLegend': hideLegend, 'navigatorIndex' : 3} %}
 {% endif %}
