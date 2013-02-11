@@ -45,11 +45,11 @@
         <table class="table" style="width: 250px;">
             <tr>
                     <th>Sell Price: </th>
-                    <td>{{ item.minSaleUnitPrice | gw2money }}</td>
+                    <td title="{{ item.getSellUpdated }}">{{ item.minSaleUnitPrice | gw2money }}</td>
             </tr>
             <tr>
                     <th>Buy Price: </th>
-                    <td>{{ item.maxOfferUnitPrice | gw2money }}</td>
+                    <td title="{{ item.getBuyUpdated }}">{{ item.maxOfferUnitPrice | gw2money }}</td>
             </tr>
             {% if item.vendorPrice %}
             <tr>

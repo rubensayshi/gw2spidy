@@ -91,14 +91,19 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
  * ----------------------
  */
 $app->get("/item/{dataId}", function($dataId) use ($app) {
-    $item = ItemQuery::create()->findPK($dataId);
+    $item = ItemQuery::create()
+            ->leftJoinBuyListing('b')
+            ->withColumn('MAX(b.listing_datetime)', 'BuyUpdated')
+            ->leftJoinSellListing('s')
+            ->withColumn('MAX(s.listing_datetime)', 'SellUpdated')
+            ->findOneByDataId($dataId);
+    
     $ingredientInRecipes = RecipeQuery::create()
         ->useIngredientQuery()
             ->filterByItemId($dataId)
         ->endUse()
         ->addDescendingOrderByColumn('profit')
         ->find();
-        
 
     if (!$item) {
         return $app->abort(404, "Page does not exist.");
