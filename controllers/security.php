@@ -128,7 +128,7 @@ $app->match("/register", function(Request $request) use ($app) {
             $error = "Username is required";
         } else if (!($email = $request->get('email'))) {
             $error = "Email is required";
-        }  else if (!preg_match("/^([a-zA-Z0-9])+([\.a-zA-Z0-9_-])*@([a-zA-Z0-9])+(\.[a-zA-Z0-9_-]+)+$/", $email)) {
+        }  else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error = "Email is invalid";
         } else if (!($password = $request->get('password'))) {
             $error = "Password is required";
