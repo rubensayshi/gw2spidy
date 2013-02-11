@@ -92,13 +92,21 @@ $app->get("/type/{type}/{subtype}/{page}", function(Request $request, $type, $su
  */
 $app->get("/item/{dataId}", function($dataId) use ($app) {
     $item = ItemQuery::create()->findPK($dataId);
+    $ingredientInRecipes = RecipeQuery::create()
+        ->useIngredientQuery()
+            ->filterByItemId($dataId)
+        ->endUse()
+        ->addDescendingOrderByColumn('profit')
+        ->find();
+        
 
     if (!$item) {
         return $app->abort(404, "Page does not exist.");
     }
 
     return $app['twig']->render('item.html.twig', array(
-        'item'        => $item,
+        'item'                => $item,
+        'ingredientInRecipes' => $ingredientInRecipes,
     ));
 })
 ->assert('dataId',  '\d+')

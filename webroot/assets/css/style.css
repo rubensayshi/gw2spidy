@@ -423,3 +423,6 @@ h1 {
     width: 80px;
     display: inline-block;
 }
+td.show-all {
+   text-align: center;
+}
