@@ -150,7 +150,21 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
     if($hideLocked = $request->get('hide_unlock_required', null)) {
     	$q->filterByRequiresUnlock(0, \Criteria::EQUAL);
     }
+    
+    $q->innerJoinResultItem('ri')
+      ->withColumn('ri.SaleAvailability','sale_availability')
+      ->withColumn('ri.OfferAvailability','offer_availability')
+      ->withColumn('ri.Rarity','rarity');
 
+    
+    if ($minSupplyFilter = $request->get('min_supply', null)) {
+        $q->where('ri.SaleAvailability >= ?', $minSupplyFilter);
+    }  
+    if ($maxSupplyFilter = $request->get('max_supply', null)) {
+        $q->where('ri.SaleAvailability <= ?', $maxSupplyFilter);
+    }  
+      
+      
     $count = $q->count();
 
     if ($count > 0) {
@@ -162,8 +176,6 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
         $page     = 1;
         $lastpage = 1;
     }
-
-    $q->addSelectColumn("*");
 
     $q->offset($itemsperpage * ($page-1))
       ->limit($itemsperpage);
@@ -186,6 +198,9 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
         'min_rating' => $minRatingFilter,
         'max_rating' => $maxRatingFilter,
         'hide_unlock_required' => $hideLocked,
+        
+        'min_supply' => $minSupplyFilter,
+        'max_supply' => $maxSupplyFilter,
 
         'current_sort'       => $sortBy,
         'current_sort_order' => $sortOrder,
