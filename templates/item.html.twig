@@ -125,7 +125,11 @@
 	{% endif %}
 	&nbsp;
 </div>
-{% include "chart_placeholder.html.twig" with {'item': item, 'hideLegend': hideLegend, 'navigatorIndex' : 3} %}
+{% if item.saleAvailability <= 0 and item.karmaPrice > 0 %}
+    <h3>This item is a karma vendor sold item and not available on the tradingpost!</h3>
+{% else %}
+    {% include "chart_placeholder.html.twig" with {'item': item, 'hideLegend': hideLegend, 'navigatorIndex' : 3} %}
+{% endif %}
 
 <script type="text/javascript">
 {% set historySnippet %}
