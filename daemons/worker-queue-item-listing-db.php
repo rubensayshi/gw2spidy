@@ -116,6 +116,7 @@ while ($run < $max) {
          *  get a worker (reuse old instances) and let it work the item
          */
         try {
+            ob_start();
 
             $queueWorker->work($workload);
 
