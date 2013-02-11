@@ -16,7 +16,8 @@ if (isset($argv[1])) {
 }
 
 while (($recipes = $q->find()) && $recipes->count()) {
-    var_dump($i);
+	if($i % 10 == 0)
+    	echo "$i\n";
 
     /* @var $recipe GW2Spidy\DB\Recipe */
     foreach ($recipes as $recipe) {
