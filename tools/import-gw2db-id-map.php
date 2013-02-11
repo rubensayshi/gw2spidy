@@ -43,18 +43,17 @@ $stmt_withprice = Propel::getConnection()->prepare("UPDATE item SET
                                                       WHERE data_id = :data_id");
 
 $bulk = Propel::getConnection()->prepare(
-        "UPDATE gw2db_item_archive LEFT JOIN item
-     ON gw2db_item_archive.DataID = item.data_id
-    SET gw2db_item_archive.karma_price = :karma_price,
-        item.karma_price = :karma_price
-  WHERE gw2db_item_archive.Name IN (:name,:names);");
+        "UPDATE item SET item.karma_price = :karma_price WHERE name = :name OR name = :names");
 
 // fix for some words where the plural is irregular
 $singular = array(
-        "Tomatoe"   => "Tomato",
-        "Cherrie"   => "Cherry",
-        "Peache"    => "Peach",
-        "Buttermilk"=> "Glass of Buttermilk"
+    "Tomatoe"       => "Tomato",
+    "Cherrie"       => "Cherry",
+    "Peache"        => "Peach",
+    "Buttermilk"    => "Glass of Buttermilk",
+    "Rice"          => "Rice Ball",
+    "Sour Cream"    => "Bowl[s] of Sour Cream",
+    "Yeast"         => "Packet[s] of Yeast",
 );
 
 foreach ($data as $i => $row) {
@@ -64,7 +63,6 @@ foreach ($data as $i => $row) {
     if (strpos($row['Name'], "Recipe: ") !== false) {
         continue;
     }
-
 
     $lowestPrice = 0;
     $lowestKarma = 0;
@@ -103,21 +101,21 @@ foreach ($data as $i => $row) {
             $i->fromArray($row, BasePeer::TYPE_FIELDNAME);
             $i->save();
         }
-    } else {
-        if(preg_match("/^(.+?)s? in Bulk$/", $row['Name'], $match)) {
-            $name = $match[1];
-            if(array_key_exists($name, $singular)) {
-                $name = $singular[$name];
-            }
+    }
 
-            echo "[{$i} / {$cnt}]: {$name} !!BULK!! ";
-
-            $bulk->bindValue('name', $name);
-            $bulk->bindValue('names', $name.'[s]');
-            $bulk->bindValue('karma_price', ceil($lowestKarma / 25));
-            $bulk->execute();
-            echo "{$bulk->rowCount()} updated.\n";
+    if(preg_match("/^(.+?)s? in Bulk$/", $row['Name'], $match)) {
+        $name = $match[1];
+        if(array_key_exists($name, $singular)) {
+            $name = $singular[$name];
         }
+
+        echo "[{$i} / {$cnt}]: {$name} !!BULK!! ";
+
+        $bulk->bindValue('name', $name);
+        $bulk->bindValue('names', "{$name}[s]");
+        $bulk->bindValue('karma_price', ceil($lowestKarma / 25));
+        $bulk->execute();
+        echo "{$bulk->rowCount()} updated.\n";
     }
 }
 
