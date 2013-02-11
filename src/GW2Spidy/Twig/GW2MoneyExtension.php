@@ -19,7 +19,7 @@ class GW2MoneyExtension extends \Twig_Extension {
         $copperImg = '<i class="gw2money-copper">c</i>';
 
         $copper = intval($copper);
-        if ($negative = $copper < 0) {
+        if ($isNegative = $copper < 0) {
             $copper *= -1;
         }
 
@@ -28,33 +28,41 @@ class GW2MoneyExtension extends \Twig_Extension {
         if ($gold = floor($copper / 10000)) {
             $copper = $copper % ($gold * 10000);
 
-            if ($negative) {
+            if ($isNegative) {
                 $gold *= -1;
             }
 
-            $result .= "{$gold} {$goldImg} ";
+            $result .= $this->formatFragment($gold, $goldImg);
         }
 
         if ($silver = floor($copper / 100)) {
             $copper = $copper % ($silver * 100);
 
-            if ($negative) {
+            if ($isNegative) {
                 $silver *= -1;
             }
 
-            $result .= "{$silver} {$silverImg} ";
+            $result .= $this->formatFragment($silver, $silverImg);
         }
 
         if ($copper) {
-            if ($negative) {
+            if ($isNegative) {
                 $copper *= -1;
             }
 
-            $result .= "{$copper} {$copperImg} ";
+            $result .= $this->formatFragment($copper, $copperImg);
         }
 
-        return ($result ? trim($result) : "0 {$copperImg}") . "&nbsp;";
+		if ($isNegative) {
+			$result = "<span class=\"gw2money-negative\">" . $result . "</span>";
+		}
+
+        return ($result ? trim($result) : $this->formatFragment(0, $copperImg)) . "&nbsp;";
     }
+
+	public function formatFragment($amount, $image) {
+		return "<span class=\"gw2money-fragment\">{$amount} ${image}</span> ";
+	}
 
     public function getName() {
         return 'gw2money';

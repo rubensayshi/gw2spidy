@@ -1,3 +1,9 @@
 .project
 .settings
 .buildpath
+
+# OS cruft
+Thumbs.db
+Desktop.ini
+.*.sw[a-z]
+.DS_Store
