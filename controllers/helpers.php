@@ -129,12 +129,23 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
 
     $sortBy    = isset($sortBy)    && in_array($sortBy, $sortByOptions)          ? $sortBy    : 'profit';
     $sortOrder = isset($sortOrder) && in_array($sortOrder, array('asc', 'desc')) ? $sortOrder : 'desc';
-
-    if ($minLevelFilter = $request->get('min_level', null)) {
-        $q->filterByRating($minLevelFilter, \Criteria::GREATER_EQUAL);
+    
+    $minLevelFilter = $request->get('min_level', null);
+    $maxLevelFilter = $request->get('max_level', null);
+    if ($minLevelFilter || $maxLevelFilter) {
+        $iq = $q->useResultItemQuery();
+        if ($minLevelFilter)
+            $iq->filterByRestrictionLevel($minLevelFilter, \Criteria::GREATER_EQUAL);
+        if($maxLevelFilter)
+            $iq->filterByRestrictionLevel($maxLevelFilter, \Criteria::LESS_EQUAL);
+        $iq->endUse();
     }
-    if ($maxLevelFilter = $request->get('max_level', null)) {
-        $q->filterByRating($maxLevelFilter, \Criteria::LESS_EQUAL);
+    
+    if ($minRatingFilter = $request->get('min_rating', null)) {
+        $q->filterByRating($minRatingFilter, \Criteria::GREATER_EQUAL);
+    }
+    if ($maxRatingFilter = $request->get('max_rating', null)) {
+        $q->filterByRating($maxRatingFilter, \Criteria::LESS_EQUAL);
     }
 
     $count = $q->count();
@@ -169,6 +180,8 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
 
         'min_level' => $minLevelFilter,
         'max_level' => $maxLevelFilter,
+        'min_rating' => $minRatingFilter,
+        'max_rating' => $maxRatingFilter,
 
         'current_sort'       => $sortBy,
         'current_sort_order' => $sortOrder,
