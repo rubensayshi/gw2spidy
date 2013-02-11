@@ -22,39 +22,25 @@ class GW2MoneyExtension extends \Twig_Extension {
         if ($isNegative = $copper < 0) {
             $copper *= -1;
         }
-
+        
         $result = "";
 
         if ($gold = floor($copper / 10000)) {
             $copper = $copper % ($gold * 10000);
-
-            if ($isNegative) {
-                $gold *= -1;
-            }
-
             $result .= $this->formatFragment($gold, $goldImg);
         }
 
         if ($silver = floor($copper / 100)) {
             $copper = $copper % ($silver * 100);
-
-            if ($isNegative) {
-                $silver *= -1;
-            }
-
             $result .= $this->formatFragment($silver, $silverImg);
         }
 
         if ($copper) {
-            if ($isNegative) {
-                $copper *= -1;
-            }
-
             $result .= $this->formatFragment($copper, $copperImg);
         }
 
 		if ($isNegative) {
-			$result = "<span class=\"gw2money-negative\">" . $result . "</span>";
+			$result = "<span class=\"gw2money-negative\">- " . $result . "</span>";
 		}
 
         return ($result ? trim($result) : $this->formatFragment(0, $copperImg)) . "&nbsp;";
