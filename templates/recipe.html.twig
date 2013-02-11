@@ -112,6 +112,10 @@
         width: 20%;
     }
 
+    .label-karma {
+        background-color: #9B4F9C;
+    }
+
 </style>
 
 <h1>{{ recipe.name }}</h1>
@@ -218,6 +222,12 @@
                 <span class="label label-success">BUY</span> <span class="label label-inverse label-not-crafted">NOT CRAFTED</span>
             </td>
             <td>We don't have a recipe for this item so your only option is to buy it</td>
+        </tr>
+        <tr>
+            <td>
+                <span class="label label-wide label-karma">KARMA VENDOR</span>
+            </td>
+            <td>This item is soulbound and can be acquired by buying it from a karma vendor.</td>
         </tr>
         <tr>
             <td>
