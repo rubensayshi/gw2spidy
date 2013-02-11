@@ -79,6 +79,7 @@
         <column name="sell_price" type="integer" />
         <column name="profit" type="integer" />
         <column name="updated" type="timestamp" />
+        <column name="requires_unlock" type="integer" required="true" default="0" />
 
         <column name="gw2db_id" type="integer" />
         <column name="gw2db_external_id" type="integer" />

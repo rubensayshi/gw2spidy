@@ -13,6 +13,7 @@ class GenericHelpersExtension extends \Twig_Extension {
             'rarity_css_class' => new \Twig_Filter_Method($this, 'rarity_css_class'),
             'slugify' => new \Twig_Filter_Method($this, 'slugify'),
             'clean_whitespace' => new \Twig_Filter_Method($this, 'clean_whitespace'),
+            'karma' => new \Twig_Filter_Method($this, 'karma',  array('is_safe' => array('html'))),
         );
     }
     public function getFunctions() {
@@ -58,6 +59,10 @@ class GenericHelpersExtension extends \Twig_Extension {
 
     public function clean_whitespace($str) {
         return trim(preg_replace('/\n /', "\n", preg_replace('/ +/', ' ', $str)));
+    }
+
+    public function karma($karma) {
+        return number_format($karma) . ' <img alt="Karma" src="/assets/img/Karma.png" height="15" width="18">';
     }
 
     public function getName() {

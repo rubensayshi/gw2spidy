@@ -229,14 +229,11 @@ HTML;
     }
 
     public function getMargin() {
-	$margin = intval($this->getMinSaleUnitPrice() * 0.85 - $this->getMaxOfferUnitPrice());
-	if($this->getMaxOfferUnitPrice() == 0 | $this->getMinSaleUnitPrice() == 0)
-	{
-		$margin = 0;
-	}
-
-   	$margin = ($margin > 0) ? $margin : 0;
-	return $margin;
+		$margin = intval($this->getMinSaleUnitPrice() * 0.85 - $this->getMaxOfferUnitPrice());
+		if($this->getMaxOfferUnitPrice() == 0 || $this->getMinSaleUnitPrice() == 0 || $margin <= 0)
+			return 0;
+			
+		return $margin;
 
     }
 

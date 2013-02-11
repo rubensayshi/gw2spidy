@@ -68,9 +68,11 @@ class BaseWorker {
         $sellListing->setListingDatetime($now);
 
         if ($itemData['sale_availability'] == 0 || $itemData['min_sale_unit_price'] == 0) {
+            $item->setMinSaleUnitPrice(0);
             $sellListing->setQuantity(0);
-            $sellListing->setUnitPrice($item->getMinSaleUnitPrice());
+            $sellListing->setUnitPrice(0);
             $sellListing->setListings(0);
+            echo "Set sell price to zero.";
         } else {
             $item->setMinSaleUnitPrice($itemData['min_sale_unit_price']);
             $sellListing->setQuantity($itemData['sale_availability']);
@@ -86,9 +88,11 @@ class BaseWorker {
         $buyListing->setListingDatetime($now);
 
         if ($itemData['offer_availability'] == 0 || $itemData['max_offer_unit_price'] == 0) {
+            $item->setMaxOfferUnitPrice(0);
             $buyListing->setQuantity(0);
-            $buyListing->setUnitPrice($item->getMaxOfferUnitPrice());
+            $buyListing->setUnitPrice(0);
             $buyListing->setListings(0);
+            echo "Set offer price to zero.";
         } else {
             $item->setMaxOfferUnitPrice($itemData['max_offer_unit_price']);
             $buyListing->setQuantity($itemData['offer_availability']);

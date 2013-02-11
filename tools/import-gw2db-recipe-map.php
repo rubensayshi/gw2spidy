@@ -110,9 +110,9 @@ $getItemByGW2DBID = function($gw2dbID) use ($tp, $slots, $worker) {
     return $result;
 };
 
-if (false) foreach ($data as $i => $row) {
+foreach ($data as $i => $row) {
     try {
-        echo "[{$i} / {$cnt}] \n";
+        echo "[{$i} / {$cnt}]: {$row['Name']}\n";
 
         if (RecipeQuery::create()->findByGw2dbExternalId($row['ExternalID'])->count() == 0) {
             $r = new Recipe();
@@ -123,6 +123,7 @@ if (false) foreach ($data as $i => $row) {
             $r->setRating($row['Rating']);
             $r->setCount($row['Count']);
             $r->setDisciplineId($row['Type']);
+            $r->setRequiresUnlock(isset($row['RequiresRecipeItem']) && $row['RequiresRecipeItem'] !== false);
 
 
             if (!($result = $getItemByGW2DBID($row['CreatedItemId']))) {
@@ -146,7 +147,7 @@ if (false) foreach ($data as $i => $row) {
 
             $r->save();
         }
-    } catch (FailedImportException $e) {
+    } catch (Exception $e) {
         $failed[] = $row;
         echo "failed [[ {$e->getMessage()} ]] .. \n";
     }

@@ -43,27 +43,28 @@ $stmt_withprice = Propel::getConnection()->prepare("UPDATE item SET
                                                       WHERE data_id = :data_id");
 
 foreach ($data as $i => $row) {
-    echo "[{$i} / {$cnt}] \n";
+	if($i % 100 == 0)
+	    echo "[{$i} / {$cnt}] \n";
 
     if (strpos($row['Name'], "Recipe: ") !== false) {
         continue;
     }
+    
 
-    $lowestPrice = null;
-    $lowestKarma = null;
-    if (isset($row['SoldBy']) && $row['SoldBy']) {
-        foreach($row['SoldBy'] as $r) {
-            if (isset($r['GoldCost'])) {
+    $lowestPrice = 0;
+    $lowestKarma = 0;
+    if (isset($row['SoldBy'])) {
+        foreach($row['SoldBy'] as $r) {    
+            if (isset($r['GoldCost']) && ($r['GoldCost'] < $lowestPrice ||  $lowestPrice == 0)) {
                 $lowestPrice = $r['GoldCost'];
             }
-            if (isset($r['KarmaCost'])) {
+            if (isset($r['KarmaCost']) && ($r['KarmaCost'] < $lowestKarma || $lowestKarma == 0)) {
                 $lowestKarma = $r['KarmaCost'];
             }
         }
     }
-
-
-    $stmt = ($lowestKarma !== null || $lowestPrice !== null) ? $stmt_withprice : $stmt_noprice;
+    
+    $stmt = ($lowestKarma > 0 || $lowestPrice > 0) ? $stmt_withprice : $stmt_noprice;
 
     $stmt->bindValue('name', $row['Name']);
     $stmt->bindValue('gw2db_id', $row['ID']);
@@ -85,9 +86,7 @@ foreach ($data as $i => $row) {
 
             $i->fromArray($row, BasePeer::TYPE_FIELDNAME);
             $i->save();
-        }
-    } else {
-
+        } 
     }
 }
 

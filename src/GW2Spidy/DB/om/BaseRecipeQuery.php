@@ -34,6 +34,7 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     RecipeQuery orderBySellPrice($order = Criteria::ASC) Order by the sell_price column
  * @method     RecipeQuery orderByProfit($order = Criteria::ASC) Order by the profit column
  * @method     RecipeQuery orderByUpdated($order = Criteria::ASC) Order by the updated column
+ * @method     RecipeQuery orderByRequiresUnlock($order = Criteria::ASC) Order by the requires_unlock column
  * @method     RecipeQuery orderByGw2dbId($order = Criteria::ASC) Order by the gw2db_id column
  * @method     RecipeQuery orderByGw2dbExternalId($order = Criteria::ASC) Order by the gw2db_external_id column
  *
@@ -47,6 +48,7 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     RecipeQuery groupBySellPrice() Group by the sell_price column
  * @method     RecipeQuery groupByProfit() Group by the profit column
  * @method     RecipeQuery groupByUpdated() Group by the updated column
+ * @method     RecipeQuery groupByRequiresUnlock() Group by the requires_unlock column
  * @method     RecipeQuery groupByGw2dbId() Group by the gw2db_id column
  * @method     RecipeQuery groupByGw2dbExternalId() Group by the gw2db_external_id column
  *
@@ -79,6 +81,7 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     Recipe findOneBySellPrice(int $sell_price) Return the first Recipe filtered by the sell_price column
  * @method     Recipe findOneByProfit(int $profit) Return the first Recipe filtered by the profit column
  * @method     Recipe findOneByUpdated(string $updated) Return the first Recipe filtered by the updated column
+ * @method     Recipe findOneByRequiresUnlock(int $requires_unlock) Return the first Recipe filtered by the requires_unlock column
  * @method     Recipe findOneByGw2dbId(int $gw2db_id) Return the first Recipe filtered by the gw2db_id column
  * @method     Recipe findOneByGw2dbExternalId(int $gw2db_external_id) Return the first Recipe filtered by the gw2db_external_id column
  *
@@ -92,6 +95,7 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     array findBySellPrice(int $sell_price) Return Recipe objects filtered by the sell_price column
  * @method     array findByProfit(int $profit) Return Recipe objects filtered by the profit column
  * @method     array findByUpdated(string $updated) Return Recipe objects filtered by the updated column
+ * @method     array findByRequiresUnlock(int $requires_unlock) Return Recipe objects filtered by the requires_unlock column
  * @method     array findByGw2dbId(int $gw2db_id) Return Recipe objects filtered by the gw2db_id column
  * @method     array findByGw2dbExternalId(int $gw2db_external_id) Return Recipe objects filtered by the gw2db_external_id column
  *
@@ -184,7 +188,7 @@ abstract class BaseRecipeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `NAME`, `DISCIPLINE_ID`, `RATING`, `RESULT_ITEM_ID`, `COUNT`, `COST`, `SELL_PRICE`, `PROFIT`, `UPDATED`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID` FROM `recipe` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `NAME`, `DISCIPLINE_ID`, `RATING`, `RESULT_ITEM_ID`, `COUNT`, `COST`, `SELL_PRICE`, `PROFIT`, `UPDATED`, `REQUIRES_UNLOCK`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID` FROM `recipe` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -661,6 +665,47 @@ abstract class BaseRecipeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(RecipePeer::UPDATED, $updated, $comparison);
+    }
+
+    /**
+     * Filter the query on the requires_unlock column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByRequiresUnlock(1234); // WHERE requires_unlock = 1234
+     * $query->filterByRequiresUnlock(array(12, 34)); // WHERE requires_unlock IN (12, 34)
+     * $query->filterByRequiresUnlock(array('min' => 12)); // WHERE requires_unlock > 12
+     * </code>
+     *
+     * @param     mixed $requiresUnlock The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return RecipeQuery The current query, for fluid interface
+     */
+    public function filterByRequiresUnlock($requiresUnlock = null, $comparison = null)
+    {
+        if (is_array($requiresUnlock)) {
+            $useMinMax = false;
+            if (isset($requiresUnlock['min'])) {
+                $this->addUsingAlias(RecipePeer::REQUIRES_UNLOCK, $requiresUnlock['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($requiresUnlock['max'])) {
+                $this->addUsingAlias(RecipePeer::REQUIRES_UNLOCK, $requiresUnlock['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(RecipePeer::REQUIRES_UNLOCK, $requiresUnlock, $comparison);
     }
 
     /**
