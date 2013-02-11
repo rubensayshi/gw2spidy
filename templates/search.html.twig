@@ -13,10 +13,10 @@
         </div>
         <ul class="nav nav-tabs" style="padding-left: 300px;">
           <li {% if not recipes %}class="active"{% endif %}>
-            <a href="{{ path('search', {'search' : search}) }}">Items</a>
+            <a href="{{ path('search', params|merge({'search' : search})) }}">Items</a>
           </li>
           <li {% if recipes %}class="active"{% endif %}>
-            <a href="{{ path('search', {'search' : search, 'recipes' : true}) }}">Recipes</a>
+            <a href="{{ path('search', params|merge({'search' : search, 'recipes' : true})) }}">Recipes</a>
           </li>
         </ul>
     </div>
