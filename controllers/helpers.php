@@ -151,17 +151,17 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
     	$q->filterByRequiresUnlock(0, \Criteria::EQUAL);
     }
     
-    $q->join('r.ResultItem')
-      ->withColumn('ResultItem.SaleAvailability','sale_availability')
-      ->withColumn('ResultItem.OfferAvailability','offer_availability')
-      ->withColumn('ResultItem.Rarity','rarity');
+    $q->innerJoinResultItem('ri')
+      ->withColumn('ri.SaleAvailability','sale_availability')
+      ->withColumn('ri.OfferAvailability','offer_availability')
+      ->withColumn('ri.Rarity','rarity');
 
     
     if ($minSupplyFilter = $request->get('min_supply', null)) {
-        $q->where('ResultItem.SaleAvailability >= ?', $minSupplyFilter);
+        $q->where('ri.SaleAvailability >= ?', $minSupplyFilter);
     }  
     if ($maxSupplyFilter = $request->get('max_supply', null)) {
-        $q->where('ResultItem.SaleAvailability <= ?', $maxSupplyFilter);
+        $q->where('ri.SaleAvailability <= ?', $maxSupplyFilter);
     }  
       
       
