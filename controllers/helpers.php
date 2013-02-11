@@ -79,7 +79,6 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
     }
 
     $q->addAsColumn("margin", "min_sale_unit_price * 0.85 - max_offer_unit_price");
-    $q->addSelectColumn("*");
 
     $q->offset($itemsperpage * ($page-1))
       ->limit($itemsperpage);
