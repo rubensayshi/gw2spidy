@@ -176,8 +176,6 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
         $lastpage = 1;
     }
 
-    $q->addSelectColumn("*");
-
     $q->offset($itemsperpage * ($page-1))
       ->limit($itemsperpage);
 
