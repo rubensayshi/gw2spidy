@@ -18,6 +18,10 @@ define('METHOD_LISTINGS_JSON', 'listings.json');
 
 require dirname(__FILE__) . '/../autoload.php';
 
+function logg($msg){ 
+    echo "[" . date("Y-m-d H:i:s") . "] " . $msg;
+}
+
 $con     = Propel::getConnection();
 $debug   = in_array('--debug', $argv);
 
@@ -33,15 +37,14 @@ $queueWorker  = new ItemListingDBQueueWorker($queueManager);
 /*
  * login here, this allows us to exit right away on failure
  */
-print "login ... \n";
+logg("login ...\n");
 try {
-    $begin = microtime(true);
     $gw2session = GW2SessionManager::getInstance()->getSession();
-    echo "login ok [".(microtime(true) - $begin)."] -> [".(int)$gw2session->getGameSession()."] -> [{$gw2session->getSessionKey()}] \n";
+    logg("login ok -> [".(int)$gw2session->getGameSession()."] -> [{$gw2session->getSessionKey()}] \n");
 
     TradingPostSpider::getInstance()->setSession($gw2session);
 } catch (Exception $e) {
-    echo "login failed ... sleeping [60] and restarting \n";
+    logg("login failed ... sleeping [60] and restarting \n");
     sleep(60);
     exit(1);
 }
@@ -62,18 +65,17 @@ if (!getAppConfig("gw2spidy.use_shroud_magic") && getAppConfig("gw2spidy.use_lis
 $run = 0;
 $max = 100;
 while ($run < $max) {
-    $begin = microtime(true);
 
     $slot = $slotManager->getAvailableSlot();
 
     if (!$slot) {
-        print "no slots, sleeping [9.5] ... \n";
+        logg("no slots, sleeping [9.5] ... \n");
         usleep(9.5 * 1000 * 1000);
 
         continue;
     }
 
-    echo "got slot, begin [".(microtime(true) - $begin)."] \n";
+    logg("got slot, begin ...");
 
     if ($method == METHOD_LISTINGS_JSON) {
         $workload = $queueManager->next();
@@ -94,14 +96,14 @@ while ($run < $max) {
         // return the slot
         $slot->release();
 
-        print "no items, sleeping [60] ... \n";
+        logg("no items, sleeping [60] ... \n");
         sleep(60);
 
         $run++;
         continue;
     }
 
-    echo "got item {$run} [".(microtime(true) - $begin)."] \n";
+    echo(" got item {$run} ...");
 
     // mark our slot as held
     $slot->hold();
@@ -136,19 +138,19 @@ while ($run < $max) {
             }
 
             if ($try <= $retries) {
-                echo "error, retrying, sleeping [5] ... \n";
+                logg("error, retrying, sleeping [5] ... \n");
                 sleep(5);
                 $try++;
                 continue;
             } else {
-                echo "error, sleeping [60] ... \n";
+                logg("error, sleeping [60] ... \n");
                 sleep(60);
                 break;
             }
         }
     }
 
-    echo "done [".(microtime(true) - $begin)."] \n";
+    echo(" done.\n");
 
     $run++;
 }

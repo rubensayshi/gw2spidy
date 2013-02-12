@@ -74,7 +74,6 @@ class BaseWorker {
             $sellListing->setQuantity(0);
             $sellListing->setUnitPrice(0);
             $sellListing->setListings(0);
-            echo "Set sell price to zero.";
         } else {
             $item->setMinSaleUnitPrice($itemData['min_sale_unit_price']);
             $sellListing->setQuantity($itemData['sale_availability']);
@@ -94,7 +93,6 @@ class BaseWorker {
             $buyListing->setQuantity(0);
             $buyListing->setUnitPrice(0);
             $buyListing->setListings(0);
-            echo "Set offer price to zero.";
         } else {
             $item->setMaxOfferUnitPrice($itemData['max_offer_unit_price']);
             $buyListing->setQuantity($itemData['offer_availability']);
