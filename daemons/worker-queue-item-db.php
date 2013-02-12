@@ -15,6 +15,10 @@ use GW2Spidy\NewQueue\ItemDBQueueWorker;
 
 require dirname(__FILE__) . '/../autoload.php';
 
+function logg($msg){ 
+    echo "[" . date("Y-m-d H:i:s") . "] " . $msg;
+}
+
 $UUID    = getmypid() . "::" . time();
 $workers = array();
 $con     = Propel::getConnection();
@@ -36,13 +40,12 @@ $queueWorker  = new ItemDBQueueWorker($queueManager);
  */
 print "login ... \n";
 try {
-    $begin = microtime(true);
     $gw2session = GW2SessionManager::getInstance()->getSession();
-    echo "login ok [".(microtime(true) - $begin)."] -> [".(int)$gw2session->getGameSession()."] -> [{$gw2session->getSessionKey()}] \n";
+    logg("login ok -> [".(int)$gw2session->getGameSession()."] -> [{$gw2session->getSessionKey()}] \n");
 
     TradingPostSpider::getInstance()->setSession($gw2session);
 } catch (Exception $e) {
-    echo "login failed ... sleeping [60] and restarting \n";
+    logg("login failed ... sleeping [60] and restarting \n");
     sleep(60);
     exit(1);
 }
@@ -52,18 +55,16 @@ try {
  *  this is to avoid any memory problems (propel keeps a lot of stuff in memory)
  */
 while ($run < $max) {
-    $begin = microtime(true);
-
     $slot = $slotManager->getAvailableSlot();
 
     if (!$slot) {
-        print "no slots, sleeping [4.5] ... \n";
+        logg("no slots, sleeping [4.5] ... \n");
         usleep(4.5 * 1000 * 1000);
 
         continue;
     }
 
-    echo "got slot, begin [".(microtime(true) - $begin)."] \n";
+    logg("got slot, begin \n");
 
     $queueItem = $queueManager->next();
 
@@ -82,7 +83,7 @@ while ($run < $max) {
         continue;
     }
 
-    echo "got item {$run} [".(microtime(true) - $begin)."] \n";
+    logg("got item {$run} \n");
 
     // mark our slot as held
     $slot->hold();
@@ -116,19 +117,19 @@ while ($run < $max) {
             }
 
             if ($try <= $retries) {
-                echo "error, retrying, sleeping [5] ... \n";
+                logg("error, retrying, sleeping [5] ... \n");
                 sleep(5);
                 $try++;
                 continue;
             } else {
-                echo "error, sleeping [60] ... \n";
+                logg("error, sleeping [60] ... \n");
                 sleep(60);
                 break;
             }
         }
     }
 
-    echo "done [".(microtime(true) - $begin)."] \n";
+    logg("done \n");
 
     $run++;
 }
