@@ -152,8 +152,8 @@ Watchlist
                 </td>
                 <td class="min_sale_unit_price" title="{{ item.saleAvailability }} sales available">{{ item.minSaleUnitPrice | gw2money }}</td>
                 <td class="max_offer_unit_price" title="{{ item.offerAvailability }} offers available">{{ item.maxOfferUnitPrice | gw2money }}</td>
-                <td class="min_sale_unit_price">{{ item.saleAvailability }}</td>
-                <td class="max_offer_unit_price">{{ item.offerAvailability }}</td>
+                <td class="sale_availability">{{ item.saleAvailability }}</td>
+                <td class="offer_availability">{{ item.offerAvailability }}</td>
                 <td class="margin">{{ item.margin | gw2money }}</td>
                 <td class="watchlist js-watchlist" data-id="{{ item.dataId }}">
                     {% if not watchlist %}
