@@ -33,7 +33,7 @@ var Crafting = function(item, container, summarycontainer) {
             if(ingredient[1].price == 0 && ingredient[1].karma > 0) {
                 $row.append($('<td />').html(ingredient[1].karma + karmaIcon));
                 $row.append($('<td />').html(ingredient[1].karma * ingredient[0] + karmaIcon));
-                karmaTotal = (ingredient[1].karma * ingredient[0]);
+                karmaTotal += (ingredient[1].karma * ingredient[0]);
             } else {
                 $row.append($('<td />').html(formatGW2Money(ingredient[1].price)));
                 $row.append($('<td />').html(formatGW2Money(ingredient[1].price * ingredient[0])));
