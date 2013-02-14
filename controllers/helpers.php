@@ -118,7 +118,7 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
  * @param  array         $tplVars
  */
 function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, $itemsperpage, array $tplVars = array()) {
-    $sortByOptions = array('name', 'rating', 'cost', 'sell_price', 'profit');
+    $sortByOptions = array('name', 'rating', 'cost', 'sell_price', 'profit', 'sale_availability', 'offer_availability');
 
     foreach ($sortByOptions as $sortByOption) {
         if ($request->get("sort_{$sortByOption}", null)) {
@@ -147,6 +147,7 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
     if ($maxRatingFilter = $request->get('max_rating', null)) {
         $q->filterByRating($maxRatingFilter, \Criteria::LESS_EQUAL);
     }
+
     if($hideLocked = $request->get('hide_unlock_required', null)) {
     	$q->filterByRequiresUnlock(0, \Criteria::EQUAL);
     }
@@ -176,6 +177,7 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
         $page     = 1;
         $lastpage = 1;
     }
+
 
     $q->offset($itemsperpage * ($page-1))
       ->limit($itemsperpage);
