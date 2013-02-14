@@ -61,7 +61,9 @@ class GenericHelpersExtension extends \Twig_Extension {
         return trim(preg_replace('/\n /', "\n", preg_replace('/ +/', ' ', $str)));
     }
 
-    public function karma($karma) {
+    public function karma($karma, $nonnull = false) {
+        if($nonnull && !$karma) return '';
+        
         return number_format($karma) . ' <img alt="Karma" src="/assets/img/Karma.png" height="15" width="18">';
     }
 

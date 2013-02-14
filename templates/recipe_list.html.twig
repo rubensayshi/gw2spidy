@@ -130,6 +130,7 @@
             <th class="type">Type</th>
             {{ _self.th_sortable('Rating', 'rating', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Cost', 'cost', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Karma Cost', 'karma_cost', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Sell Price', 'sell_price', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Profit', 'profit', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Supply', 'sale_availability', current_sort, current_sort_order, _context) }}
@@ -150,6 +151,9 @@
                 </td>
                 <td class="cost">
                     {{ recipe.cost | gw2money }}
+                </td>
+                <td class="karmacost">
+                    {{ recipe.karmaCost | karma(true) }}
                 </td>
                 <td class="sell_price">
                     {{ recipe.sellPrice | gw2money }}

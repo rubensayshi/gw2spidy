@@ -38,13 +38,13 @@ abstract class BaseRecipePeer {
     const TM_CLASS = 'RecipeTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 13;
+    const NUM_COLUMNS = 14;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 13;
+    const NUM_HYDRATE_COLUMNS = 14;
 
     /** the column name for the DATA_ID field */
     const DATA_ID = 'recipe.DATA_ID';
@@ -66,6 +66,9 @@ abstract class BaseRecipePeer {
 
     /** the column name for the COST field */
     const COST = 'recipe.COST';
+
+    /** the column name for the KARMA_COST field */
+    const KARMA_COST = 'recipe.KARMA_COST';
 
     /** the column name for the SELL_PRICE field */
     const SELL_PRICE = 'recipe.SELL_PRICE';
@@ -104,12 +107,12 @@ abstract class BaseRecipePeer {
      * e.g. RecipePeer::$fieldNames[RecipePeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('DataId', 'Name', 'DisciplineId', 'Rating', 'ResultItemId', 'Count', 'Cost', 'SellPrice', 'Profit', 'Updated', 'RequiresUnlock', 'Gw2dbId', 'Gw2dbExternalId', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId', 'name', 'disciplineId', 'rating', 'resultItemId', 'count', 'cost', 'sellPrice', 'profit', 'updated', 'requiresUnlock', 'gw2dbId', 'gw2dbExternalId', ),
-        BasePeer::TYPE_COLNAME => array (RecipePeer::DATA_ID, RecipePeer::NAME, RecipePeer::DISCIPLINE_ID, RecipePeer::RATING, RecipePeer::RESULT_ITEM_ID, RecipePeer::COUNT, RecipePeer::COST, RecipePeer::SELL_PRICE, RecipePeer::PROFIT, RecipePeer::UPDATED, RecipePeer::REQUIRES_UNLOCK, RecipePeer::GW2DB_ID, RecipePeer::GW2DB_EXTERNAL_ID, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID', 'NAME', 'DISCIPLINE_ID', 'RATING', 'RESULT_ITEM_ID', 'COUNT', 'COST', 'SELL_PRICE', 'PROFIT', 'UPDATED', 'REQUIRES_UNLOCK', 'GW2DB_ID', 'GW2DB_EXTERNAL_ID', ),
-        BasePeer::TYPE_FIELDNAME => array ('data_id', 'name', 'discipline_id', 'rating', 'result_item_id', 'count', 'cost', 'sell_price', 'profit', 'updated', 'requires_unlock', 'gw2db_id', 'gw2db_external_id', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
+        BasePeer::TYPE_PHPNAME => array ('DataId', 'Name', 'DisciplineId', 'Rating', 'ResultItemId', 'Count', 'Cost', 'KarmaCost', 'SellPrice', 'Profit', 'Updated', 'RequiresUnlock', 'Gw2dbId', 'Gw2dbExternalId', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId', 'name', 'disciplineId', 'rating', 'resultItemId', 'count', 'cost', 'karmaCost', 'sellPrice', 'profit', 'updated', 'requiresUnlock', 'gw2dbId', 'gw2dbExternalId', ),
+        BasePeer::TYPE_COLNAME => array (RecipePeer::DATA_ID, RecipePeer::NAME, RecipePeer::DISCIPLINE_ID, RecipePeer::RATING, RecipePeer::RESULT_ITEM_ID, RecipePeer::COUNT, RecipePeer::COST, RecipePeer::KARMA_COST, RecipePeer::SELL_PRICE, RecipePeer::PROFIT, RecipePeer::UPDATED, RecipePeer::REQUIRES_UNLOCK, RecipePeer::GW2DB_ID, RecipePeer::GW2DB_EXTERNAL_ID, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID', 'NAME', 'DISCIPLINE_ID', 'RATING', 'RESULT_ITEM_ID', 'COUNT', 'COST', 'KARMA_COST', 'SELL_PRICE', 'PROFIT', 'UPDATED', 'REQUIRES_UNLOCK', 'GW2DB_ID', 'GW2DB_EXTERNAL_ID', ),
+        BasePeer::TYPE_FIELDNAME => array ('data_id', 'name', 'discipline_id', 'rating', 'result_item_id', 'count', 'cost', 'karma_cost', 'sell_price', 'profit', 'updated', 'requires_unlock', 'gw2db_id', 'gw2db_external_id', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
     );
 
     /**
@@ -119,12 +122,12 @@ abstract class BaseRecipePeer {
      * e.g. RecipePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('DataId' => 0, 'Name' => 1, 'DisciplineId' => 2, 'Rating' => 3, 'ResultItemId' => 4, 'Count' => 5, 'Cost' => 6, 'SellPrice' => 7, 'Profit' => 8, 'Updated' => 9, 'RequiresUnlock' => 10, 'Gw2dbId' => 11, 'Gw2dbExternalId' => 12, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId' => 0, 'name' => 1, 'disciplineId' => 2, 'rating' => 3, 'resultItemId' => 4, 'count' => 5, 'cost' => 6, 'sellPrice' => 7, 'profit' => 8, 'updated' => 9, 'requiresUnlock' => 10, 'gw2dbId' => 11, 'gw2dbExternalId' => 12, ),
-        BasePeer::TYPE_COLNAME => array (RecipePeer::DATA_ID => 0, RecipePeer::NAME => 1, RecipePeer::DISCIPLINE_ID => 2, RecipePeer::RATING => 3, RecipePeer::RESULT_ITEM_ID => 4, RecipePeer::COUNT => 5, RecipePeer::COST => 6, RecipePeer::SELL_PRICE => 7, RecipePeer::PROFIT => 8, RecipePeer::UPDATED => 9, RecipePeer::REQUIRES_UNLOCK => 10, RecipePeer::GW2DB_ID => 11, RecipePeer::GW2DB_EXTERNAL_ID => 12, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID' => 0, 'NAME' => 1, 'DISCIPLINE_ID' => 2, 'RATING' => 3, 'RESULT_ITEM_ID' => 4, 'COUNT' => 5, 'COST' => 6, 'SELL_PRICE' => 7, 'PROFIT' => 8, 'UPDATED' => 9, 'REQUIRES_UNLOCK' => 10, 'GW2DB_ID' => 11, 'GW2DB_EXTERNAL_ID' => 12, ),
-        BasePeer::TYPE_FIELDNAME => array ('data_id' => 0, 'name' => 1, 'discipline_id' => 2, 'rating' => 3, 'result_item_id' => 4, 'count' => 5, 'cost' => 6, 'sell_price' => 7, 'profit' => 8, 'updated' => 9, 'requires_unlock' => 10, 'gw2db_id' => 11, 'gw2db_external_id' => 12, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
+        BasePeer::TYPE_PHPNAME => array ('DataId' => 0, 'Name' => 1, 'DisciplineId' => 2, 'Rating' => 3, 'ResultItemId' => 4, 'Count' => 5, 'Cost' => 6, 'KarmaCost' => 7, 'SellPrice' => 8, 'Profit' => 9, 'Updated' => 10, 'RequiresUnlock' => 11, 'Gw2dbId' => 12, 'Gw2dbExternalId' => 13, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId' => 0, 'name' => 1, 'disciplineId' => 2, 'rating' => 3, 'resultItemId' => 4, 'count' => 5, 'cost' => 6, 'karmaCost' => 7, 'sellPrice' => 8, 'profit' => 9, 'updated' => 10, 'requiresUnlock' => 11, 'gw2dbId' => 12, 'gw2dbExternalId' => 13, ),
+        BasePeer::TYPE_COLNAME => array (RecipePeer::DATA_ID => 0, RecipePeer::NAME => 1, RecipePeer::DISCIPLINE_ID => 2, RecipePeer::RATING => 3, RecipePeer::RESULT_ITEM_ID => 4, RecipePeer::COUNT => 5, RecipePeer::COST => 6, RecipePeer::KARMA_COST => 7, RecipePeer::SELL_PRICE => 8, RecipePeer::PROFIT => 9, RecipePeer::UPDATED => 10, RecipePeer::REQUIRES_UNLOCK => 11, RecipePeer::GW2DB_ID => 12, RecipePeer::GW2DB_EXTERNAL_ID => 13, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID' => 0, 'NAME' => 1, 'DISCIPLINE_ID' => 2, 'RATING' => 3, 'RESULT_ITEM_ID' => 4, 'COUNT' => 5, 'COST' => 6, 'KARMA_COST' => 7, 'SELL_PRICE' => 8, 'PROFIT' => 9, 'UPDATED' => 10, 'REQUIRES_UNLOCK' => 11, 'GW2DB_ID' => 12, 'GW2DB_EXTERNAL_ID' => 13, ),
+        BasePeer::TYPE_FIELDNAME => array ('data_id' => 0, 'name' => 1, 'discipline_id' => 2, 'rating' => 3, 'result_item_id' => 4, 'count' => 5, 'cost' => 6, 'karma_cost' => 7, 'sell_price' => 8, 'profit' => 9, 'updated' => 10, 'requires_unlock' => 11, 'gw2db_id' => 12, 'gw2db_external_id' => 13, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
     );
 
     /**
@@ -205,6 +208,7 @@ abstract class BaseRecipePeer {
             $criteria->addSelectColumn(RecipePeer::RESULT_ITEM_ID);
             $criteria->addSelectColumn(RecipePeer::COUNT);
             $criteria->addSelectColumn(RecipePeer::COST);
+            $criteria->addSelectColumn(RecipePeer::KARMA_COST);
             $criteria->addSelectColumn(RecipePeer::SELL_PRICE);
             $criteria->addSelectColumn(RecipePeer::PROFIT);
             $criteria->addSelectColumn(RecipePeer::UPDATED);
@@ -219,6 +223,7 @@ abstract class BaseRecipePeer {
             $criteria->addSelectColumn($alias . '.RESULT_ITEM_ID');
             $criteria->addSelectColumn($alias . '.COUNT');
             $criteria->addSelectColumn($alias . '.COST');
+            $criteria->addSelectColumn($alias . '.KARMA_COST');
             $criteria->addSelectColumn($alias . '.SELL_PRICE');
             $criteria->addSelectColumn($alias . '.PROFIT');
             $criteria->addSelectColumn($alias . '.UPDATED');
