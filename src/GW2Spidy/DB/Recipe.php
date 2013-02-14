@@ -60,7 +60,7 @@ class Recipe extends BaseRecipe {
             if($craftkarmacost && $cost < $buycost) {
                 $total['karma'] += $craftkarmacost;
             } else if (!$cost && $item->getKarmaPrice()) {
-                $total['karma'] += $item->getKarmaPrice();
+                $total['karma'] += $ingredient->getCount() * $item->getKarmaPrice();
             }
 
             $total['gold'] += $cost;
