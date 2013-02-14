@@ -124,6 +124,7 @@ CREATE TABLE `recipe`
     `result_item_id` INTEGER,
     `count` INTEGER(4) DEFAULT 1,
     `cost` INTEGER,
+    `karma_cost` INTEGER,
     `sell_price` INTEGER,
     `profit` INTEGER,
     `updated` DATETIME,
