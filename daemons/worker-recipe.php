@@ -20,16 +20,19 @@ while (($recipes = $q->find()) && $recipes->count()) {
     /* @var $recipe GW2Spidy\DB\Recipe */
     foreach ($recipes as $recipe) {
     	if(is_object($recipe->getResultItem())) {
-			$price = $recipe->calculatePrice();
+            $total = $recipe->calculatePrice();
+			$price = $total['gold'];
+            $karmaprice = $total['karma'];
 
 			$recipe->setCost($price);
+            $recipe->setKarmaCost($karmaprice);
 			$recipe->setSellPrice($recipe->getResultItem()->getMinSaleUnitPrice() * $recipe->getCount());
 			$recipe->setProfit(($recipe->getSellPrice() * 0.85) - $price);
 
 			$recipe->save();
             
             if(isset($argv[1])) {
-                echo "Name: {$recipe->getName()}, Count: {$recipe->getCount()}, Price: {$price}, Sell Price: {$recipe->getSellPrice()}, Profit: {$recipe->getProfit()}\n";
+                echo "Name: {$recipe->getName()}, Count: {$recipe->getCount()}, Price: {$price}, Karmaprice: {$karmaprice}, Sell Price: {$recipe->getSellPrice()}, Profit: {$recipe->getProfit()}\n";
             }
 	    } else {
 	    	echo "Error with recipe (No Item in database with ID \"{$recipe->getResultItemId()}\"): {$recipe->getName()}\n";

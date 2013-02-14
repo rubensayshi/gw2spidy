@@ -32,20 +32,22 @@ class Recipe extends BaseRecipe {
     }
 
     public function calculatePrice($forceCrafted = false) {
-        $total = 0;
+        $total = array('gold' => 0, 'karma' => 0);
 
         /* @var $ingredient RecipeIngredient */
         foreach ($this->getIngredients() as $ingredient) {
             $item      = $ingredient->getItem();
             $buycost   = $ingredient->getCount() * $item->getBestPrice();
             $craftcost = null;
+            $craftkarmacost = null;
 
             if ($item->getResultOfRecipes()->count() && $recipe = reset($item->getResultOfRecipes())) {
                 $crafts = $ingredient->getCount() / $recipe->getCount();
 
-                $craftcost = ceil($recipe->calculatePrice($forceCrafted) * $crafts);
+                $subtotal = $recipe->calculatePrice($forceCrafted);
+                $craftcost = ceil($subtotal['gold'] * $crafts);
+                $craftkarmacost = ceil($subtotal['karma'] * $crafts);
             }
-
 
             if (!$craftcost) {
                 $cost = $buycost;
@@ -55,7 +57,13 @@ class Recipe extends BaseRecipe {
                 $cost = min($buycost, $craftcost);
             }
 
-            $total += $cost;
+            if($craftkarmacost && $cost < $buycost) {
+                $total['karma'] += $craftkarmacost;
+            } else if (!$cost && $item->getKarmaPrice()) {
+                $total['karma'] += $item->getKarmaPrice();
+            }
+
+            $total['gold'] += $cost;
         }
 
         return $total;
