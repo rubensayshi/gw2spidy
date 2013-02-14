@@ -1,3 +1,5 @@
+var karmaIcon = ' <img alt="Karma" src="/assets/img/Karma.png" height="15" width="18">';
+
 var Crafting = function(item, container, summarycontainer) {
     var self       = this;
     var topentry   = null;
@@ -6,7 +8,7 @@ var Crafting = function(item, container, summarycontainer) {
     var $summary   = $sumcont.find(".recipe_summary");
 
     var update = function() {
-        var total = 0, sellprice = 0, listingfee = 0, transactionfee = 0, profit = 0;
+        var total = 0, karmaTotal = 0, sellprice = 0, listingfee = 0, transactionfee = 0, profit = 0;
 
         sellprice      = $sumcont.find('.recipe_summary_sell_price').data('sell-price') * item['multiplier'];
         transactionfee = Math.round(sellprice * 0.10);
@@ -28,10 +30,15 @@ var Crafting = function(item, container, summarycontainer) {
 
             $row.append($('<td />').html(ingredient[0]));
             $row.append($('<td data-tooltip-href="'+ingredient[1].gw2db_href+'" />').html(ingredient[1].name).css('font-weight', 'bold').addClass('rarity-' + ingredient[1].rarity));
-            $row.append($('<td />').html(formatGW2Money(ingredient[1].price)));
-            $row.append($('<td />').html(formatGW2Money(ingredient[1].price * ingredient[0])));
-
-            total += (ingredient[1].price * ingredient[0]);
+            if(ingredient[1].price == 0 && ingredient[1].karma > 0) {
+                $row.append($('<td />').html(ingredient[1].karma + karmaIcon));
+                $row.append($('<td />').html(ingredient[1].karma * ingredient[0] + karmaIcon));
+                karmaTotal += (ingredient[1].karma * ingredient[0]);
+            } else {
+                $row.append($('<td />').html(formatGW2Money(ingredient[1].price)));
+                $row.append($('<td />').html(formatGW2Money(ingredient[1].price * ingredient[0])));
+                total += (ingredient[1].price * ingredient[0]);
+            }
 
             $summary.append($row);
         });
@@ -43,6 +50,8 @@ var Crafting = function(item, container, summarycontainer) {
         $sumcont.find('.recipe_summary_profit').html(formatGW2Money(profit));
         $sumcont.find('.recipe_summary_transaction_fee').html(formatGW2Money(transactionfee));
         $sumcont.find('.recipe_summary_listing_fee').html(formatGW2Money(listingfee));
+        
+        $sumcont.find('.recipe_summary_total_karma').html(karmaTotal + karmaIcon).parent().toggle(karmaTotal > 0);
     };
 
     var init = function() {
@@ -213,7 +222,7 @@ var CraftEntry = function(item, count, parent, path, last) {
             if(karma > 0) {
                 $tpcost.addClass('label-karma');
                 $tpcost.find('label .label-text').html('KARMA VENDOR');
-                $tpcost.find('label .price').html(karma + ' <img alt="Karma" src="/assets/img/Karma.png" height="15" width="18">');
+                $tpcost.find('label .price').html(karma + karmaIcon);
             } else  {
                 $tpcost.addClass('label-warning');
                 $tpcost.find('label .label-text').html('NOT CRAFTED, NOT SOLD');
