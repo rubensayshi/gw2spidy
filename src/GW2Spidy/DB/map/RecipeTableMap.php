@@ -49,6 +49,7 @@ class RecipeTableMap extends TableMap
         $this->addForeignKey('RESULT_ITEM_ID', 'ResultItemId', 'INTEGER', 'item', 'DATA_ID', false, null, null);
         $this->addColumn('COUNT', 'Count', 'INTEGER', false, 4, 1);
         $this->addColumn('COST', 'Cost', 'INTEGER', false, null, null);
+        $this->addColumn('KARMA_COST', 'KarmaCost', 'INTEGER', false, null, null);
         $this->addColumn('SELL_PRICE', 'SellPrice', 'INTEGER', false, null, null);
         $this->addColumn('PROFIT', 'Profit', 'INTEGER', false, null, null);
         $this->addColumn('UPDATED', 'Updated', 'TIMESTAMP', false, null, null);
