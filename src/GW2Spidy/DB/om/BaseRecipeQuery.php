@@ -31,6 +31,7 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     RecipeQuery orderByResultItemId($order = Criteria::ASC) Order by the result_item_id column
  * @method     RecipeQuery orderByCount($order = Criteria::ASC) Order by the count column
  * @method     RecipeQuery orderByCost($order = Criteria::ASC) Order by the cost column
+ * @method     RecipeQuery orderByKarmaCost($order = Criteria::ASC) Order by the karma_cost column
  * @method     RecipeQuery orderBySellPrice($order = Criteria::ASC) Order by the sell_price column
  * @method     RecipeQuery orderByProfit($order = Criteria::ASC) Order by the profit column
  * @method     RecipeQuery orderByUpdated($order = Criteria::ASC) Order by the updated column
@@ -45,6 +46,7 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     RecipeQuery groupByResultItemId() Group by the result_item_id column
  * @method     RecipeQuery groupByCount() Group by the count column
  * @method     RecipeQuery groupByCost() Group by the cost column
+ * @method     RecipeQuery groupByKarmaCost() Group by the karma_cost column
  * @method     RecipeQuery groupBySellPrice() Group by the sell_price column
  * @method     RecipeQuery groupByProfit() Group by the profit column
  * @method     RecipeQuery groupByUpdated() Group by the updated column
@@ -78,6 +80,7 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     Recipe findOneByResultItemId(int $result_item_id) Return the first Recipe filtered by the result_item_id column
  * @method     Recipe findOneByCount(int $count) Return the first Recipe filtered by the count column
  * @method     Recipe findOneByCost(int $cost) Return the first Recipe filtered by the cost column
+ * @method     Recipe findOneByKarmaCost(int $karma_cost) Return the first Recipe filtered by the karma_cost column
  * @method     Recipe findOneBySellPrice(int $sell_price) Return the first Recipe filtered by the sell_price column
  * @method     Recipe findOneByProfit(int $profit) Return the first Recipe filtered by the profit column
  * @method     Recipe findOneByUpdated(string $updated) Return the first Recipe filtered by the updated column
@@ -92,6 +95,7 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     array findByResultItemId(int $result_item_id) Return Recipe objects filtered by the result_item_id column
  * @method     array findByCount(int $count) Return Recipe objects filtered by the count column
  * @method     array findByCost(int $cost) Return Recipe objects filtered by the cost column
+ * @method     array findByKarmaCost(int $karma_cost) Return Recipe objects filtered by the karma_cost column
  * @method     array findBySellPrice(int $sell_price) Return Recipe objects filtered by the sell_price column
  * @method     array findByProfit(int $profit) Return Recipe objects filtered by the profit column
  * @method     array findByUpdated(string $updated) Return Recipe objects filtered by the updated column
@@ -188,7 +192,7 @@ abstract class BaseRecipeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `NAME`, `DISCIPLINE_ID`, `RATING`, `RESULT_ITEM_ID`, `COUNT`, `COST`, `SELL_PRICE`, `PROFIT`, `UPDATED`, `REQUIRES_UNLOCK`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID` FROM `recipe` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `NAME`, `DISCIPLINE_ID`, `RATING`, `RESULT_ITEM_ID`, `COUNT`, `COST`, `KARMA_COST`, `SELL_PRICE`, `PROFIT`, `UPDATED`, `REQUIRES_UNLOCK`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID` FROM `recipe` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -540,6 +544,47 @@ abstract class BaseRecipeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(RecipePeer::COST, $cost, $comparison);
+    }
+
+    /**
+     * Filter the query on the karma_cost column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByKarmaCost(1234); // WHERE karma_cost = 1234
+     * $query->filterByKarmaCost(array(12, 34)); // WHERE karma_cost IN (12, 34)
+     * $query->filterByKarmaCost(array('min' => 12)); // WHERE karma_cost > 12
+     * </code>
+     *
+     * @param     mixed $karmaCost The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return RecipeQuery The current query, for fluid interface
+     */
+    public function filterByKarmaCost($karmaCost = null, $comparison = null)
+    {
+        if (is_array($karmaCost)) {
+            $useMinMax = false;
+            if (isset($karmaCost['min'])) {
+                $this->addUsingAlias(RecipePeer::KARMA_COST, $karmaCost['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($karmaCost['max'])) {
+                $this->addUsingAlias(RecipePeer::KARMA_COST, $karmaCost['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(RecipePeer::KARMA_COST, $karmaCost, $comparison);
     }
 
     /**
