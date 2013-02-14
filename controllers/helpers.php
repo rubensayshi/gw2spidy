@@ -149,23 +149,23 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
     }
 
     if($hideLocked = $request->get('hide_unlock_required', null)) {
-    	$q->filterByRequiresUnlock(0, \Criteria::EQUAL);
+        $q->filterByRequiresUnlock(0, \Criteria::EQUAL);
     }
-    
+
     $q->innerJoinResultItem('ri')
       ->withColumn('ri.SaleAvailability','sale_availability')
       ->withColumn('ri.OfferAvailability','offer_availability')
       ->withColumn('ri.Rarity','rarity');
 
-    
+
     if ($minSupplyFilter = $request->get('min_supply', null)) {
         $q->where('ri.SaleAvailability >= ?', $minSupplyFilter);
-    }  
+    }
     if ($maxSupplyFilter = $request->get('max_supply', null)) {
         $q->where('ri.SaleAvailability <= ?', $maxSupplyFilter);
-    }  
-      
-      
+    }
+
+
     $count = $q->count();
 
     if ($count > 0) {
@@ -200,7 +200,7 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
         'min_rating' => $minRatingFilter,
         'max_rating' => $maxRatingFilter,
         'hide_unlock_required' => $hideLocked,
-        
+
         'min_supply' => $minSupplyFilter,
         'max_supply' => $maxSupplyFilter,
 
@@ -293,7 +293,7 @@ function buildRecipeTree($item, $recipe = null, $app, $multiplier = 1) {
         'href' => $app['url_generator']->generate('item', array('dataId' => $item->getDataId())),
         'gw2db_href' => "http://www.gw2db.com/items/{$item->getGw2dbExternalId()}-" . Functions::slugify($item->getName()),
         'rarity' => $item->getRarityName(),
-        'img'	=> $item->getImg(),
+        'img'    => $item->getImg(),
         'price' => $item->getBestPrice(),
         'vendor' => !!$item->getVendorPrice(),
         'multiplier' => $multiplier,

@@ -15,28 +15,28 @@ if (isset($argv[1])) {
 }
 
 while (($recipes = $q->find()) && $recipes->count()) {
-	echo  "[" . date("Y-m-d H:i:s") . "] $i\n";
+    echo  "[" . date("Y-m-d H:i:s") . "] $i\n";
 
     /* @var $recipe GW2Spidy\DB\Recipe */
     foreach ($recipes as $recipe) {
-    	if(is_object($recipe->getResultItem())) {
+        if(is_object($recipe->getResultItem())) {
             $total = $recipe->calculatePrice();
-			$price = $total['gold'];
+            $price = $total['gold'];
             $karmaprice = $total['karma'];
 
-			$recipe->setCost($price);
+            $recipe->setCost($price);
             $recipe->setKarmaCost($karmaprice);
-			$recipe->setSellPrice($recipe->getResultItem()->getMinSaleUnitPrice() * $recipe->getCount());
-			$recipe->setProfit(($recipe->getSellPrice() * 0.85) - $price);
+            $recipe->setSellPrice($recipe->getResultItem()->getMinSaleUnitPrice() * $recipe->getCount());
+            $recipe->setProfit(($recipe->getSellPrice() * 0.85) - $price);
 
-			$recipe->save();
-            
+            $recipe->save();
+
             if(isset($argv[1])) {
                 echo "Name: {$recipe->getName()}, Count: {$recipe->getCount()}, Price: {$price}, Karmaprice: {$karmaprice}, Sell Price: {$recipe->getSellPrice()}, Profit: {$recipe->getProfit()}\n";
             }
-	    } else {
-	    	echo "Error with recipe (No Item in database with ID \"{$recipe->getResultItemId()}\"): {$recipe->getName()}\n";
-	    }
+        } else {
+            echo "Error with recipe (No Item in database with ID \"{$recipe->getResultItemId()}\"): {$recipe->getName()}\n";
+        }
 
         if (in_array('--dev', $argv)) {
             break;
