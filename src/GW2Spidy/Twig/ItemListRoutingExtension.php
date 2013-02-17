@@ -93,6 +93,18 @@ class ItemListRoutingExtension extends \Twig_Extension {
         if (isset($context['max_level']) && !array_key_exists('max_level', $parameters)) {
             $parameters['max_level'] = $context['max_level'];
         }
+        if (isset($context['min_rating']) && !array_key_exists('min_rating', $parameters)) {
+            $parameters['min_rating'] = $context['min_rating'];
+        }
+        if (isset($context['max_rating']) && !array_key_exists('max_rating', $parameters)) {
+            $parameters['max_rating'] = $context['max_rating'];
+        }
+        if (isset($context['min_supply']) && !array_key_exists('min_supply', $parameters)) {
+            $parameters['min_supply'] = $context['min_supply'];
+        }
+        if (isset($context['max_supply']) && !array_key_exists('max_supply', $parameters)) {
+            $parameters['max_supply'] = $context['max_supply'];
+        }
         if (isset($context['hide_unlock_required']) && !array_key_exists('hide_unlock_required', $parameters)) {
             $parameters['hide_unlock_required'] = $context['hide_unlock_required'];
         }
