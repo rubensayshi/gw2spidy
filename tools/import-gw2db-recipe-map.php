@@ -114,39 +114,74 @@ foreach ($data as $i => $row) {
     try {
         echo "[{$i} / {$cnt}]: {$row['Name']}\n";
 
-        if (RecipeQuery::create()->findByGw2dbExternalId($row['ExternalID'])->count() == 0) {
+        $q = RecipeQuery::create()->findByGw2dbExternalId($row['ExternalID']);
+
+        if ($q->count() == 0) {
             $r = new Recipe();
-            $r->setDataId($row['DataID']);
-            $r->setGw2dbId($row['ID']);
-            $r->setGw2dbExternalId($row['ExternalID']);
-            $r->setName($row['Name']);
-            $r->setRating($row['Rating']);
-            $r->setCount($row['Count']);
-            $r->setDisciplineId($row['Type']);
-            $r->setRequiresUnlock(isset($row['RequiresRecipeItem']) && $row['RequiresRecipeItem'] !== false);
+        } else {
+            $r = $q->findOne();
+        }
 
+        $r->setDataId($row['DataID']);
+        $r->setGw2dbId($row['ID']);
+        $r->setGw2dbExternalId($row['ExternalID']);
+        $r->setName($row['Name']);
+        $r->setRating($row['Rating']);
+        $r->setCount($row['Count']);
+        $r->setDisciplineId($row['Type']);
+        $r->setRequiresUnlock(isset($row['RequiresRecipeItem']) && $row['RequiresRecipeItem'] !== false);
 
-            if (!($result = $getItemByGW2DBID($row['CreatedItemId']))) {
-                throw new NoResultItemException("no result [[ {$row['CreatedItemId']} ]]");
+        if (!($result = $getItemByGW2DBID($row['CreatedItemId']))) {
+            throw new NoResultItemException("no result [[ {$row['CreatedItemId']} ]]");
+        } else {
+            $r->setResultItem($result);
+        }
+
+        // grab old ingredients
+        $oldRIs = $r->getIngredients();
+
+        // loop over new ingredients
+        foreach ($row['Ingredients'] as $ingrow) {
+            // check if we know the item
+            if (!($item = $getItemByGW2DBID($ingrow['ItemID']))) {
+                throw new NoIngredientItemException("no ingredient [[ {$ingrow['ItemID']} ]]");
             } else {
-                $r->setResultItem($result);
-            }
+                // see if we can match a previously imported ingredient for this recipe
+                $foundOld = false;
+                foreach ($oldRIs as $oldRI) {
+                    if ($oldRI->getItemId() == $item->getDataId()) {
+                        // mark the recipe
+                        $oldRI->setOkOnImport(true);
+                        $foundOld = true;
 
-            foreach ($row['Ingredients'] as $ingrow) {
-                $ri = new RecipeIngredient();
-                $ri->setRecipe($r);
+                        // update the count if it changed
+                        if ($oldRI->getCount() != $ingrow['Count']) {
+                            $oldRI->setCount($ingrow['Count']);
+                            $oldRI->save();
+                        }
+                    }
+                }
 
+                // only create a new recipe if we haven't found it
+                if (!$foundOld) {
+                    $ri = new RecipeIngredient();
 
-                if (!($item = $getItemByGW2DBID($ingrow['ItemID']))) {
-                    throw new NoIngredientItemException("no ingredient [[ {$ingrow['ItemID']} ]]");
-                } else {
                     $ri->setItem($item);
                     $ri->setCount($ingrow['Count']);
+
+                    $ri->setRecipe($r);
                 }
             }
-
-            $r->save();
         }
+
+        // remove old ingredients that aren't in the import anymore
+        foreach ($oldRIs as $oldRI) {
+            if (!$oldRI->getOkOnImport()) {
+                $oldRI->delete();
+            }
+        }
+
+        $r->save();
     } catch (Exception $e) {
         $failed[] = $row;
         echo "failed [[ {$e->getMessage()} ]] .. \n";
