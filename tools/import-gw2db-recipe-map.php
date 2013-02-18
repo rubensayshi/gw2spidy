@@ -119,7 +119,7 @@ foreach ($data as $i => $row) {
         if ($q->count() == 0) {
             $r = new Recipe();
         } else {
-            $r = $q->findOne();
+            $r = $q[0];
         }
 
         $r->setDataId($row['DataID']);
