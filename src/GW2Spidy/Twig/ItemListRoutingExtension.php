@@ -36,14 +36,11 @@ class ItemListRoutingExtension extends \Twig_Extension {
             throw new \Exception("invalid context " . var_export(array_keys($context), true));
         }
 
-        if (isset($context['rarity_filter']) && !array_key_exists('rarity_filter', $parameters)) {
-            $parameters['rarity_filter'] = $context['rarity_filter'];
-        }
-        if (isset($context['min_level']) && !array_key_exists('min_level', $parameters)) {
-            $parameters['min_level'] = $context['min_level'];
-        }
-        if (isset($context['max_level']) && !array_key_exists('max_level', $parameters)) {
-            $parameters['max_level'] = $context['max_level'];
+        $preserveParams = array('rarity_filter', 'min_level', 'max_level', 'min_rating', 'max_rating', 'min_supply', 'max_supply', 'hide_unlock_required');
+        foreach ($preserveParams as $param) {
+            if (isset($context[$param]) && !array_key_exists($param, $parameters)) {
+                $parameters[$param] = $context[$param];
+            }
         }
 
         $sortBy    = null;
@@ -87,20 +84,12 @@ class ItemListRoutingExtension extends \Twig_Extension {
         if ((!$sortBy || !$sortOrder) && isset($context['current_sort'], $context['current_sort_order'])) {
             $parameters["sort_{$context['current_sort']}"] = $context['current_sort_order'];
         }
-        if (isset($context['min_level']) && !array_key_exists('min_level', $parameters)) {
-            $parameters['min_level'] = $context['min_level'];
-        }
-        if (isset($context['max_level']) && !array_key_exists('max_level', $parameters)) {
-            $parameters['max_level'] = $context['max_level'];
-        }
-        if (isset($context['min_rating']) && !array_key_exists('min_rating', $parameters)) {
-            $parameters['min_rating'] = $context['min_rating'];
-        }
-        if (isset($context['max_rating']) && !array_key_exists('max_rating', $parameters)) {
-            $parameters['max_rating'] = $context['max_rating'];
-        }
-        if (isset($context['hide_unlock_required']) && !array_key_exists('hide_unlock_required', $parameters)) {
-            $parameters['hide_unlock_required'] = $context['hide_unlock_required'];
+
+        $preserveParams = array('rarity_filter', 'min_level', 'max_level', 'min_rating', 'max_rating', 'min_supply', 'max_supply', 'hide_unlock_required');
+        foreach ($preserveParams as $param) {
+            if (isset($context[$param]) && !array_key_exists($param, $parameters)) {
+                $parameters[$param] = $context[$param];
+            }
         }
 
         return $this->generator->generate($name, $parameters, false);
