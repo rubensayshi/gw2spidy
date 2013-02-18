@@ -151,7 +151,7 @@ foreach ($data as $i => $row) {
                 foreach ($oldRIs as $oldRI) {
                     if ($oldRI->getItemId() == $item->getDataId()) {
                         // mark the recipe
-                        $oldRI->setOkOnImport(true);
+                        $oldRI->setOkOnImport();
                         $foundOld = true;
 
                         // update the count if it changed
@@ -170,6 +170,10 @@ foreach ($data as $i => $row) {
                     $ri->setCount($ingrow['Count']);
 
                     $ri->setRecipe($r);
+                    $ri->save();
+
+                    // mark the recipe
+                    $ri->setOkOnImport();
                 }
             }
         }

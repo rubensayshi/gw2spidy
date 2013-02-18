@@ -23,7 +23,7 @@ class RecipeIngredient extends BaseRecipeIngredient {
         return $this->okOnImport;
     }
 
-    public function setOkOnImport($okOnImport) {
+    public function setOkOnImport($okOnImport = true) {
         $this->okOnImport = $okOnImport;
     }
 
