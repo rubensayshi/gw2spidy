@@ -213,6 +213,7 @@ HTML;
     }
 
     public function getGW2DBTooltipFromGW2DB() {
+        return false;
         $js = @file_get_contents("http://www.gw2db.com/items/{$this->getGW2DBExternalId()}/tooltip");
 
         if (!$js) {
@@ -232,7 +233,7 @@ HTML;
 		$margin = intval($this->getMinSaleUnitPrice() * 0.85 - $this->getMaxOfferUnitPrice());
 		if($this->getMaxOfferUnitPrice() == 0 || $this->getMinSaleUnitPrice() == 0 || $margin <= 0)
 			return 0;
-			
+
 		return $margin;
 
     }
