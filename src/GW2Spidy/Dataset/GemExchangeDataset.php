@@ -40,7 +40,7 @@ class GemExchangeDataset extends BaseDataset {
             return;
         }
 
-        $limit = 20000;
+        $limit = 5000;
         $end   = null;
         $start = $this->lastUpdated;
         $con = \Propel::getConnection();
@@ -59,7 +59,7 @@ class GemExchangeDataset extends BaseDataset {
                 rate
                 FROM {$table}
                 {$where}
-                ORDER BY rate_datetime ASC
+                ORDER BY rate_datetime DESC
                 LIMIT {$limit}");
 
         $stmt->execute();
@@ -74,10 +74,13 @@ class GemExchangeDataset extends BaseDataset {
             $this->processTick($date, $rate);
         }
 
+        $this->uptodate = true;
+        /*
         if (!($this->uptodate = count($rates) != $limit)) {
             $app = Application::getInstance();
             $app['no_cache'] = true;
         }
+        */
 
         // update for next time
         $this->updated = true;
