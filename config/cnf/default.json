@@ -4,6 +4,7 @@ cnf = {
      */
     "sql_logging": false,
     "debug"      : true,
+    "enable_search" : true,
 
     /*
      * application settings

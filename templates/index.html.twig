@@ -109,9 +109,13 @@
 <form class="form-search" action="{{ path('searchpost') }}" method="POST">
     <div class="well">
         <h1 style="border: 0px; text-align: center; margin-bottom: 10px;">Guild Wars 2 Spidy</h1>
+        {% if not enable_search %}
+        <p>Sorry, search has been disabled for a while to test why the site is being so slow!</p>
+        {% else %}
         <div class="input-append" style="width: 60%; margin: 0 auto; display: block;">
             <input placeholder="Search" name="search" type="text" class="search-query" style="width: 79%;" id="jumbo-search"><button type="submit" class="btn" style="width: 19%;">Search</button>
         </div>
+        {% endif %}
     </div>
 </form>
 <script type="text/javascript">

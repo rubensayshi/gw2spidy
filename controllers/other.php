@@ -49,6 +49,7 @@ $app->get("/", function() use($app) {
     $summary = gem_summary();
 
     return $app['twig']->render('index.html.twig', array(
+        'enable_search' => getAppConfig('enable_search'),
         'trending_up' => $trendingUp,
         'trending_down' => $trendingDown,
 
