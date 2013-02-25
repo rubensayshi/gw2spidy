@@ -48,7 +48,7 @@ class ItemDataset extends BaseDataset {
             return;
         }
 
-        $limit = 5000;
+        $limit = 20000;
         $end   = null;
         $start = $this->lastUpdated;
         $con = \Propel::getConnection();
@@ -69,7 +69,7 @@ class ItemDataset extends BaseDataset {
                 WHERE item_id = {$this->itemId}
                 {$and}
                 GROUP BY listing_datetime
-                ORDER BY listing_datetime DESC
+                ORDER BY listing_datetime ASC
                 LIMIT {$limit}");
 
         $stmt->execute();
@@ -84,11 +84,10 @@ class ItemDataset extends BaseDataset {
             $this->processTick($date, $rate);
         }
 
-        $this->uptodate = true;
-        /*if (!($this->uptodate = count($listings) != $limit)) {
+        if (!($this->uptodate = count($listings) != $limit)) {
             $app = Application::getInstance();
             $app['no_cache'] = true;
-        }*/
+        }
 
         // update for next time
         $this->updated = true;
