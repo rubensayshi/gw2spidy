@@ -31,10 +31,6 @@ use GW2Spidy\Util\Functions;
  * ----------------------
  */
 $app->post("/search", function (Request $request) use ($app) {
-    if (!getAppConfig('enable_search')) {
-        return "Sorry, search has been disabled for a while to test why the site is being so slow!";
-    }
-
     // redirect to the GET with the search in the URL
     return $app->redirect($app['url_generator']->generate('search', array('search' => $request->get('search'), 'recipes' => $request->get('recipes', false))));
 })
@@ -46,10 +42,6 @@ $app->post("/search", function (Request $request) use ($app) {
  * ----------------------
  */
 $app->get("/search/{search}/{page}", function(Request $request, $search, $page) use($app) {
-    if (!getAppConfig('enable_search')) {
-        return "Sorry, search has been disabled for a while to test why the site is being so slow!";
-    }
-
     if (!$search) {
         return $app->handle(Request::create("/searchform", 'GET'), HttpKernelInterface::SUB_REQUEST);
     }
@@ -95,7 +87,7 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
     } else {
         $content = item_list($app, $request, $q, $page, 25, array('search' => $search, 'type'=>'search', 'included' => true));
     }
-
+    
     $params = array();
     if ($minLevelFilter = $request->get('min_level', null)) {
         $params['min_level'] = $minLevelFilter;
@@ -127,10 +119,6 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
  * ----------------------
  */
 $app->get("/searchform", function() use($app) {
-    if (!getAppConfig('enable_search')) {
-        return "Sorry, search has been disabled for a while to test why the site is being so slow!";
-    }
-
     return $app['twig']->render('search.html.twig', array('content' => '', 'search' => '', 'recipes' => false));
 })
 ->bind('searchform');
