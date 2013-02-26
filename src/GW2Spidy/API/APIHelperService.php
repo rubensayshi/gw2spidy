@@ -32,11 +32,68 @@ class APIHelperService {
         } else if ($format == 'csv') {
             $r->setContent($direct ? $response : $this->outputResponseCSV($request, $response));
             $r->headers->set("Content-type", "text/csv", true);
+        } else if ($format == 'xml') {
+            $r->setContent($direct ? $response : $this->outputResponseXML($request, $response, $name));
+            $r->headers->set("Content-type", "application/xml", true);
         } else {
             return $this->app->abort(500);
         }
 
         return $r;
+    }
+
+    public function outputResponseXML(Request $request, $response, $name) {
+        $retval = '<?xml version="1.0"?>' . "\n";
+
+        $array_name_map = array('subtypes' => 'subtype');
+        if ($name == 'types')
+            $array_name_map['results'] = 'type';
+        else if ($name == 'disciplines')
+            $array_name_map['results'] = 'discipline';
+        else if ($name == 'rarities')
+            $array_name_map['results'] = 'rarity';
+        else if (preg_match('/^(all-items-[0-9]*|items-[0-9]*-[0-9]*|item-search-[0-9]*)$/', $name))
+            $array_name_map['results'] = 'item';
+        else if (preg_match('/^(recipes-[0-9]*-[0-9]*|all-recipes-[0-9]*)$/', $name))
+            $array_name_map['results'] = 'recipe';
+        else if (preg_match('/^(item-listings-[0-9]*-[0-9]*-[0-9]*)$/', $name))
+            $array_name_map['results'] = 'listing';
+        else
+            $array_name_map['results'] = 'result';
+
+        $retval .= $this->keyPairToXML('response', $response, $array_name_map);
+
+        return $retval;
+    }
+
+    private function keyPairToXML($key, $value, $array_name_map) {
+        $retval = '<' . $key . '>';
+
+        if (is_array($value)) {
+            // we need to detect if it is an associative array or not
+            if (array_keys($value) !== range(0, count($value) - 1)) {
+                // associative, treat it like an object
+                foreach ($value as $akey => $avalue)
+                    $retval .= $this->keyPairToXML($akey, $avalue, $array_name_map);
+            } else {
+                // not associative, treat it like a list
+                if (!isset($array_name_map[$key]))
+                    throw new \Exception("Invalid array type for XML output.");
+
+                $akey = $array_name_map[$key];
+                foreach ($value as $avalue)
+                    $retval .= $this->keyPairToXML($akey, $avalue, $array_name_map);
+            }
+        } else if (is_object($value)) {
+            foreach (get_object_vars($value) as $akey => $avalue)
+                $retval .= $this->keyPairToXML($akey, $avalue, $array_name_map);
+        } else {
+            $retval .= $value;
+        }
+
+        $retval .= '</' . $key . '>';
+
+        return $retval;
     }
 
     public function outputResponseCSV(Request $request, $response) {
@@ -123,7 +180,7 @@ class APIHelperService {
         $date = $date instanceof DateTime ? $date : new DateTime($date);
         $date->setTimezone(new DateTimeZone('UTC'));
 
-        return "{$date->format("Y-m-d H:i:s")} UTC";
+        return "{$date->format("c")}";
     }
 
     public function escapeCSVValue($val) {
