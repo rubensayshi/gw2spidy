@@ -183,7 +183,7 @@ class Item extends BaseItem {
 
         if (!($tooltip = $cache->get($cacheKey))) {
 
-            $tooltip   = $this->getGW2DBTooltipFromGW2DB();
+            $tooltip = $this->getGW2DBTooltipFromGW2DB();
             if (!$tooltip) {
                 $tooltip = self::FALSE_POSITIVE;
                 $ttl     = 600;
@@ -213,8 +213,14 @@ HTML;
     }
 
     public function getGW2DBTooltipFromGW2DB() {
-        return false;
-        $js = @file_get_contents("http://www.gw2db.com/items/{$this->getGW2DBExternalId()}/tooltip");
+        $opts = array(
+            'http' => array(
+                    'method'  => 'GET',
+                    'timeout' => 2,
+            ),
+        );
+        $context = stream_context_create($opts);
+        $js = @file_get_contents("http://www.gw2db.com/items/{$this->getGW2DBExternalId()}/tooltip", false, $context);
 
         if (!$js) {
             return null;
