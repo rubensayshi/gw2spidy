@@ -180,7 +180,7 @@ class APIHelperService {
         $date = $date instanceof DateTime ? $date : new DateTime($date);
         $date->setTimezone(new DateTimeZone('UTC'));
 
-        return "{$date->format("Y-m-d H:i:s")} UTC";
+        return "{$date->format("c")}";
     }
 
     public function escapeCSVValue($val) {
