@@ -61,7 +61,7 @@ class APIHelperService {
         else
             $array_name_map['results'] = 'result';
 
-        $retval .= $this->keyPairToXML('response', $response, $array_name_map);
+        $retval .= $this->keyPairToXML('response', $this->convertDateToISO8601String($response), $array_name_map);
 
         return $retval;
     }
@@ -111,7 +111,7 @@ class APIHelperService {
             echo implode(',', array_keys(reset($results))) . "\r\n";
 
             foreach ($results as $result) {
-                $result = array_map(array($this, 'escapeCSVValue'), $result);
+                $result = array_map(array($this, 'escapeCSVValue'), $this->convertDateToUTCString($results));
                 echo implode(',', $result) . "\r\n";
             }
         }
@@ -120,7 +120,7 @@ class APIHelperService {
     }
 
     public function outputResponseJSON(Request $request, $response) {
-        $json = json_encode($response);
+        $json = json_encode($this->convertDateToUTCString($response));
 
         $jsonp = $request->get('jsonp') ?: $jsonp = $request->get('callback');
 
@@ -136,7 +136,7 @@ class APIHelperService {
             'img' => $item['Img'],
             'type_id' => intval($item['ItemTypeId']),
             'sub_type_id' => intval($item['ItemSubTypeId']),
-            'price_last_changed' => $this->dateAsUTCString($item['LastPriceChanged']),
+            'price_last_changed' => $this->date($item['LastPriceChanged']),
             'max_offer_unit_price' => intval($item['MaxOfferUnitPrice']),
             'min_sale_unit_price' => intval($item['MinSaleUnitPrice']),
             'offer_availability' => intval($item['OfferAvailability']),
@@ -151,7 +151,7 @@ class APIHelperService {
 
     public function buildListingDataArray(array $listing) {
         $data = array(
-            "listing_datetime" => $this->dateAsUTCString($listing['ListingDatetime']),
+            "listing_datetime" => $this->date($listing['ListingDatetime']),
             "unit_price"       => intval($listing['UnitPrice']),
             "quantity"         => intval($listing['Quantity']),
             "listings"         => intval($listing['Listings']),
@@ -176,7 +176,38 @@ class APIHelperService {
         return $data;
     }
 
+    public function convertDateToUTCString($v) {
+        if ($v instanceof DateTime) {
+            return $this->dateAsUTCString($v);
+        } else if (is_array($v)) {
+            return array_map(array($this, 'convertDateToUTCString'), $v);
+        } else {
+            return $v;
+        }
+    }
+
+    public function convertDateToISO8601String($v) {
+        if ($v instanceof DateTime) {
+            return $this->dateAsISO8601String($v);
+        } else if (is_array($v)) {
+            return array_map(array($this, 'convertDateToISO8601String'), $v);
+        } else {
+            return $v;
+        }
+    }
+
+    public function date($date) {
+        return $date instanceof DateTime ? $date : new DateTime($date);
+    }
+
     public function dateAsUTCString($date) {
+        $date = $date instanceof DateTime ? $date : new DateTime($date);
+        $date->setTimezone(new DateTimeZone('UTC'));
+
+        return "{$date->format("Y-m-d H:i:s")} UTC";
+    }
+
+    public function dateAsISO8601String($date) {
         $date = $date instanceof DateTime ? $date : new DateTime($date);
         $date->setTimezone(new DateTimeZone('UTC'));
 
