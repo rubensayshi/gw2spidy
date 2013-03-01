@@ -3111,8 +3111,7 @@ input[type="submit"].btn.btn-mini {
 .navbar-search {
   position: relative;
   float: left;
-  margin-top: 6px;
-  margin-bottom: 0;
+  margin: 6px 9px 0;
 }
 
 .navbar-search .search-query {
@@ -3209,8 +3208,9 @@ input[type="submit"].btn.btn-mini {
 
 .navbar .nav > li > a {
   float: none;
-  padding: 9px 10px 11px;
+  padding: 9px 19px 11px;
   line-height: 19px;
+  height: 23px;
   color: #999999;
   text-decoration: none;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -3244,7 +3244,6 @@ input[type="submit"].btn.btn-mini {
 .navbar .divider-vertical {
   width: 1px;
   height: 40px;
-  margin: 0 9px;
   overflow: hidden;
   background-color: #222222;
   border-right: 1px solid #333333;
