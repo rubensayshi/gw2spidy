@@ -111,7 +111,7 @@ class APIHelperService {
             echo implode(',', array_keys(reset($results))) . "\r\n";
 
             foreach ($results as $result) {
-                $result = array_map(array($this, 'escapeCSVValue'), $this->convertDateToUTCString($results));
+                $result = array_map(array($this, 'escapeCSVValue'), $this->convertDateToUTCString($result));
                 echo implode(',', $result) . "\r\n";
             }
         }
