@@ -21,6 +21,10 @@ class ItemDatasetCleaner {
     const TS_ONE_HOUR = 3600;
     const TS_ONE_DAY  = 86400;
     const TS_ONE_WEEK = 604800;
+    const TS_ONE_MONTH = 2592000;
+
+    const CLEANUP_WEEK = 'week';
+    const CLEANUP_MONTH = 'month';
 
     /**
      * @var  int    $itemId
@@ -55,7 +59,9 @@ class ItemDatasetCleaner {
         $this->type = $type;
     }
 
-    public function clean() {
+    public function clean($cleanup = self::CLEANUP_WEEK) {
+        $thres = self::tsHour(time() - ($cleanup == self::CLEANUP_WEEK ? self::TS_ONE_WEEK : self::TS_ONE_MONTH));
+
         $count = 0;
         $con = \Propel::getConnection();
 
@@ -71,20 +77,19 @@ class ItemDatasetCleaner {
         $listings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         $ticks = array();
-        $tsByHour = array();
+        $tsGrpd = array();
         foreach ($listings as $listing) {
-            $id   = $listing['id'];
-            $date = new DateTime("{$listing['listingDatetime']}");
-            $ts   = $date->getTimestamp();
-            $tsHr = self::tsHour($ts);
+            $id    = $listing['id'];
+            $date  = new DateTime("{$listing['listingDatetime']}");
+            $ts    = $date->getTimestamp();
+            $tsGrp = $cleanup == self::CLEANUP_WEEK ? self::tsHour($ts) : self::tsDay($ts);
 
             $ticks[$id] = $listing;
-            $tsByHour[$tsHr][] = $id;
+            $tsGrpd[$tsGrp][] = $id;
         }
 
-        $thres = self::tsHour(time() - self::TS_ONE_WEEK);
-        foreach ($tsByHour as $tsHr => $ids) {
-            if ($tsHr >= $thres) {
+        foreach ($tsGrpd as $tsGrp => $ids) {
+            if ($tsGrp >= $thres) {
                 break;
             }
 
@@ -96,28 +101,28 @@ class ItemDatasetCleaner {
                 continue;
             }
 
-            $hourRates = array();
-            $hourQuantities = array();
-            $hourListings = array();
+            $grpRates = array();
+            $grpQuantities = array();
+            $grpListings = array();
 
             foreach ($ids as $id) {
-                $hourRates[] = $ticks[$id]['unitPrice'];
-                $hourQuantities[] = $ticks[$id]['quantity'];
-                $hourListings[] = $ticks[$id]['listings'];
+                $grpRates[] = $ticks[$id]['unitPrice'];
+                $grpQuantities[] = $ticks[$id]['quantity'];
+                $grpListings[] = $ticks[$id]['listings'];
             }
 
-            $hourRAvg = array_sum($hourRates) / count($hourRates);
-            $hourQAvg = array_sum($hourQuantities) / count($hourQuantities);
-            $hourLAvg = array_sum($hourListings) / count($hourListings);
+            $grpRAvg = array_sum($grpRates) / count($grpRates);
+            $grpQAvg = array_sum($grpQuantities) / count($grpQuantities);
+            $grpLAvg = array_sum($grpListings) / count($grpListings);
 
             $con->beginTransaction();
 
             $new = $this->type == self::TYPE_SELL_LISTING ? new SellListing() : new BuyListing();
-            $new->setListingDatetime($tsHr);
+            $new->setListingDatetime($tsGrp);
             $new->setItemId($this->itemId);
-            $new->setUnitPrice($hourRAvg);
-            $new->setQuantity($hourQAvg);
-            $new->setListings($hourLAvg);
+            $new->setUnitPrice($grpRAvg);
+            $new->setQuantity($grpQAvg);
+            $new->setListings($grpLAvg);
             $new->save();
 
             $q = $this->type == self::TYPE_SELL_LISTING ? new SellListingQuery() : new BuyListingQuery();
@@ -125,7 +130,6 @@ class ItemDatasetCleaner {
               ->delete();
 
             $con->commit();
-
             $count++;
         }
 
