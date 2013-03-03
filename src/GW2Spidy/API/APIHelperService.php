@@ -92,7 +92,7 @@ class APIHelperService {
             // [1900,9999] as dates, resulting in incorrect numbers. This adds a '.0'
             // if the user agent is Excel/15*, to prevent that coercion.
             if (is_integer($value) && $value >= 1900 && $value <= 9999 &&
-                    preg_match('/^Excel\/(15).*$/', $_SERVER['HTTP_USER_AGENT']))
+                    preg_match('/^Excel\/(15)/', $_SERVER['HTTP_USER_AGENT']))
                 $value .= '.0';
 
             $retval .= $value;
