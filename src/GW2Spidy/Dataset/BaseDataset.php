@@ -139,39 +139,42 @@ abstract class BaseDataset {
 
             /*
              * aggregate ticks older then 24 hours into 1 tick per hour (averaged out for that hour)
-             *  we do this exactly the same for all datasets so that they all align nicely
+             *  this is done to reduce the size of the the dataset we have in memory
+             *  however since we're now also cleaning up our dataset in the database we can disable this
              */
-            $thresMin = self::tsHour($prevTs - $this->hourlyThreshold);
-            $thresMax = self::tsHour($ts - $this->hourlyThreshold);
-            while ($thresMin < $thresMax) {
-                $thisTsHour = self::tsHour($thresMin);
-                $thisHour   = array();
+            if (getAppConfig('gw2spidy.aggregate_ticks_on_request')) {
+                $thresMin = self::tsHour($prevTs - $this->hourlyThreshold);
+                $thresMax = self::tsHour($ts - $this->hourlyThreshold);
+                while ($thresMin < $thresMax) {
+                    $thisTsHour = self::tsHour($thresMin);
+                    $thisHour   = array();
 
-                if (isset($this->tsByHour[$thisTsHour])) {
-                    // (re)calculate the average of this ticks hour
-                    $hourNoMvAvg = array();
-                    $hourDailyMvAvg = array();
-                    foreach ($this->tsByHour[$thisTsHour] as $tickTs) {
-                        $hourNoMvAvg[] = $this->noMvAvg[$tickTs][1];
-                        $hourDailyMvAvg[] = $this->dailyMvAvg[$tickTs][1];
+                    if (isset($this->tsByHour[$thisTsHour])) {
+                        // (re)calculate the average of this ticks hour
+                        $hourNoMvAvg = array();
+                        $hourDailyMvAvg = array();
+                        foreach ($this->tsByHour[$thisTsHour] as $tickTs) {
+                            $hourNoMvAvg[] = $this->noMvAvg[$tickTs][1];
+                            $hourDailyMvAvg[] = $this->dailyMvAvg[$tickTs][1];
+                        }
+                        $this->hourlyNoMvAvg[$thisTsHour] = array_sum($hourNoMvAvg) / count($hourNoMvAvg);
+                        $this->hourlyDailyMvAvg[$thisTsHour] = array_sum($hourDailyMvAvg) / count($hourDailyMvAvg);
+
+                        // remove old ticks
+                        foreach (array_unique($this->tsByHour[$thisTsHour]) as $tickTs) {
+                            unset($this->noMvAvg[$tickTs]);
+                            unset($this->dailyMvAvg[$tickTs]);
+                        }
+
+                        // insert hourly ticks
+                        $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyNoMvAvg[$thisTsHour]);
+                        $this->dailyMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyDailyMvAvg[$thisTsHour]);
+                        $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyNoMvAvg[$thisTsHour]);
+                        $this->tsByHour[$thisTsHour] = array($thisTsHour);
                     }
-                    $this->hourlyNoMvAvg[$thisTsHour] = array_sum($hourNoMvAvg) / count($hourNoMvAvg);
-                    $this->hourlyDailyMvAvg[$thisTsHour] = array_sum($hourDailyMvAvg) / count($hourDailyMvAvg);
 
-                    // remove old ticks
-                    foreach (array_unique($this->tsByHour[$thisTsHour]) as $tickTs) {
-                        unset($this->noMvAvg[$tickTs]);
-                        unset($this->dailyMvAvg[$tickTs]);
-                    }
-
-                    // insert hourly ticks
-                    $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyNoMvAvg[$thisTsHour]);
-                    $this->dailyMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyDailyMvAvg[$thisTsHour]);
-                    $this->noMvAvg[$thisTsHour] = array($thisTsHour * 1000, $this->hourlyNoMvAvg[$thisTsHour]);
-                    $this->tsByHour[$thisTsHour] = array($thisTsHour);
+                    $thresMin += self::TS_ONE_HOUR;
                 }
-
-                $thresMin += self::TS_ONE_HOUR;
             }
         }
 

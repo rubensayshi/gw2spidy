@@ -35,6 +35,7 @@ cnf = {
      * gw2spidy settings
      */
     "gw2spidy" : {
+        "aggregate_ticks_on_request" : false,
         "request-slots" : {
             "count"    : 100,
             "cooldown" : 30
