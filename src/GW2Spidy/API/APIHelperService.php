@@ -90,9 +90,9 @@ class APIHelperService {
         } else {
             // Excel 2013 has a FILTERXML function that auto-coerces integers between
             // [1900,9999] as dates, resulting in incorrect numbers. This adds a '.0'
-            // if the user agent is Excel/15*, to prevent that coercion.
-            if (is_integer($value) && $value >= 1900 && $value <= 9999 &&
-                    preg_match('/^Excel\/(15)/', $_SERVER['HTTP_USER_AGENT']))
+            // if specified, to prevent that coercion.
+            if (isset($_GET['excel_filterxml_fix']) && is_integer($value) &&
+                    $value >= 1900 && $value <= 9999)
                 $value .= '.0';
 
             $retval .= $value;
