@@ -61,12 +61,12 @@ class APIHelperService {
         else
             $array_name_map['results'] = 'result';
 
-        $retval .= $this->keyPairToXML('response', $this->convertDateToISO8601String($response), $array_name_map);
+        $retval .= $this->keyPairToXML('response', $this->convertDateToISO8601String($response), $array_name_map, $request->get('excel_filterxml_fix'));
 
         return $retval;
     }
 
-    private function keyPairToXML($key, $value, $array_name_map) {
+    private function keyPairToXML($key, $value, $array_name_map, $excel_filterxml_fix = false) {
         $retval = '<' . $key . '>';
 
         if (is_array($value)) {
@@ -74,7 +74,7 @@ class APIHelperService {
             if (array_keys($value) !== range(0, count($value) - 1)) {
                 // associative, treat it like an object
                 foreach ($value as $akey => $avalue)
-                    $retval .= $this->keyPairToXML($akey, $avalue, $array_name_map);
+                    $retval .= $this->keyPairToXML($akey, $avalue, $array_name_map, $excel_filterxml_fix);
             } else {
                 // not associative, treat it like a list
                 if (!isset($array_name_map[$key]))
@@ -82,17 +82,16 @@ class APIHelperService {
 
                 $akey = $array_name_map[$key];
                 foreach ($value as $avalue)
-                    $retval .= $this->keyPairToXML($akey, $avalue, $array_name_map);
+                    $retval .= $this->keyPairToXML($akey, $avalue, $array_name_map, $excel_filterxml_fix);
             }
         } else if (is_object($value)) {
             foreach (get_object_vars($value) as $akey => $avalue)
-                $retval .= $this->keyPairToXML($akey, $avalue, $array_name_map);
+                $retval .= $this->keyPairToXML($akey, $avalue, $array_name_map, $excel_filterxml_fix);
         } else {
             // Excel 2013 has a FILTERXML function that auto-coerces integers between
             // [1900,9999] as dates, resulting in incorrect numbers. This adds a '.0'
             // if specified, to prevent that coercion.
-            if (isset($_GET['excel_filterxml_fix']) && is_integer($value) &&
-                    $value >= 1900 && $value <= 9999)
+            if ($excel_filterxml_fix && is_integer($value) && $value >= 1900 && $value <= 9999)
                 $value .= '.0';
 
             $retval .= $value;
