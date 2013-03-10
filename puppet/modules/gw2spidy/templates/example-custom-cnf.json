@@ -1,0 +1,10 @@
+cnf = {
+    /*
+     * account settings
+     *
+     */
+    "gw2spidy" : {
+        "auth_email"      : "mail@example.com",
+        "auth_password"   : "3x@mpl3"
+    }
+};
