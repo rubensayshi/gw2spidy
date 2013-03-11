@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\Dataset\GemDatasetCleaner;
+
 use GW2Spidy\DB\ItemQuery;
 
 use GW2Spidy\Dataset\ItemDatasetCleaner;
@@ -22,6 +24,22 @@ if (isset($argv[1])) {
 $items = $q->find();
 
 var_dump(mytime());
+
+$cleaner = new GemDatasetCleaner(GemDatasetCleaner::TYPE_GEM_TO_GOLD);
+$countM = $cleaner->clean(ItemDatasetCleaner::CLEANUP_MONTH);
+$countW = $cleaner->clean(ItemDatasetCleaner::CLEANUP_WEEK);
+unset($cleaner);
+
+echo "[GEMS][GEM_TO_GOLD] cleaned [{$countM}] > month old and [{$countW}] > week old hours in ".mytime().", mem @ [".memory_get_usage(true)."] \n";
+@ob_flush();
+
+$cleaner = new GemDatasetCleaner(GemDatasetCleaner::TYPE_GOLD_TO_GEM);
+$countM = $cleaner->clean(ItemDatasetCleaner::CLEANUP_MONTH);
+$countW = $cleaner->clean(ItemDatasetCleaner::CLEANUP_WEEK);
+unset($cleaner);
+
+echo "[GEMS][GOLD_TO_GEM] cleaned [{$countM}] > month old and [{$countW}] > week old hours in ".mytime().", mem @ [".memory_get_usage(true)."] \n";
+@ob_flush();
 
 foreach ($items as $dataId) {
     $cleaner = new ItemDatasetCleaner($dataId, ItemDatasetCleaner::TYPE_SELL_LISTING);
