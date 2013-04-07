@@ -167,14 +167,16 @@ class APIHelperService {
     }
 
     public function buildRecipeDataArray(Recipe $recipe) {
+        $resultItem = $recipe->getResultItem();
+
         $data = array(
             "data_id"              => $recipe->getDataId(),
             "name"                 => $recipe->getName(),
             "result_count"         => $recipe->getCount(),
         	"result_item_data_id"  => $recipe->getResultItemId(),
             "discipline_id"        => $recipe->getDisciplineId(),
-            "result_item_max_offer_unit_price" => $recipe->getResultItem()->getMaxOfferUnitPrice(),
-            "result_item_min_sale_unit_price"  => $recipe->getResultItem()->getMinSaleUnitPrice(),
+            "result_item_max_offer_unit_price" => $resultItem ? $resultItem->getMaxOfferUnitPrice() : 0,
+            "result_item_min_sale_unit_price"  => $resultItem ? $resultItem->getMinSaleUnitPrice()  : 0,
             "crafting_cost"		   => $recipe->getCost(),
             "rating"	     	   => $recipe->getRating(),
         );

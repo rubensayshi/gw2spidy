@@ -64,18 +64,22 @@ class GenericHelpersExtension extends \Twig_Extension {
 
     public function karma($karma, $nonnull = false) {
         if($nonnull && !$karma) return '';
-        
+
         return number_format($karma) . ' <img alt="Karma" src="/assets/img/Karma.png" height="15" width="18">';
     }
 
-    public function age($timestamp) {
-        $difference = time() - strtotime($timestamp);
-        $periods = array("second", "minute", "hour");
-        $lengths = array(60, 60, 24);
-        for($j = 0; $j < 3 && $difference >= $lengths[$j]; $j++)
+    public function age($datetime) {
+        $difference = time() - strtotime($datetime);
+        $periods = array("second", "minute", "hour", "day");
+        $lengths = array(60, 60, 24, 7);
+        for($j = 0; $j < 3 && $difference >= $lengths[$j]; $j++) {
             $difference /= $lengths[$j];
+        }
         $difference = round($difference);
-        if($difference != 1) $periods[$j].= "s";
+
+        if($difference != 1) {
+            $periods[$j] .= "s";
+        }
         return "$difference $periods[$j] ago";
     }
 
