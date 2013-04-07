@@ -36,6 +36,10 @@ Please join the [Google Groups Mailing List](https://groups.google.com/forum/#!f
 
 Environment setup
 =================
+The easiest way of getting started is by using Vagrant. This method will provide you with a local virtual machine with a running instance of gw2spidy in a single command. For this to work you will need three things: Virtualbox, Ruby, and the Vagrant gem. Once you have this, simply `cd` into the gw2spidy directory and run `vagrant up`. This will fetch the base virtual machine for developing (a Ubuntu Precise 64bit server), install all of the required packages, configure mysql and nginx, then forward the virtual machine's port 80 to your machine's port 8080. When it's finished, visit `localhost:8080` in a browser and you're ready to go. Note that this does not do the crawling required to populate the database.
+
+Alternatively, follow the steps below:
+
 I'll provide you with some short setup instructions to make your life easier if you want to run the code for yourself or contribute.
 There's also a INSTALL file which contains a snippet I copy paste when I setup my VM, it should suffice ;-)
 
