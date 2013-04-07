@@ -16,7 +16,7 @@ class nginx {
       path => '/etc/nginx/sites-enabled/vagrant',
       target => '/etc/nginx/sites-available/gwspidy',
       ensure => link,
-      notify => Service['nginx'],
+      notify => Service['nginx', 'php5-fpm'],
       require => [
           File['vagrant-nginx'],
           File['default-nginx-disable'],

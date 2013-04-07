@@ -79,11 +79,6 @@ class gw2spidy {
       require => Package['nginx']
   }
 
-  service { 'php5-fpm':
-      ensure => running,
-      require => Package['php5-fpm']
-  }
-
   service { 'varnish':
     ensure => running,
     require => Package['varnish']
@@ -103,4 +98,10 @@ class gw2spidy {
     ensure => running,
     require => Package['mysql-server']
   }
+
+  service { 'php5-fpm':
+      ensure => running,
+      require => Package['php5-fpm']
+  }
+
 }
