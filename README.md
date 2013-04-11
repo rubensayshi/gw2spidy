@@ -27,7 +27,7 @@ If you need help or have any feedback, you can contact me on gw2spidy@rubensaysh
 
 Date/time data
 ==============
-As usual I didn't really think about timezones when I started this project, but now that multiple people forked the project and that I'm exporting data to some people it suddently matters ... 
+As usual I didn't really think about timezones when I started this project, but now that multiple people forked the project and that I'm exporting data to some people it suddenly matters ... 
 All data is stored in the server's timezone, however I've made sure that data going out (charts and API) are converted to UTC (and Highcharts converts it to the browsers timezone).
 
 Mailing List
@@ -36,17 +36,21 @@ Please join the [Google Groups Mailing List](https://groups.google.com/forum/#!f
 
 Environment setup
 =================
+The easiest way of getting started is by using Vagrant. This method will provide you with a local virtual machine with a running instance of gw2spidy in a single command. For this to work you will need three things: Virtualbox, Ruby, and the Vagrant gem. Once you have this, simply `cd` into the gw2spidy directory and run `vagrant up`. This will fetch the base virtual machine for developing (a Ubuntu Precise 64bit server), install all of the required packages, configure mysql and nginx, then forward the virtual machine's port 80 to your machine's port 8080. When it's finished, visit `localhost:8080` in a browser and you're ready to go. Note that this does not do the crawling required to populate the database.
+
+Alternatively, follow the steps below:
+
 I'll provide you with some short setup instructions to make your life easier if you want to run the code for yourself or contribute.
 There's also a INSTALL file which contains a snippet I copy paste when I setup my VM, it should suffice ;-)
 
 #### A LOT has changed and most likely will continue a while longer
-Join the the IRC channel and we can talk!  
+Join the IRC channel and we can talk!  
 Me (Drakie) and other people already involved for a while are happy to share our knowledge and help you, specially if you consider contributing!
 
 Linux
 -----
 I run the project on a linux server and many of the requirements might not be available on windows and I have only (a tiny bit) of (negative) experience with windows.  
-If you want to run this on a windows machine, for development purposes, then I strongly sugest you just run a virtual machine with linux (vmware player is free and works pretty nice).  
+If you want to run this on a windows machine, for development purposes, then I strongly suggest you just run a virtual machine with linux (vmware player is free and works pretty nice).  
 If you make your way to the IRC channel I have a VM image on my google drive (made by Marthisdil) with everything setup and ready to roll ;)
 
 PHP 5.3
@@ -60,7 +64,7 @@ You'll need the following extensions installed:
 MySQL / Propel
 --------------
 I think 4.x will suffice, though I run 5.x.  
-On the PHP side of things I'm using PropelORM, thanks to that you could probally switch to PostgreSQL or MSSQL easily if you have to ;) 
+On the PHP side of things I'm using PropelORM, thanks to that you could probably switch to PostgreSQL or MSSQL easily if you have to ;) 
 
 Apache / Nginx / CLI
 --------------------
@@ -97,9 +101,9 @@ Just some HTML / JS / CSS libs, already included in `webroot/assets/vendor` fold
 
 You will need the pear library Log
 ----------------------------------
-pear channel-discover pear.phing.info
-pear install phing/phing
-pear install Log
+    pear channel-discover pear.phing.info
+    pear install phing/phing
+    pear install Log
 
 
 Project Setup
@@ -107,9 +111,9 @@ Project Setup
 
 RequestSlots
 ------------
-ArenaNet is okay with me doing this, but nonetheless I want to limit the amount of requests I'm shooting at their website or at least spread them out a bit.  
-I came up with this concept of 'request slots', I setup an x amount of slots, claim one when I do a request and then give it a cooldown before I can use it again.  
-That way I can control the flood a bit better, from the technicaly side this is done using Redis sorted sets.
+ArenaNet is okay with me doing this, but nonetheless I want to limit the amount of requests I'm shooting at their website or at least spread them out a bit.
+I came up with this concept of 'request slots', I setup an x amount of slots, claim one when I do a request and then give it a cooldown before I can use it again.
+That way I can control the flood a bit better, from the technical side this is done using Redis sorted sets.
 
 Background Queues
 -----------------
@@ -152,7 +156,7 @@ The crawling can be done in 3 ways and I'm gonna explain them a bit before conti
 
 ### listings.json
 A request to **/ws/listings.json?id=<item-id>** gives back all the buy and sell listings for a single item.  
-Atm I grab the lowest and don't even store the other except summing up their total quantity, this is because I'm not using the other listings and the database is getting to big to just carelessly store them.  
+Atm I grab the lowest and don't even store the other except summing up their total quantity, this is because I'm not using the other listings and the database is getting too big to just carelessly store them.  
 
 This method is always the most accurate and guaranteed to work because it's what the game relies on heavily.  
 
@@ -173,10 +177,10 @@ I got a tip from *shroud* how to get around this bug, but he didn't want me to s
 I respect that and am really happy he at least shared it with me for gw2spidy, because 250 items in request is superb to the other 2 methods, by a large margin! 
 
 ### Choices To Make
-So for the real gw2spidy database I want to use the *search.json?ids=* method and I build the code so that I can use it and still have a fallback to *listings.json* incase ArenaNet messes up again and I know *listings.json* will always be as accurate as possible.  
-However since ArenaNet only fixed the normal *search.json* without the *shroud-magic* the *search.json?ids=* method ain't really viable for other people to use, unless you like weird unaccurate spikes in your data once in a while.  
+So for the real gw2spidy database I want to use the *search.json?ids=* method and I build the code so that I can use it and still have a fallback to *listings.json* in case ArenaNet messes up again and I know *listings.json* will always be as accurate as possible.  
+However since ArenaNet only fixed the normal *search.json* without the *shroud-magic* the *search.json?ids=* method ain't really viable for other people to use, unless you like weird inaccurate spikes in your data once in a while.  
 
-Before all this madness, I always used the normal *search.json*, I sugest others should do that too atm until I can either release *shrouds* magic or ArenaNet fixes it themselves.  
+Before all this madness, I always used the normal *search.json*, I suggest others should do that too atm until I can either release *shrouds* magic or ArenaNet fixes it themselves.  
 Or use *listings.json* but you'll have a lot lower frequency!
 
 ### How To Configure it
