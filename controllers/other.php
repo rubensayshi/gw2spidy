@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\DB\UserQuery;
+
 use \DateTime;
 use \DateInterval;
 
@@ -98,7 +100,7 @@ $app->get("/admin/session", function(Request $request) use($app) {
     $app->setHomeActive();
 
     return $app['twig']->render('admin_session.html.twig', array(
-        'flash'    => $request->get('flash'),
+            'flash'    => $request->get('flash'),
     ));
 })
 ->bind('admin_session');
@@ -107,7 +109,7 @@ $app->get("/admin/session", function(Request $request) use($app) {
  * ----------------------
  *  route /admin/session POST
  * ----------------------
- */
+*/
 $app->post("/admin/session", function(Request $request) use($app) {
     $session_key  = $request->get('session_key');
     $game_session = (boolean)$request->get('game_session');
@@ -144,6 +146,44 @@ $app->post("/admin/session", function(Request $request) use($app) {
     }
 })
 ->bind('admin_session_post');
+
+/**
+ * ----------------------
+ *  route /admin/password
+ * ----------------------
+ */
+$app->get("/admin/password", function(Request $request) use($app) {
+    // workaround for now to set active menu item
+    $app->setHomeActive();
+
+    return $app['twig']->render('admin_password.html.twig', array(
+            'flash'    => $request->get('flash'),
+    ));
+})
+->bind('admin_password');
+
+/**
+ * ----------------------
+ *  route /admin/password POST
+ * ----------------------
+*/
+$app->post("/admin/password", function(Request $request) use($app) {
+    $user_id  = $request->get('user_id');
+    $password = $request->get('password');
+
+    $user = UserQuery::create()->findPk($user_id);
+
+    if (!$user) {
+        return $app->redirect($app['url_generator']->generate('admin_password', array('flash' => "no_user")));
+    }
+
+    $encoder = $app['security.encoder_factory']->getEncoder($user);
+    $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
+    $user->save();
+
+    return $app->redirect($app['url_generator']->generate('admin_password', array('flash' => "ok")));
+})
+->bind('admin_password_post');
 
 /**
  * ----------------------
