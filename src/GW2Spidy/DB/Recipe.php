@@ -105,6 +105,12 @@ HTML;
         return $tooltip == self::FALSE_POSITIVE ? null : $tooltip;
     }
 
+    public function getMargin() {
+        $margin = intval($this->getProfit() / $this->getCost());
+
+        return $margin;
+    }
+
     public function getGW2DBTooltipFromGW2DB() {
         $js = @file_get_contents("http://www.gw2db.com/recipes/{$this->getGW2DBExternalId()}/tooltip");
 
