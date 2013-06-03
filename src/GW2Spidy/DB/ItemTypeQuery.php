@@ -25,7 +25,7 @@ class ItemTypeQuery extends BaseItemTypeQuery {
         $cacheKey = __CLASS__ . "::" . __METHOD__;
         $types    = ApplicationCache::getInstance()->get($cacheKey);
 
-        if (!$types) {
+        if (!$types || count($types) == 0) {
             $types = self::create()
                 ->orderByTitle()
                 ->find();
