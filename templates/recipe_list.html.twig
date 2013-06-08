@@ -133,6 +133,7 @@
             {{ _self.th_sortable('Karma Cost', 'karma_cost', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Sell Price', 'sell_price', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Profit', 'profit', current_sort, current_sort_order, _context) }}
+            {{ _self.th_sortable('Profit %', 'margin', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Supply', 'sale_availability', current_sort, current_sort_order, _context) }}
             {{ _self.th_sortable('Demand', 'offer_availability', current_sort, current_sort_order, _context) }}
         </thead>
@@ -160,6 +161,9 @@
                 </td>
                 <td class="profit">
                     {{ recipe.profit | gw2money }}
+                </td>
+                <td class="margin">
+                    {{ (recipe.margin * 100) | number_format(2, '.', ',') }}%
                 </td>
                 <td class=sale_availability>
                     {{ recipe.resultItem.saleAvailability }}

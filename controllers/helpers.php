@@ -118,7 +118,7 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
  * @param  array         $tplVars
  */
 function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, $itemsperpage, array $tplVars = array()) {
-    $sortByOptions = array('name', 'rating', 'cost', 'karma_cost', 'sell_price', 'profit', 'sale_availability', 'offer_availability');
+    $sortByOptions = array('name', 'rating', 'cost', 'karma_cost', 'sell_price', 'profit', 'sale_availability', 'offer_availability', 'margin');
 
     foreach ($sortByOptions as $sortByOption) {
         if ($request->get("sort_{$sortByOption}", null)) {
@@ -151,6 +151,9 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
     if($hideLocked = $request->get('hide_unlock_required', null)) {
         $q->filterByRequiresUnlock(0, \Criteria::EQUAL);
     }
+
+    $q->addAsColumn("margin", "profit / cost");
+    $q->addSelectColumn("*");
 
     $q->innerJoinResultItem('ri')
       ->withColumn('ri.SaleAvailability','sale_availability')
