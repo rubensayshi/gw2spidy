@@ -10,6 +10,7 @@ use GW2Spidy\Util\ApplicationCache;
 use GW2Spidy\DB\om\BaseItem;
 use GW2Spidy\Util\CacheHandler;
 
+use \PropelPDO;
 
 /**
  * Skeleton subclass for representing a row from the 'item' table.
