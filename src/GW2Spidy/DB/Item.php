@@ -78,7 +78,7 @@ class Item extends BaseItem {
         return $v;
     }
 
-    public function preSave() {
+    public function preSave(PropelPDO $con = null) {
         if ($this->isColumnModified(ItemPeer::MIN_SALE_UNIT_PRICE) || $this->isColumnModified(ItemPeer::MAX_OFFER_UNIT_PRICE)) {
             $this->setLastPriceChanged(new \DateTime());
         }
