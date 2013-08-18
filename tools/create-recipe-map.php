@@ -22,19 +22,6 @@ class Ingredient {
 /*
 Target output style
 
-{"1":{
- "ID":73902,
- "ExternalID":9137,
- "DataID":3083,
- "Name":"Pile[s] of Pumpkin Pie Spice",
- "Rating":225,
- "Type":8,
- "Count":1,
- "CreatedItemId":504736,
- "Ingredients":[{"ItemID":504475,"Count":1},{"ItemID":504751,"Count":1},{"ItemID":504466,"Count":1},{"ItemID":504545,"Count":1}]
- }
-}
-
 {
     "0":{
         "ID":null,

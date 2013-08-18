@@ -49,7 +49,7 @@ if (DisciplineQuery::create()->count() == 0) {
 }
 
 $data = json_decode(file_get_contents($mapfilename), true);
-$cnt  = count($data);
+$cnt  = count($data) - 1;
 
 /*
  {
