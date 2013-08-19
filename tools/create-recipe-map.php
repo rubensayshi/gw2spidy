@@ -6,7 +6,7 @@ ini_set('memory_limit', '1G');
 require dirname(__FILE__) . '/../autoload.php';
 
 $recipe_list = new  ArrayObject();
-$max = null; //Set the maximum number of recipes to retrieve
+$max = 1; //Set the maximum number of recipes to retrieve
 
 //Allows one-liner ingredient list adding.
 class Ingredient {
@@ -63,16 +63,19 @@ $disciplines = array(
     'Chef' => 8
 );
 
-$curl = CurlRequest::newInstance("https://api.guildwars2.com/v1/recipes.json") ->exec();
+//Gather all recipes by recipe_id
+$curl = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/recipes.json") ->exec();
 $data = json_decode($curl->getResponseBody(), true);
 
 foreach($data['recipes'] as $recipe_id) {
-    $curl_recipe = CurlRequest::newInstance("https://api.guildwars2.com/v1/recipe_details.json?recipe_id={$recipe_id}") ->exec();
+    $curl_recipe = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/recipe_details.json?recipe_id={$recipe_id}")->exec();
     $recipe_details = json_decode($curl_recipe->getResponseBody(), true);
     
-    $curl_item = CurlRequest::newInstance("https://api.guildwars2.com/v1/item_details.json?item_id={$recipe_details['output_item_id']}") ->exec();
+    //Get the details of the created item to get it's name
+    $curl_item = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$recipe_details['output_item_id']}")->exec();
     $created_item = json_decode($curl_item->getResponseBody(), true);
     
+    //If a recipe has multiple disciplines, treat each one like a separate recipe to be inserted.
     foreach($recipe_details['disciplines'] as $discipline) {    
         $recipe = new stdClass();
         $recipe->ID = null; //Gw2dbId
