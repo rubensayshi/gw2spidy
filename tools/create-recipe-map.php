@@ -6,7 +6,7 @@ ini_set('memory_limit', '1G');
 require dirname(__FILE__) . '/../autoload.php';
 
 $recipe_list = new  ArrayObject();
-$max = 1; //Set the maximum number of recipes to retrieve
+$max = null; //Set the maximum number of recipes to retrieve
 
 //Allows one-liner ingredient list adding.
 class Ingredient {
