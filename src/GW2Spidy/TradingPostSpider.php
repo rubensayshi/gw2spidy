@@ -62,7 +62,7 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getListingsById($id, $type = self::LISTING_TYPE_SELL) {
-        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/listings.json?id={$id}&type={$queryType}")
+        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/listings.json?id={$id}&type={$type}")
                     ->setCookie("s={$this->getSession()->getSessionKey()}")
                     ->setHeader("X-Requested-With: XMLHttpRequest")
                     ->exec()
