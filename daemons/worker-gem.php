@@ -3,7 +3,6 @@
 use GW2Spidy\GW2SessionManager;
 
 use \DateTime;
-use \DateTimeZone;
 use \Exception;
 
 use GW2Spidy\DB\GoldToGemRate;

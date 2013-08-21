@@ -29,5 +29,3 @@ class RequestSlotManager extends RedisSlotManager {
         return parent::getInstance();
     }
 }
-
-?>

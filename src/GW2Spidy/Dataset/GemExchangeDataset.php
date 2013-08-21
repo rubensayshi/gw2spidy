@@ -5,11 +5,6 @@ namespace GW2Spidy\Dataset;
 use GW2Spidy\Application;
 
 use \DateTime;
-use \DateInterval;
-use \DateTimeZone;
-use GW2Spidy\Util\CacheHandler;
-use GW2Spidy\DB\GoldToGemRateQuery;
-use GW2Spidy\DB\GemToGoldRateQuery;
 
 class GemExchangeDataset extends BaseDataset {
     /*

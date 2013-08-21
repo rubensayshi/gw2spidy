@@ -133,7 +133,7 @@ class ItemDatasetCleaner {
             $count++;
         }
 
-        unset($ticks, $tsByHour);
+        unset($ticks);
 
         return $count;
     }

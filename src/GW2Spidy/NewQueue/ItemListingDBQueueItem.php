@@ -2,12 +2,8 @@
 
 namespace GW2Spidy\NewQueue;
 
-use \DateTime;
-use \Exception;
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemQuery;
-
-use GW2Spidy\Util\RedisQueue\RedisPriorityIdentifierQueueItem;
 
 class ItemListingDBQueueItem {
     protected $item;

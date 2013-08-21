@@ -8,18 +8,13 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 
 use GW2Spidy\DB\DisciplineQuery;
-use GW2Spidy\DB\ItemSubTypeQuery;
-use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\RecipeQuery;
-use GW2Spidy\DB\GW2Session;
 use GW2Spidy\DB\GoldToGemRateQuery;
 use GW2Spidy\DB\GemToGoldRateQuery;
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\DB\SellListingQuery;
-use GW2Spidy\DB\WorkerQueueItemQuery;
 use GW2Spidy\DB\ItemPeer;
-use GW2Spidy\DB\RecipePeer;
 use GW2Spidy\DB\BuyListingPeer;
 use GW2Spidy\DB\SellListingPeer;
 use GW2Spidy\DB\BuyListingQuery;
@@ -27,10 +22,7 @@ use GW2Spidy\DB\BuyListingQuery;
 
 class v090APIControllerProvider implements ControllerProviderInterface {
     public function connect(Application $app) {
-        $toInt = function($val) {
-            return (int) $val;
-        };
-
+        
         $controllers = $app['controllers_factory'];
 
         /**
@@ -119,7 +111,6 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          * ----------------------
          */
         $controllers->match("/{format}/all-items/{typeId}", function(Request $request, $format, $typeId) use($app) {
-            $t = microtime(true);
             $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
 
             if (in_array($typeId, array('all', '*all*'))) {
@@ -254,9 +245,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
 
             $itemsperpage = 1000;
             $page = intval($page > 0 ? $page : 1);
-
-            $fields   = array();
-            $listings = array();
+            
             if ($type == 'sell') {
                 $q = SellListingQuery::create()->select(SellListingPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
             } else {
