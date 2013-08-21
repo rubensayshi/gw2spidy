@@ -2,8 +2,6 @@
 
 namespace GW2Spidy\NewQueue;
 
-use \Criteria;
-
 use GW2Spidy\Util\Functions;
 
 use GW2Spidy\DB\Item;
@@ -44,7 +42,6 @@ class ItemDBQueueWorker extends BaseWorker {
             return;
         }
 
-        $now  = new \DateTime();
         $item = $item ?: ItemQuery::create()->findPK($itemData['data_id']);
 
         $updateItemData = $itemData;

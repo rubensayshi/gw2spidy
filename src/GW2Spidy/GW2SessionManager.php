@@ -77,5 +77,3 @@ class GW2SessionManager extends Singleton {
         }
     }
 }
-
-?>

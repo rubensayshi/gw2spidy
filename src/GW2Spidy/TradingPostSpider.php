@@ -4,7 +4,6 @@ namespace GW2Spidy;
 
 use \Exception;
 
-use GW2Spidy\Util\CacheHandler;
 use GW2Spidy\Util\CurlRequest;
 
 use GW2Spidy\DB\ItemSubType;
@@ -147,5 +146,3 @@ class TradingPostSpider extends BaseSpider {
         }
     }
 }
-
-?>

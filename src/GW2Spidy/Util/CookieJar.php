@@ -23,5 +23,3 @@ class CookieJar extends Singleton {
         $this->cookiejar = null;
     }
 }
-
-?>

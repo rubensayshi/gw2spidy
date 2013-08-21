@@ -154,12 +154,11 @@ class CurlRequest {
 
         // if we've requested headers we can parse them now
         if ($options[CURLOPT_HEADER]) {
-            // retrieve header string based on reponse info
-            $responseHeaders    = trim(substr($this->result, 0, $this->info['header_size']));
             // retrieve body string based on reponse info
             $this->responseBody = substr($this->result, $this->info['header_size']);
 
-            $responseHeaders = explode("\r\n\r\n", $responseHeaders);
+            // retrieve header string based on reponse info
+            $responseHeaders = explode("\r\n\r\n", trim(substr($this->result, 0, $this->info['header_size'])));
 
             foreach ($responseHeaders as $responseHeader) {
                 $this->extractHeaders($responseHeader, true);
@@ -262,5 +261,3 @@ class CurlRequest {
         return $this;
     }
 }
-
-?>

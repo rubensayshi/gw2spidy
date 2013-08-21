@@ -42,8 +42,6 @@ if (!isset($cnf['gw2spidy']['api_secrets'])) {
     die(CLIColors::getColoredString("Please create the initial 'api_secrets' entry yourself.\n", "red"));
 }
 
-$md5 = md5($name);
-
 if ($check && $check != $md5) {
     die(CLIColors::getColoredString("md5 [[ {$md5} ]] didn't match the check [[ {$check} ]].\n", "red"));
 }

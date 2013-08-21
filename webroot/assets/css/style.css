@@ -150,7 +150,7 @@ h1 {
 .item-list-table .margin,
 .item-list-table .cost,
 .item-list-table .sell_price,
-.item-list-table .profit, {
+.item-list-table .profit {
     min-width: 115px;
     width: 10%;
     text-align: center;

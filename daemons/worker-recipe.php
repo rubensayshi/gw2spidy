@@ -1,5 +1,5 @@
 <?php
-use \DateTime;
+
 use GW2Spidy\DB\RecipeQuery;
 
 require dirname(__FILE__) . '/../autoload.php';
