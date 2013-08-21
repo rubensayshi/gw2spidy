@@ -12,6 +12,7 @@ var GW2SpidyChart = function(url, container, set_options) {
     };
 
     var options = {
+        colors: ['#4572A7', '#AA4643', '#89A54E', '#80699B', '#3D96AE','#DB843D', '#92A8CD', '#A47D7C', '#B5CA92'],
         chart : {
             type: 'line',
             renderTo : container,
@@ -50,7 +51,13 @@ var GW2SpidyChart = function(url, container, set_options) {
             floating: false,
             verticalAlign: "top",
             width: 800,
-            itemWidth: 265
+            itemWidth: 265,
+            navigation: {
+                activeColor: '#3E576F'
+            },
+            itemStyle: {
+                color: '#3E576F'
+            }
         },
         rangeSelector : {
             buttons: [

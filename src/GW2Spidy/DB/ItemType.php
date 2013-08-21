@@ -20,12 +20,12 @@ use GW2Spidy\DB\om\BaseItemType;
 class ItemType extends BaseItemType {
     protected $displaySubTypes = null;
 
-    public function getSubTypes() {
+    public function getSubTypes($criteria = null, PropelPDO $con = null) {
         $cacheKey = __CLASS__ . "::" . __METHOD__ . "::" . $this->getId();
         $subtypes = ApplicationCache::getInstance()->get($cacheKey);
 
         if (!$subtypes) {
-            $subtypes = parent::getSubTypes();
+            $subtypes = parent::getSubTypes($criteria, $con);
 
             ApplicationCache::getInstance()->set($cacheKey, $subtypes, MEMCACHE_COMPRESSED, 86400);
         }
