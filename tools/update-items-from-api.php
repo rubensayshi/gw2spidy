@@ -1,9 +1,7 @@
 <?php
 use GW2Spidy\Util\CurlRequest;
-use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\DB\GW2DBItemArchiveQuery;
 use GW2Spidy\TradingPostSpider;
-use GW2Spidy\NewQueue\ItemDBQueueWorker;
+use GW2Spidy\DB\ItemQuery;
 
 ini_set('memory_limit', '1G');
 
@@ -38,13 +36,14 @@ function getIDFromMarketData ($marketData, $searchValue) {
 }
 
 $market_data = TradingPostSpider::getInstance()->getMarketData();
-$worker = new ItemDBQueueWorker(null);
 
 $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/items.json") ->exec();
 $data = json_decode($curl->getResponseBody(), true);
 
 $number_of_items = count($data['items']) - 1;
 $error_values = array();
+
+$render_url = getAppConfig('gw2spidy.gw2render_url')."/file";
 
 foreach($data['items'] as $item_id) {
     try {
@@ -55,17 +54,19 @@ foreach($data['items'] as $item_id) {
         
         echo $item['name'] . "\n";
         
-        $itemData = array(  'type_id'       => getIDFromMarketData($market_data['types'], $item['type']),
-                            'data_id'       => $item['item_id'],
-                            'name'          => $item['name'],
-                            'description'   => $item['description'],
-                            'level'         => $item['level'],
-                            'rarity'        => getIDFromMarketData($market_data['rarities'], $item['rarity']),
-                            'vendor'        => $item['vendor_value'],
-                            'img'           => getAppConfig('gw2spidy.gw2render_url'). "/file/{$item['icon_file_signature']}/{$item['icon_file_id']}.png",
-                            'rarity_word'   => $item['rarity']);
+        $itemData = array(  'type_id'           => getIDFromMarketData($market_data['types'], $item['type']),
+                            'data_id'           => $item_id,
+                            'name'              => $item['name'],
+                            //'gem_store_description'       => $item['description'],
+                            'restriction_level' => $item['level'],
+                            'rarity'            => getIDFromMarketData($market_data['rarities'], $item['rarity']),
+                            'vendor_sell_price' => $item['vendor_value'],
+                            'img'               => "{$render_url}/{$item['icon_file_signature']}/{$item['icon_file_id']}.png",
+                            'rarity_word'       => $item['rarity']);
         
-        $worker->storeItemData($itemData);
+        $itemQuery = ItemQuery::create()->findPK($item_id);       
+        $itemQuery->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
+        $itemQuery->save();
     } catch (Exception $e) {
         $error_values[] = $item_id;
         
