@@ -8,7 +8,7 @@ ini_set('memory_limit', '1G');
 
 require dirname(__FILE__) . '/../autoload.php';
 
-$max = 1; //Set the maximum number of items to retrieve
+$max = null; //Set the maximum number of items to retrieve
 $item_count = 0; //Start the counter at zero.
 
 function getIDFromMarketData ($marketData, $searchValue) {
