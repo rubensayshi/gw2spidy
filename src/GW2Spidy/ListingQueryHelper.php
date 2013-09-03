@@ -7,7 +7,6 @@ use GW2Spidy\Util\CacheHandler;
 
 use \DateTime;
 use \DateTimeZone;
-use GW2Spidy\Util\ApplicationCache;
 use GW2Spidy\DB\Item;
 
 class ListingQueryHelper {

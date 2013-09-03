@@ -3,11 +3,6 @@
 namespace GW2Spidy\Dataset;
 
 use \DateTime;
-use \DateInterval;
-use \DateTimeZone;
-use GW2Spidy\Util\CacheHandler;
-use GW2Spidy\DB\GoldToGemRateQuery;
-use GW2Spidy\DB\GemToGoldRateQuery;
 
 abstract class BaseDataset {
     /*

@@ -62,5 +62,3 @@ abstract class CLIColors {
         return array_keys(self::$background_colors);
     }
 }
-
-?>

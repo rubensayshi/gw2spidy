@@ -16,7 +16,7 @@ class DatasetManager extends Singleton {
     }
 
     public function setUseCache($useCache = true) {
-        $this->useCache = false;
+        $this->useCache = $useCache;
     }
 
     public function getGemDataset($type) {

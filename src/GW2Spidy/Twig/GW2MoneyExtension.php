@@ -2,9 +2,6 @@
 
 namespace GW2Spidy\Twig;
 
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-
-
 class GW2MoneyExtension extends \Twig_Extension {
 
     public function getFilters() {
@@ -51,7 +48,7 @@ class GW2MoneyExtension extends \Twig_Extension {
     }
 
     public function formatFragment($amount, $image) {
-        return "<span class=\"gw2money-fragment\">{$amount} ${image}</span> ";
+        return "<span class=\"gw2money-fragment\">{$amount} {$image}</span> ";
     }
 
     public function getName() {

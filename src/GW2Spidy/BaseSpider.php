@@ -6,14 +6,6 @@ use GW2Spidy\DB\GW2Session;
 
 use GW2Spidy\Util\Singleton;
 
-use \Exception;
-
-use GW2Spidy\Util\CacheHandler;
-use GW2Spidy\Util\CurlRequest;
-
-use GW2Spidy\DB\ItemSubType;
-use GW2Spidy\DB\ItemType;
-
 abstract class BaseSpider extends Singleton {
     protected $gw2session;
 

@@ -16,7 +16,7 @@ class ItemListingDBQueueManager {
     }
 
     public function getLowestPrio() {
-        // pop the hotest item off $queueKey which is between -inf and +inf with limit 0,1
+        // pop the hottest item off $queueKey which is between -inf and +inf with limit 0,1
         $items = $this->client->zRangeByScore($this->getQueueName(), '-inf', '+inf', array('withscores' => true, 'limit' => array(0, 1)));
 
         // grab the item we popped off

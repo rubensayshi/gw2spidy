@@ -135,7 +135,7 @@ class RedisCacheHandler {
             throw new Exception("Can't decrement when in serialize mode!");
         }
 
-        return $this->client->incrby($this->getKey($key), $var);
+        return $this->client->incrby($this->getKey($key), $value);
     }
     public function set($key, $var) {
         if (!$this->getEnabled()) {

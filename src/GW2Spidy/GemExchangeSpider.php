@@ -56,5 +56,3 @@ class GemExchangeSpider extends BaseSpider {
         );
     }
 }
-
-?>
