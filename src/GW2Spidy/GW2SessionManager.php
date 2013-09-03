@@ -70,8 +70,6 @@ class GW2SessionManager extends Singleton {
             $gw2session->setSource("generated");
             $gw2session->setGameSession(false);
 
-            var_dump("getNewSession", $sid);
-
             return $gw2session;
         } else {
             throw new Exception("Login request failed, no SID.");
