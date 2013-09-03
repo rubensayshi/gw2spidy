@@ -4,7 +4,6 @@ namespace GW2Spidy;
 
 use \Exception;
 
-use GW2Spidy\Util\CacheHandler;
 use GW2Spidy\Util\CurlRequest;
 
 use GW2Spidy\DB\ItemSubType;
@@ -72,7 +71,7 @@ class TradingPostSpider extends BaseSpider {
 
         $s = $this->getSession();
 
-        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/listings.json?id={$id}&type={$queryType}")
+        $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/listings.json?id={$id}&type={$type}")
                     ->setCookieJar($s->getCookieJar())
                     ->setCookie("s={$s->getSessionKey()}")
                     ->exec()
@@ -168,5 +167,3 @@ class TradingPostSpider extends BaseSpider {
         }
     }
 }
-
-?>

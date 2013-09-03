@@ -44,5 +44,3 @@ class ItemDBQueueManager {
         return $this->client->llen($this->getQueueName());
     }
 }
-
-?>

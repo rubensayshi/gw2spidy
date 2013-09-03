@@ -5,7 +5,6 @@ use GW2Spidy\DB\UserQuery;
 use \DateTime;
 use \DateInterval;
 
-use GW2Spidy\Application;
 use GW2Spidy\GW2SessionManager;
 use GW2Spidy\NewQueue\RequestSlotManager;
 use GW2Spidy\NewQueue\QueueHelper;
@@ -15,7 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use GW2Spidy\DB\GW2Session;
 use GW2Spidy\DB\ItemQuery;
 
-use GW2Spidy\Util\Functions;
 
 /**
  * ----------------------

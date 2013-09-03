@@ -5,7 +5,6 @@ namespace GW2Spidy;
 use GW2Spidy\DB\DisciplineQuery;
 
 use GW2Spidy\DB\ItemTypeQuery;
-use Symfony\Component\HttpFoundation\Request;
 
 class Application extends \Silex\Application {
     protected $time;
@@ -147,5 +146,3 @@ class Application extends \Silex\Application {
         return $this->disciplines;
     }
 }
-
-?>

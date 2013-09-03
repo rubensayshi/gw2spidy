@@ -21,7 +21,6 @@ class QueueHelper extends Singleton {
     public function enqueueItemDB($type = null) {
         Propel::disableInstancePooling();
 
-        $q = ItemQuery::create();
         $queueManager = $this->getItemDBQueueManager();
 
         foreach (ItemTypeQuery::getAllTypes() as $type) {
@@ -81,5 +80,3 @@ class QueueHelper extends Singleton {
         }
     }
 }
-
-?>

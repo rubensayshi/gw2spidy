@@ -6,8 +6,6 @@ use GW2Spidy\Util\CacheHandler;
 
 use GW2Spidy\DB\GW2DBItemArchive;
 
-use GW2Spidy\DB\Item;
-
 use GW2Spidy\DB\ItemQuery;
 
 ini_set('memory_limit', '1G');

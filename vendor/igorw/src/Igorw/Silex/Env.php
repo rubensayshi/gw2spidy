@@ -20,7 +20,8 @@ class Env {
     }
 
     public function getEnv() {
-        return end($this->getEnvs());
+        $envs = $this->getEnvs();
+        return end($envs);
     }
 
     public function getEnvs() {

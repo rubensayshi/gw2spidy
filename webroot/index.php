@@ -7,8 +7,6 @@ ini_set('display_errors', 'On');
  *  this file contains all routing and the 'controllers' using lambda functions
  */
 
-use GW2Spidy\Util\Functions;
-
 use GW2Spidy\Application;
 use GW2Spidy\Security\CustomSecurityServiceProvider;
 

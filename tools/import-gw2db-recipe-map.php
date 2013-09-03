@@ -2,17 +2,9 @@
 
 use GW2Spidy\NewQueue\ItemDBQueueWorker;
 
-use GW2Spidy\NewQueue\ItemDBQueueItem;
-
 use GW2Spidy\NewQueue\RequestSlotManager;
 
 use GW2Spidy\Util\CacheHandler;
-
-use GW2Spidy\DB\GW2DBItemArchive;
-
-use GW2Spidy\DB\ItemTypeQuery;
-
-use GW2Spidy\DB\ItemType;
 
 use GW2Spidy\TradingPostSpider;
 

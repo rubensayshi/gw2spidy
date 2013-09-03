@@ -109,5 +109,3 @@ abstract class Functions {
         return $result;
     }
 }
-
-?>
