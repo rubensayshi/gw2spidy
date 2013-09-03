@@ -1,6 +1,6 @@
 <?php
 
-use GW2Spidy\GW2SessionManager;
+use GW2Spidy\GW2GameSessionManager;
 
 use \DateTime;
 use \DateTimeZone;
@@ -31,8 +31,8 @@ $slotManager  = RequestSlotManager::getInstance();
 print "login ... \n";
 try {
     $begin = microtime(true);
-    $gw2session = GW2SessionManager::getInstance()->getSession();
-    echo "login ok [".(microtime(true) - $begin)."] -> [".(int)$gw2session->getGameSession()."] -> [{$gw2session->getSessionKey()}] \n";
+    $gw2session = GW2GameSessionManager::getInstance();
+    echo "login ok [".(microtime(true) - $begin)."] -> [{$gw2session->getSessionKey()}] \n";
 
     GemExchangeSpider::getInstance()->setSession($gw2session);
 } catch (Exception $e) {

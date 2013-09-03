@@ -11,7 +11,7 @@ class CurlRequest {
     protected $cookies;
     protected $urlAsReferer = true;
     protected $verbose      = false;
-    protected $cookiejar;
+    protected $cookieJar;
     protected $throwOnError = true;
 
     protected $result;
@@ -113,6 +113,14 @@ class CurlRequest {
         return $this->responseBody;
     }
 
+    public function getCookieJar() {
+        if (is_null($this->cookieJar)) {
+            $this->cookieJar = CookieJar::getInstance();
+        }
+
+        return $this->cookieJar;
+    }
+
     /**
      * @throws Exception
      * @return \GW2Spidy\Util\CurlRequest
@@ -134,8 +142,9 @@ class CurlRequest {
         if ($this->cookies) {
             $options[CURLOPT_COOKIE] = implode("; ", $this->cookies);
         }
-        $options[CURLOPT_COOKIEJAR]  = CookieJar::getInstance()->getCookieJar();
-        $options[CURLOPT_COOKIEFILE] = CookieJar::getInstance()->getCookieJar();
+
+        $options[CURLOPT_COOKIEJAR]  = $this->getCookieJar()->getCookieJar();
+        $options[CURLOPT_COOKIEFILE] = $this->getCookieJar()->getCookieJar();
         $options[CURLOPT_HTTPHEADER] = array_merge($this->headers, isset($options[CURLOPT_HTTPHEADER]) ? $options[CURLOPT_HTTPHEADER] : array());
 
         curl_setopt_array($ch, $options);
@@ -146,7 +155,7 @@ class CurlRequest {
         curl_close($ch);
 
         if ($this->throwOnError && $this->getInfo('http_code') >= 400) {
-            throw new Exception("CurlRequest failed [[ {$this->getInfo('http_code')} ]] [[ {$this->url} ]]");
+            throw new Exception("CurlRequest failed [[ {$this->getInfo('http_code')} ]] [[ {$this->url} ]] \n\n {$this->result}");
         }
 
         $this->responseHeaders = array();
@@ -261,6 +270,11 @@ class CurlRequest {
 
         return $this;
     }
+
+    public function setCookieJar($cookieJar) {
+        $this->cookieJar = $cookieJar;
+
+        return $this;
+    }
 }
 
-?>
