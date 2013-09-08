@@ -3,20 +3,14 @@
 namespace GW2Spidy\NewQueue;
 
 use \DateTime;
-use \DateInterval;
-use \Criteria;
 use \Exception;
 
 use GW2Spidy\DB\Item;
-use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\BuyListing;
 use GW2Spidy\DB\SellListing;
-use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\BuyListingQuery;
 use GW2Spidy\DB\SellListingQuery;
 
-use GW2Spidy\Util\Functions;
 use GW2Spidy\TradingPostSpider;
 
 
@@ -30,7 +24,6 @@ class ItemListingDBQueueWorker extends BaseWorker {
 
             $this->updateListings($item);
         } else {
-            $ids = array();
             foreach ($workload as $queueItem) {
                 $item = $queueItem->getItem();
                 $items[$item->getDataId()] = $queueItem->getItem();
@@ -93,22 +86,22 @@ class ItemListingDBQueueWorker extends BaseWorker {
         $lowestSell = null;
         $lowestBuy  = null;
 
-        $q = 0;
-        $l = 0;
+        $sellQuantityAmount = 0;
+        $sellListingsAmount = 0;
         if (count($sell)) {
             $lowestSell = reset($sell);
 
             foreach ($sell as $s) {
-                $q += $s['quantity'];
-                $l += $s['listings'];
+                $sellQuantityAmount += $s['quantity'];
+                $sellListingsAmount += $s['listings'];
             }
         }
 
         $sellListing = new SellListing();
         $sellListing->setItem($item);
         $sellListing->setListingDatetime($now);
-        $sellListing->setQuantity($q);
-        $sellListing->setListings($l);
+        $sellListing->setQuantity($sellQuantityAmount);
+        $sellListing->setListings($sellListingsAmount);
 
         if ($lowestSell) {
             $sellListing->setUnitPrice($lowestSell['unit_price']);
@@ -117,26 +110,26 @@ class ItemListingDBQueueWorker extends BaseWorker {
             $sellListing->setUnitPrice($item->getMinSaleUnitPrice());
         }
 
-        $item->setSaleAvailability($q);
+        $item->setSaleAvailability($sellQuantityAmount);
 
         $sellListing->save();
 
-        $q = 0;
-        $l = 0;
+        $buyQuantityAmount = 0;
+        $buyListingsAmount = 0;
         if (count($buy)) {
             $lowestBuy = reset($buy);
 
             foreach ($buy as $b) {
-                $q += $b['quantity'];
-                $l += $b['listings'];
+                $buyQuantityAmount += $b['quantity'];
+                $buyListingsAmount += $b['listings'];
             }
         }
 
         $buyListing = new BuyListing();
         $buyListing->setItem($item);
         $buyListing->setListingDatetime($now);
-        $buyListing->setQuantity($q);
-        $buyListing->setListings($l);
+        $buyListing->setQuantity($buyQuantityAmount);
+        $buyListing->setListings($buyListingsAmount);
 
         if ($lowestBuy) {
             $buyListing->setUnitPrice($lowestBuy['unit_price']);
@@ -145,7 +138,7 @@ class ItemListingDBQueueWorker extends BaseWorker {
             $buyListing->setUnitPrice($item->getMaxOfferUnitPrice());
         }
 
-        $item->setOfferAvailability($q);
+        $item->setOfferAvailability($buyQuantityAmount);
 
         $buyListing->save();
 

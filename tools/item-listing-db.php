@@ -1,12 +1,8 @@
 <?php
 
-use GW2Spidy\GW2SessionManager;
-use GW2Spidy\TradingPostSpider;
 use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\SellListingQuery;
 use GW2Spidy\NewQueue\ItemListingDBQueueItem;
-use GW2Spidy\NewQueue\ItemDBQueueWorker;
-use GW2Spidy\NewQueue\RequestSlotManager;
 use GW2Spidy\NewQueue\ItemListingDBQueueManager;
 use GW2Spidy\NewQueue\ItemListingDBQueueWorker;
 

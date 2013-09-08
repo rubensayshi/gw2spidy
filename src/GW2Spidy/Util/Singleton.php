@@ -18,5 +18,3 @@ abstract class Singleton {
         return static::$instances[$class];
     }
 }
-
-?>

@@ -11,10 +11,6 @@ use GW2Spidy\DB\GoldToGemRate;
 use GW2Spidy\DB\GemToGoldRate;
 
 use \DateTime;
-use GW2Spidy\DB\BuyListing;
-use GW2Spidy\DB\SellListing;
-use GW2Spidy\DB\BuyListingQuery;
-use GW2Spidy\DB\SellListingQuery;
 
 class GemDatasetCleaner {
     /*
@@ -135,7 +131,7 @@ class GemDatasetCleaner {
             $count++;
         }
 
-        unset($ticks, $tsByHour);
+        unset($ticks);
 
         return $count;
     }

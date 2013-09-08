@@ -1,31 +1,7 @@
 <?php
 
-
-use \DateTime;
-
-use GW2Spidy\Application;
-use Symfony\Component\HttpFoundation\Request;
-
 use GW2Spidy\Dataset\DatasetManager;
 use GW2Spidy\Dataset\GemExchangeDataset;
-
-use GW2Spidy\DB\DisciplineQuery;
-use GW2Spidy\DB\ItemSubTypeQuery;
-use GW2Spidy\DB\ItemType;
-use GW2Spidy\DB\RecipeQuery;
-use GW2Spidy\DB\GW2Session;
-use GW2Spidy\DB\GoldToGemRateQuery;
-use GW2Spidy\DB\GemToGoldRateQuery;
-use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\DB\ItemTypeQuery;
-use GW2Spidy\DB\SellListingQuery;
-use GW2Spidy\DB\WorkerQueueItemQuery;
-use GW2Spidy\DB\ItemPeer;
-use GW2Spidy\DB\BuyListingPeer;
-use GW2Spidy\DB\SellListingPeer;
-use GW2Spidy\DB\BuyListingQuery;
-
-use GW2Spidy\Util\Functions;
 
 /**
  * ----------------------

@@ -1,25 +1,12 @@
 <?php
 
-use \DateTime;
-
 use GW2Spidy\Application;
 use Symfony\Component\HttpFoundation\Request;
 
-use GW2Spidy\DB\DisciplineQuery;
-use GW2Spidy\DB\ItemSubTypeQuery;
-use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\RecipeQuery;
-use GW2Spidy\DB\GW2Session;
 use GW2Spidy\DB\GoldToGemRateQuery;
 use GW2Spidy\DB\GemToGoldRateQuery;
 use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\DB\ItemTypeQuery;
-use GW2Spidy\DB\SellListingQuery;
-use GW2Spidy\DB\WorkerQueueItemQuery;
-use GW2Spidy\DB\ItemPeer;
-use GW2Spidy\DB\BuyListingPeer;
-use GW2Spidy\DB\SellListingPeer;
-use GW2Spidy\DB\BuyListingQuery;
 
 use GW2Spidy\Util\Functions;
 
@@ -59,10 +46,10 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
     if (($rarityFilter = $request->get('rarity_filter', null)) !== null && is_numeric($rarityFilter) && in_array($rarityFilter, array(0,1,2,3,4,5,6))) {
         $q->filterByRarity($rarityFilter);
     }
-    if ($minLevelFilter = $request->get('min_level', null)) {
+    if (($minLevelFilter = $request->get('min_level', null))) {
         $q->filterByRestrictionLevel($minLevelFilter, \Criteria::GREATER_EQUAL);
     }
-    if ($maxLevelFilter = $request->get('max_level', null)) {
+    if (($maxLevelFilter = $request->get('max_level', null))) {
         $q->filterByRestrictionLevel($maxLevelFilter, \Criteria::LESS_EQUAL);
     }
 
@@ -105,7 +92,7 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
             'current_sort'       => $sortBy,
             'current_sort_order' => $sortOrder,
     ));
-};
+}
 
 /**
  * generic function used for /search and /crafting
@@ -210,7 +197,7 @@ function recipe_list(Application $app, Request $request, RecipeQuery $q, $page, 
         'current_sort'       => $sortBy,
         'current_sort_order' => $sortOrder,
     ));
-};
+}
 
 function gem_summary() {
     $lastSell = GemToGoldRateQuery::create()
@@ -233,8 +220,9 @@ function gem_summary() {
     $goldtogem = $lastBuy->getRate();
 
     $usdtogem    = 10  / 800 * 100;
-    $poundstogem = 8.5 / 800 * 100;
-    $eurostogem  = 10  / 800 * 100;
+    //Unused
+    //$poundstogem = 8.5 / 800 * 100;
+    //$eurostogem  = 10  / 800 * 100;
 
     $usdtogold   = (10000 / $gemtogold) * $usdtogem;
 
@@ -260,6 +248,7 @@ function multiplier($base, $multiple) {
    return $base / gcd($base, $multiple);
 }
 
+//$item unused
 function calculateRecipeMultiplier($item, $recipe = null) {
 
     if($recipe) {
@@ -285,11 +274,11 @@ function calculateRecipeMultiplier($item, $recipe = null) {
     return 1;
 }
 
-function buildMultiRecipeTree($item, $recipe = null, $app) {
-    return buildRecipeTree($item, $recipe, $app, calculateRecipeMultiplier($item, $recipe));
+function buildMultiRecipeTree($item, $app, $recipe = null) {
+    return buildRecipeTree($item, $app, $recipe, calculateRecipeMultiplier($item, $recipe));
 }
 
-function buildRecipeTree($item, $recipe = null, $app, $multiplier = 1) {
+function buildRecipeTree($item, $app, $recipe = null, $multiplier = 1) {
     $tree = array(
         'id' => $item->getDataId(),
         'name' => $item->getName(),
@@ -318,7 +307,7 @@ function buildRecipeTree($item, $recipe = null, $app, $multiplier = 1) {
                 $ingredientMultiplier /= multiplier($ingredientRecipe->getCount(), $ingredient->getCount());
             }
 
-            $recipeTree[] = array(buildRecipeTree($ingredientItem, $ingredientRecipe, $app, $ingredientMultiplier), $ingredient->getCount() * $multiplier);
+            $recipeTree[] = array(buildRecipeTree($ingredientItem, $app, $ingredientRecipe, $ingredientMultiplier), $ingredient->getCount() * $multiplier);
         }
 
         $tree['recipe'] = array('count' => $recipe->getCount() * $multiplier, 'ingredients' => $recipeTree);

@@ -1,34 +1,7 @@
 <?php
 
-use GW2Spidy\DB\User;
-
-use \DateTime;
-
-use GW2Spidy\Application;
-
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Cookie;
-
-use GW2Spidy\DB\DisciplineQuery;
-use GW2Spidy\DB\ItemSubTypeQuery;
-use GW2Spidy\DB\ItemType;
-use GW2Spidy\DB\RecipeQuery;
-use GW2Spidy\DB\GW2Session;
-use GW2Spidy\DB\GoldToGemRateQuery;
-use GW2Spidy\DB\GemToGoldRateQuery;
-use GW2Spidy\DB\ItemQuery;
-use GW2Spidy\DB\ItemTypeQuery;
-use GW2Spidy\DB\SellListingQuery;
-use GW2Spidy\DB\WorkerQueueItemQuery;
-use GW2Spidy\DB\ItemPeer;
-use GW2Spidy\DB\BuyListingPeer;
-use GW2Spidy\DB\SellListingPeer;
-use GW2Spidy\DB\BuyListingQuery;
 use GW2Spidy\DB\Watchlist;
 use GW2Spidy\DB\WatchlistQuery;
-
-use GW2Spidy\Util\Functions;
 
 /**
  * ----------------------
