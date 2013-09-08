@@ -1,9 +1,14 @@
 <?php
 use GW2Spidy\Util\CurlRequest;
+use GW2Spidy\DB\ItemQuery;
 
 ini_set('memory_limit', '1G');
 
 require dirname(__FILE__) . '/../autoload.php';
+
+class FailedImportException extends Exception {}
+class NoResultItemException extends FailedImportException {}
+class NoIngredientItemException extends FailedImportException {}
 
 $recipe_list = new ArrayObject();
 $max = null; //Set the maximum number of recipes to retrieve
@@ -66,31 +71,47 @@ $disciplines = array(
 //Gather all recipes by recipe_id
 $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/recipes.json") ->exec();
 $data = json_decode($curl->getResponseBody(), true);
+$multi_curl = EpiCurl::getInstance();
+$recipe_curls = array();
 
 $recipe_count = count($data['recipes']);
 
 $error_values = array();
 
+//Add all recipe curl requests to the EpiCurl instance.
+foreach($data['recipes'] as $recipe_id) {
+    $ch = curl_init(getAppConfig('gw2spidy.gw2api_url')."/v1/recipe_details.json?recipe_id={$recipe_id}");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $recipe_curls[$recipe_id] = $multi_curl->addCurl($ch);
+    
+    echo "[".(count($recipe_curls)+1)." / $recipe_count]: $recipe_id\n";
+    
+    if ($max && count($recipe_curls) >= $max) 
+        break;
+}
+
 foreach($data['recipes'] as $recipe_id) {
     try {
         echo "[".(count($recipe_list)+1)." / $recipe_count]: ";
         
-        $curl_recipe = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/recipe_details.json?recipe_id={$recipe_id}")->exec();
-        $recipe_details = json_decode($curl_recipe->getResponseBody(), true);
-
-        //Get the details of the created item to get it's name
-        $curl_item = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$recipe_details['output_item_id']}")->exec();
-        $created_item = json_decode($curl_item->getResponseBody(), true);
+        $recipe_details = json_decode($recipe_curls[$recipe_id]->data, true);
+        $created_item = ItemQuery::create()->findPK($recipe_details['output_item_id']);
         
-        echo $created_item['name'] . "\n";
-
+        if (!$created_item) throw new NoResultItemException("no result [[ {$recipe_details['output_item_id']} ]]");
+        
+        echo $created_item->getName() . "\n";
+        
+        if (count($recipe_details['disciplines']) > 1) {
+            $recipe_count += (count($recipe_details['disciplines']) - 1);
+        }
+        
         //If a recipe has multiple disciplines, treat each one like a separate recipe to be inserted.
         foreach($recipe_details['disciplines'] as $discipline) {    
             $recipe = new stdClass();
             $recipe->ID = null; //Gw2dbId
             $recipe->ExternalID = null; //Gw2dbExternalId
             $recipe->DataID = $recipe_id;
-            $recipe->Name = $created_item['name'];
+            $recipe->Name = $created_item->getName();
             $recipe->Rating = (int) $recipe_details['min_rating'];
             $recipe->Type = $disciplines[$discipline];
             $recipe->Count = (int) $recipe_details['output_item_count'];

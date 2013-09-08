@@ -70,6 +70,7 @@ $item_start = (isset($argv[1]) && $argv[1] >= 1)                ? $argv[1] - 1 :
 $item_end   = (isset($argv[2]) && $argv[2] <= $number_of_items) ? $argv[2] - 1 : $number_of_items - 1; //Max items default
 $itemSubTypes = array();
 
+//Add all curl requests to the EpiCurl instance.
 for ($i = $item_start; $i <= $item_end; $i++) {
     $ch = curl_init(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$data['items'][$i]}");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -83,6 +84,7 @@ for ($i = $item_start; $i <= $item_end; $i++) {
         echo "[{$i} / {$item_end}]: ";
         
         $API_item = json_decode($item_curls[$i]->data, true);
+        if (!isset($API_item['name'])) throw new Exception("Item not found: $i");
         
         echo $API_item['name'] . "\n";
         
