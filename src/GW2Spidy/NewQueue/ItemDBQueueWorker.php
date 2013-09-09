@@ -51,6 +51,8 @@ class ItemDBQueueWorker extends BaseWorker {
         unset($updateItemData['sale_availability']);
         unset($updateItemData['max_offer_unit_price']);
         unset($updateItemData['offer_availability']);
+        if (strpos($item->getImg(), getAppConfig('gw2spidy.gw2render_url')) !== false) 
+            unset($updateItemData['img']); //Don't update the image from the TP if it's already the official API image
 
         if ($item) {
             $p = Functions::almostEqualCompare($updateItemData['name'], $item->getName());
