@@ -1,0 +1,529 @@
+.hide {
+    display:none!important;
+    visibility:hidden!important;
+}
+
+.db-tooltip .db-image {
+    display:-moz-inline-box;
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+    -webkit-box-shadow:black 0 0 2px;
+    -moz-box-shadow:black 0 0 2px;
+    -ms-box-shadow:black 0 0 2px;
+    -o-box-shadow:black 0 0 2px;
+    box-shadow:black 0 0 2px;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    -ms-border-radius:2px;
+    -o-border-radius:2px;
+    border-radius:2px;
+    border:1px solid black;
+    background:#112 url("../images/theme/bg_tooltip2.png");
+    overflow:hidden;
+    width:56px;
+    height:56px;
+}
+
+.ie7 .db-tooltip .db-image {
+    display:inline;
+    vertical-align:auto;
+    zoom:1;
+}
+
+.db-tooltip .db-image>img {
+    width:56px;
+    height:56px;
+}
+
+.db-tooltip .db-description {
+    display:-moz-inline-box;
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+    -webkit-box-shadow:black 0 0 2px;
+    -moz-box-shadow:black 0 0 2px;
+    -ms-box-shadow:black 0 0 2px;
+    -o-box-shadow:black 0 0 2px;
+    box-shadow:black 0 0 2px;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    -ms-border-radius:2px;
+    -o-border-radius:2px;
+    border-radius:2px;
+    background:#112 url("../images/theme/bg_tooltip2.png");
+    border:1px solid black;
+    color:white;
+    padding:10px;
+    text-align:left;
+    z-index:9999;
+    font:normal 12px/1.5 Verdana,sans-serif;
+    width:345px;
+    height:auto;
+    vertical-align:top;
+}
+
+.ie7 .db-tooltip .db-description {
+    display:inline;
+    vertical-align:auto;
+    zoom:1;
+}
+
+.db-tooltip .db-description .db-title,
+.db-tooltip .db-description .db-aura-title,
+.db-tooltip .db-description h2 {
+    font-size:14px;
+    line-height:19px;
+    font-weight:normal;
+    margin-right:10px;
+    float:left;
+}
+
+.db-tooltip .db-description table {
+    font:normal 12px/1.5 Verdana,sans-serif;
+    color:white;
+}
+
+.db-tooltip .db-description table td {
+    padding:0;
+}
+
+.db-tooltip .db-description dl {
+    margin:0;
+}
+
+.db-tooltip .db-description dd,
+.db-tooltip .db-description p {
+    clear:both;margin:0!important;
+}
+
+.db-tooltip .db-description a {
+    text-decoration:none!important;
+}
+
+.db-tooltip .db-description a:hover {
+    text-decoration:none!important;
+}
+
+.db-tooltip .db-description ul,
+.db-tooltip .db-description li {
+    list-style-type:disc;
+}
+
+.db-tooltip .db-description li {
+    margin-left:20px;
+}
+
+.db-tooltip .db-description .tooltip-table {
+    width:100%;
+    border-collapse:collapse;
+}
+
+.db-tooltip .db-description .right {
+    text-align:right;
+}
+
+.db-tooltip .db-description .db-left {
+    float:left;
+    clear:right;
+}
+
+.db-tooltip .db-description .db-right {
+    float:right;
+    clear:none;
+}
+
+.db-tooltip .db-description .new-build,
+.db-tooltip .db-description .old-build {
+    font-size:11px;
+    font-weight:bold;
+}
+
+.db-tooltip .db-description .new-build {
+    color:#0f0;
+}
+
+.db-tooltip .db-description .old-build {
+    color:#ff4040;
+}
+
+.db-tooltip .db-description ins {
+    color:#000;
+    font-weight:bold;
+}
+
+.old .db-tooltip .db-description ins {
+    background-color:#faa;
+}
+
+.new .db-tooltip .db-description ins {
+    background-color:#afa;
+}
+
+div#db-tooltip-container {
+    position:absolute;z-index:9999;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-description,
+.db-tooltip.p-tooltip_gw2 .db-image {
+    -webkit-box-shadow:inset -1px 1px 1px #465f6e,inset 1px 1px 1px #465f6e;
+    -moz-box-shadow:inset -1px 1px 1px #465f6e,inset 1px 1px 1px #465f6e;
+    -ms-box-shadow:inset -1px 1px 1px #465f6e,inset 1px 1px 1px #465f6e;
+    -o-box-shadow:inset -1px 1px 1px #465f6e,inset 1px 1px 1px #465f6e;
+    box-shadow:inset -1px 1px 1px #465f6e,inset 1px 1px 1px #465f6e;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-summary {
+    line-height:16px;
+}
+
+.db-tooltip.p-tooltip_gw2 dd {
+    padding-left:8px;
+    word-wrap:break-word;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-stat {
+    color:#29fd2e;
+    padding-left:16px;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-stat:last-child {
+    padding-bottom:12px;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-bind-type,
+.db-tooltip.p-tooltip_gw2 .db-itemCreate,
+.db-tooltip.p-tooltip_gw2 .db-weaponInfo,
+.db-tooltip.p-tooltip_gw2 .db-achievement-progress,
+.db-tooltip.p-tooltip_gw2 .db-ingredient-info{
+    padding-top:12px;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-bind-type,
+.db-tooltip.p-tooltip_gw2 .color-reminder,
+.db-tooltip.p-tooltip_gw2 .db-achievement-progress,
+.db-tooltip.p-tooltip_gw2 .db-ingredient-info {
+    color:#a0cde7;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-damageType {
+    color:#bbb;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-weaponRarity {
+    float:right;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-title,
+.db-tooltip.p-tooltip_gw2 .db-aura-title,
+.db-tooltip.p-tooltip_gw2 h2 {
+    margin-bottom:12px;color:#FFCC69;
+}
+
+.db-tooltip.p-tooltip_gw2.db-tooltip-recipe .db-damageType {
+    margin-top:12px!important;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-detail {
+    font-size:11px;
+    color:#ccc;
+    margin-bottom:5px;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-cooldown {
+    padding-top:1px;
+    padding-left:20px;
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+    height:20px;
+    background:url(../images/recharge.png) no-repeat top left;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-skill-point {
+    padding-top:1px;
+    padding-left:20px;
+    background:transparent url(../images/skill_point.png) no-repeat top left;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-cast-time {
+    padding-top:1px;
+    padding-left:20px;
+    background:transparent url(../images/cast_time.png) no-repeat top left;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-resource-thief {
+    padding-top:1px;
+    padding-left:20px;
+    background:transparent url(../images/thief_resource.png) no-repeat top left;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-info,
+.db-tooltip.p-tooltip_gw2 .db-weaponStrength,
+.db-tooltip.p-tooltip_gw2 .db-defense {
+    color:#29fd2e;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-info .db-skill-label,
+.db-tooltip.p-tooltip_gw2 .db-skill-info>span,
+.db-tooltip.p-tooltip_gw2 .db-weaponStrength .db-skill-label,
+.db-tooltip.p-tooltip_gw2 .db-weaponStrength>span,
+.db-tooltip.p-tooltip_gw2 .db-defense .db-skill-label,
+.db-tooltip.p-tooltip_gw2 .db-defense>span {
+    color:#fff;
+}
+
+.db-tooltip.p-tooltip_gw2 dd.db-right-container {
+    float:right;
+    position:relative;
+    margin:-30px 0 0!important;
+}
+
+.db-tooltip.p-tooltip_gw2 dd.db-skill-description {
+    margin:5px 0 12px!important;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-detail-icon {
+    vertical-align:middle;
+    width:32px;
+    height:32px;
+    margin-bottom:4px;
+    margin-right:10px;
+    float:left;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-detail-icon-ph {
+    background-color:#112;
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-aoe-120 .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-aoe-240 .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-radius .db-detail-icon {
+    background-image:url(../images/icons/radius.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-stun .db-detail-icon {
+    background-image:url(../images/icons/103047.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-sink .db-detail-icon {
+    background-image:url(../images/icons/103046.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-strikedamage .db-detail-icon {
+    background-image:url(../images/icons/damage.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-stealth-duration .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-timeduration .db-detail-icon {
+    background-image:url(../images/icons/duration.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-maximum-targets .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-number-of-bounces .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-range .db-detail-icon {
+    background-image:url(../images/icons/range.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-lifeforceadjust .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-adjustbyattributeandlevelhealing .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-healthadjusthealing .db-detail-icon {
+    background-image:url(../images/icons/healing.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-knockback-distance .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-distanceknockback .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-knockdown .db-detail-icon {
+    background-image:url(../images/icons/knockdown.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-stunbreak .db-detail-icon {
+    background-image:url(../images/icons/breaksstun.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-distanceblowout .db-detail-icon {
+    background-image:url(../images/icons/launch.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-timefloat .db-detail-icon {
+    background-image:url(../images/icons/float.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .skill-chain {
+    clear:both;
+    padding-top:12px;
+}
+
+.db-tooltip.p-tooltip_gw2 .skill-chain h3 {
+    color:#fff;
+    font-size:12px;
+}
+
+.db-tooltip.p-tooltip_gw2 .chainSkillWrapper {
+    float:left;
+    margin-top:8px;
+    height:60px;
+    min-width:60px;
+    max-width:85px;
+    text-align:center;
+}
+
+.db-tooltip.p-tooltip_gw2 .chainSkillSeparator {
+    background:url(../images/arrow-right.png);
+    float:left;
+    margin-top:20px;
+    height:16px;
+    width:16px;
+}
+
+.db-tooltip.p-tooltip_gw2 .chainSkillIcon {
+    margin:0 auto;
+}
+
+.db-tooltip.p-tooltip_gw2 .chainSkillTitle {
+    color:#FFCC69;
+}
+
+.db-tooltip.p-tooltip_gw2 .gwitem-masterwork,
+.db-tooltip.p-tooltip_gw2 .gwitem-masterwork a,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-masterwork,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-masterwork a {
+    color:#2DC50E!important;
+}
+
+.db-tooltip.p-tooltip_gw2 .gwitem-fine,
+.db-tooltip.p-tooltip_gw2 .gwitem-fine a,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-fine,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-fine a {
+    color:#4F9DFE!important;
+}
+
+.db-tooltip.p-tooltip_gw2 .gwitem-exotic,
+.db-tooltip.p-tooltip_gw2 .gwitem-exotic a,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-exotic,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-exotic a {
+    color:#FDA500!important;
+}
+
+.db-tooltip.p-tooltip_gw2 .gwitem-rare,
+.db-tooltip.p-tooltip_gw2 .gwitem-rare a,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-rare,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-rare a {
+    color:#c60!important;
+}
+
+.db-tooltip.p-tooltip_gw2 .gwitem-legendary,
+.db-tooltip.p-tooltip_gw2 .gwitem-legendary a,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-legendary,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-legendary a {
+    color:#D22!important;
+}
+
+.db-tooltip.p-tooltip_gw2 .gwitem-common,
+.db-tooltip.p-tooltip_gw2 .gwitem-common a,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-common,
+.db-tooltip.p-tooltip_gw2 .gwrecipe-common a {
+    color:#ddd!important;
+}
+
+.db-tooltip.p-tooltip_gw2 .gwitem-ascended,
+.db-tooltip.p-tooltip_gw2 .gwitem-ascended a {
+    color:#f48;
+}
+
+.ie7 .db-tooltip .db-image,
+.ie7 .db-tooltip .db-description,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-cooldown,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-detail-icon-ph,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-aoe-120 .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-aoe-240 .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-radius .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-daze .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-stun .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-sink .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-strikedamage .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-stealth-duration .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-timeduration .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-maximum-targets .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-number-of-bounces .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-range .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-finishtype .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-combotype .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-lifeforceadjust .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-adjustbyattributeandlevelhealing .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-healthadjusthealing .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-knockback-distance .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-distanceknockback .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-knockdown .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-stunbreak .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-timestun .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-timedaze .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-distanceblowout .db-detail-icon,
+.ie7 .db-tooltip.p-tooltip_gw2 .db-skill-timefloat .db-detail-icon {
+    display:inline;
+    vertical-align:auto;
+    zoom:1;
+}
+
+.db-tooltip .db-description a,
+.db-tooltip .db-description a:hover {
+    text-decoration:none!important;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-info,
+.db-tooltip.p-tooltip_gw2 .db-skill-label {
+    margin-right:5px;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-daze .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-timestun .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-timedaze .db-detail-icon {
+    background-image:url(../images/icons/daze.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.db-tooltip.p-tooltip_gw2 .db-skill-finishtype .db-detail-icon,
+.db-tooltip.p-tooltip_gw2 .db-skill-combotype .db-detail-icon {
+    background-image:url(../images/icons/combo.png);
+    -moz-box-orient:vertical;
+    display:inline-block;
+    vertical-align:middle;
+}

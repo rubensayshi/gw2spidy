@@ -10,6 +10,8 @@ use GW2Spidy\Util\ApplicationCache;
 use GW2Spidy\DB\om\BaseItem;
 use GW2Spidy\Util\CacheHandler;
 
+use GW2Spidy\GW2API\API_Item;
+
 use \PropelPDO;
 
 /**
@@ -175,6 +177,41 @@ class Item extends BaseItem {
             case self::RARITY_LEGENDARY:  return "Legendary";
             default:                      return "Rarity [{$this->getRarity()}]";
         }
+    }
+    
+    public function getTooltip($href = null) {
+        $API_item = API_Item::getItem($this->getDataId());
+        
+        $html_name = htmlspecialchars($this->name);
+        $rarity = strtolower($this->getRarityName());
+        
+        $tooltip = <<<HTML
+        <div class="p-tooltip-a p-tooltip_gw2 db-tooltip">
+
+        <div class="p-tooltip-image db-image">
+            <img src="{$this->img}" alt="{$html_name}" />
+        </div>
+
+        <div class="p-tooltip-description db-description">
+            <dl class="db-summary">
+                <dt class="db-title gwitem-{$rarity}">{$html_name}</dt>
+                <dd class="db-weaponStrength"><span>Weapon Strength:</span> 857 - 1047</dd>
+                <dd class="db-stat">+64 Power</dd>
+                <dd class="db-stat">+64 Toughness</dd>
+                <dd class="db-stat">+90 Vitality</dd>
+                <dd class="db-weaponInfo">
+                    <span class="db-weaponType">Axe</span>
+                    <span class="db-weaponRarity gwitem-{$rarity}">{$this->getRarityName()}</span>
+                </dd>
+                <dd class="db-damageType">Damage Type: Physical</dd>
+                <dd class="db-requiredLevel">Required Level: 80</dd>
+                <dd class="db-itemDescription">{$API_item->description}</dd>
+            </dl>
+        </div>
+    </div>
+HTML;
+        
+        return $tooltip;
     }
 
     public function getGW2DBTooltip($href = null) {

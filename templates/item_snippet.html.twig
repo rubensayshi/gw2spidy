@@ -1,8 +1,8 @@
 {% set href = href is defined ? href : null %}
 
 <{{ tag }} class="item clearfix" id="item-snippet-{{ item.dataId }}">
-    {% if item.getGW2DBTooltip(href) %}
-        {{ item.getGW2DBTooltip(href) | raw }}
+    {% if item.getTooltip(href) %}
+        {{ item.getTooltip(href) | raw }}
     {% else %}
         <div class="image clearfix">
             {% if href %}<a href="{{ href }}">{% endif %}
