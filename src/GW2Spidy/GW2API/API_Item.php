@@ -57,4 +57,8 @@ class API_Item {
             default: return null;
         }
     }
+    
+    public function getDescription() {
+        return $this->description;
+    }
 }

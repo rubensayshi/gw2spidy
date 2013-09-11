@@ -205,7 +205,7 @@ class Item extends BaseItem {
                 </dd>
                 <dd class="db-damageType">Damage Type: Physical</dd>
                 <dd class="db-requiredLevel">Required Level: 80</dd>
-                <dd class="db-itemDescription">{$API_item->description}</dd>
+                <dd class="db-itemDescription">{$API_item->getDescription()}</dd>
             </dl>
         </div>
     </div>
