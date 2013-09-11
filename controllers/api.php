@@ -1,6 +1,7 @@
 <?php
 
 use GW2Spidy\API\APIHelperService;
+use Symfony\Component\HttpFoundation\Request;
 
 $app['api-helper'] = $app->share(function() use ($app) {
     return new APIHelperService($app);
