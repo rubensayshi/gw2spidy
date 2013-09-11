@@ -2,7 +2,8 @@
 
 use GW2Spidy\DB\Watchlist;
 use GW2Spidy\DB\WatchlistQuery;
-
+use GW2Spidy\DB\ItemQuery;
+use Symfony\Component\HttpFoundation\Request;
 /**
  * ----------------------
  *  route /watchlistadd POST
@@ -12,7 +13,7 @@ $app->get("/watchlist/add/{dataId}", function (Request $request, $dataId) use ($
     if (!($user = $app['user'])) {
         return $app->redirect($app['url_generator']->generate('login'));
     }
-
+    
     if ($item = ItemQuery::create()->findPk($dataId)) {
         // check unique
         if (!WatchlistQuery::create()->filterByUser($user)->filterByItem($item)->count()) {
@@ -54,6 +55,24 @@ $app->get("/watchlist/remove/{dataId}", function (Request $request, $dataId) use
 })
 ->assert('dataId', '\d+')
 ->bind('watchlistremovepost');
+
+/**
+ * ----------------------
+ *  route /watchlistremoveall POST
+ * ----------------------
+ */
+$app->get("/watchlist/removeall", function (Request $request) use ($app) {
+    if (!($user = $app['user'])) {
+        return $app->redirect($app['url_generator']->generate('login'));
+    }
+    
+    $w = WatchlistQuery::create();
+    $w->filterByUser($user);
+    $w->delete();
+    
+    return $app->redirect($app['url_generator']->generate('watchlist'));
+})
+->bind('watchlistremoveall');
 
 /**
  * ----------------------

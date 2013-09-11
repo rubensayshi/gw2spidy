@@ -113,6 +113,11 @@ Watchlist
                 <div class="control-group filter">
                     <div class="controls">
                       <input type="submit" value="Filter" class="btn" />
+                      {% if watchlist %}
+                        <a class="" href="{{ path('watchlistremoveall') }}">
+                          <input type="button" value="Delete All Watchlist Items" class="btn" />
+                        </a>
+                      {% endif %}
                     </div>
                 </div>
             </form>

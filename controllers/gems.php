@@ -2,6 +2,7 @@
 
 use GW2Spidy\Dataset\DatasetManager;
 use GW2Spidy\Dataset\GemExchangeDataset;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * ----------------------
