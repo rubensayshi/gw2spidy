@@ -100,8 +100,6 @@ for ($c = 0; $c <= $chunks; $c++) {
             break;
     }
 
-    continue;
-
     for ($i = $recipe_start; $i <= $recipe_end; $i++) {
         $recipe_id = $data['recipes'][$i];
 
