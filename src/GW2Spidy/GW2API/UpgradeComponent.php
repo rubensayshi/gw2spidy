@@ -10,15 +10,15 @@ class UpgradeComponent extends API_Item {
     private $infix_upgrade;
     private $suffix;
     
-    public function __construct($API_item) {
-        parent::__construct($API_item);
+    public function __construct($API_Item) {
+        parent::__construct($API_Item);
         
-        $this->sub_type = $API_item['upgrade_component']['type'];
-        $this->sub_flags = $API_item['upgrade_component']['flags'];
-        $this->infusion_upgrade_flags = $API_item['upgrade_component']['infusion_upgrade_flags'];
-        $this->bonuses = isset($API_item['upgrade_component']['bonuses']) ? $API_item['upgrade_component']['bonuses'] : array();
-        $this->infix_upgrade = $API_item['upgrade_component']['infix_upgrade'];
-        $this->suffix = $API_item['upgrade_component']['suffix'];
+        $this->sub_type = $API_Item['upgrade_component']['type'];
+        $this->sub_flags = $API_Item['upgrade_component']['flags'];
+        $this->infusion_upgrade_flags = $API_Item['upgrade_component']['infusion_upgrade_flags'];
+        $this->bonuses = isset($API_Item['upgrade_component']['bonuses']) ? $API_Item['upgrade_component']['bonuses'] : array();
+        $this->infix_upgrade = $API_Item['upgrade_component']['infix_upgrade'];
+        $this->suffix = $API_Item['upgrade_component']['suffix'];
     }
     
     public function getSubType() {

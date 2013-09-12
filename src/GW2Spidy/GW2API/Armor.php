@@ -10,15 +10,15 @@ class Armor extends API_Item {
     private $infix_upgrade;
     private $suffix_item_id;
     
-    public function __construct($API_item) {
-        parent::__construct($API_item);
+    public function __construct($API_Item) {
+        parent::__construct($API_Item);
         
-        $this->sub_type = $API_item['armor']['type'];
-        $this->weight_class = $API_item['armor']['weight_class'];
-        $this->defense = (int) $API_item['armor']['defense'];
-        $this->infusion_slots = $API_item['armor']['infusion_slots'];
-        $this->infix_upgrade = $API_item['armor']['infix_upgrade'];
-        $this->suffix_item_id = $API_item['armor']['suffix_item_id'];
+        $this->sub_type = $API_Item['armor']['type'];
+        $this->weight_class = $API_Item['armor']['weight_class'];
+        $this->defense = (int) $API_Item['armor']['defense'];
+        $this->infusion_slots = $API_Item['armor']['infusion_slots'];
+        $this->infix_upgrade = $API_Item['armor']['infix_upgrade'];
+        $this->suffix_item_id = $API_Item['armor']['suffix_item_id'];
     }
     
     public function getSubType() {

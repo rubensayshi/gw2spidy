@@ -8,12 +8,12 @@ class Trinket extends API_Item {
     private $infix_upgrade;
     private $suffix_item_id;
     
-    public function __construct($API_item) {
-        parent::__construct($API_item);
-        $this->sub_type = $API_item['trinket']['type'];
-        $this->infusion_slots = $API_item['trinket']['infusion_slots'];
-        $this->infix_upgrade = $API_item['trinket']['infix_upgrade'];
-        $this->suffix_item_id = $API_item['trinket']['suffix_item_id'];
+    public function __construct($API_Item) {
+        parent::__construct($API_Item);
+        $this->sub_type = $API_Item['trinket']['type'];
+        $this->infusion_slots = $API_Item['trinket']['infusion_slots'];
+        $this->infix_upgrade = $API_Item['trinket']['infix_upgrade'];
+        $this->suffix_item_id = $API_Item['trinket']['suffix_item_id'];
     }
     
     public function getSubType() {

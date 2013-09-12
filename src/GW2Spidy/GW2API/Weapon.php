@@ -12,17 +12,17 @@ class Weapon extends API_Item {
     private $infix_upgrade;
     private $suffix_item_id;
     
-    public function __construct($API_item) {
-        parent::__construct($API_item);
-        
-        $this->sub_type = $API_item['weapon']['type'];
-        $this->damage_type = $API_item['weapon']['damage_type'];
-        $this->min_power = (int) $API_item['weapon']['min_power'];
-        $this->max_power = (int) $API_item['weapon']['max_power'];
-        $this->defense = (int) $API_item['weapon']['defense'];
-        $this->infusion_slots = $API_item['weapon']['infusion_slots'];
-        $this->infix_upgrade = isset($API_item['weapon']['infix_upgrade']) ? $API_item['weapon']['infix_upgrade'] : array();
-        $this->suffix_item_id = $API_item['weapon']['suffix_item_id'];
+    public function __construct($API_Item) {
+        parent::__construct($API_Item);
+        print_r($API_Item);
+        $this->sub_type = $API_Item['weapon']['type'];
+        $this->damage_type = $API_Item['weapon']['damage_type'];
+        $this->min_power = (int) $API_Item['weapon']['min_power'];
+        $this->max_power = (int) $API_Item['weapon']['max_power'];
+        $this->defense = (int) $API_Item['weapon']['defense'];
+        $this->infusion_slots = $API_Item['weapon']['infusion_slots'];
+        $this->infix_upgrade = isset($API_Item['weapon']['infix_upgrade']) ? $API_Item['weapon']['infix_upgrade'] : array();
+        $this->suffix_item_id = $API_Item['weapon']['suffix_item_id'];
     }
     
     public function getSubType() {

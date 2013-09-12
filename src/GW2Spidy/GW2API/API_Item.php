@@ -20,19 +20,19 @@ class API_Item {
     protected $restrictions;
     protected $image;
     
-    protected function __construct($API_item) {        
-        $this->item_id = (int) $API_item['item_id'];
-        $this->name = $API_item['name'];
-        $this->description = $API_item['description'];
-        $this->type = $API_item['type'];
-        $this->level = $API_item['level'];
-        $this->rarity = $API_item['rarity'];
-        $this->vendor_value = (int) $API_item['vendor_value'];
-        $this->icon_file_id = $API_item['icon_file_id'];
-        $this->icon_file_signature = $API_item['icon_file_signature'];
-        $this->game_types = $API_item['game_types'];
-        $this->flags = $API_item['flags'];
-        $this->restrictions = $API_item['restrictions'];
+    protected function __construct($API_Item) {        
+        $this->item_id = (int) $API_Item['item_id'];
+        $this->name = $API_Item['name'];
+        $this->description = $API_Item['description'];
+        $this->type = $API_Item['type'];
+        $this->level = $API_Item['level'];
+        $this->rarity = $API_Item['rarity'];
+        $this->vendor_value = (int) $API_Item['vendor_value'];
+        $this->icon_file_id = $API_Item['icon_file_id'];
+        $this->icon_file_signature = $API_Item['icon_file_signature'];
+        $this->game_types = $API_Item['game_types'];
+        $this->flags = $API_Item['flags'];
+        $this->restrictions = $API_Item['restrictions'];
         
         $this->image = getAppConfig('gw2spidy.gw2render_url')."/file/{$this->icon_file_signature}/{$this->icon_file_id}.png";
     }
@@ -57,23 +57,23 @@ class API_Item {
             }
         }
         
-        $API_item = json_decode($API_JSON, true);
+        $API_Item = json_decode($API_JSON, true);
         
-        switch($API_item['type']) {
-            case "Armor": return new Armor($API_item);  
-            case "Back": return new Back($API_item);
-            case "Bag": return new Bag($API_item);
-            case "Consumable": return new Consumable($API_item);
-            case "Container": return new Container($API_item);
-            case "CraftingMaterial": return new CraftingMaterial($API_item);
-            case "Gathering": return new Gathering($API_item);
-            case "Gizmo": return new Gizmo($API_item);
-            case "MiniPet": return new MiniPet($API_item);
-            case "Tool": return new Tool($API_item);
-            case "Trinket": return new Trinket($API_item);
-            case "Trophy": return new Trophy($API_item);
-            case "UpgradeComponent": return new UpgradeComponent($API_item);
-            case "Weapon": return new Weapon($API_item);
+        switch($API_Item['type']) {
+            case "Armor": return new Armor($API_Item);  
+            case "Back": return new Back($API_Item);
+            case "Bag": return new Bag($API_Item);
+            case "Consumable": return new Consumable($API_Item);
+            case "Container": return new Container($API_Item);
+            case "CraftingMaterial": return new CraftingMaterial($API_Item);
+            case "Gathering": return new Gathering($API_Item);
+            case "Gizmo": return new Gizmo($API_Item);
+            case "MiniPet": return new MiniPet($API_Item);
+            case "Tool": return new Tool($API_Item);
+            case "Trinket": return new Trinket($API_Item);
+            case "Trophy": return new Trophy($API_Item);
+            case "UpgradeComponent": return new UpgradeComponent($API_Item);
+            case "Weapon": return new Weapon($API_Item);
             default: return null;
         }
     }

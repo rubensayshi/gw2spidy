@@ -3,8 +3,8 @@
 namespace GW2Spidy\GW2API;
 
 class CraftingMaterial extends API_Item {    
-    public function __construct($API_item) {
-        parent::__construct($API_item);
+    public function __construct($API_Item) {
+        parent::__construct($API_Item);
     }
     
     public function getSubType() {

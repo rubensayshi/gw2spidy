@@ -5,10 +5,10 @@ namespace GW2Spidy\GW2API;
 class Consumable extends API_Item {
     private $sub_type;
     
-    public function __construct($API_item) {
-        parent::__construct($API_item);
+    public function __construct($API_Item) {
+        parent::__construct($API_Item);
         
-        $this->sub_type = $API_item['consumable']['type'];
+        $this->sub_type = $API_Item['consumable']['type'];
     }
     
     public function getSubType() {
