@@ -65,34 +65,33 @@ $error_values = array();
 
 $render_url = getAppConfig('gw2spidy.gw2render_url')."/file";
 
-$number_of_items = count($data['items']) - 1;
-$max_items = 1000;
-$chunks = $number_of_items / $max_items;
+$number_of_items = count($data['items']);
 
 $itemSubTypes = array();
 
-for ($c = 0; $c <= $chunks; $c++) {
-    $item_start = $c * $max_items;
-    $item_end   = min(array(($c+1) * $max_items, $number_of_items));
+$i = 0;
+$ii = 0;
+
+foreach (array_chunk($data['items'], 1000) as $items) {
 
     //Add all curl requests to the EpiCurl instance.
-    for ($i = $item_start; $i <= $item_end; $i++) {
-        if (!isset($data['items'][$i])) {
-            continue;
-        }
+    foreach ($items as $item_id) {
+        $i++;
 
-        $ch = curl_init(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$data['items'][$i]}");
+        $ch = curl_init(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$item_id}");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $item_curls[$i] = $multi_curl->addCurl($ch);
+        $item_curls[$item_id] = $multi_curl->addCurl($ch);
 
-        echo "[{$i} / {$item_end}]: {$data['items'][$i]}\n";
+        echo "[{$i} / {$number_of_items}]: {$item_id}\n";
     }
 
-    for ($i = $item_start; $i <= $item_end; $i++) {
-        try {
-            echo "[{$i} / {$item_end}]: ";
+    foreach ($items as $item_id) {
+        $ii++;
 
-            $ch = $item_curls[$i];
+        try {
+            echo "[{$ii} / {$number_of_items}]: ";
+
+            $ch = $item_curls[$item_id];
 
             $API_item = json_decode($ch->data, true);
             if (!isset($API_item['name'])) throw new Exception("Item not found: $i");
