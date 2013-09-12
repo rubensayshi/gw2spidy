@@ -106,7 +106,7 @@ HTML;
     }
 
     public function getMargin() {
-        $margin = $this->getProfit() / $this->getCost();
+        $margin = ($this->getCost() == 0) ? 0 : $this->getProfit() / $this->getCost();
 
         return $margin;
     }
