@@ -15,7 +15,7 @@ use GW2Spidy\NewQueue\ItemDBQueueWorker;
 
 require dirname(__FILE__) . '/../autoload.php';
 
-function logg($msg){ 
+function logg($msg){
     echo "[" . date("Y-m-d H:i:s") . "] " . $msg;
 }
 
@@ -38,12 +38,10 @@ $queueWorker  = new ItemDBQueueWorker($queueManager);
 /*
  * login here, this allows us to exit right away on failure
  */
-print "login ... \n";
+logg("login ...\n");
 try {
-    $gw2session = GW2SessionManager::getInstance()->getSession();
-    logg("login ok -> [".(int)$gw2session->getGameSession()."] -> [{$gw2session->getSessionKey()}] \n");
-
-    TradingPostSpider::getInstance()->setSession($gw2session);
+    $gw2session = GW2SessionManager::getInstance()->getSessionKey();
+    logg("login ok -> [{$gw2session}] \n");
 } catch (Exception $e) {
     logg("login failed ... sleeping [60] and restarting \n");
     sleep(60);

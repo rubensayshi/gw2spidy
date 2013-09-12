@@ -376,5 +376,49 @@
                 "Silex": "src/"
             }
         }
+    },
+    {
+        "name": "php-multi-curl",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "time": "2013-07-03 14:56:13",
+        "source": {
+            "type": "git",
+            "url": "git://github.com/jmathai/php-multi-curl.git",
+            "reference": "afc921afdbd69dc42d0d6776b83e32204bb4d916"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://github.com/jmathai/php-multi-curl/zipball/afc921afdbd69dc42d0d6776b83e32204bb4d916",
+            "reference": "afc921afdbd69dc42d0d6776b83e32204bb4d916",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3"
+        },
+        "require-dev": {
+        },
+        "suggest": {
+        },
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "source",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+        ],
+        "description": "A high performance PHP library for using multi curl for parallel http calls.",
+        "homepage": "https://github.com/jmathai/php-multi-curl",
+        "keywords": [
+            "microframework"
+        ],
+        "autoload": {
+            "psr-0": { "EpiCurl": "" }
+        }
     }
 ]
