@@ -5,7 +5,7 @@ ini_set('memory_limit', '1G');
 
 require dirname(__FILE__) . '/../autoload.php';
 
-$recipe_list = new  ArrayObject();
+$recipe_list = new ArrayObject();
 $max = null; //Set the maximum number of recipes to retrieve
 
 //Allows one-liner ingredient list adding.
@@ -67,37 +67,54 @@ $disciplines = array(
 $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/recipes.json") ->exec();
 $data = json_decode($curl->getResponseBody(), true);
 
+$recipe_count = count($data['recipes']);
+
+$error_values = array();
+
 foreach($data['recipes'] as $recipe_id) {
-    $curl_recipe = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/recipe_details.json?recipe_id={$recipe_id}")->exec();
-    $recipe_details = json_decode($curl_recipe->getResponseBody(), true);
-    
-    //Get the details of the created item to get it's name
-    $curl_item = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$recipe_details['output_item_id']}")->exec();
-    $created_item = json_decode($curl_item->getResponseBody(), true);
-    
-    //If a recipe has multiple disciplines, treat each one like a separate recipe to be inserted.
-    foreach($recipe_details['disciplines'] as $discipline) {    
-        $recipe = new stdClass();
-        $recipe->ID = null; //Gw2dbId
-        $recipe->ExternalID = null; //Gw2dbExternalId
-        $recipe->DataID = $recipe_id;
-        $recipe->Name = $created_item['name'];
-        $recipe->Rating = (int) $recipe_details['min_rating'];
-        $recipe->Type = $disciplines[$discipline];
-        $recipe->Count = (int) $recipe_details['output_item_count'];
-        $recipe->CreatedItemId = (int) $recipe_details['output_item_id'];
-        $recipe->RequiresRecipeItem = in_array("LearnedFromItem", $recipe_details['flags']);
-        $recipe->Ingredients = array();
+    try {
+        echo "[".(count($recipe_list)+1)." / $recipe_count]: ";
         
-        foreach($recipe_details['ingredients'] as $ingredient) {
-            $recipe->Ingredients[] = new Ingredient((int) $ingredient['item_id'], (int) $ingredient['count']);
+        $curl_recipe = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/recipe_details.json?recipe_id={$recipe_id}")->exec();
+        $recipe_details = json_decode($curl_recipe->getResponseBody(), true);
+
+        //Get the details of the created item to get it's name
+        $curl_item = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$recipe_details['output_item_id']}")->exec();
+        $created_item = json_decode($curl_item->getResponseBody(), true);
+        
+        echo $created_item['name'] . "\n";
+
+        //If a recipe has multiple disciplines, treat each one like a separate recipe to be inserted.
+        foreach($recipe_details['disciplines'] as $discipline) {    
+            $recipe = new stdClass();
+            $recipe->ID = null; //Gw2dbId
+            $recipe->ExternalID = null; //Gw2dbExternalId
+            $recipe->DataID = $recipe_id;
+            $recipe->Name = $created_item['name'];
+            $recipe->Rating = (int) $recipe_details['min_rating'];
+            $recipe->Type = $disciplines[$discipline];
+            $recipe->Count = (int) $recipe_details['output_item_count'];
+            $recipe->CreatedItemId = (int) $recipe_details['output_item_id'];
+            $recipe->RequiresRecipeItem = in_array("LearnedFromItem", $recipe_details['flags']);
+            $recipe->Ingredients = array();
+
+            foreach($recipe_details['ingredients'] as $ingredient) {
+                $recipe->Ingredients[] = new Ingredient((int) $ingredient['item_id'], (int) $ingredient['count']);
+            }
+
+            $recipe_list->append($recipe);
         }
-        
-        $recipe_list->append($recipe);
+    } catch (Exception $e) {
+        $error_values[] = $recipe_id;
+        $recipe_count--;
+        echo "failed [[ {$e->getMessage()} ]] .. \n";
     }
     
     if ($max && count($recipe_list) >= $max) 
         break;
 }
 
-echo json_encode($recipe_list) . "\n";
+if (count($error_values) > 0) 
+    var_dump($error_values);
+
+file_put_contents($argv[1], json_encode($recipe_list));
