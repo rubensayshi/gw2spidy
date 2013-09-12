@@ -18,7 +18,7 @@ define('METHOD_LISTINGS_JSON', 'listings.json');
 
 require dirname(__FILE__) . '/../autoload.php';
 
-function logg($msg){ 
+function logg($msg){
     echo "[" . date("Y-m-d H:i:s") . "] " . $msg;
 }
 
@@ -39,10 +39,8 @@ $queueWorker  = new ItemListingDBQueueWorker($queueManager);
  */
 logg("login ...\n");
 try {
-    $gw2session = GW2SessionManager::getInstance()->getSession();
-    logg("login ok -> [".(int)$gw2session->getGameSession()."] -> [{$gw2session->getSessionKey()}] \n");
-
-    TradingPostSpider::getInstance()->setSession($gw2session);
+    $gw2session = GW2SessionManager::getInstance()->getSessionKey();
+    logg("login ok -> [{$gw2session}] \n");
 } catch (Exception $e) {
     logg("login failed ... sleeping [60] and restarting \n");
     sleep(60);
@@ -52,10 +50,9 @@ try {
 /*
  * determine if we're crawling the item listings with search.json or listings.json
  */
-if (!getAppConfig("gw2spidy.use_shroud_magic") && getAppConfig("gw2spidy.use_listings-json") && $gw2session->getGameSession()) {
-    $method = METHOD_LISTINGS_JSON;
-} else {
-    $method = METHOD_SEARCH_JSON;
+$method = METHOD_SEARCH_JSON;
+if (getAppConfig("gw2spidy.use_listings-json")) {
+    throw new Exception("'gw2spidy.use_listings-json' is deprecated.");
 }
 
 /*
@@ -66,11 +63,14 @@ $run = 0;
 $max = 100;
 while ($run < $max) {
 
+    sleep(4);
+
     $slot = $slotManager->getAvailableSlot();
 
     if (!$slot) {
-        logg("no slots, sleeping [9.5] ... \n");
-        usleep(9.5 * 1000 * 1000);
+        $sleep = ($slotManager->getSlotsPerSecond() * 2);
+        logg("no slots, sleeping [{$sleep}] ... \n");
+        usleep($sleep * 1000 * 1000);
 
         continue;
     }

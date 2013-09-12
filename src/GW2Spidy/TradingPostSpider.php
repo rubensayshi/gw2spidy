@@ -31,8 +31,11 @@ class TradingPostSpider extends BaseSpider {
 
         $ids = array_map('urlencode', $ids);
 
+        $s = $this->getSession();
+
         $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/search.json?ids=".implode(",", $ids)."")
-             ->setCookie("s={$this->getSession()->getSessionKey()}")
+             ->setCookieJar($s->getCookieJar())
+             ->setCookie("s={$s->getSessionKey()}")
              ->setHeader("X-Requested-With: XMLHttpRequest")
              ->exec()
              ;
@@ -43,8 +46,12 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getItemByExactName($name) {
+
+        $s = $this->getSession();
+
         $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . " /ws/search.json?text=".urlencode($name)."&levelmin=0&levelmax=80")
-                    ->setCookie("s={$this->getSession()->getSessionKey()}")
+                    ->setCookieJar($s->getCookieJar())
+                    ->setCookie("s={$s->getSessionKey()}")
                     ->setHeader("X-Requested-With: XMLHttpRequest")
                     ->exec()
                     ;
@@ -61,9 +68,12 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getListingsById($id, $type = self::LISTING_TYPE_SELL) {
+
+        $s = $this->getSession();
+
         $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/listings.json?id={$id}&type={$type}")
-                    ->setCookie("s={$this->getSession()->getSessionKey()}")
-                    ->setHeader("X-Requested-With: XMLHttpRequest")
+                    ->setCookieJar($s->getCookieJar())
+                    ->setCookie("s={$s->getSessionKey()}")
                     ->exec()
                     ;
 
@@ -80,9 +90,12 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getAllListingsById($id) {
+
+        $s = $this->getSession();
+
         $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url') . "/ws/listings.json?id={$id}&type=all")
-                    ->setCookie("s={$this->getSession()->getSessionKey()}")
-                    ->setHeader("X-Requested-With: XMLHttpRequest")
+                    ->setCookieJar($s->getCookieJar())
+                    ->setCookie("s={$s->getSessionKey()}")
                     ->exec()
                     ;
 
@@ -101,8 +114,12 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getMarketData() {
+
+        $s = $this->getSession();
+
         $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.tradingpost_url'))
-             ->setCookie("s={$this->getSession()->getSessionKey()}")
+             ->setCookieJar($s->getCookieJar())
+             ->setCookie("s={$s->getSessionKey()}")
              ->exec()
              ;
 
@@ -118,6 +135,9 @@ class TradingPostSpider extends BaseSpider {
     }
 
     public function getItemList($type=null, $subType=null, $offset=0) {
+
+        $s = $this->getSession();
+
         $typeId    = ($type instanceof ItemType)       ? $type->getId()    : $type;
         $subTypeId = ($subType instanceof ItemSubType) ? $subType->getId() : $subType;
 
@@ -132,7 +152,8 @@ class TradingPostSpider extends BaseSpider {
 
         $curl = CurlRequest::newInstance($url)
                     ->setHeader("X-Requested-With: XMLHttpRequest")
-                    ->setCookie("s={$this->getSession()->getSessionKey()}")
+                    ->setCookieJar($s->getCookieJar())
+                    ->setCookie("s={$s->getSessionKey()}")
                     ->exec()
                     ;
 

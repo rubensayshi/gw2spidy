@@ -38,7 +38,13 @@ class ItemListingDBQueueWorker extends BaseWorker {
     }
 
     public function massUpdateListings($items) {
-        if ($itemsData = TradingPostSpider::getInstance()->getItemsByIds(array_keys($items))) {
+        if (getAppConfig("gw2spidy.use_samuirai_magic") && class_exists("\\SamuiraiMagic\\TradingPostSpider")) {
+            $itemsData = \SamuiraiMagic\TradingPostSpider::getInstance()->getItemsByIds(array_keys($items));
+        } else {
+            $itemsData = TradingPostSpider::getInstance()->getItemsByIds(array_keys($items));
+        }
+
+        if ($itemsData) {
             $exceptions = array();
 
             foreach ($itemsData as $itemData) {
