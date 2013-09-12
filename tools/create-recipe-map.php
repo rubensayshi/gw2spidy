@@ -74,12 +74,12 @@ $data = json_decode($curl->getResponseBody(), true);
 $multi_curl = EpiCurl::getInstance();
 $recipe_curls = array();
 
-$recipe_count = count($data['recipes']);
+$recipe_count = count($data['recipes']) - 1;
 
 $error_values = array();
 
 $max_recipes = 1000;
-$chunks = $recipe_count / $max_items;
+$chunks = $recipe_count / $max_recipes;
 
 
 for ($c = 0; $c <= $chunks; $c++) {
@@ -99,6 +99,8 @@ for ($c = 0; $c <= $chunks; $c++) {
         if ($max && count($recipe_curls) >= $max)
             break;
     }
+
+    continue;
 
     for ($i = $recipe_start; $i <= $recipe_end; $i++) {
         $recipe_id = $data['recipes'][$i];
