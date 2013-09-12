@@ -3,12 +3,14 @@
 namespace GW2Spidy\GW2API;
 
 use GW2Spidy\Util\CurlRequest;
+use GW2Spidy\Util\CacheHandler;
 
 class API_Item {
     protected $item_id;
     protected $name;
     protected $description;
     protected $type;
+    protected $level;
     protected $rarity;
     protected $vendor_value;
     protected $icon_file_id;
@@ -23,6 +25,7 @@ class API_Item {
         $this->name = $API_item['name'];
         $this->description = $API_item['description'];
         $this->type = $API_item['type'];
+        $this->level = $API_item['level'];
         $this->rarity = $API_item['rarity'];
         $this->vendor_value = (int) $API_item['vendor_value'];
         $this->icon_file_id = $API_item['icon_file_id'];
@@ -35,9 +38,26 @@ class API_Item {
     }
     
     public static function getItem($itemID) {
-        //TODO: Cache the API request.
-        $curl_item = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$itemID}")->exec();
-        $API_item = json_decode($curl_item->getResponseBody(), true);
+        $cache = CacheHandler::getInstance('item_gw2api');
+        $cacheKey = $itemID . "::" . substr(md5($itemID),0,10);
+        $ttl      = 86400;
+        
+        if (!($API_JSON = $cache->get($cacheKey))) {
+            try {
+                $curl_item = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$itemID}")
+                    ->exec();
+                $API_JSON = $curl_item->getResponseBody();
+                
+                $cache->set($cacheKey, $API_JSON, MEMCACHE_COMPRESSED, $ttl);
+            } catch (Exception $e){
+                $ttl = 600;
+                $cache->set($cacheKey, null, MEMCACHE_COMPRESSED, $ttl);
+                
+                return null;
+            }
+        }
+        
+        $API_item = json_decode($API_JSON, true);
         
         switch($API_item['type']) {
             case "Armor": return new Armor($API_item);  
@@ -60,5 +80,25 @@ class API_Item {
     
     public function getDescription() {
         return $this->description;
+    }
+    
+    public function getHTMLDescription() {
+        return htmlspecialchars($this->description);
+    }
+    
+    public function getRarity() {
+        return $this->rarity;
+    }
+    
+    public function getHTMLName() {
+        return htmlspecialchars($this->name);
+    }
+    
+    public function getRarityLower() {
+        return strtolower($this->rarity);
+    }
+    
+    public function getLevel() {
+        return $this->level;
     }
 }
