@@ -11,7 +11,6 @@ class NoResultItemException extends FailedImportException {}
 class NoIngredientItemException extends FailedImportException {}
 
 $recipe_list = new ArrayObject();
-$max = null; //Set the maximum number of recipes to retrieve
 
 //Allows one-liner ingredient list adding.
 class Ingredient {
@@ -74,39 +73,30 @@ $data = json_decode($curl->getResponseBody(), true);
 $multi_curl = EpiCurl::getInstance();
 $recipe_curls = array();
 
-$recipe_count = count($data['recipes']) - 1;
+$recipe_count = count($data['recipes']);
 
 $error_values = array();
 
-$max_recipes = 1000;
-$chunks = $recipe_count / $max_recipes;
+$i = 0;
+$ii = 0;
 
-
-for ($c = 0; $c <= $chunks; $c++) {
-    $recipe_start = $c * $max_recipes;
-    $recipe_end   = min(array(($c+1) * $max_recipes, $recipe_count));
-
+foreach (array_chunk($data['recipes'], 1000) as $recipes) {
     //Add all curl requests to the EpiCurl instance.
-    for ($i = $recipe_start; $i <= $recipe_end; $i++) {
-        $recipe_id = $data['recipes'][$i];
+    foreach ($recipes as $recipe_id) {
+        $i ++;
 
         $ch = curl_init(getAppConfig('gw2spidy.gw2api_url')."/v1/recipe_details.json?recipe_id={$recipe_id}");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $recipe_curls[$recipe_id] = $multi_curl->addCurl($ch);
 
-        echo "[".(count($recipe_curls)+1)." / $recipe_count]: $recipe_id\n";
-
-        if ($max && count($recipe_curls) >= $max)
-            break;
+        echo "[{$i} / {$recipe_count}]: $recipe_id\n";
     }
 
-    continue;
-
-    for ($i = $recipe_start; $i <= $recipe_end; $i++) {
-        $recipe_id = $data['recipes'][$i];
+    foreach ($recipes as $recipe_id) {
+        $ii ++;
 
         try {
-            echo "[".(count($recipe_list)+1)." / $recipe_count]: ";
+            echo "[{$ii} / {$recipe_count}] ";
 
             $recipe_details = json_decode($recipe_curls[$recipe_id]->data, true);
             $created_item = ItemQuery::create()->findPK($recipe_details['output_item_id']);
@@ -114,10 +104,6 @@ for ($c = 0; $c <= $chunks; $c++) {
             if (!$created_item) throw new NoResultItemException("no result [[ {$recipe_details['output_item_id']} ]]");
 
             echo $created_item->getName() . "\n";
-
-            if (count($recipe_details['disciplines']) > 1) {
-                $recipe_count += (count($recipe_details['disciplines']) - 1);
-            }
 
             //If a recipe has multiple disciplines, treat each one like a separate recipe to be inserted.
             foreach($recipe_details['disciplines'] as $discipline) {
@@ -141,12 +127,8 @@ for ($c = 0; $c <= $chunks; $c++) {
             }
         } catch (Exception $e) {
             $error_values[] = $recipe_id;
-            $recipe_count--;
             echo "failed [[ {$e->getMessage()} ]] .. \n";
         }
-
-        if ($max && count($recipe_list) >= $max)
-            break;
     }
 }
 
