@@ -16,4 +16,5 @@ return array(
     'SessionHandlerInterface' => $vendorDir . '/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs',
     'Pimple' => $vendorDir . '/pimple/pimple/lib/',
     'Twig' => $vendorDir . '/twig/twig/lib/',
+    'EpiCurl' => $vendorDir . '/php-multi-curl/',
 );

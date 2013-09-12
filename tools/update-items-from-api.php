@@ -58,6 +58,8 @@ $market_data = TradingPostSpider::getInstance()->getMarketData();
 
 $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/items.json") ->exec();
 $data = json_decode($curl->getResponseBody(), true);
+$multi_curl = EpiCurl::getInstance();
+$item_curls = array();
 
 $error_values = array();
 
@@ -67,12 +69,22 @@ $number_of_items = count($data['items']) - 1;
 $item_start = (isset($argv[1]) && $argv[1] >= 1)                ? $argv[1] - 1 : 0;    //Default the start at zero.
 $item_end   = (isset($argv[2]) && $argv[2] <= $number_of_items) ? $argv[2] - 1 : $number_of_items - 1; //Max items default
 $itemSubTypes = array();
+
+//Add all curl requests to the EpiCurl instance.
+for ($i = $item_start; $i <= $item_end; $i++) {
+    $ch = curl_init(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$data['items'][$i]}");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $item_curls[$i] = $multi_curl->addCurl($ch);
+    
+    echo "[{$i} / {$item_end}]: {$data['items'][$i]}\n";
+}
+
 for ($i = $item_start; $i <= $item_end; $i++) {
     try {
         echo "[{$i} / {$item_end}]: ";
         
-        $curl_item = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$data['items'][$i]}")->exec();
-        $API_item = json_decode($curl_item->getResponseBody(), true);
+        $API_item = json_decode($item_curls[$i]->data, true);
+        if (!isset($API_item['name'])) throw new Exception("Item not found: $i");
         
         echo $API_item['name'] . "\n";
         
