@@ -14,6 +14,11 @@ use \Exception;
 class GW2GameSessionManager extends Singleton {
     protected $gw2session;
 
+    public function getSessionKey() {
+        return $this->getSession()->getSessionKey();
+    }
+
+
     public function getSession() {
         if (is_null($this->gw2session)) {
             $this->gw2session = $this->_getSession();
