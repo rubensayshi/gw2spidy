@@ -183,19 +183,10 @@ class Item extends BaseItem {
         }
     }
     
-    public function getTooltip($href = null) {
+    public function getTooltip() {
         $API_Item = API_Item::getItem($this->getDataId());
         
-        $tooltip = <<<HTML
-        <div class="p-tooltip-a p-tooltip_gw2 db-tooltip">
-            <div class="p-tooltip-image db-image">
-                <img src="{$this->img}" alt="{$API_Item->getHTMLDescription()}" />
-            </div>
-            {$API_Item->getTooltipDescription()}
-        </div>
-HTML;
-        
-        return $tooltip;
+        return $API_Item->getTooltip();
     }
 
     public function getGW2DBTooltip($href = null) {

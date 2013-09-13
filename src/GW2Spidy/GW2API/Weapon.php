@@ -2,7 +2,7 @@
 
 namespace GW2Spidy\GW2API;
 
-class Weapon extends Equipment {
+class Weapon extends API_Item {
     private $damage_type;
     private $min_power;
     private $max_power;

@@ -2,13 +2,13 @@
 
 namespace GW2Spidy\GW2API;
 
-class Trinket extends Equipment {
+class Trinket extends API_Item {
     
     public function __construct($API_Item) {
         parent::__construct($API_Item);
         $this->sub_type = $API_Item['trinket']['type'];
         $this->infusion_slots = $API_Item['trinket']['infusion_slots'];
-        $this->infix_upgrade = $API_Item['trinket']['infix_upgrade'];
+        $this->infix_upgrade = (isset($API_Item['trinket']['infix_upgrade'])) ? $API_Item['trinket']['infix_upgrade'] : array();
         $this->suffix_item_id = $API_Item['trinket']['suffix_item_id'];
         
         $this->cleanAttributes();

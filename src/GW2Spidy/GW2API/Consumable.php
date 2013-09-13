@@ -10,12 +10,16 @@ class Consumable extends API_Item {
         parent::__construct($API_Item);
         
         $this->sub_type = $API_Item['consumable']['type'];
-        $this->duration_ms = $API_Item['consumable']['duration_ms'];
-        $this->sub_description = $API_Item['consumable']['description'];
+        $this->duration_ms = (isset($API_Item['consumable']['duration_ms'])) ? $API_Item['consumable']['duration_ms'] : null;
+        $this->sub_description = (isset($API_Item['consumable']['description'])) ? $API_Item['consumable']['description'] : null;
+    }
+    
+    public function getFormattedSubDescription() {
+        return nl2br($this->sub_description);
     }
     
     private function getNourishment() {
-        if ($this->getSubType() == "Food") {
+        if ($this->duration_ms !== null) {
             $input = $this->duration_ms;
 
             $uSec = $input % 1000;
@@ -46,7 +50,8 @@ class Consumable extends API_Item {
             
             $time_string = implode(',', $time);
             
-            $nourishment = "Nourishment({$time_string}): {$this->sub_description}";
+            $nourishment = '<span class="db-consumableType">Double-click to consume</span><br>'.
+                    "Nourishment({$time_string}): {$this->getFormattedSubDescription()}";
             
             return $nourishment;
         }
@@ -59,10 +64,10 @@ class Consumable extends API_Item {
         <div class="p-tooltip-description db-description">
             <dl class="db-summary">
                 <dt class="db-title gwitem-{$this->getRarityLower()}">{$this->getHTMLName()}</dt>
+                <dd class="db-consumableDescription">{$this->getNourishment()}</dd>
                 <dd class="db-itemDescription">{$this->getHTMLDescription()}</dd>
-                <dd class="db-itemDescription">{$this->getNourishment()}</dd>
-                <dd class="db-consumableType">{$this->getSubType()}</dd>
-                <dd class="db-requiredLevel">Required Level: {$this->getLevel()}</dd>
+                <dd class="db-consumableType">{$this->getType()}</dd>
+                {$this->getFormattedLevel()}
             </dl>
         </div>
 HTML;

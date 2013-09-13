@@ -2,7 +2,7 @@
 
 namespace GW2Spidy\GW2API;
 
-class UpgradeComponent extends Equipment {
+class UpgradeComponent extends API_Item {
     private $sub_flags;
     private $infusion_upgrade_flags;
     private $bonuses;

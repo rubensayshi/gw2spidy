@@ -2,7 +2,7 @@
 
 namespace GW2Spidy\GW2API;
 
-class Armor extends Equipment {
+class Armor extends API_Item {
     private $weight_class;
     private $defense;
     

@@ -89,4 +89,3 @@ require_once __DIR__ .'/src/GW2Spidy/GW2API/Trinket.php';
 require_once __DIR__ .'/src/GW2Spidy/GW2API/Trophy.php';
 require_once __DIR__ .'/src/GW2Spidy/GW2API/UpgradeComponent.php';
 require_once __DIR__ .'/src/GW2Spidy/GW2API/Weapon.php';
-require_once __DIR__ .'/src/GW2Spidy/GW2API/Equipment.php';

@@ -427,6 +427,14 @@ div#db-tooltip-container {
     color:#5191F0!important;
 }
 
+.db-consumableType {
+    font-weight: bold;
+    color: white;
+}
+.db-consumableDescription {
+    color: #AAAAAA;
+}
+
 .db-tooltip.p-tooltip_gw2 .gwitem-masterwork,
 .db-tooltip.p-tooltip_gw2 .gwitem-masterwork a,
 .db-tooltip.p-tooltip_gw2 .gwrecipe-masterwork,
