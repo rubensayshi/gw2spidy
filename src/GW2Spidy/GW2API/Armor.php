@@ -3,7 +3,6 @@
 namespace GW2Spidy\GW2API;
 
 class Armor extends Equipment {
-    private $sub_type;
     private $weight_class;
     private $defense;
     
@@ -18,10 +17,6 @@ class Armor extends Equipment {
         $this->suffix_item_id = $API_Item['armor']['suffix_item_id'];
         
         $this->cleanAttributes();
-    }
-    
-    public function getSubType() {
-        return $this->sub_type;
     }
     
     public function getDefense() {

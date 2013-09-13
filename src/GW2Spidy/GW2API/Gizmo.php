@@ -3,16 +3,11 @@
 namespace GW2Spidy\GW2API;
 
 class Gizmo extends API_Item {
-    private $sub_type;
     
     public function __construct($API_Item) {
         parent::__construct($API_Item);
         
         $this->sub_type = $API_Item['gizmo']['type'];
-    }
-    
-    public function getSubType() {
-        return $this->sub_type;
     }
     
     public function getTooltipDescription() {

@@ -8,10 +8,6 @@ class MiniPet extends API_Item {
         parent::__construct($API_Item);
     }
     
-    public function getSubType() {
-        return null;
-    }
-    
     public function getTooltipDescription() {
         $tooltip = <<<HTML
         <div class="p-tooltip-description db-description">

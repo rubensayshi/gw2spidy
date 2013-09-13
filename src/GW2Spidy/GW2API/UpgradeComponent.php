@@ -2,12 +2,10 @@
 
 namespace GW2Spidy\GW2API;
 
-class UpgradeComponent extends API_Item {
-    private $sub_type;
+class UpgradeComponent extends Equipment {
     private $sub_flags;
     private $infusion_upgrade_flags;
     private $bonuses;
-    private $infix_upgrade;
     private $suffix;
     
     public function __construct($API_Item) {
@@ -17,20 +15,15 @@ class UpgradeComponent extends API_Item {
         $this->sub_flags = $API_Item['upgrade_component']['flags'];
         $this->infusion_upgrade_flags = $API_Item['upgrade_component']['infusion_upgrade_flags'];
         $this->bonuses = isset($API_Item['upgrade_component']['bonuses']) ? $API_Item['upgrade_component']['bonuses'] : array();
-        $this->infix_upgrade = $API_Item['upgrade_component']['infix_upgrade'];
+        $this->infix_upgrade = isset($API_Item['upgrade_component']['infix_upgrade']) ? $API_Item['upgrade_component']['infix_upgrade'] : array();
         $this->suffix = $API_Item['upgrade_component']['suffix'];
-    }
-    
-    public function getSubType() {
-        return $this->sub_type;
-    }
-    
-    public function getAttributes() {
-        return $this->infix_upgrade['attributes'];
-    }
-    
-    public function getBuff() {
-        return isset($this->infix_upgrade['buff']) ? $this->infix_upgrade['buff'] : null;
+        
+        $this->cleanAttributes();
+        
+        //Some items have buff descriptions which are just added into the items attributes automatically in game
+        if (isset($this->infix_upgrade['buff']['description'])) {
+            $this->addBuffsToAttributes();
+        }
     }
     
     public function getBonuses() {
@@ -43,32 +36,16 @@ class UpgradeComponent extends API_Item {
         return $bonuses;
     }
     
-    public function getBuffDescription() {
-        if (isset($this->infix_upgrade['buff']['description'])) {
-            return nl2br($this->infix_upgrade['buff']['description'], false);
-        }
-        else {
-            return $this->getBonuses();
-        }
-    }
-    
     public function getTooltipDescription() {
         $tooltip = <<<HTML
         <div class="p-tooltip-description db-description">
             <dl class="db-summary">
                 <dt class="db-title gwitem-{$this->getRarityLower()}">{$this->getHTMLName()}</dt>
-HTML;
-        
-        foreach ($this->getAttributes() as $attr) {
-            $tooltip .= "\n<dd class=\"db-stat\">+{$attr['modifier']} {$attr['attribute']}</dd>";
-        }
-        
-        $tooltip .= <<<HTML
-                
+                {$this->getFormattedAttributes()}
+                <dd class="db-slotted-item">{$this->getBonuses()}</dd>
                 <dd class="db-damageType">{$this->getSubType()}</dd>
-                <dd class="db-requiredLevel">Required Level: {$this->getLevel()}</dd>
                 <dd class="db-itemDescription">{$this->getHTMLDescription()}</dd>
-                <dd class="db-itemDescription">{$this->getBuffDescription()}</dd>
+                <dd class="db-requiredLevel">Required Level: {$this->getLevel()}</dd>
             </dl>
         </div>
 HTML;

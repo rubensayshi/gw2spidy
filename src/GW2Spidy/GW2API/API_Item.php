@@ -10,6 +10,7 @@ class API_Item {
     protected $name;
     protected $description;
     protected $type;
+    protected $sub_type;
     protected $level;
     protected $rarity;
     protected $vendor_value;
@@ -25,6 +26,7 @@ class API_Item {
         $this->name = $API_Item['name'];
         $this->description = $API_Item['description'];
         $this->type = $API_Item['type'];
+        $this->sub_type = null;
         $this->level = $API_Item['level'];
         $this->rarity = $API_Item['rarity'];
         $this->vendor_value = (int) $API_Item['vendor_value'];
@@ -77,6 +79,14 @@ class API_Item {
         }
     }
     
+    public function getType() {
+        return $this->type;
+    }
+    
+    public function getSubType() {
+        return $this->sub_type;
+    }
+    
     public function getDescription() {
         return $this->description;
     }
@@ -108,6 +118,9 @@ class API_Item {
     public function getSoulboundStatus() {
         if (in_array("SoulBindOnUse", $this->flags)) {
             return "Soulbound On Use";
+        }
+        elseif (in_array("AccountBound", $this->flags)) {
+            return "Account Bound";
         }
         
         return null;

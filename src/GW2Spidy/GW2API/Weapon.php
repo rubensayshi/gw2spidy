@@ -3,7 +3,6 @@
 namespace GW2Spidy\GW2API;
 
 class Weapon extends Equipment {
-    private $sub_type;
     private $damage_type;
     private $min_power;
     private $max_power;
@@ -21,10 +20,6 @@ class Weapon extends Equipment {
         $this->suffix_item_id = $API_Item['weapon']['suffix_item_id'];
         
         $this->cleanAttributes();
-    }
-    
-    public function getSubType() {
-        return $this->sub_type;
     }
     
     public function getMinPower() {

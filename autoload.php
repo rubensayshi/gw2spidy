@@ -77,7 +77,6 @@ require_once __DIR__ . '/vendor/simple_html_dom/simple_html_dom.php';
 require_once __DIR__ .'/src/GW2Spidy/GW2API/API_Item.php';
 require_once __DIR__ .'/src/GW2Spidy/GW2API/Weapon.php';
 require_once __DIR__ .'/src/GW2Spidy/GW2API/Armor.php';
-require_once __DIR__ .'/src/GW2Spidy/GW2API/Back.php';
 require_once __DIR__ .'/src/GW2Spidy/GW2API/Bag.php';
 require_once __DIR__ .'/src/GW2Spidy/GW2API/Consumable.php';
 require_once __DIR__ .'/src/GW2Spidy/GW2API/Container.php';

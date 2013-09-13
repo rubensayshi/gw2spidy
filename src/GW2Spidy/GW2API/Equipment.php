@@ -9,6 +9,10 @@ abstract class Equipment extends API_Item {
     
     public function __construct($API_Item) {
         parent::__construct($API_Item);
+        
+        $this->infusion_slots = null;
+        $this->infix_upgrade = array();
+        $this->suffix_item_id = null;
     }
     
     public function cleanAttributes() {
@@ -54,5 +58,38 @@ abstract class Equipment extends API_Item {
         }
         
         return $html;
+    }
+    
+    public function getBuff() {
+        return isset($this->infix_upgrade['buff']) ? $this->infix_upgrade['buff'] : null;
+    }
+    
+    public function getBuffDescription() {
+        if (isset($this->infix_upgrade['buff']['description'])) {
+            return nl2br($this->infix_upgrade['buff']['description'], false);
+        }
+        
+        return null;
+    }
+    
+    protected function addBuffsToAttributes() {
+        $buffs = explode("\n", $this->infix_upgrade['buff']['description']);
+        
+        $attributes_exist = (count($this->infix_upgrade['attributes']) > 0);
+        
+        foreach ($buffs as $buff) {
+            list($modifier_stage1, $attribute) = explode(" ", $buff, 2);
+            $modifier_stage2 = str_replace("+", "", $modifier_stage1);
+            $modifier = (int) str_replace("%", "", $modifier_stage2);
+            
+            if (!$attributes_exist) {
+                $this->infix_upgrade['attributes'][] = array('attribute' => $attribute, 'modifier' => $modifier);
+            }
+            else {
+                foreach ($this->infix_upgrade['attributes'] as &$attr) {
+                    $attr['modifier'] += ($attr['attribute'] == $attribute) ? $modifier : 0;
+                }
+            }
+        }
     }
 }
