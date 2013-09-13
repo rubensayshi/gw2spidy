@@ -99,7 +99,7 @@ Watchlist
                         <label class="control-label" for="rarity_filter">Rarity:</label>
                         <select name="rarity_filter" id="rarity_filter">
                             <option value="" data-href="{{ item_list_path(_context, {rarity_filter: null}) }}">No filter</option>
-                            {% for rarity, rarityname in {1: 'Common', 2: 'Fine', 3: 'Masterwork', 4: 'Rare', 5: 'Exotic', 6: 'Legendary'} %}
+                            {% for rarity, rarityname in {0: 'Junk', 1: 'Basic', 2: 'Fine', 3: 'Masterwork', 4: 'Rare', 5: 'Exotic', 6: 'Ascended', 7: 'Legendary'} %}
                                 <option class="{{ rarityname | rarity_css_class }}" {% if rarity == rarity_filter %}selected{% endif %} value="{{ rarity }}" data-href="{{ item_list_path(_context, {rarity_filter: rarity}) }}">{{ rarityname }}</option>
                             {% endfor %}
                         </select>
