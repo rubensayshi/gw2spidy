@@ -30,12 +30,14 @@ class Item extends BaseItem {
     const PRIO_FOUR  = 5;
     const PRIO_FIVE  = 10;
 
+    const RARITY_JUNK       = 0;
     const RARITY_COMMON     = 1;
     const RARITY_FINE       = 2;
     const RARITY_MASTERWORK = 3;
     const RARITY_RARE       = 4;
     const RARITY_EXOTIC     = 5;
-    const RARITY_LEGENDARY  = 6;
+    const RARITY_ASCENDED  = 6;
+    const RARITY_LEGENDARY  = 7;
     const FALSE_POSITIVE = 'FALSE_POSITIVE';
 
     /* Type ids taken from the database */
@@ -167,11 +169,13 @@ class Item extends BaseItem {
 
     public function getRarityName() {
         switch ($this->getRarity()) {
+            case self::RARITY_JUNK:       return "Junk";
             case self::RARITY_COMMON:     return "Common";
             case self::RARITY_FINE:       return "Fine";
             case self::RARITY_MASTERWORK: return "Masterwork";
             case self::RARITY_RARE:       return "Rare";
             case self::RARITY_EXOTIC:     return "Exotic";
+            case self::RARITY_ASCENDED:   return "Ascended";
             case self::RARITY_LEGENDARY:  return "Legendary";
             default:                      return "Rarity [{$this->getRarity()}]";
         }

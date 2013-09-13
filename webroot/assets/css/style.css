@@ -96,6 +96,11 @@ h1 {
     font-weight: bold;
 }
 
+.rarity-junk,
+.rarity-junk a,
+.rarity-0 {
+    color: #4C4C4C !important;
+}
 .rarity-common,
 .rarity-common a,
 .rarity-1 {
@@ -121,9 +126,14 @@ h1 {
 .rarity-5 {
     color: #CC6600 !important;
 }
+.rarity-ascended,
+.rarity-ascended a,
+.rarity-6 {
+    color: #FF4488 !important;
+}
 .rarity-legendary,
 .rarity-legendary a,
-.rarity-6 {
+.rarity-7 {
     color: #DD2222 !important;
 }
 
