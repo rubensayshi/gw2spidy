@@ -231,3 +231,9 @@ foreach($urls as $url) {
         }
     }
 }
+
+\Propel::getConnection()->exec("UPDATE item SET karma_price = 0 AND vendor_price = 20000 WHERE data_id = 22334;"); # Grandmaster's Training Manual
+\Propel::getConnection()->exec("UPDATE item SET karma_price = 0 AND vendor_price = 10000 WHERE data_id = 22333;"); # Master's Training Manual
+\Propel::getConnection()->exec("UPDATE item SET karma_price = 0 AND vendor_price =  1000 WHERE data_id = 22332;"); # Adept's Training Manual
+\Propel::getConnection()->exec("UPDATE item SET karma_price = 2100 WHERE data_id = 19925;");                       # Obsidian Shard
+
