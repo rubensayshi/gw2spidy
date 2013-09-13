@@ -60,8 +60,7 @@ class API_Item {
         $API_Item = json_decode($API_JSON, true);
         
         switch($API_Item['type']) {
-            case "Armor": return new Armor($API_Item);  
-            case "Back": return new Back($API_Item);
+            case "Armor": return new Armor($API_Item);
             case "Bag": return new Bag($API_Item);
             case "Consumable": return new Consumable($API_Item);
             case "Container": return new Container($API_Item);
@@ -83,7 +82,7 @@ class API_Item {
     }
     
     public function getHTMLDescription() {
-        return htmlspecialchars($this->description);
+        return htmlspecialchars(strip_tags($this->description));
     }
     
     public function getRarity() {
@@ -100,5 +99,17 @@ class API_Item {
     
     public function getLevel() {
         return $this->level;
+    }
+    
+    public function getImageURL() {
+        return $this->image;
+    }
+    
+    public function getSoulboundStatus() {
+        if (in_array("SoulBindOnUse", $this->flags)) {
+            return "Soulbound On Use";
+        }
+        
+        return null;
     }
 }

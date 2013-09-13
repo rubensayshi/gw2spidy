@@ -74,7 +74,7 @@
 .db-tooltip .db-description h2 {
     font-size:14px;
     line-height:19px;
-    font-weight:normal;
+    font-weight:bold;
     margin-right:10px;
     float:left;
 }
@@ -217,7 +217,8 @@ div#db-tooltip-container {
 .db-tooltip.p-tooltip_gw2 .db-title,
 .db-tooltip.p-tooltip_gw2 .db-aura-title,
 .db-tooltip.p-tooltip_gw2 h2 {
-    margin-bottom:12px;color:#FFCC69;
+    margin-bottom:12px;
+    color:#FFCC69;
 }
 
 .db-tooltip.p-tooltip_gw2.db-tooltip-recipe .db-damageType {
@@ -420,11 +421,17 @@ div#db-tooltip-container {
     color:#FFCC69;
 }
 
+.db-slotted-item {
+    padding-top:10px;
+    padding-bottom:10px;
+    color:#5191F0!important;
+}
+
 .db-tooltip.p-tooltip_gw2 .gwitem-masterwork,
 .db-tooltip.p-tooltip_gw2 .gwitem-masterwork a,
 .db-tooltip.p-tooltip_gw2 .gwrecipe-masterwork,
 .db-tooltip.p-tooltip_gw2 .gwrecipe-masterwork a {
-    color:#2DC50E!important;
+    color:#33CC11!important;
 }
 
 .db-tooltip.p-tooltip_gw2 .gwitem-fine,
