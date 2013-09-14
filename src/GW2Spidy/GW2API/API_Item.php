@@ -84,7 +84,7 @@ HTML;
                 $API_JSON = $curl_item->getResponseBody();
                 
                 $cache->set($cacheKey, $API_JSON, MEMCACHE_COMPRESSED, $ttl);
-            } catch (Exception $e){
+            } catch (\Exception $e){
                 $ttl = 600;
                 $cache->set($cacheKey, null, MEMCACHE_COMPRESSED, $ttl);
                 
@@ -93,6 +93,10 @@ HTML;
         }
         
         $API_Item = json_decode($API_JSON, true);
+        
+        if (!isset($API_Item['type'])) {
+            return null;
+        }
         
         switch($API_Item['type']) {
             case "Armor": return new Armor($API_Item);

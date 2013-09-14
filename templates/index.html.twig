@@ -131,7 +131,7 @@
         		{% for item in trending_up %}
         			{% set href = path('item', {dataId : item.dataId}) %}
             		<li>
-            			<div data-tooltip-href="{{ gw2db_item(item) }}">
+            			<div data-tooltip-id="{{ item.dataId }}">
                         	<div class="item-image">
                                 <a href="{{ href }}"><img src="{{ item.img }}" width="32" height="32" /></a>
                             </div>
@@ -152,7 +152,7 @@
         		{% for item in trending_down %}
         			{% set href = path('item', {dataId : item.dataId}) %}
             		<li>
-            			<div data-tooltip-href="{{ gw2db_item(item) }}">
+            			<div data-tooltip-id="{{ item.dataId }}">
                         	<div style="display: inline-block;">
                                 <a href="{{ href }}"><img src="{{ item.img }}" width="32" height="32" /></a>
                             </div>
