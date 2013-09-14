@@ -282,15 +282,15 @@
 
 function WP_LoadTooltips(a) {
     if (a) {
-        WP_LoadTooltipsElements(a.find("a, *[data-id]"))
+        WP_LoadTooltipsElements(a.find("a, *[data-tooltip-id]"))
     } else {
-        WP_LoadTooltipsElements(jQuery("a, *[data-id]"))
+        WP_LoadTooltipsElements(jQuery("a, *[data-tooltip-id]"))
     }
 }
 
 function WP_LoadTooltipsElements(a) {
     a.each(function () {
-        var c = jQuery(this).attr("data-id");
+        var c = jQuery(this).attr("data-tooltip-id");
         if (!c) {
             return
         }
