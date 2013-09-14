@@ -18,6 +18,7 @@ use GW2Spidy\DB\ItemPeer;
 use GW2Spidy\DB\BuyListingPeer;
 use GW2Spidy\DB\SellListingPeer;
 use GW2Spidy\DB\BuyListingQuery;
+use GW2Spidy\GW2API\API_Item;
 
 
 class v090APIControllerProvider implements ControllerProviderInterface {
@@ -483,6 +484,21 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             return $app['api-helper']->outputResponse($request, $response, $format, "gem-price");
         })
         ->assert('format', 'csv|json|xml');
+        
+        /**
+         * ----------------------
+         *  route /item-tooltip
+         * ----------------------
+         */
+        $controllers->get("/{format}/item-tooltip/{dataId}", function(Request $request, $format, $dataId) use($app) {
+            $API_Item = API_Item::getItem($dataId);
+
+            $response = array('result' => array('Tooltip' => $API_Item->getTooltip(), 'Type' => 'api/v0.9/json/item-tooltip', 'Id' => $dataId));
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "item-tooltip-{$dataId}");
+        })
+        ->assert('format', 'csv|json|xml')
+        ->assert('dataId', '\d+');
 
         return $controllers;
     }

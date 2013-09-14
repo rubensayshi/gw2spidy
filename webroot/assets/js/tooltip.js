@@ -1,206 +1,3 @@
-/* C:\Projects\Cobalt\Source\Curse.Ascalon.Web\Content\js\Libs\htmldiff.js */
-(function () {
-    window.HTMLDiff = (function () {
-        function a(c, d) {
-            this.a = c;
-            this.b = d;
-        }
-        a.prototype.diff = function () {
-            var b;
-            b = this.diff_list(this.tokenize(this.a), this.tokenize(this.b));
-            this.update(this.a, b.filter(function (e) {
-                var d, c;
-                d = e[0], c = e[1];
-                return d !== "+";
-            }));
-            return this.update(this.b, b.filter(function (e) {
-                var d, c;
-                d = e[0], c = e[1];
-                return d !== "-";
-            }));
-        };
-        a.prototype.parseTextNodes = function (c, d) {
-            var b;
-            b = function (m) {
-                if (m === null) {
-                    return false;
-                }
-                var i, o, j, e, h, g, k, f, l;
-                if (m.nodeType === 3) {
-                    if (!/^\s*$/.test(m.nodeValue)) {
-                        return d(m);
-                    }
-                } else {
-                    l = (function () {
-                        var n, p, r, q;
-                        r = m.childNodes;
-                        q = [];
-                        for (n = 0, p = r.length; n < p; n++) {
-                            i = r[n];
-                            q.push(i);
-                        }
-                        return q;
-                    })();
-                    for (h = 0, k = l.length; h < k; h++) {
-                        e = l[h];
-                        j = b(e);
-                        if (j) {
-                            for (g = 0, f = j.length; g < f; g++) {
-                                o = j[g];
-                                m.insertBefore(o, e);
-                            }
-                            m.removeChild(e);
-                        }
-                    }
-                    return false;
-                }
-            };
-            return b(c);
-        };
-        a.prototype.tokenize = function (c) {
-            var b;
-            b = [];
-            this.parseTextNodes(c, function (d) {
-                b = b.concat(d.nodeValue.split(" "));
-                return false;
-            });
-            return b;
-        };
-        a.prototype.update = function (d, c) {
-            var b;
-            b = 0;
-            return this.parseTextNodes(d, function (e) {
-                var k, n, g, l, i, q, m, o, f, p, h, j;
-                m = b;
-                k = b + (e.nodeValue.split(" ")).length;
-                b = k;
-                i = (function () {
-                    var r, s, v, t, u;
-                    v = c.slice(m, k);
-                    u = [];
-                    for (r = 0, s = v.length; r < s; r++) {
-                        t = v[r], o = t[0], f = t[1];
-                        if (o === "=") {
-                            u.push(f);
-                        } else {
-                            u.push("<ins>" + f + "</ins>");
-                        }
-                    }
-                    return u;
-                })();
-                i = i.join(" ").replace(/<\/ins> <ins>/g, " ").replace(/<ins> /g, " <ins>").replace(/[ ]<\/ins>/g, "</ins> ").replace(/<ins><\/ins>/g, "");
-                l = [];
-                g = document.createTextNode("");
-                l.push(g);
-                j = i.split(/(<\/?ins>)/);
-                for (p = 0, h = j.length; p < h; p++) {
-                    q = j[p];
-                    switch (q) {
-                    case "<ins>":
-                        n = document.createElement("ins");
-                        l.push(n);
-                        g = document.createTextNode("");
-                        n.appendChild(g);
-                        break;
-                    case "</ins>":
-                        g = document.createTextNode("");
-                        l.push(g);
-                        break;
-                    default:
-                        g.nodeValue = q;
-                    }
-                }
-                return l.filter(function (r) {
-                    return !(r.nodeType === 3 && r.nodeValue === "");
-                });
-            });
-        };
-        a.prototype.diff_list = function (n, l) {
-            var h, o, p, q, c, s, d, e, t, m, v, u, r, b, g, f;
-            c = {};
-            for (h = 0, u = n.length; h < u; h++) {
-                m = n[h];
-                if (!(m in c)) {
-                    c[m] = [];
-                }
-                c[m].push(h);
-            }
-            q = (function () {
-                var j, i;
-                i = [];
-                for (h = 0, j = n.length; 0 <= j ? h < j : h > j; 0 <= j ? h++ : h--) {
-                    i.push(0);
-                }
-                return i;
-            })();
-            e = d = s = 0;
-            for (o = 0, r = l.length; o < r; o++) {
-                m = l[o];
-                t = (function () {
-                    var j, i;
-                    i = [];
-                    for (h = 0, j = n.length; 0 <= j ? h < j : h > j; 0 <= j ? h++ : h--) {
-                        i.push(0);
-                    }
-                    return i;
-                })();
-                f = (g = c[m]) !== null ? g : [];
-                for (v = 0, b = f.length; v < b; v++) {
-                    p = f[v];
-                    t[p] = (p && q[p - 1] ? 1 : 0) + 1;
-                    if (t[p] > s) {
-                        s = t[p];
-                        e = p - s + 1;
-                        d = o - s + 1;
-                    }
-                }
-                q = t;
-            }
-            if (s === 0) {
-                return [].concat((function () {
-                    var i, k, j;
-                    j = [];
-                    for (i = 0, k = n.length; i < k; i++) {
-                        m = n[i];
-                        j.push(["-", m]);
-                    }
-                    return j;
-                })(), (function () {
-                    var i, k, j;
-                    j = [];
-                    for (i = 0, k = l.length; i < k; i++) {
-                        m = l[i];
-                        j.push(["+", m]);
-                    }
-                    return j;
-                })());
-            } else {
-                return [].concat(this.diff_list(n.slice(0, e), l.slice(0, d)), (function () {
-                    var j, w, i, k;
-                    i = l.slice(d, (d + s));
-                    k = [];
-                    for (j = 0, w = i.length; j < w; j++) {
-                        m = i[j];
-                        k.push(["=", m]);
-                    }
-                    return k;
-                })(), this.diff_list(n.slice(e + s), l.slice(d + s)));
-            }
-        };
-        return a;
-    })();
-}).call(this);
-jQuery(document).ready(function () {
-    jQuery.each(jQuery(".change"), function (a, d) {
-        var c = jQuery(d).find(".old .db-tooltip");
-        var b = jQuery(d).find(".new .db-tooltip");
-        if ((c.length) && (b.length)) {
-            var e = new HTMLDiff(c[0], b[0]);
-            e.diff();
-        }
-    });
-});
-
 /* C:\Projects\Cobalt\Source\Curse.Ascalon.Web\Content\js\Libs\jquery.dbTooltip.js */
 (function (i) {
     var p = {}, q, l, m, f = i.browser.msie && /MSIE\s(5\.5|6\.)/.test(navigator.userAgent),
@@ -302,15 +99,10 @@ jQuery(document).ready(function () {
                         y = "dual-tooltip/" + C.OldBuild + "/" + C.NewBuild;
                     }
                     var A = C.HostName;
-                    var s = A + "/" + C.Type + "/" + C.Id + "/" + y + "?x";
-                    if ((k(this).AdvancedTooltips || C.SimpleOrAdvanced === "advanced") && C.SimpleOrAdvanced !== "simple") {
-                        s += "&advanced=1";
-                    }
+                    var s = A + "/" + C.Type + "/" + C.Id;
                     if (A === location.protocol + "//" + location.host) {
-                        i.get(s, {
-                            callback: "WP_OnTooltipLoaded"
-                        }, function (D) {
-                            WP_OnTooltipLoaded(D);
+                        i.get(s, {}, function (D) {
+                            WP_OnTooltipLoaded(D.result);
                         });
                     } else {
                         t = document.createElement("script");
@@ -488,33 +280,6 @@ jQuery(document).ready(function () {
 
 /* C:\Projects\Cobalt\Source\Curse.Ascalon.Web\Content\js\Ascalon\Ascalon.Tooltip.js */
 
-function ImportCss(b) {
-    if (document.createStyleSheet) {
-        document.createStyleSheet(b)
-    } else {
-        var c = b;
-        var a = document.createElement("link");
-        a.rel = "stylesheet";
-        a.type = "text/css";
-        a.href = c;
-        document.getElementsByTagName("head")[0].appendChild(a)
-    }
-}
-
-function WP_LoadCss() {
-    var a = null;
-    jQuery("script").each(function (c, d) {
-        var b = jQuery(d).attr("src");
-        if (b != null && (b.indexOf("tt.js") != -1 || b.indexOf("Ascalon.Tooltip.js") != -1)) {
-            a = b
-        }
-    });
-    if (a != null) {
-        a = a.substring(0, a.indexOf("/js/"));
-        ImportCss(a + "/skins/Ascalon/css/tooltip.css")
-    }
-}
-
 function WP_LoadTooltips(a) {
     if (a) {
         WP_LoadTooltipsElements(a.find("a, *[data-id]"))
@@ -524,42 +289,18 @@ function WP_LoadTooltips(a) {
 }
 
 function WP_LoadTooltipsElements(a) {
-    var b = /(.*?)?\/(skills|tasks|traits|items|recipes|achievements|creatures|boons|conditions|guildupgrades)\/([0-9]+)[\/a-z0-9\-]*(\?(simple|advanced))?(#([0-9]+)-([0-9]+))?/i;
     a.each(function () {
-        var c = jQuery(this).attr("href") || jQuery(this).attr("data-id");
+        var c = jQuery(this).attr("data-id");
         if (!c) {
             return
         }
-        c = c.split("?")[0];
-        if (!c || c == location.href || (location.protocol + "//" + location.host + c) == location.href) {
-            return
-        }
-        if (c.substr(0, 11) == "javascript:") {
-            return
-        }
-        var j = c.match(b);
-        if (!j) {
-            if (jQuery(this).attr("href") && jQuery(this).attr("data-tooltip-href")) {
-                c = jQuery(this).attr("data-tooltip-href");
-                c = c.split("?")[0];
-                if (!c || c == location.href || (location.protocol + "//" + location.host + c) == location.href) {
-                    return
-                }
-                if (c.substr(0, 11) == "javascript:") {
-                    return
-                }
-                j = c.match(b)
-            }
-            if (!j) {
-                return
-            }
-        }
-        var e = j[1] || ("http://" + window.location.host);
-        var g = j[2];
-        var h = j[3];
-        var d = j[5];
-        var i = j[7];
-        var f = j[8];
+        var j = "".split("?");
+        var e = "http://" + window.location.host;
+        var g = 'api/v0.9/json/item-tooltip';
+        var h = c;
+        var d = null;
+        var i = j[3];
+        var f = j[2];
         jQuery(this).dbTooltip({
             bodyHandler: function () {
                 var k = g + "-" + h + "-" + i + "-" + f;
@@ -604,7 +345,6 @@ function WP_Initialize() {
     if (typeof (Cobalt) != "undefined") {
         Cobalt.runOnHtmlInsert(WP_LoadTooltips)
     } else {
-        WP_LoadCss();
         WP_LoadTooltips()
     }
 }
