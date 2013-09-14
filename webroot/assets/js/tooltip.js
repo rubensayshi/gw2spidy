@@ -282,9 +282,9 @@
 
 function WP_LoadTooltips(a) {
     if (a) {
-        WP_LoadTooltipsElements(a.find("a, *[data-tooltip-id]"))
+        WP_LoadTooltipsElements(a.find("a, *[data-tooltip-id], *[data-tooltip-recipe]"))
     } else {
-        WP_LoadTooltipsElements(jQuery("a, *[data-tooltip-id]"))
+        WP_LoadTooltipsElements(jQuery("a, *[data-tooltip-id], *[data-tooltip-recipe]"))
     }
 }
 
@@ -292,11 +292,19 @@ function WP_LoadTooltipsElements(a) {
     a.each(function () {
         var c = jQuery(this).attr("data-tooltip-id");
         if (!c) {
-            return
+            var c = jQuery(this).attr("data-tooltip-recipe")
+            if (!c) {
+                return
+            }
+            else {
+               var g = 'api/v0.9/json/recipe-tooltip';
+            }
+        }
+        else {
+            var g = 'api/v0.9/json/item-tooltip';
         }
         var j = "".split("?");
         var e = "http://" + window.location.host;
-        var g = 'api/v0.9/json/item-tooltip';
         var h = c;
         var d = null;
         var i = j[3];

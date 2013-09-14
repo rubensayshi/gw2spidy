@@ -13,13 +13,9 @@ class Tool extends API_Item {
     
     public function getTooltipDescription() {
         $tooltip = <<<HTML
-        <div class="p-tooltip-description db-description">
-            <dl class="db-summary">
-                <dt class="db-title gwitem-{$this->getRarityLower()}">{$this->getHTMLName()}</dt>
-                <dd class="db-consumableType">{$this->getSubType()}</dd>
-                <dd class="db-itemDescription">{$this->getHTMLDescription()}</dd>
-            </dl>
-        </div>
+            <dt class="db-title gwitem-{$this->getRarityLower()}">{$this->getHTMLName()}</dt>
+            <dd class="db-consumableType">{$this->getSubType()}</dd>
+            <dd class="db-itemDescription">{$this->getHTMLDescription()}</dd>
 HTML;
         return $tooltip;
     }

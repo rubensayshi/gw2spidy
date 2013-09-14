@@ -44,22 +44,18 @@ class Weapon extends API_Item {
     
     public function getTooltipDescription() {
         $tooltip = <<<HTML
-        <div class="p-tooltip-description db-description">
-            <dl class="db-summary">
-                <dt class="db-title gwitem-{$this->getRarityLower()}">{$this->getHTMLName()}</dt>
-                <dd class="db-weaponStrength"><span>Weapon Strength:</span> {$this->getFormattedMinPower()} - {$this->getFormattedMaxPower()}</dd>
-                {$this->getFormattedAttributes()}
-                {$this->getFormattedSuffixItem()}
-                <dd class="db-weaponInfo">
-                    <span class="db-weaponType">{$this->getSubType()}</span>
-                    <span class="db-weaponRarity gwitem-{$this->getRarityLower()}">{$this->getRarity()}</span>
-                </dd>
-                <dd class="db-damageType">Damage Type: {$this->getDamageType()}</dd>
-                <dd class="db-requiredLevel">Required Level: {$this->getLevel()}</dd>
-                <dd class="db-itemDescription">{$this->getHTMLDescription()}</dd>
-                <dd class="db-itemDescription">{$this->getSoulboundStatus()}</dd>
-            </dl>
-        </div>
+            <dt class="db-title gwitem-{$this->getRarityLower()}">{$this->getHTMLName()}</dt>
+            <dd class="db-weaponStrength"><span>Weapon Strength:</span> {$this->getFormattedMinPower()} - {$this->getFormattedMaxPower()}</dd>
+            {$this->getFormattedAttributes()}
+            {$this->getFormattedSuffixItem()}
+            <dd class="db-weaponInfo">
+                <span class="db-weaponType">{$this->getSubType()}</span>
+                <span class="db-weaponRarity gwitem-{$this->getRarityLower()}">{$this->getRarity()}</span>
+            </dd>
+            <dd class="db-damageType">Damage Type: {$this->getDamageType()}</dd>
+            <dd class="db-requiredLevel">Required Level: {$this->getLevel()}</dd>
+            <dd class="db-itemDescription">{$this->getHTMLDescription()}</dd>
+            <dd class="db-itemDescription">{$this->getSoulboundStatus()}</dd>
 HTML;
         return $tooltip;
     }

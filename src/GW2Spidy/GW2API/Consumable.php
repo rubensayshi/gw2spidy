@@ -61,15 +61,11 @@ class Consumable extends API_Item {
     
     public function getTooltipDescription() {
         $tooltip = <<<HTML
-        <div class="p-tooltip-description db-description">
-            <dl class="db-summary">
-                <dt class="db-title gwitem-{$this->getRarityLower()}">{$this->getHTMLName()}</dt>
-                <dd class="db-consumableDescription">{$this->getNourishment()}</dd>
-                <dd class="db-itemDescription">{$this->getHTMLDescription()}</dd>
-                <dd class="db-consumableType">{$this->getType()}</dd>
-                {$this->getFormattedLevel()}
-            </dl>
-        </div>
+            <dt class="db-title gwitem-{$this->getRarityLower()}">{$this->getHTMLName()}</dt>
+            <dd class="db-consumableDescription">{$this->getNourishment()}</dd>
+            <dd class="db-itemDescription">{$this->getHTMLDescription()}</dd>
+            <dd class="db-consumableType">{$this->getType()}</dd>
+            {$this->getFormattedLevel()}
 HTML;
         return $tooltip;
     }
