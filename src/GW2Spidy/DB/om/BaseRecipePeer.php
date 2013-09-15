@@ -38,13 +38,13 @@ abstract class BaseRecipePeer {
     const TM_CLASS = 'RecipeTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 14;
+    const NUM_COLUMNS = 12;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 14;
+    const NUM_HYDRATE_COLUMNS = 12;
 
     /** the column name for the DATA_ID field */
     const DATA_ID = 'recipe.DATA_ID';

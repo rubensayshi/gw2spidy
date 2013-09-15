@@ -42,13 +42,13 @@ abstract class BaseItemPeer {
     const TM_CLASS = 'ItemTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 27;
+    const NUM_COLUMNS = 25;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 27;
+    const NUM_HYDRATE_COLUMNS = 25;
 
     /** the column name for the DATA_ID field */
     const DATA_ID = 'item.DATA_ID';

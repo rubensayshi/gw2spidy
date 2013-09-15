@@ -184,7 +184,7 @@ abstract class BaseRecipeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `NAME`, `DISCIPLINE_ID`, `RATING`, `RESULT_ITEM_ID`, `COUNT`, `COST`, `KARMA_COST`, `SELL_PRICE`, `PROFIT`, `UPDATED`, `REQUIRES_UNLOCK`, FROM `recipe` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `NAME`, `DISCIPLINE_ID`, `RATING`, `RESULT_ITEM_ID`, `COUNT`, `COST`, `KARMA_COST`, `SELL_PRICE`, `PROFIT`, `UPDATED`, `REQUIRES_UNLOCK` FROM `recipe` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);

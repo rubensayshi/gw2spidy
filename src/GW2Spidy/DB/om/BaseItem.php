@@ -1296,7 +1296,7 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 27; // 27 = ItemPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 25; // 25 = ItemPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Item object", $e);

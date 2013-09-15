@@ -685,7 +685,7 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 14; // 14 = RecipePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 12; // 12 = RecipePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Recipe object", $e);
