@@ -2,8 +2,6 @@
 
 namespace GW2Spidy\DB;
 
-use GW2Spidy\Util\CacheHandler;
-
 use GW2Spidy\DB\om\BaseRecipe;
 
 use GW2Spidy\GW2API\API_Recipe;

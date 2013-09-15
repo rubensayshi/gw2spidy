@@ -28,8 +28,6 @@ Target output style
 
 {
     "0":{
-        "ID":null,
-        "ExternalID":null,
         "DataID":1275,
         "Name":"Resilient Seeker Coat",
         "Rating":25,
@@ -40,8 +38,6 @@ Target output style
         "Ingredients":[{"ItemID":19797,"Count":1},{"ItemID":13094,"Count":1},{"ItemID":13093,"Count":1}]
     },
     "1":{
-        "ID":null,
-        "ExternalID":null,
         "DataID":3219,
         "Name":"Feast of Veggie Pizzas",
         "Rating":125,
@@ -108,8 +104,6 @@ foreach (array_chunk($data['recipes'], 1000) as $recipes) {
             //If a recipe has multiple disciplines, treat each one like a separate recipe to be inserted.
             foreach($recipe_details['disciplines'] as $discipline) {
                 $recipe = new stdClass();
-                $recipe->ID = null; //Gw2dbId
-                $recipe->ExternalID = null; //Gw2dbExternalId
                 $recipe->DataID = $recipe_id;
                 $recipe->Name = $created_item->getName();
                 $recipe->Rating = (int) $recipe_details['min_rating'];

@@ -144,9 +144,8 @@ class APIHelperService {
             'min_sale_unit_price' => intval($item['MinSaleUnitPrice']),
             'offer_availability' => intval($item['OfferAvailability']),
             'sale_availability' => intval($item['SaleAvailability']),
-            'gw2db_external_id' => intval($item['Gw2dbExternalId']),
             'sale_price_change_last_hour' => intval($item['SalePriceChangeLastHour']),
-        	'offer_price_change_last_hour' => intval($item['OfferPriceChangeLastHour']),
+            'offer_price_change_last_hour' => intval($item['OfferPriceChangeLastHour']),
         );
 
         return $data;

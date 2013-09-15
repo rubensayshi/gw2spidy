@@ -36,8 +36,6 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     RecipeQuery orderByProfit($order = Criteria::ASC) Order by the profit column
  * @method     RecipeQuery orderByUpdated($order = Criteria::ASC) Order by the updated column
  * @method     RecipeQuery orderByRequiresUnlock($order = Criteria::ASC) Order by the requires_unlock column
- * @method     RecipeQuery orderByGw2dbId($order = Criteria::ASC) Order by the gw2db_id column
- * @method     RecipeQuery orderByGw2dbExternalId($order = Criteria::ASC) Order by the gw2db_external_id column
  *
  * @method     RecipeQuery groupByDataId() Group by the data_id column
  * @method     RecipeQuery groupByName() Group by the name column
@@ -51,8 +49,6 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     RecipeQuery groupByProfit() Group by the profit column
  * @method     RecipeQuery groupByUpdated() Group by the updated column
  * @method     RecipeQuery groupByRequiresUnlock() Group by the requires_unlock column
- * @method     RecipeQuery groupByGw2dbId() Group by the gw2db_id column
- * @method     RecipeQuery groupByGw2dbExternalId() Group by the gw2db_external_id column
  *
  * @method     RecipeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     RecipeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -85,8 +81,6 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     Recipe findOneByProfit(int $profit) Return the first Recipe filtered by the profit column
  * @method     Recipe findOneByUpdated(string $updated) Return the first Recipe filtered by the updated column
  * @method     Recipe findOneByRequiresUnlock(int $requires_unlock) Return the first Recipe filtered by the requires_unlock column
- * @method     Recipe findOneByGw2dbId(int $gw2db_id) Return the first Recipe filtered by the gw2db_id column
- * @method     Recipe findOneByGw2dbExternalId(int $gw2db_external_id) Return the first Recipe filtered by the gw2db_external_id column
  *
  * @method     array findByDataId(int $data_id) Return Recipe objects filtered by the data_id column
  * @method     array findByName(string $name) Return Recipe objects filtered by the name column
@@ -100,8 +94,6 @@ use GW2Spidy\DB\RecipeQuery;
  * @method     array findByProfit(int $profit) Return Recipe objects filtered by the profit column
  * @method     array findByUpdated(string $updated) Return Recipe objects filtered by the updated column
  * @method     array findByRequiresUnlock(int $requires_unlock) Return Recipe objects filtered by the requires_unlock column
- * @method     array findByGw2dbId(int $gw2db_id) Return Recipe objects filtered by the gw2db_id column
- * @method     array findByGw2dbExternalId(int $gw2db_external_id) Return Recipe objects filtered by the gw2db_external_id column
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -192,7 +184,7 @@ abstract class BaseRecipeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `NAME`, `DISCIPLINE_ID`, `RATING`, `RESULT_ITEM_ID`, `COUNT`, `COST`, `KARMA_COST`, `SELL_PRICE`, `PROFIT`, `UPDATED`, `REQUIRES_UNLOCK`, `GW2DB_ID`, `GW2DB_EXTERNAL_ID` FROM `recipe` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `NAME`, `DISCIPLINE_ID`, `RATING`, `RESULT_ITEM_ID`, `COUNT`, `COST`, `KARMA_COST`, `SELL_PRICE`, `PROFIT`, `UPDATED`, `REQUIRES_UNLOCK`, FROM `recipe` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -751,88 +743,6 @@ abstract class BaseRecipeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(RecipePeer::REQUIRES_UNLOCK, $requiresUnlock, $comparison);
-    }
-
-    /**
-     * Filter the query on the gw2db_id column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByGw2dbId(1234); // WHERE gw2db_id = 1234
-     * $query->filterByGw2dbId(array(12, 34)); // WHERE gw2db_id IN (12, 34)
-     * $query->filterByGw2dbId(array('min' => 12)); // WHERE gw2db_id > 12
-     * </code>
-     *
-     * @param     mixed $gw2dbId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return RecipeQuery The current query, for fluid interface
-     */
-    public function filterByGw2dbId($gw2dbId = null, $comparison = null)
-    {
-        if (is_array($gw2dbId)) {
-            $useMinMax = false;
-            if (isset($gw2dbId['min'])) {
-                $this->addUsingAlias(RecipePeer::GW2DB_ID, $gw2dbId['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($gw2dbId['max'])) {
-                $this->addUsingAlias(RecipePeer::GW2DB_ID, $gw2dbId['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(RecipePeer::GW2DB_ID, $gw2dbId, $comparison);
-    }
-
-    /**
-     * Filter the query on the gw2db_external_id column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByGw2dbExternalId(1234); // WHERE gw2db_external_id = 1234
-     * $query->filterByGw2dbExternalId(array(12, 34)); // WHERE gw2db_external_id IN (12, 34)
-     * $query->filterByGw2dbExternalId(array('min' => 12)); // WHERE gw2db_external_id > 12
-     * </code>
-     *
-     * @param     mixed $gw2dbExternalId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return RecipeQuery The current query, for fluid interface
-     */
-    public function filterByGw2dbExternalId($gw2dbExternalId = null, $comparison = null)
-    {
-        if (is_array($gw2dbExternalId)) {
-            $useMinMax = false;
-            if (isset($gw2dbExternalId['min'])) {
-                $this->addUsingAlias(RecipePeer::GW2DB_EXTERNAL_ID, $gw2dbExternalId['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($gw2dbExternalId['max'])) {
-                $this->addUsingAlias(RecipePeer::GW2DB_EXTERNAL_ID, $gw2dbExternalId['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(RecipePeer::GW2DB_EXTERNAL_ID, $gw2dbExternalId, $comparison);
     }
 
     /**
