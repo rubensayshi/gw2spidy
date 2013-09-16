@@ -265,15 +265,6 @@ h1 {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
-.gw2db-icon {
-    display: inline-block;
-    position: absolute;
-    top: 0px;
-    left: -40px;
-    width: 82px;
-    height: 40px;
-}
-
 .twitter-icon {
     display: inline-block;
     margin-left: 10px;
@@ -401,10 +392,10 @@ h1 {
     display: none;
 }
 .gw2money-fragment {
-	white-space: nowrap;
+    white-space: nowrap;
 }
 .gw2money-negative {
-	color: #DD2222;
+    color: #DD2222;
 }
 .gw2money-copper,
 .gw2money-silver,

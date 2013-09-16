@@ -39,20 +39,6 @@ abstract class Functions {
         return $str;
     }
 
-    public static function getGW2DBLink(Item $item) {
-        $id   = urlencode($item->getGw2dbExternalId());
-        $slug = urlencode(self::slugify($item->getName()));
-
-        return "http://www.gw2db.com/items/{$id}-{$slug}";
-    }
-
-    public static function getGW2DBLinkRecipe(Recipe $recipe) {
-        $id   = urlencode($recipe->getGw2dbExternalId());
-        $slug = urlencode(self::slugify($recipe->getName()));
-
-        return "http://www.gw2db.com/recipes/{$id}-{$slug}";
-    }
-
     /**
      * Indents a flat JSON string to make it more human-readable.
      *

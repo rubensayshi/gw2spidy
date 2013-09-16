@@ -63,8 +63,6 @@ CREATE TABLE `item`
     `min_sale_unit_price` INTEGER NOT NULL,
     `offer_availability` INTEGER DEFAULT 0 NOT NULL,
     `sale_availability` INTEGER DEFAULT 0 NOT NULL,
-    `gw2db_id` INTEGER,
-    `gw2db_external_id` INTEGER,
     `last_price_changed` DATETIME,
     `last_updated` DATETIME,
     `sale_price_change_last_hour` INTEGER DEFAULT 0,
@@ -79,21 +77,6 @@ CREATE TABLE `item`
     CONSTRAINT `item_FK_2`
         FOREIGN KEY (`item_sub_type_id`)
         REFERENCES `item_sub_type` (`id`)
-) ENGINE=MyISAM;
-
--- ---------------------------------------------------------------------
--- gw2db_item_archive
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `gw2db_item_archive`;
-
-CREATE TABLE `gw2db_item_archive`
-(
-    `ID` INTEGER NOT NULL,
-    `ExternalID` INTEGER,
-    `DataID` INTEGER,
-    `Name` VARCHAR(255),
-    PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM;
 
 -- ---------------------------------------------------------------------
@@ -129,8 +112,6 @@ CREATE TABLE `recipe`
     `profit` INTEGER,
     `updated` DATETIME,
     `requires_unlock` INTEGER DEFAULT 0 NOT NULL,
-    `gw2db_id` INTEGER,
-    `gw2db_external_id` INTEGER,
     PRIMARY KEY (`data_id`),
     INDEX `search_name` (`name`),
     INDEX `recipe_FI_1` (`discipline_id`),

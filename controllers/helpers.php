@@ -283,7 +283,6 @@ function buildRecipeTree($item, $app, $recipe = null, $multiplier = 1) {
         'id' => $item->getDataId(),
         'name' => $item->getName(),
         'href' => $app['url_generator']->generate('item', array('dataId' => $item->getDataId())),
-        'gw2db_href' => "http://www.gw2db.com/items/{$item->getGw2dbExternalId()}-" . Functions::slugify($item->getName()),
         'rarity' => $item->getRarityName(),
         'img'    => $item->getImg(),
         'price' => $item->getBestPrice(),
