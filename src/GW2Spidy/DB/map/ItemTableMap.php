@@ -59,6 +59,8 @@ class ItemTableMap extends TableMap
         $this->addColumn('RARITY_WORD', 'RarityWord', 'VARCHAR', true, 255, null);
         $this->addForeignKey('ITEM_TYPE_ID', 'ItemTypeId', 'INTEGER', 'item_type', 'ID', false, null, null);
         $this->addForeignKey('ITEM_SUB_TYPE_ID', 'ItemSubTypeId', 'INTEGER', 'item_sub_type', 'ID', false, null, null);
+        $this->addColumn('PVP_FLAG', 'PvpFlag', 'BOOLEAN', true, 1, false);
+        $this->addColumn('SOULBOUND_FLAG', 'SoulboundFlag', 'BOOLEAN', true, 1, false);
         $this->addColumn('MAX_OFFER_UNIT_PRICE', 'MaxOfferUnitPrice', 'INTEGER', true, null, null);
         $this->addColumn('MIN_SALE_UNIT_PRICE', 'MinSaleUnitPrice', 'INTEGER', true, null, null);
         $this->addColumn('OFFER_AVAILABILITY', 'OfferAvailability', 'INTEGER', true, null, 0);
