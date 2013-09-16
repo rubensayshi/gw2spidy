@@ -10,8 +10,6 @@ class Back extends APIItem {
         $this->infusion_slots = $APIItem['back']['infusion_slots'];
         $this->infix_upgrade = isset($APIItem['back']['infix_upgrade']) ? $APIItem['back']['infix_upgrade'] : array();
         $this->suffix_item_id = $APIItem['back']['suffix_item_id'];
-        
-        $this->cleanAttributes();
     }
     
     public function getTooltipDescription() {

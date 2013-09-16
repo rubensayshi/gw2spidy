@@ -18,8 +18,6 @@ class Weapon extends APIItem {
         $this->infusion_slots = $APIItem['weapon']['infusion_slots'];
         $this->infix_upgrade = isset($APIItem['weapon']['infix_upgrade']) ? $APIItem['weapon']['infix_upgrade'] : array();
         $this->suffix_item_id = $APIItem['weapon']['suffix_item_id'];
-        
-        $this->cleanAttributes();
     }
     
     public function getMinPower() {

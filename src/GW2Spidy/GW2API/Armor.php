@@ -15,8 +15,6 @@ class Armor extends APIItem {
         $this->infusion_slots = $APIItem['armor']['infusion_slots'];
         $this->infix_upgrade = isset($APIItem['armor']['infix_upgrade']) ? $APIItem['armor']['infix_upgrade'] : array();
         $this->suffix_item_id = $APIItem['armor']['suffix_item_id'];
-        
-        $this->cleanAttributes();
     }
     
     public function getDefense() {
