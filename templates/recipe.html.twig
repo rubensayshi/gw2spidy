@@ -120,14 +120,10 @@
 
 <h1>{{ recipe.name }}</h1>
 
-<a target="_blank" title="View this recipe on GW2DB" style="display: block; float: right; text-align: center; position: absolute; top: -5px; right: -0px;" href="{{ gw2db_recipe(recipe) }}">
-	<img src="{{ versioned_asset('/assets/img/powered_gw2db_onLight.png') }}" />
-</a>
-
 <div id="recipe_summary_container" class="well">
-	<div class="clearfix">
+    <div class="clearfix">
         <div style="width: 45%; float: left;">
-        <h4 style="border-bottom: 1px solid black;">Shopping list</h4>
+            <h4 style="border-bottom: 1px solid black;">Shopping list</h4>
             <table class="crafting-summary-table table table-striped table-condensed">
             	<thead>
             		<tr>
@@ -150,43 +146,43 @@
             			<td class="recipe_summary_total_karma"></td>
             		</tr>
             	</tfoot>
-        	</table>
+            </table>
     	</div>
         <div style="width: 45%; float: right;">
-        	<h4 style="border-bottom: 1px solid black;">Profit</h4>
+            <h4 style="border-bottom: 1px solid black;">Profit</h4>
             <table class="crafting-summary-table table table-striped table-condensed">
-        		<tbody>
-            		<tr>
-            			<td colspan="3" style="text-align: right;">crafting cost:</td>
-            			<td class="recipe_summary_total">{{ recipe.cost | gw2money }}</td>
-            		</tr>
-            		<tr>
-            			<td colspan="3" style="text-align: right;">sell price:</td>
-            			<td class="recipe_summary_sell_price" data-sell-price="{{ recipe.sellPrice }}">{{ recipe.sellPrice | gw2money }}</td>
-            		</tr>
-            		<tr>
-            			<td colspan="3" style="text-align: right;">listing fee:</td>
-            			<td class="recipe_summary_listing_fee">{{ (recipe.sellPrice * 0.05) | round | gw2money }}</td>
-            		</tr>
-            		<tr>
-            			<td colspan="3" style="text-align: right;">transaction fee:</td>
-            			<td class="recipe_summary_transaction_fee">{{ (recipe.sellPrice * 0.10) | round | gw2money }}</td>
-            		</tr>
-            		<tr>
-            			<th colspan="3" style="text-align: right;">profit:</th>
-            			<th class="recipe_summary_profit">{{ recipe.profit | gw2money }}</th>
-            		</tr>
-            	</tbody>
+                <tbody>
+                    <tr>
+                        <td colspan="3" style="text-align: right;">crafting cost:</td>
+                        <td class="recipe_summary_total">{{ recipe.cost | gw2money }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right;">sell price:</td>
+                        <td class="recipe_summary_sell_price" data-sell-price="{{ recipe.sellPrice }}">{{ recipe.sellPrice | gw2money }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right;">listing fee:</td>
+                        <td class="recipe_summary_listing_fee">{{ (recipe.sellPrice * 0.05) | round | gw2money }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right;">transaction fee:</td>
+                        <td class="recipe_summary_transaction_fee">{{ (recipe.sellPrice * 0.10) | round | gw2money }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="3" style="text-align: right;">profit:</th>
+                        <th class="recipe_summary_profit">{{ recipe.profit | gw2money }}</th>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
 </div>
 <div id="recipe_container" class="well recipe-wrapper clearfix" style="position: relative;">
-	<h4 style="border-bottom: 1px solid black;">Customize</h4>
+    {{ recipe.getTooltip() | raw }}
+    <h4 style="border-bottom: 1px solid black;">Customize</h4>
     <div style="position: absolute; top: 20px; right: 20px;">
         <a href="#help" title="How does it work?"><i class="icon-question-sign"></i></a>
-	</div>
-
+    </div>
 </div>
 
 <div class="well">

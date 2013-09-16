@@ -131,18 +131,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
     protected $requires_unlock;
 
     /**
-     * The value for the gw2db_id field.
-     * @var        int
-     */
-    protected $gw2db_id;
-
-    /**
-     * The value for the gw2db_external_id field.
-     * @var        int
-     */
-    protected $gw2db_external_id;
-
-    /**
      * @var        Discipline
      */
     protected $aDiscipline;
@@ -369,28 +357,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
     {
 
         return $this->requires_unlock;
-    }
-
-    /**
-     * Get the [gw2db_id] column value.
-     * 
-     * @return   int
-     */
-    public function getGw2dbId()
-    {
-
-        return $this->gw2db_id;
-    }
-
-    /**
-     * Get the [gw2db_external_id] column value.
-     * 
-     * @return   int
-     */
-    public function getGw2dbExternalId()
-    {
-
-        return $this->gw2db_external_id;
     }
 
     /**
@@ -656,48 +622,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
     } // setRequiresUnlock()
 
     /**
-     * Set the value of [gw2db_id] column.
-     * 
-     * @param      int $v new value
-     * @return   Recipe The current object (for fluent API support)
-     */
-    public function setGw2dbId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->gw2db_id !== $v) {
-            $this->gw2db_id = $v;
-            $this->modifiedColumns[] = RecipePeer::GW2DB_ID;
-        }
-
-
-        return $this;
-    } // setGw2dbId()
-
-    /**
-     * Set the value of [gw2db_external_id] column.
-     * 
-     * @param      int $v new value
-     * @return   Recipe The current object (for fluent API support)
-     */
-    public function setGw2dbExternalId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->gw2db_external_id !== $v) {
-            $this->gw2db_external_id = $v;
-            $this->modifiedColumns[] = RecipePeer::GW2DB_EXTERNAL_ID;
-        }
-
-
-        return $this;
-    } // setGw2dbExternalId()
-
-    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -753,8 +677,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
             $this->profit = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
             $this->updated = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
             $this->requires_unlock = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
-            $this->gw2db_id = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
-            $this->gw2db_external_id = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -763,7 +685,7 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 14; // 14 = RecipePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 12; // 12 = RecipePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Recipe object", $e);
@@ -1074,12 +996,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         if ($this->isColumnModified(RecipePeer::REQUIRES_UNLOCK)) {
             $modifiedColumns[':p' . $index++]  = '`REQUIRES_UNLOCK`';
         }
-        if ($this->isColumnModified(RecipePeer::GW2DB_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`GW2DB_ID`';
-        }
-        if ($this->isColumnModified(RecipePeer::GW2DB_EXTERNAL_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`GW2DB_EXTERNAL_ID`';
-        }
 
         $sql = sprintf(
             'INSERT INTO `recipe` (%s) VALUES (%s)',
@@ -1126,12 +1042,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
                         break;
                     case '`REQUIRES_UNLOCK`':
 						$stmt->bindValue($identifier, $this->requires_unlock, PDO::PARAM_INT);
-                        break;
-                    case '`GW2DB_ID`':
-						$stmt->bindValue($identifier, $this->gw2db_id, PDO::PARAM_INT);
-                        break;
-                    case '`GW2DB_EXTERNAL_ID`':
-						$stmt->bindValue($identifier, $this->gw2db_external_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -1322,12 +1232,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
             case 11:
                 return $this->getRequiresUnlock();
                 break;
-            case 12:
-                return $this->getGw2dbId();
-                break;
-            case 13:
-                return $this->getGw2dbExternalId();
-                break;
             default:
                 return null;
                 break;
@@ -1369,8 +1273,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
             $keys[9] => $this->getProfit(),
             $keys[10] => $this->getUpdated(),
             $keys[11] => $this->getRequiresUnlock(),
-            $keys[12] => $this->getGw2dbId(),
-            $keys[13] => $this->getGw2dbExternalId(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aDiscipline) {
@@ -1452,12 +1354,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
             case 11:
                 $this->setRequiresUnlock($value);
                 break;
-            case 12:
-                $this->setGw2dbId($value);
-                break;
-            case 13:
-                $this->setGw2dbExternalId($value);
-                break;
         } // switch()
     }
 
@@ -1494,8 +1390,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         if (array_key_exists($keys[9], $arr)) $this->setProfit($arr[$keys[9]]);
         if (array_key_exists($keys[10], $arr)) $this->setUpdated($arr[$keys[10]]);
         if (array_key_exists($keys[11], $arr)) $this->setRequiresUnlock($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setGw2dbId($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setGw2dbExternalId($arr[$keys[13]]);
     }
 
     /**
@@ -1519,8 +1413,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         if ($this->isColumnModified(RecipePeer::PROFIT)) $criteria->add(RecipePeer::PROFIT, $this->profit);
         if ($this->isColumnModified(RecipePeer::UPDATED)) $criteria->add(RecipePeer::UPDATED, $this->updated);
         if ($this->isColumnModified(RecipePeer::REQUIRES_UNLOCK)) $criteria->add(RecipePeer::REQUIRES_UNLOCK, $this->requires_unlock);
-        if ($this->isColumnModified(RecipePeer::GW2DB_ID)) $criteria->add(RecipePeer::GW2DB_ID, $this->gw2db_id);
-        if ($this->isColumnModified(RecipePeer::GW2DB_EXTERNAL_ID)) $criteria->add(RecipePeer::GW2DB_EXTERNAL_ID, $this->gw2db_external_id);
 
         return $criteria;
     }
@@ -1595,8 +1487,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         $copyObj->setProfit($this->getProfit());
         $copyObj->setUpdated($this->getUpdated());
         $copyObj->setRequiresUnlock($this->getRequiresUnlock());
-        $copyObj->setGw2dbId($this->getGw2dbId());
-        $copyObj->setGw2dbExternalId($this->getGw2dbExternalId());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -2196,8 +2086,6 @@ abstract class BaseRecipe extends BaseObject implements Persistent
         $this->profit = null;
         $this->updated = null;
         $this->requires_unlock = null;
-        $this->gw2db_id = null;
-        $this->gw2db_external_id = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();

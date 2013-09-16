@@ -54,8 +54,6 @@ class RecipeTableMap extends TableMap
         $this->addColumn('PROFIT', 'Profit', 'INTEGER', false, null, null);
         $this->addColumn('UPDATED', 'Updated', 'TIMESTAMP', false, null, null);
         $this->addColumn('REQUIRES_UNLOCK', 'RequiresUnlock', 'INTEGER', true, null, 0);
-        $this->addColumn('GW2DB_ID', 'Gw2dbId', 'INTEGER', false, null, null);
-        $this->addColumn('GW2DB_EXTERNAL_ID', 'Gw2dbExternalId', 'INTEGER', false, null, null);
         // validators
     } // initialize()
 

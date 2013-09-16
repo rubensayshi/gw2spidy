@@ -18,6 +18,8 @@ use GW2Spidy\DB\ItemPeer;
 use GW2Spidy\DB\BuyListingPeer;
 use GW2Spidy\DB\SellListingPeer;
 use GW2Spidy\DB\BuyListingQuery;
+use GW2Spidy\GW2API\API_Item;
+use GW2Spidy\GW2API\API_Recipe;
 
 
 class v090APIControllerProvider implements ControllerProviderInterface {
@@ -483,6 +485,36 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             return $app['api-helper']->outputResponse($request, $response, $format, "gem-price");
         })
         ->assert('format', 'csv|json|xml');
+        
+        /**
+         * ----------------------
+         *  route /item-tooltip
+         * ----------------------
+         */
+        $controllers->get("/{format}/item-tooltip/{dataId}", function(Request $request, $format, $dataId) use($app) {
+            $API_Item = API_Item::getItem($dataId);
+
+            $response = array('result' => array('Tooltip' => $API_Item->getTooltip(), 'Type' => 'api/v0.9/json/item-tooltip', 'Id' => $dataId));
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "item-tooltip-{$dataId}");
+        })
+        ->assert('format', 'csv|json|xml')
+        ->assert('dataId', '\d+');
+        
+        /**
+         * ----------------------
+         *  route /recipe-tooltip
+         * ----------------------
+         */
+        $controllers->get("/{format}/recipe-tooltip/{dataId}", function(Request $request, $format, $dataId) use($app) {
+            $API_Recipe = new API_Recipe($dataId);
+
+            $response = array('result' => array('Tooltip' => $API_Recipe->getTooltip(), 'Type' => 'api/v0.9/json/recipe-tooltip', 'Id' => $dataId));
+
+            return $app['api-helper']->outputResponse($request, $response, $format, "recipe-tooltip-{$dataId}");
+        })
+        ->assert('format', 'csv|json|xml')
+        ->assert('dataId', '\d+');
 
         return $controllers;
     }

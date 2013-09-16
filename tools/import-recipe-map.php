@@ -61,8 +61,6 @@ foreach ($data as $i => $row) {
         }
 
         $r->setDataId($row['DataID']);
-        $r->setGw2dbId($row['ID']);
-        $r->setGw2dbExternalId($row['ExternalID']);
         $r->setName($row['Name']);
         $r->setRating($row['Rating']);
         $r->setCount($row['Count']);

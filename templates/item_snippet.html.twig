@@ -1,8 +1,8 @@
 {% set href = href is defined ? href : null %}
 
 <{{ tag }} class="item clearfix" id="item-snippet-{{ item.dataId }}">
-    {% if item.getGW2DBTooltip(href) %}
-        {{ item.getGW2DBTooltip(href) | raw }}
+    {% if item.getTooltip(href) %}
+        {{ item.getTooltip(href) | raw }}
     {% else %}
         <div class="image clearfix">
             {% if href %}<a href="{{ href }}">{% endif %}
@@ -14,11 +14,7 @@
                 {% if href %}<a href="{{ href }}">{% endif %}
                 {{- item.name -}}
             {% if href is defined %}</a>{% endif %}
-            {% if item.gw2dbExternalId %}
-        	   &nbsp;<a href="http://www.gw2db.com/items/{{ item.gw2dbExternalId | url_encode }}-{{ item.name | slugify }}" target="_blank" title="Show this item on GW2DB.com"><i class="icon-search"></i> gw2db.com</a>
-                {% if href %}</a>{% endif %}
             </div>
-            {% endif %}
             {% if item.itemType %}
                 <div class="item-type">{{ item.itemType.title }}</div>
             {% endif %}
