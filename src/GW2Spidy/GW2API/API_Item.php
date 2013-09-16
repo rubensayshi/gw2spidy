@@ -189,6 +189,10 @@ HTML;
             $html .= "<dd class=\"db-stat\">+{$attr['modifier']}{$pct} {$attr['attribute']}</dd>\n";
         }
         
+        if (($buff = $this->getBuffDescription()) !== null) {
+            $html .= "<dd class=\"db-stat\">{$buff}</dd>\n";
+        }
+        
         return $html;
     }
     
