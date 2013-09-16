@@ -2,10 +2,10 @@
 
 namespace GW2Spidy\GW2API;
 
-class Trophy extends API_Item {
+class Trophy extends APIItem {
     
-    public function __construct($API_Item) {
-        parent::__construct($API_Item);
+    public function __construct($APIItem) {
+        parent::__construct($APIItem);
     }
     
     public function getTooltipDescription() {

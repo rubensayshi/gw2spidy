@@ -5,7 +5,7 @@ namespace GW2Spidy\GW2API;
 use GW2Spidy\Util\CurlRequest;
 use GW2Spidy\Util\CacheHandler;
 
-class API_Item {
+class APIItem {
     protected $item_id;
     protected $name;
     protected $description;
@@ -24,20 +24,20 @@ class API_Item {
     protected $infix_upgrade;
     protected $suffix_item_id;
     
-    protected function __construct($API_Item) {        
-        $this->item_id = (int) $API_Item['item_id'];
-        $this->name = $API_Item['name'];
-        $this->description = $API_Item['description'];
-        $this->type = $API_Item['type'];
+    protected function __construct($APIItem) {        
+        $this->item_id = (int) $APIItem['item_id'];
+        $this->name = $APIItem['name'];
+        $this->description = $APIItem['description'];
+        $this->type = $APIItem['type'];
         $this->sub_type = null;
-        $this->level = $API_Item['level'];
-        $this->rarity = $API_Item['rarity'];
-        $this->vendor_value = (int) $API_Item['vendor_value'];
-        $this->icon_file_id = $API_Item['icon_file_id'];
-        $this->icon_file_signature = $API_Item['icon_file_signature'];
-        $this->game_types = $API_Item['game_types'];
-        $this->flags = $API_Item['flags'];
-        $this->restrictions = $API_Item['restrictions'];
+        $this->level = $APIItem['level'];
+        $this->rarity = $APIItem['rarity'];
+        $this->vendor_value = (int) $APIItem['vendor_value'];
+        $this->icon_file_id = $APIItem['icon_file_id'];
+        $this->icon_file_signature = $APIItem['icon_file_signature'];
+        $this->game_types = $APIItem['game_types'];
+        $this->flags = $APIItem['flags'];
+        $this->restrictions = $APIItem['restrictions'];
         
         $this->image = getAppConfig('gw2spidy.gw2render_url')."/file/{$this->icon_file_signature}/{$this->icon_file_id}.png";
         
@@ -91,26 +91,26 @@ HTML;
             }
         }
         
-        $API_Item = json_decode($API_JSON, true);
+        $APIItem = json_decode($API_JSON, true);
         
-        if (!isset($API_Item['type'])) {
+        if (!isset($APIItem['type'])) {
             return null;
         }
         
-        switch($API_Item['type']) {
-            case "Armor": return new Armor($API_Item);
-            case "Bag": return new Bag($API_Item);
-            case "Consumable": return new Consumable($API_Item);
-            case "Container": return new Container($API_Item);
-            case "CraftingMaterial": return new CraftingMaterial($API_Item);
-            case "Gathering": return new Gathering($API_Item);
-            case "Gizmo": return new Gizmo($API_Item);
-            case "MiniPet": return new MiniPet($API_Item);
-            case "Tool": return new Tool($API_Item);
-            case "Trinket": return new Trinket($API_Item);
-            case "Trophy": return new Trophy($API_Item);
-            case "UpgradeComponent": return new UpgradeComponent($API_Item);
-            case "Weapon": return new Weapon($API_Item);
+        switch($APIItem['type']) {
+            case "Armor": return new Armor($APIItem);
+            case "Bag": return new Bag($APIItem);
+            case "Consumable": return new Consumable($APIItem);
+            case "Container": return new Container($APIItem);
+            case "CraftingMaterial": return new CraftingMaterial($APIItem);
+            case "Gathering": return new Gathering($APIItem);
+            case "Gizmo": return new Gizmo($APIItem);
+            case "MiniPet": return new MiniPet($APIItem);
+            case "Tool": return new Tool($APIItem);
+            case "Trinket": return new Trinket($APIItem);
+            case "Trophy": return new Trophy($APIItem);
+            case "UpgradeComponent": return new UpgradeComponent($APIItem);
+            case "Weapon": return new Weapon($APIItem);
             default: return null;
         }
     }
@@ -197,9 +197,9 @@ HTML;
     }
     
     public function getSuffixItem() {
-        $API_Item = ($this->suffix_item_id != "") ? API_Item::getItem($this->suffix_item_id) :  null;
+        $APIItem = ($this->suffix_item_id != "") ? APIItem::getItem($this->suffix_item_id) :  null;
         
-        return $API_Item;
+        return $APIItem;
     }
     
     public function getFormattedSuffixItem() {

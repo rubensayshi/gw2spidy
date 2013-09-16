@@ -2,16 +2,16 @@
 
 namespace GW2Spidy\GW2API;
 
-class Consumable extends API_Item {
+class Consumable extends APIItem {
     private $duration_ms;
     private $sub_description;
     
-    public function __construct($API_Item) {
-        parent::__construct($API_Item);
+    public function __construct($APIItem) {
+        parent::__construct($APIItem);
         
-        $this->sub_type = $API_Item['consumable']['type'];
-        $this->duration_ms = (isset($API_Item['consumable']['duration_ms'])) ? $API_Item['consumable']['duration_ms'] : null;
-        $this->sub_description = (isset($API_Item['consumable']['description'])) ? $API_Item['consumable']['description'] : null;
+        $this->sub_type = $APIItem['consumable']['type'];
+        $this->duration_ms = (isset($APIItem['consumable']['duration_ms'])) ? $APIItem['consumable']['duration_ms'] : null;
+        $this->sub_description = (isset($APIItem['consumable']['description'])) ? $APIItem['consumable']['description'] : null;
     }
     
     public function getFormattedSubDescription() {

@@ -2,22 +2,22 @@
 
 namespace GW2Spidy\GW2API;
 
-class Weapon extends API_Item {
+class Weapon extends APIItem {
     private $damage_type;
     private $min_power;
     private $max_power;
     private $defense;
     
-    public function __construct($API_Item) {
-        parent::__construct($API_Item);
-        $this->sub_type = $API_Item['weapon']['type'];
-        $this->damage_type = $API_Item['weapon']['damage_type'];
-        $this->min_power = (int) $API_Item['weapon']['min_power'];
-        $this->max_power = (int) $API_Item['weapon']['max_power'];
-        $this->defense = (int) $API_Item['weapon']['defense'];
-        $this->infusion_slots = $API_Item['weapon']['infusion_slots'];
-        $this->infix_upgrade = isset($API_Item['weapon']['infix_upgrade']) ? $API_Item['weapon']['infix_upgrade'] : array();
-        $this->suffix_item_id = $API_Item['weapon']['suffix_item_id'];
+    public function __construct($APIItem) {
+        parent::__construct($APIItem);
+        $this->sub_type = $APIItem['weapon']['type'];
+        $this->damage_type = $APIItem['weapon']['damage_type'];
+        $this->min_power = (int) $APIItem['weapon']['min_power'];
+        $this->max_power = (int) $APIItem['weapon']['max_power'];
+        $this->defense = (int) $APIItem['weapon']['defense'];
+        $this->infusion_slots = $APIItem['weapon']['infusion_slots'];
+        $this->infix_upgrade = isset($APIItem['weapon']['infix_upgrade']) ? $APIItem['weapon']['infix_upgrade'] : array();
+        $this->suffix_item_id = $APIItem['weapon']['suffix_item_id'];
         
         $this->cleanAttributes();
     }

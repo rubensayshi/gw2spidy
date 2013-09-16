@@ -2,19 +2,19 @@
 
 namespace GW2Spidy\GW2API;
 
-class Armor extends API_Item {
+class Armor extends APIItem {
     private $weight_class;
     private $defense;
     
-    public function __construct($API_Item) {
-        parent::__construct($API_Item);
+    public function __construct($APIItem) {
+        parent::__construct($APIItem);
         
-        $this->sub_type = $API_Item['armor']['type'];
-        $this->weight_class = $API_Item['armor']['weight_class'];
-        $this->defense = (int) $API_Item['armor']['defense'];
-        $this->infusion_slots = $API_Item['armor']['infusion_slots'];
-        $this->infix_upgrade = isset($API_Item['armor']['infix_upgrade']) ? $API_Item['armor']['infix_upgrade'] : array();
-        $this->suffix_item_id = $API_Item['armor']['suffix_item_id'];
+        $this->sub_type = $APIItem['armor']['type'];
+        $this->weight_class = $APIItem['armor']['weight_class'];
+        $this->defense = (int) $APIItem['armor']['defense'];
+        $this->infusion_slots = $APIItem['armor']['infusion_slots'];
+        $this->infix_upgrade = isset($APIItem['armor']['infix_upgrade']) ? $APIItem['armor']['infix_upgrade'] : array();
+        $this->suffix_item_id = $APIItem['armor']['suffix_item_id'];
         
         $this->cleanAttributes();
     }

@@ -2,14 +2,14 @@
 
 namespace GW2Spidy\GW2API;
 
-class Bag extends API_Item {
+class Bag extends APIItem {
     private $no_sell_or_sort;
     private $size;
     
-    public function __construct($API_Item) {
-        parent::__construct($API_Item);
+    public function __construct($APIItem) {
+        parent::__construct($APIItem);
         
-        $this->no_sell_or_sort = $API_Item['bag']['no_sell_or_sort'];
-        $this->size = $API_Item['bag']['size'];
+        $this->no_sell_or_sort = $APIItem['bag']['no_sell_or_sort'];
+        $this->size = $APIItem['bag']['size'];
     }
 }

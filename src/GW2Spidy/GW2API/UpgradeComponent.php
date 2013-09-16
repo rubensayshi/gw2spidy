@@ -2,21 +2,21 @@
 
 namespace GW2Spidy\GW2API;
 
-class UpgradeComponent extends API_Item {
+class UpgradeComponent extends APIItem {
     private $sub_flags;
     private $infusion_upgrade_flags;
     private $bonuses;
     private $suffix;
     
-    public function __construct($API_Item) {
-        parent::__construct($API_Item);
+    public function __construct($APIItem) {
+        parent::__construct($APIItem);
         
-        $this->sub_type = $API_Item['upgrade_component']['type'];
-        $this->sub_flags = $API_Item['upgrade_component']['flags'];
-        $this->infusion_upgrade_flags = $API_Item['upgrade_component']['infusion_upgrade_flags'];
-        $this->bonuses = isset($API_Item['upgrade_component']['bonuses']) ? $API_Item['upgrade_component']['bonuses'] : array();
-        $this->infix_upgrade = isset($API_Item['upgrade_component']['infix_upgrade']) ? $API_Item['upgrade_component']['infix_upgrade'] : array();
-        $this->suffix = $API_Item['upgrade_component']['suffix'];
+        $this->sub_type = $APIItem['upgrade_component']['type'];
+        $this->sub_flags = $APIItem['upgrade_component']['flags'];
+        $this->infusion_upgrade_flags = $APIItem['upgrade_component']['infusion_upgrade_flags'];
+        $this->bonuses = isset($APIItem['upgrade_component']['bonuses']) ? $APIItem['upgrade_component']['bonuses'] : array();
+        $this->infix_upgrade = isset($APIItem['upgrade_component']['infix_upgrade']) ? $APIItem['upgrade_component']['infix_upgrade'] : array();
+        $this->suffix = $APIItem['upgrade_component']['suffix'];
         
         $this->cleanAttributes();
         

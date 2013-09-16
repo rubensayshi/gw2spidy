@@ -2,13 +2,13 @@
 
 namespace GW2Spidy\GW2API;
 
-class Tool extends API_Item {
+class Tool extends APIItem {
     private $charges;
     
-    public function __construct($API_Item) {
-        parent::__construct($API_Item);
-        $this->sub_type = $API_Item['tool']['type'];
-        $this->charges = $API_Item['tool']['charges'];
+    public function __construct($APIItem) {
+        parent::__construct($APIItem);
+        $this->sub_type = $APIItem['tool']['type'];
+        $this->charges = $APIItem['tool']['charges'];
     }
     
     public function getTooltipDescription() {

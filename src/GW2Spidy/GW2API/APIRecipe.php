@@ -2,11 +2,11 @@
 
 namespace GW2Spidy\GW2API;
 
-use GW2Spidy\GW2API\API_Item;
+use GW2Spidy\GW2API\APIItem;
 use GW2Spidy\Util\CurlRequest;
 use GW2Spidy\Util\CacheHandler;
 
-class API_Recipe {
+class APIRecipe {
     protected $recipe_id;
     protected $type;
     protected $output_item_id;
@@ -26,7 +26,7 @@ class API_Recipe {
             $this->type = $recipe['type'];
             $this->output_item_id = $recipe['output_item_id'];
             $this->output_item_count = $recipe['output_item_count'];
-            $this->output_item = API_Item::getItem($this->output_item_id);
+            $this->output_item = APIItem::getItem($this->output_item_id);
             $this->min_rating = $recipe['min_rating'];
             $this->time_to_craft_ms = $recipe['time_to_craft_ms'];
             $this->disciplines = $recipe['disciplines'];
@@ -34,7 +34,7 @@ class API_Recipe {
             $this->ingredients = $recipe['ingredients'];
             $this->items = array();
             foreach ($this->ingredients as $ingredient) {
-                $this->ingredient_items[] = API_Item::getItem($ingredient['item_id']);
+                $this->ingredient_items[] = APIItem::getItem($ingredient['item_id']);
             }
         }
     }
@@ -59,9 +59,9 @@ class API_Recipe {
             }
         }
         
-        $API_Item = json_decode($API_JSON, true);
+        $APIItem = json_decode($API_JSON, true);
         
-        return $API_Item;
+        return $APIItem;
     }
     
     protected function getFormattedIngredients() {

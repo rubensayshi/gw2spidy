@@ -2,9 +2,9 @@
 
 namespace GW2Spidy\GW2API;
 
-class CraftingMaterial extends API_Item {    
-    public function __construct($API_Item) {
-        parent::__construct($API_Item);
+class CraftingMaterial extends APIItem {    
+    public function __construct($APIItem) {
+        parent::__construct($APIItem);
     }
     
     //TODO: Get crafting material ingredient-info to look like:

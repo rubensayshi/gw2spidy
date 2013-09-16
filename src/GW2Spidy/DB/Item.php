@@ -10,7 +10,7 @@ use GW2Spidy\Util\ApplicationCache;
 use GW2Spidy\DB\om\BaseItem;
 use GW2Spidy\Util\CacheHandler;
 
-use GW2Spidy\GW2API\API_Item;
+use GW2Spidy\GW2API\APIItem;
 
 use \PropelPDO;
 
@@ -184,9 +184,9 @@ class Item extends BaseItem {
     }
     
     public function getTooltip() {
-        $API_Item = API_Item::getItem($this->getDataId());
+        $APIItem = APIItem::getItem($this->getDataId());
         
-        return ($API_Item !== null) ? $API_Item->getTooltip() : null;
+        return ($APIItem !== null) ? $APIItem->getTooltip() : null;
     }
 
     public function getMargin() {

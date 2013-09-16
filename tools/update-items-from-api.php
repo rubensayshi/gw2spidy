@@ -93,19 +93,19 @@ foreach (array_chunk($data['items'], 1000) as $items) {
 
             $ch = $item_curls[$item_id];
 
-            $API_item = json_decode($ch->data, true);
-            if (!isset($API_item['name'])) throw new Exception("Item not found: $i");
+            $APIItem = json_decode($ch->data, true);
+            if (!isset($APIItem['name'])) throw new Exception("Item not found: $i");
 
-            echo $API_item['name'] . "\n";
+            echo $APIItem['name'] . "\n";
 
-            $itemData = array(  'type_id'           => getIDFromMarketData($market_data['types'], $API_item['type']),
+            $itemData = array(  'type_id'           => getIDFromMarketData($market_data['types'], $APIItem['type']),
                                 'data_id'           => $data['items'][$i],
-                                'name'              => $API_item['name'],
-                                'restriction_level' => $API_item['level'],
-                                'rarity'            => getIDFromMarketData($market_data['rarities'], $API_item['rarity']),
-                                'vendor_sell_price' => $API_item['vendor_value'],
-                                'img'               => "{$render_url}/{$API_item['icon_file_signature']}/{$API_item['icon_file_id']}.png",
-                                'rarity_word'       => $API_item['rarity']);
+                                'name'              => $APIItem['name'],
+                                'restriction_level' => $APIItem['level'],
+                                'rarity'            => getIDFromMarketData($market_data['rarities'], $APIItem['rarity']),
+                                'vendor_sell_price' => $APIItem['vendor_value'],
+                                'img'               => "{$render_url}/{$APIItem['icon_file_signature']}/{$APIItem['icon_file_id']}.png",
+                                'rarity_word'       => $APIItem['rarity']);
 
             $item = ItemQuery::create()->findPK($data['items'][$i]);
 
@@ -121,15 +121,15 @@ foreach (array_chunk($data['items'], 1000) as $items) {
                 //Known item types with no subtypes.
                 $noSubTypes = array("CraftingMaterial", "Trophy", "MiniPet", "Bag", "Back");
 
-                if (!in_array($API_item['type'], $noSubTypes)) {
-                    $itemTypeName = strtolower($API_item['type']);
+                if (!in_array($APIItem['type'], $noSubTypes)) {
+                    $itemTypeName = strtolower($APIItem['type']);
 
                     //Workaround for upgradecomponents
                     if ($itemTypeName == 'upgradecomponent') {
                         $itemTypeName = 'upgrade_component';
                     }
 
-                    $itemSubTypeName = $API_item[$itemTypeName]['type'];
+                    $itemSubTypeName = $APIItem[$itemTypeName]['type'];
 
                     //Replace left value with right value
                     $keys = array(
@@ -156,7 +156,7 @@ foreach (array_chunk($data['items'], 1000) as $items) {
                         //Rune/Sigil/Utility/Gem/Booze/Halloween/LargeBundle/RentableContractNpc/ContractNPC/UnlimitedConsumable
                         //TwoHandedToy/AppearanceChange/Immediate/Unknown
 
-                        $SubTypeID = getSubIDFromMarketData($market_data['types'], $API_item['type'], $itemSubTypeName);
+                        $SubTypeID = getSubIDFromMarketData($market_data['types'], $APIItem['type'], $itemSubTypeName);
 
                         //If the SubTypeID cannot be found in the market data, then just create it by adding one to the highest
                         //Subtype id within the current ItemType.

@@ -2,9 +2,9 @@
 
 namespace GW2Spidy\GW2API;
 
-class MiniPet extends API_Item {
+class MiniPet extends APIItem {
     
-    public function __construct($API_Item) {
-        parent::__construct($API_Item);
+    public function __construct($APIItem) {
+        parent::__construct($APIItem);
     }
 }

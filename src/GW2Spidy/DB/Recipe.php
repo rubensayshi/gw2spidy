@@ -4,7 +4,7 @@ namespace GW2Spidy\DB;
 
 use GW2Spidy\DB\om\BaseRecipe;
 
-use GW2Spidy\GW2API\API_Recipe;
+use GW2Spidy\GW2API\APIRecipe;
 
 
 /**
@@ -68,9 +68,9 @@ class Recipe extends BaseRecipe {
     }
     
     public function getTooltip() {
-        $API_Recipe = new API_Recipe($this->data_id);
+        $APIRecipe = new APIRecipe($this->data_id);
         
-        return ($API_Recipe !== null) ? $API_Recipe->getTooltip() : null;
+        return ($APIRecipe !== null) ? $APIRecipe->getTooltip() : null;
     }
     
     public function getMargin() {

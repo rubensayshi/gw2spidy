@@ -2,11 +2,11 @@
 
 namespace GW2Spidy\GW2API;
 
-class Gathering extends API_Item {
+class Gathering extends APIItem {
     
-    public function __construct($API_Item) {
-        parent::__construct($API_Item);
+    public function __construct($APIItem) {
+        parent::__construct($APIItem);
         
-        $this->sub_type = $API_Item['gathering']['type'];
+        $this->sub_type = $APIItem['gathering']['type'];
     }
 }
