@@ -17,13 +17,6 @@ class UpgradeComponent extends APIItem {
         $this->bonuses = isset($APIItem['upgrade_component']['bonuses']) ? $APIItem['upgrade_component']['bonuses'] : array();
         $this->infix_upgrade = isset($APIItem['upgrade_component']['infix_upgrade']) ? $APIItem['upgrade_component']['infix_upgrade'] : array();
         $this->suffix = $APIItem['upgrade_component']['suffix'];
-        
-        $this->cleanAttributes();
-        
-        //Some items have buff descriptions which are just added into the items attributes automatically in game
-        if (isset($this->infix_upgrade['buff']['description'])) {
-            $this->addBuffsToAttributes();
-        }
     }
     
     public function getBonuses() {

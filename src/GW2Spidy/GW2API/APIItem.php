@@ -185,13 +185,12 @@ HTML;
     public function getFormattedAttributes() {
         $html = "";
         
+        $this->cleanAttributes();
+        $this->addBuffsToAttributes();
+        
         foreach ($this->getAttributes() as $attr) {
             $pct = ($attr['attribute'] == 'Critical Damage') ? '%' : null;
             $html .= "<dd class=\"db-stat\">+{$attr['modifier']}{$pct} {$attr['attribute']}</dd>\n";
-        }
-        
-        if (($buff = $this->getBuffDescription()) !== null) {
-            $html .= "<dd class=\"db-stat\">{$buff}</dd>\n";
         }
         
         return $html;
@@ -229,21 +228,27 @@ HTML;
     }
     
     protected function addBuffsToAttributes() {
-        $buffs = explode("\n", $this->infix_upgrade['buff']['description']);
-        
-        $attributes_exist = (count($this->infix_upgrade['attributes']) > 0);
-        
-        foreach ($buffs as $buff) {
-            list($modifier_stage1, $attribute) = explode(" ", $buff, 2);
-            $modifier_stage2 = str_replace("+", "", $modifier_stage1);
-            $modifier = (int) str_replace("%", "", $modifier_stage2);
+        if (isset($this->infix_upgrade['buff']['description'])) {
+            $buffs = explode("\n", $this->infix_upgrade['buff']['description']);
             
-            if (!$attributes_exist) {
-                $this->infix_upgrade['attributes'][] = array('attribute' => $attribute, 'modifier' => $modifier);
+            $attributes_exist = array();
+            
+            foreach ($this->infix_upgrade['attributes']as $attr) {
+                $attributes_exist[] = $attr['attribute'];
             }
-            else {
-                foreach ($this->infix_upgrade['attributes'] as &$attr) {
-                    $attr['modifier'] += ($attr['attribute'] == $attribute) ? $modifier : 0;
+            
+            foreach ($buffs as $buff) {
+                list($modifier_stage1, $attribute) = explode(" ", $buff, 2);
+                $modifier_stage2 = str_replace("+", "", $modifier_stage1);
+                $modifier = (int) str_replace("%", "", $modifier_stage2);
+                
+                if (!in_array($attribute, $attributes_exist)) {
+                    $this->infix_upgrade['attributes'][] = array('attribute' => $attribute, 'modifier' => $modifier);
+                }
+                else {
+                    foreach ($this->infix_upgrade['attributes'] as &$attr) {
+                        $attr['modifier'] += ($attr['attribute'] == $attribute) ? $modifier : 0;
+                    }
                 }
             }
         }
