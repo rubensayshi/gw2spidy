@@ -99,6 +99,7 @@ HTML;
         
         switch($APIItem['type']) {
             case "Armor": return new Armor($APIItem);
+            case "Back": return new Back($APIItem);
             case "Bag": return new Bag($APIItem);
             case "Consumable": return new Consumable($APIItem);
             case "Container": return new Container($APIItem);
