@@ -10,13 +10,6 @@ class Trinket extends APIItem {
         $this->infusion_slots = $APIItem['trinket']['infusion_slots'];
         $this->infix_upgrade = (isset($APIItem['trinket']['infix_upgrade'])) ? $APIItem['trinket']['infix_upgrade'] : array();
         $this->suffix_item_id = $APIItem['trinket']['suffix_item_id'];
-        
-        $this->cleanAttributes();
-        
-        //Some items have buff descriptions which are just added into the items attributes automatically in game
-        if (isset($this->infix_upgrade['buff']['description'])) {
-            $this->addBuffsToAttributes();
-        }
     }
     
     public function getTooltipDescription() {
