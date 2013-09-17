@@ -492,7 +492,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          * ----------------------
          */
         $controllers->get("/{format}/item-tooltip/{dataId}", function(Request $request, $format, $dataId) use($app) {
-            $APIItem = APIItem::getItem($dataId);
+            $APIItem = APIItem::getItemById($dataId);
 
             $response = array('result' => array('Tooltip' => $APIItem->getTooltip(), 'Type' => 'api/v0.9/json/item-tooltip', 'Id' => $dataId));
 
@@ -507,7 +507,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          * ----------------------
          */
         $controllers->get("/{format}/recipe-tooltip/{dataId}", function(Request $request, $format, $dataId) use($app) {
-            $APIRecipe = new APIRecipe($dataId);
+            $APIRecipe = APIRecipe::getRecipeById($dataId);
 
             $response = array('result' => array('Tooltip' => $APIRecipe->getTooltip(), 'Type' => 'api/v0.9/json/recipe-tooltip', 'Id' => $dataId));
 
