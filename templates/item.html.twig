@@ -12,10 +12,6 @@
 	</div>
     <div style="float: right;">
         {% if app['google_ad_client'] %}
-        {# quick and dity way of trying out a new adservice #}
-        <!-- Yashi Ad: 300x250 for gw2spidy.com -->
-        <script type="text/javascript" language="JavaScript" src="http://ads.yashi.com/2948/"></script>
-        {% elseif app['google_ad_client'] %}
         <script type="text/javascript">
         <!--
         google_ad_client = "{{ app['google_ad_client'] }}";
@@ -23,6 +19,11 @@
         google_ad_slot = "5148573296";
         google_ad_width = 300;
         google_ad_height = 250;
+
+        /* Medium Rectangle (336 x 280) */
+        google_ad_slot = "4004405877";
+        google_ad_width = 336;
+        google_ad_height = 280;
         //-->
         </script>
         <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
