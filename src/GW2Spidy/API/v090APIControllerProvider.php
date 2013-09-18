@@ -141,7 +141,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
 
             return $app['api-helper']->outputResponse($request, $response, $format, "all-items-{$typeId}");
         })
-        ->assert('format', 'csv|json|xml|')
+        ->assert('format', 'csv|json|xml')
         ->assert('typeId', '\d+|\*?all\*?');
 
         /**
