@@ -211,23 +211,14 @@ HTML;
         return null;
     }
     
-    public function isSoulbound() {
-        return in_array("SoulBindOnAcquire", $this->flags);
+    public function isUnsellable() {
+        return (count(array_intersect(array("SoulBindOnAcquire", "AccountBound"), $this->flags)) > 0 || $this->isPvpOnly());
     }
     
-    //TODO: Do less hardcoding here.
-    public function isPvpOnly() {
-        if (in_array("Pvp", $this->game_types) && 
-           !in_array("Activity", $this->game_types) && 
-           !in_array("Dungeon", $this->game_types) && 
-           !in_array("Pve", $this->game_types) && 
-           !in_array("Wvw", $this->game_types)) {
-            
-            return true;
-        }
-        
-        return false;
-    }
+    public function isPvpOnly() {        
+        return (in_array("Pvp", $this->game_types) && 
+            count(array_intersect(array("Activity", "Dungeon", "Pve", "Wvw"), $this->game_types)) > 0);
+    } 
     
     public function getSuffixItem() {
         $APIItem = ($this->suffix_item_id != "") ? APIItem::getItemById($this->suffix_item_id) : null;

@@ -51,8 +51,6 @@ $item_curls = array();
 
 $error_values = array();
 
-$render_url = getAppConfig('gw2spidy.gw2render_url')."/file";
-
 $number_of_items = count($data['items']);
 
 $itemSubTypes = array();
@@ -94,8 +92,7 @@ foreach (array_chunk($data['items'], 1000) as $items) {
                                 'VendorSellPrice'   => $APIItem->getVendorValue(),
                                 'Img'               => $APIItem->getImageURL(),
                                 'RarityWord'        => $APIItem->getRarity(),
-                                'PvpFlag'           => $APIItem->isPvpOnly(),
-                                'SoulboundFlag'     => $APIItem->isSoulbound());
+                                'UnsellableFlag'    => $APIItem->isUnsellable());
             
             $item = ItemQuery::create()->findPK($APIItem->getItemId());
             
@@ -158,4 +155,3 @@ foreach (array_chunk($data['items'], 1000) as $items) {
 
 if (count($error_values) > 0)
     var_dump($error_values);
-

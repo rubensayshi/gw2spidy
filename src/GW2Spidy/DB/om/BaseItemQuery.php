@@ -46,8 +46,7 @@ use GW2Spidy\DB\Watchlist;
  * @method     ItemQuery orderByRarityWord($order = Criteria::ASC) Order by the rarity_word column
  * @method     ItemQuery orderByItemTypeId($order = Criteria::ASC) Order by the item_type_id column
  * @method     ItemQuery orderByItemSubTypeId($order = Criteria::ASC) Order by the item_sub_type_id column
- * @method     ItemQuery orderByPvpFlag($order = Criteria::ASC) Order by the pvp_flag column
- * @method     ItemQuery orderBySoulboundFlag($order = Criteria::ASC) Order by the soulbound_flag column
+ * @method     ItemQuery orderByUnsellableFlag($order = Criteria::ASC) Order by the unsellable_flag column
  * @method     ItemQuery orderByMaxOfferUnitPrice($order = Criteria::ASC) Order by the max_offer_unit_price column
  * @method     ItemQuery orderByMinSaleUnitPrice($order = Criteria::ASC) Order by the min_sale_unit_price column
  * @method     ItemQuery orderByOfferAvailability($order = Criteria::ASC) Order by the offer_availability column
@@ -74,8 +73,7 @@ use GW2Spidy\DB\Watchlist;
  * @method     ItemQuery groupByRarityWord() Group by the rarity_word column
  * @method     ItemQuery groupByItemTypeId() Group by the item_type_id column
  * @method     ItemQuery groupByItemSubTypeId() Group by the item_sub_type_id column
- * @method     ItemQuery groupByPvpFlag() Group by the pvp_flag column
- * @method     ItemQuery groupBySoulboundFlag() Group by the soulbound_flag column
+ * @method     ItemQuery groupByUnsellableFlag() Group by the unsellable_flag column
  * @method     ItemQuery groupByMaxOfferUnitPrice() Group by the max_offer_unit_price column
  * @method     ItemQuery groupByMinSaleUnitPrice() Group by the min_sale_unit_price column
  * @method     ItemQuery groupByOfferAvailability() Group by the offer_availability column
@@ -137,8 +135,7 @@ use GW2Spidy\DB\Watchlist;
  * @method     Item findOneByRarityWord(string $rarity_word) Return the first Item filtered by the rarity_word column
  * @method     Item findOneByItemTypeId(int $item_type_id) Return the first Item filtered by the item_type_id column
  * @method     Item findOneByItemSubTypeId(int $item_sub_type_id) Return the first Item filtered by the item_sub_type_id column
- * @method     Item findOneByPvpFlag(boolean $pvp_flag) Return the first Item filtered by the pvp_flag column
- * @method     Item findOneBySoulboundFlag(boolean $soulbound_flag) Return the first Item filtered by the soulbound_flag column
+ * @method     Item findOneByUnsellableFlag(boolean $unsellable_flag) Return the first Item filtered by the unsellable_flag column
  * @method     Item findOneByMaxOfferUnitPrice(int $max_offer_unit_price) Return the first Item filtered by the max_offer_unit_price column
  * @method     Item findOneByMinSaleUnitPrice(int $min_sale_unit_price) Return the first Item filtered by the min_sale_unit_price column
  * @method     Item findOneByOfferAvailability(int $offer_availability) Return the first Item filtered by the offer_availability column
@@ -165,8 +162,7 @@ use GW2Spidy\DB\Watchlist;
  * @method     array findByRarityWord(string $rarity_word) Return Item objects filtered by the rarity_word column
  * @method     array findByItemTypeId(int $item_type_id) Return Item objects filtered by the item_type_id column
  * @method     array findByItemSubTypeId(int $item_sub_type_id) Return Item objects filtered by the item_sub_type_id column
- * @method     array findByPvpFlag(boolean $pvp_flag) Return Item objects filtered by the pvp_flag column
- * @method     array findBySoulboundFlag(boolean $soulbound_flag) Return Item objects filtered by the soulbound_flag column
+ * @method     array findByUnsellableFlag(boolean $unsellable_flag) Return Item objects filtered by the unsellable_flag column
  * @method     array findByMaxOfferUnitPrice(int $max_offer_unit_price) Return Item objects filtered by the max_offer_unit_price column
  * @method     array findByMinSaleUnitPrice(int $min_sale_unit_price) Return Item objects filtered by the min_sale_unit_price column
  * @method     array findByOfferAvailability(int $offer_availability) Return Item objects filtered by the offer_availability column
@@ -265,7 +261,7 @@ abstract class BaseItemQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `TP_NAME`, `CLEAN_NAME`, `CLEAN_TP_NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `VENDOR_PRICE`, `KARMA_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID`, `PVP_FLAG`, `SOULBOUND_FLAG`, `MAX_OFFER_UNIT_PRICE`, `MIN_SALE_UNIT_PRICE`, `OFFER_AVAILABILITY`, `SALE_AVAILABILITY`, `LAST_PRICE_CHANGED`, `LAST_UPDATED`, `SALE_PRICE_CHANGE_LAST_HOUR`, `OFFER_PRICE_CHANGE_LAST_HOUR` FROM `item` WHERE `DATA_ID` = :p0';
+        $sql = 'SELECT `DATA_ID`, `TYPE_ID`, `NAME`, `TP_NAME`, `CLEAN_NAME`, `CLEAN_TP_NAME`, `GEM_STORE_DESCRIPTION`, `GEM_STORE_BLURB`, `RESTRICTION_LEVEL`, `RARITY`, `VENDOR_SELL_PRICE`, `VENDOR_PRICE`, `KARMA_PRICE`, `IMG`, `RARITY_WORD`, `ITEM_TYPE_ID`, `ITEM_SUB_TYPE_ID`, `UNSELLABLE_FLAG`, `MAX_OFFER_UNIT_PRICE`, `MIN_SALE_UNIT_PRICE`, `OFFER_AVAILABILITY`, `SALE_AVAILABILITY`, `LAST_PRICE_CHANGED`, `LAST_UPDATED`, `SALE_PRICE_CHANGE_LAST_HOUR`, `OFFER_PRICE_CHANGE_LAST_HOUR` FROM `item` WHERE `DATA_ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -946,15 +942,15 @@ abstract class BaseItemQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the pvp_flag column
+     * Filter the query on the unsellable_flag column
      *
      * Example usage:
      * <code>
-     * $query->filterByPvpFlag(true); // WHERE pvp_flag = true
-     * $query->filterByPvpFlag('yes'); // WHERE pvp_flag = true
+     * $query->filterByUnsellableFlag(true); // WHERE unsellable_flag = true
+     * $query->filterByUnsellableFlag('yes'); // WHERE unsellable_flag = true
      * </code>
      *
-     * @param     boolean|string $pvpFlag The value to use as filter.
+     * @param     boolean|string $unsellableFlag The value to use as filter.
      *              Non-boolean arguments are converted using the following rules:
      *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
      *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -963,40 +959,13 @@ abstract class BaseItemQuery extends ModelCriteria
      *
      * @return ItemQuery The current query, for fluid interface
      */
-    public function filterByPvpFlag($pvpFlag = null, $comparison = null)
+    public function filterByUnsellableFlag($unsellableFlag = null, $comparison = null)
     {
-        if (is_string($pvpFlag)) {
-            $pvp_flag = in_array(strtolower($pvpFlag), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        if (is_string($unsellableFlag)) {
+            $unsellable_flag = in_array(strtolower($unsellableFlag), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
-        return $this->addUsingAlias(ItemPeer::PVP_FLAG, $pvpFlag, $comparison);
-    }
-
-    /**
-     * Filter the query on the soulbound_flag column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterBySoulboundFlag(true); // WHERE soulbound_flag = true
-     * $query->filterBySoulboundFlag('yes'); // WHERE soulbound_flag = true
-     * </code>
-     *
-     * @param     boolean|string $soulboundFlag The value to use as filter.
-     *              Non-boolean arguments are converted using the following rules:
-     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ItemQuery The current query, for fluid interface
-     */
-    public function filterBySoulboundFlag($soulboundFlag = null, $comparison = null)
-    {
-        if (is_string($soulboundFlag)) {
-            $soulbound_flag = in_array(strtolower($soulboundFlag), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-        }
-
-        return $this->addUsingAlias(ItemPeer::SOULBOUND_FLAG, $soulboundFlag, $comparison);
+        return $this->addUsingAlias(ItemPeer::UNSELLABLE_FLAG, $unsellableFlag, $comparison);
     }
 
     /**

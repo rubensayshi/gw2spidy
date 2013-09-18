@@ -168,18 +168,11 @@ abstract class BaseItem extends BaseObject implements Persistent
     protected $item_sub_type_id;
 
     /**
-     * The value for the pvp_flag field.
+     * The value for the unsellable_flag field.
      * Note: this column has a database default value of: false
      * @var        boolean
      */
-    protected $pvp_flag;
-
-    /**
-     * The value for the soulbound_flag field.
-     * Note: this column has a database default value of: false
-     * @var        boolean
-     */
-    protected $soulbound_flag;
+    protected $unsellable_flag;
 
     /**
      * The value for the max_offer_unit_price field.
@@ -347,8 +340,7 @@ abstract class BaseItem extends BaseObject implements Persistent
      */
     public function applyDefaultValues()
     {
-        $this->pvp_flag = false;
-        $this->soulbound_flag = false;
+        $this->unsellable_flag = false;
         $this->offer_availability = 0;
         $this->sale_availability = 0;
         $this->sale_price_change_last_hour = 0;
@@ -553,25 +545,14 @@ abstract class BaseItem extends BaseObject implements Persistent
     }
 
     /**
-     * Get the [pvp_flag] column value.
+     * Get the [unsellable_flag] column value.
      * 
      * @return   boolean
      */
-    public function getPvpFlag()
+    public function getUnsellableFlag()
     {
 
-        return $this->pvp_flag;
-    }
-
-    /**
-     * Get the [soulbound_flag] column value.
-     * 
-     * @return   boolean
-     */
-    public function getSoulboundFlag()
-    {
-
-        return $this->soulbound_flag;
+        return $this->unsellable_flag;
     }
 
     /**
@@ -1082,7 +1063,7 @@ abstract class BaseItem extends BaseObject implements Persistent
     } // setItemSubTypeId()
 
     /**
-     * Sets the value of the [pvp_flag] column.
+     * Sets the value of the [unsellable_flag] column.
      * Non-boolean arguments are converted using the following rules:
      *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
      *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1091,7 +1072,7 @@ abstract class BaseItem extends BaseObject implements Persistent
      * @param      boolean|integer|string $v The new value
      * @return   Item The current object (for fluent API support)
      */
-    public function setPvpFlag($v)
+    public function setUnsellableFlag($v)
     {
         if ($v !== null) {
             if (is_string($v)) {
@@ -1101,43 +1082,14 @@ abstract class BaseItem extends BaseObject implements Persistent
             }
         }
 
-        if ($this->pvp_flag !== $v) {
-            $this->pvp_flag = $v;
-            $this->modifiedColumns[] = ItemPeer::PVP_FLAG;
+        if ($this->unsellable_flag !== $v) {
+            $this->unsellable_flag = $v;
+            $this->modifiedColumns[] = ItemPeer::UNSELLABLE_FLAG;
         }
 
 
         return $this;
-    } // setPvpFlag()
-
-    /**
-     * Sets the value of the [soulbound_flag] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     * 
-     * @param      boolean|integer|string $v The new value
-     * @return   Item The current object (for fluent API support)
-     */
-    public function setSoulboundFlag($v)
-    {
-        if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
-        }
-
-        if ($this->soulbound_flag !== $v) {
-            $this->soulbound_flag = $v;
-            $this->modifiedColumns[] = ItemPeer::SOULBOUND_FLAG;
-        }
-
-
-        return $this;
-    } // setSoulboundFlag()
+    } // setUnsellableFlag()
 
     /**
      * Set the value of [max_offer_unit_price] column.
@@ -1321,11 +1273,7 @@ abstract class BaseItem extends BaseObject implements Persistent
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->pvp_flag !== false) {
-                return false;
-            }
-
-            if ($this->soulbound_flag !== false) {
+            if ($this->unsellable_flag !== false) {
                 return false;
             }
 
@@ -1384,16 +1332,15 @@ abstract class BaseItem extends BaseObject implements Persistent
             $this->rarity_word = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
             $this->item_type_id = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
             $this->item_sub_type_id = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
-            $this->pvp_flag = ($row[$startcol + 17] !== null) ? (boolean) $row[$startcol + 17] : null;
-            $this->soulbound_flag = ($row[$startcol + 18] !== null) ? (boolean) $row[$startcol + 18] : null;
-            $this->max_offer_unit_price = ($row[$startcol + 19] !== null) ? (int) $row[$startcol + 19] : null;
-            $this->min_sale_unit_price = ($row[$startcol + 20] !== null) ? (int) $row[$startcol + 20] : null;
-            $this->offer_availability = ($row[$startcol + 21] !== null) ? (int) $row[$startcol + 21] : null;
-            $this->sale_availability = ($row[$startcol + 22] !== null) ? (int) $row[$startcol + 22] : null;
-            $this->last_price_changed = ($row[$startcol + 23] !== null) ? (string) $row[$startcol + 23] : null;
-            $this->last_updated = ($row[$startcol + 24] !== null) ? (string) $row[$startcol + 24] : null;
-            $this->sale_price_change_last_hour = ($row[$startcol + 25] !== null) ? (int) $row[$startcol + 25] : null;
-            $this->offer_price_change_last_hour = ($row[$startcol + 26] !== null) ? (int) $row[$startcol + 26] : null;
+            $this->unsellable_flag = ($row[$startcol + 17] !== null) ? (boolean) $row[$startcol + 17] : null;
+            $this->max_offer_unit_price = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
+            $this->min_sale_unit_price = ($row[$startcol + 19] !== null) ? (int) $row[$startcol + 19] : null;
+            $this->offer_availability = ($row[$startcol + 20] !== null) ? (int) $row[$startcol + 20] : null;
+            $this->sale_availability = ($row[$startcol + 21] !== null) ? (int) $row[$startcol + 21] : null;
+            $this->last_price_changed = ($row[$startcol + 22] !== null) ? (string) $row[$startcol + 22] : null;
+            $this->last_updated = ($row[$startcol + 23] !== null) ? (string) $row[$startcol + 23] : null;
+            $this->sale_price_change_last_hour = ($row[$startcol + 24] !== null) ? (int) $row[$startcol + 24] : null;
+            $this->offer_price_change_last_hour = ($row[$startcol + 25] !== null) ? (int) $row[$startcol + 25] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1402,7 +1349,7 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 27; // 27 = ItemPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 26; // 26 = ItemPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Item object", $e);
@@ -1826,11 +1773,8 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::ITEM_SUB_TYPE_ID)) {
             $modifiedColumns[':p' . $index++]  = '`ITEM_SUB_TYPE_ID`';
         }
-        if ($this->isColumnModified(ItemPeer::PVP_FLAG)) {
-            $modifiedColumns[':p' . $index++]  = '`PVP_FLAG`';
-        }
-        if ($this->isColumnModified(ItemPeer::SOULBOUND_FLAG)) {
-            $modifiedColumns[':p' . $index++]  = '`SOULBOUND_FLAG`';
+        if ($this->isColumnModified(ItemPeer::UNSELLABLE_FLAG)) {
+            $modifiedColumns[':p' . $index++]  = '`UNSELLABLE_FLAG`';
         }
         if ($this->isColumnModified(ItemPeer::MAX_OFFER_UNIT_PRICE)) {
             $modifiedColumns[':p' . $index++]  = '`MAX_OFFER_UNIT_PRICE`';
@@ -1918,11 +1862,8 @@ abstract class BaseItem extends BaseObject implements Persistent
                     case '`ITEM_SUB_TYPE_ID`':
 						$stmt->bindValue($identifier, $this->item_sub_type_id, PDO::PARAM_INT);
                         break;
-                    case '`PVP_FLAG`':
-						$stmt->bindValue($identifier, (int) $this->pvp_flag, PDO::PARAM_INT);
-                        break;
-                    case '`SOULBOUND_FLAG`':
-						$stmt->bindValue($identifier, (int) $this->soulbound_flag, PDO::PARAM_INT);
+                    case '`UNSELLABLE_FLAG`':
+						$stmt->bindValue($identifier, (int) $this->unsellable_flag, PDO::PARAM_INT);
                         break;
                     case '`MAX_OFFER_UNIT_PRICE`':
 						$stmt->bindValue($identifier, $this->max_offer_unit_price, PDO::PARAM_INT);
@@ -2185,33 +2126,30 @@ abstract class BaseItem extends BaseObject implements Persistent
                 return $this->getItemSubTypeId();
                 break;
             case 17:
-                return $this->getPvpFlag();
+                return $this->getUnsellableFlag();
                 break;
             case 18:
-                return $this->getSoulboundFlag();
-                break;
-            case 19:
                 return $this->getMaxOfferUnitPrice();
                 break;
-            case 20:
+            case 19:
                 return $this->getMinSaleUnitPrice();
                 break;
-            case 21:
+            case 20:
                 return $this->getOfferAvailability();
                 break;
-            case 22:
+            case 21:
                 return $this->getSaleAvailability();
                 break;
-            case 23:
+            case 22:
                 return $this->getLastPriceChanged();
                 break;
-            case 24:
+            case 23:
                 return $this->getLastUpdated();
                 break;
-            case 25:
+            case 24:
                 return $this->getSalePriceChangeLastHour();
                 break;
-            case 26:
+            case 25:
                 return $this->getOfferPriceChangeLastHour();
                 break;
             default:
@@ -2260,16 +2198,15 @@ abstract class BaseItem extends BaseObject implements Persistent
             $keys[14] => $this->getRarityWord(),
             $keys[15] => $this->getItemTypeId(),
             $keys[16] => $this->getItemSubTypeId(),
-            $keys[17] => $this->getPvpFlag(),
-            $keys[18] => $this->getSoulboundFlag(),
-            $keys[19] => $this->getMaxOfferUnitPrice(),
-            $keys[20] => $this->getMinSaleUnitPrice(),
-            $keys[21] => $this->getOfferAvailability(),
-            $keys[22] => $this->getSaleAvailability(),
-            $keys[23] => $this->getLastPriceChanged(),
-            $keys[24] => $this->getLastUpdated(),
-            $keys[25] => $this->getSalePriceChangeLastHour(),
-            $keys[26] => $this->getOfferPriceChangeLastHour(),
+            $keys[17] => $this->getUnsellableFlag(),
+            $keys[18] => $this->getMaxOfferUnitPrice(),
+            $keys[19] => $this->getMinSaleUnitPrice(),
+            $keys[20] => $this->getOfferAvailability(),
+            $keys[21] => $this->getSaleAvailability(),
+            $keys[22] => $this->getLastPriceChanged(),
+            $keys[23] => $this->getLastUpdated(),
+            $keys[24] => $this->getSalePriceChangeLastHour(),
+            $keys[25] => $this->getOfferPriceChangeLastHour(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aItemType) {
@@ -2379,33 +2316,30 @@ abstract class BaseItem extends BaseObject implements Persistent
                 $this->setItemSubTypeId($value);
                 break;
             case 17:
-                $this->setPvpFlag($value);
+                $this->setUnsellableFlag($value);
                 break;
             case 18:
-                $this->setSoulboundFlag($value);
-                break;
-            case 19:
                 $this->setMaxOfferUnitPrice($value);
                 break;
-            case 20:
+            case 19:
                 $this->setMinSaleUnitPrice($value);
                 break;
-            case 21:
+            case 20:
                 $this->setOfferAvailability($value);
                 break;
-            case 22:
+            case 21:
                 $this->setSaleAvailability($value);
                 break;
-            case 23:
+            case 22:
                 $this->setLastPriceChanged($value);
                 break;
-            case 24:
+            case 23:
                 $this->setLastUpdated($value);
                 break;
-            case 25:
+            case 24:
                 $this->setSalePriceChangeLastHour($value);
                 break;
-            case 26:
+            case 25:
                 $this->setOfferPriceChangeLastHour($value);
                 break;
         } // switch()
@@ -2449,16 +2383,15 @@ abstract class BaseItem extends BaseObject implements Persistent
         if (array_key_exists($keys[14], $arr)) $this->setRarityWord($arr[$keys[14]]);
         if (array_key_exists($keys[15], $arr)) $this->setItemTypeId($arr[$keys[15]]);
         if (array_key_exists($keys[16], $arr)) $this->setItemSubTypeId($arr[$keys[16]]);
-        if (array_key_exists($keys[17], $arr)) $this->setPvpFlag($arr[$keys[17]]);
-        if (array_key_exists($keys[18], $arr)) $this->setSoulboundFlag($arr[$keys[18]]);
-        if (array_key_exists($keys[19], $arr)) $this->setMaxOfferUnitPrice($arr[$keys[19]]);
-        if (array_key_exists($keys[20], $arr)) $this->setMinSaleUnitPrice($arr[$keys[20]]);
-        if (array_key_exists($keys[21], $arr)) $this->setOfferAvailability($arr[$keys[21]]);
-        if (array_key_exists($keys[22], $arr)) $this->setSaleAvailability($arr[$keys[22]]);
-        if (array_key_exists($keys[23], $arr)) $this->setLastPriceChanged($arr[$keys[23]]);
-        if (array_key_exists($keys[24], $arr)) $this->setLastUpdated($arr[$keys[24]]);
-        if (array_key_exists($keys[25], $arr)) $this->setSalePriceChangeLastHour($arr[$keys[25]]);
-        if (array_key_exists($keys[26], $arr)) $this->setOfferPriceChangeLastHour($arr[$keys[26]]);
+        if (array_key_exists($keys[17], $arr)) $this->setUnsellableFlag($arr[$keys[17]]);
+        if (array_key_exists($keys[18], $arr)) $this->setMaxOfferUnitPrice($arr[$keys[18]]);
+        if (array_key_exists($keys[19], $arr)) $this->setMinSaleUnitPrice($arr[$keys[19]]);
+        if (array_key_exists($keys[20], $arr)) $this->setOfferAvailability($arr[$keys[20]]);
+        if (array_key_exists($keys[21], $arr)) $this->setSaleAvailability($arr[$keys[21]]);
+        if (array_key_exists($keys[22], $arr)) $this->setLastPriceChanged($arr[$keys[22]]);
+        if (array_key_exists($keys[23], $arr)) $this->setLastUpdated($arr[$keys[23]]);
+        if (array_key_exists($keys[24], $arr)) $this->setSalePriceChangeLastHour($arr[$keys[24]]);
+        if (array_key_exists($keys[25], $arr)) $this->setOfferPriceChangeLastHour($arr[$keys[25]]);
     }
 
     /**
@@ -2487,8 +2420,7 @@ abstract class BaseItem extends BaseObject implements Persistent
         if ($this->isColumnModified(ItemPeer::RARITY_WORD)) $criteria->add(ItemPeer::RARITY_WORD, $this->rarity_word);
         if ($this->isColumnModified(ItemPeer::ITEM_TYPE_ID)) $criteria->add(ItemPeer::ITEM_TYPE_ID, $this->item_type_id);
         if ($this->isColumnModified(ItemPeer::ITEM_SUB_TYPE_ID)) $criteria->add(ItemPeer::ITEM_SUB_TYPE_ID, $this->item_sub_type_id);
-        if ($this->isColumnModified(ItemPeer::PVP_FLAG)) $criteria->add(ItemPeer::PVP_FLAG, $this->pvp_flag);
-        if ($this->isColumnModified(ItemPeer::SOULBOUND_FLAG)) $criteria->add(ItemPeer::SOULBOUND_FLAG, $this->soulbound_flag);
+        if ($this->isColumnModified(ItemPeer::UNSELLABLE_FLAG)) $criteria->add(ItemPeer::UNSELLABLE_FLAG, $this->unsellable_flag);
         if ($this->isColumnModified(ItemPeer::MAX_OFFER_UNIT_PRICE)) $criteria->add(ItemPeer::MAX_OFFER_UNIT_PRICE, $this->max_offer_unit_price);
         if ($this->isColumnModified(ItemPeer::MIN_SALE_UNIT_PRICE)) $criteria->add(ItemPeer::MIN_SALE_UNIT_PRICE, $this->min_sale_unit_price);
         if ($this->isColumnModified(ItemPeer::OFFER_AVAILABILITY)) $criteria->add(ItemPeer::OFFER_AVAILABILITY, $this->offer_availability);
@@ -2576,8 +2508,7 @@ abstract class BaseItem extends BaseObject implements Persistent
         $copyObj->setRarityWord($this->getRarityWord());
         $copyObj->setItemTypeId($this->getItemTypeId());
         $copyObj->setItemSubTypeId($this->getItemSubTypeId());
-        $copyObj->setPvpFlag($this->getPvpFlag());
-        $copyObj->setSoulboundFlag($this->getSoulboundFlag());
+        $copyObj->setUnsellableFlag($this->getUnsellableFlag());
         $copyObj->setMaxOfferUnitPrice($this->getMaxOfferUnitPrice());
         $copyObj->setMinSaleUnitPrice($this->getMinSaleUnitPrice());
         $copyObj->setOfferAvailability($this->getOfferAvailability());
@@ -4274,8 +4205,7 @@ abstract class BaseItem extends BaseObject implements Persistent
         $this->rarity_word = null;
         $this->item_type_id = null;
         $this->item_sub_type_id = null;
-        $this->pvp_flag = null;
-        $this->soulbound_flag = null;
+        $this->unsellable_flag = null;
         $this->max_offer_unit_price = null;
         $this->min_sale_unit_price = null;
         $this->offer_availability = null;

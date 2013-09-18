@@ -114,6 +114,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          */
         $controllers->match("/{format}/all-items/{typeId}", function(Request $request, $format, $typeId) use($app) {
             $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
+            $q->filterByUnsellableFlag(false);
 
             if (in_array($typeId, array('all', '*all*'))) {
                 $typeId = null;
@@ -140,7 +141,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
 
             return $app['api-helper']->outputResponse($request, $response, $format, "all-items-{$typeId}");
         })
-        ->assert('format', 'csv|json|xml')
+        ->assert('format', 'csv|json|xml|')
         ->assert('typeId', '\d+|\*?all\*?');
 
         /**
