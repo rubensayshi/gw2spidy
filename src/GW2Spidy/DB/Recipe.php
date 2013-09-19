@@ -68,7 +68,7 @@ class Recipe extends BaseRecipe {
     }
     
     public function getTooltip() {
-        $APIRecipe = new APIRecipe($this->data_id);
+        $APIRecipe = APIRecipe::getRecipeById($this->data_id);
         
         return ($APIRecipe !== null) ? $APIRecipe->getTooltip() : null;
     }

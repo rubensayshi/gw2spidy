@@ -30,11 +30,11 @@
         <column name="rarity_word" type="varchar" size="255" required="true" />
         <column name="item_type_id" type="integer" required="false" />
         <column name="item_sub_type_id" type="integer" required="false" />
+        <column name="unsellable_flag" type="boolean" required="true" default="0" />
         <column name="max_offer_unit_price" type="integer" required="true" />
         <column name="min_sale_unit_price" type="integer" required="true" />
         <column name="offer_availability" type="integer" required="true" default="0" />
         <column name="sale_availability" type="integer" required="true" default="0" />
-        
         <column name="last_price_changed" type="timestamp" />
         <column name="last_updated" type="timestamp" />
         <column name="sale_price_change_last_hour" type="integer" default="0" />

@@ -6,25 +6,13 @@ use GW2Spidy\DB\Item;
 use GW2Spidy\DB\ItemTypeQuery;
 use GW2Spidy\DB\ItemSubTypeQuery;
 use GW2Spidy\DB\ItemSubType;
+use GW2Spidy\GW2API\APIItem;
 
 ini_set('memory_limit', '1G');
 
 require dirname(__FILE__) . '/../autoload.php';
 
 function getIDFromMarketData ($marketData, $searchValue) {
-    //Replace left value with right value
-    $keys = array(
-        'Crafting Material'     => 'CraftingMaterial',
-        'Crafting Component'    => 'CraftingComponent',
-        'Upgrade Component'     => 'UpgradeComponent',
-        'Mini'                  => 'MiniPet'
-    );
-
-    if (in_array($searchValue, $keys)) {
-        $a = array_keys($keys, $searchValue);
-        $searchValue = $a[0];
-    }
-
     $marketID = 0;
 
     foreach ($marketData as $marketValues) {
@@ -63,8 +51,6 @@ $item_curls = array();
 
 $error_values = array();
 
-$render_url = getAppConfig('gw2spidy.gw2render_url')."/file";
-
 $number_of_items = count($data['items']);
 
 $itemSubTypes = array();
@@ -91,78 +77,50 @@ foreach (array_chunk($data['items'], 1000) as $items) {
         try {
             echo "[{$ii} / {$number_of_items}]: ";
 
-            $ch = $item_curls[$item_id];
+            $API_JSON = $item_curls[$item_id]->data;
+            $APIItem = APIItem::getItemByJSON($API_JSON);
+            
+            if ($APIItem === null) throw new Exception("Item not found: $item_id");
 
-            $APIItem = json_decode($ch->data, true);
-            if (!isset($APIItem['name'])) throw new Exception("Item not found: $i");
+            echo $APIItem->getName() . "\n";
 
-            echo $APIItem['name'] . "\n";
-
-            $itemData = array(  'type_id'           => getIDFromMarketData($market_data['types'], $APIItem['type']),
-                                'data_id'           => $data['items'][$i],
-                                'name'              => $APIItem['name'],
-                                'restriction_level' => $APIItem['level'],
-                                'rarity'            => getIDFromMarketData($market_data['rarities'], $APIItem['rarity']),
-                                'vendor_sell_price' => $APIItem['vendor_value'],
-                                'img'               => "{$render_url}/{$APIItem['icon_file_signature']}/{$APIItem['icon_file_id']}.png",
-                                'rarity_word'       => $APIItem['rarity']);
-
-            $item = ItemQuery::create()->findPK($data['items'][$i]);
-
+            $itemData = array(  'TypeId'            => getIDFromMarketData($market_data['types'], $APIItem->getMarketType()),
+                                'DataId'            => $APIItem->getItemId(),
+                                'Name'              => $APIItem->getName(),
+                                'RestrictionLevel'  => $APIItem->getLevel(),
+                                'Rarity'            => getIDFromMarketData($market_data['rarities'], $APIItem->getRarity()),
+                                'VendorSellPrice'   => $APIItem->getVendorValue(),
+                                'Img'               => $APIItem->getImageURL(),
+                                'RarityWord'        => $APIItem->getRarity(),
+                                'UnsellableFlag'    => $APIItem->isUnsellable());
+            
+            $item = ItemQuery::create()->findPK($APIItem->getItemId());
+            
             if ($item === null) {
                 $item = new Item();
             }
 
-            $item->fromArray($itemData, \BasePeer::TYPE_FIELDNAME);
+            $item->fromArray($itemData);
 
-            $itemType = ItemTypeQuery::create()->findPk($itemData['type_id']);
+            $itemType = ItemTypeQuery::create()->findPk($itemData['TypeId']);
 
             if ($itemType !== null) {
-                //Known item types with no subtypes.
-                $noSubTypes = array("CraftingMaterial", "Trophy", "MiniPet", "Bag", "Back");
+                if ($APIItem->getSubType() !== null) {
 
-                if (!in_array($APIItem['type'], $noSubTypes)) {
-                    $itemTypeName = strtolower($APIItem['type']);
-
-                    //Workaround for upgradecomponents
-                    if ($itemTypeName == 'upgradecomponent') {
-                        $itemTypeName = 'upgrade_component';
-                    }
-
-                    $itemSubTypeName = $APIItem[$itemTypeName]['type'];
-
-                    //Replace left value with right value
-                    $keys = array(
-                        'Harpoon Gun'   => 'Harpoon',
-                        'Aquatic Helm'  => 'HelmAquatic',
-                        'Spear'         => 'Speargun',
-                        'Short Bow'     => 'ShortBow',
-                        'Gift Box'      => 'GiftBox'
-                    );
-
-                    if (in_array($itemSubTypeName, $keys)) {
-                        $a = array_keys($keys, $itemSubTypeName);
-                        $itemSubTypeName = $a[0];
-                    }
-
-                    $itemSubType = ItemSubTypeQuery::create()->findOneByTitle($itemSubTypeName);
-
-                    if ($itemSubType !== null) {
-                        $itemType->addSubType($itemSubType);
-                        $item->setItemSubType($itemSubType);
-                    }
-                    else {
+                    $itemSubType = ItemSubTypeQuery::create()->findOneByTitle($APIItem->getDBSubType());
+                    
+                    if ($itemSubType === null) {
                         //All of the below types are known to not exist in the market data with an ID (by this name).
                         //Rune/Sigil/Utility/Gem/Booze/Halloween/LargeBundle/RentableContractNpc/ContractNPC/UnlimitedConsumable
                         //TwoHandedToy/AppearanceChange/Immediate/Unknown
 
-                        $SubTypeID = getSubIDFromMarketData($market_data['types'], $APIItem['type'], $itemSubTypeName);
+                        $SubTypeID = getSubIDFromMarketData($market_data['types'], $APIItem->getMarketType(), $APIItem->getDBSubType());
 
                         //If the SubTypeID cannot be found in the market data, then just create it by adding one to the highest
                         //Subtype id within the current ItemType.
                         if ($SubTypeID === null) {
                             $itemSubTypes = ItemSubTypeQuery::create()
-                                    ->filterByMainTypeId($itemData['type_id'])
+                                    ->filterByMainTypeId($itemData['TypeId'])
                                     ->withColumn('MAX(id)', 'MAXid')
                                     ->find();
 
@@ -170,12 +128,17 @@ foreach (array_chunk($data['items'], 1000) as $items) {
                         }
 
                         $itemSubType = new ItemSubType();
-                        $itemSubType->fromArray(array('Id' => $SubTypeID, 'MainTypeId' => $itemData['type_id'], 'Title' => $itemSubTypeName));
+                        $itemSubType->fromArray(array(  'Id'            => $SubTypeID, 
+                                                        'MainTypeId'    => $itemData['TypeId'], 
+                                                        'Title'         => $APIItem->getDBSubType()));
                         $itemSubType->save();
 
                         $itemType->addSubType($itemSubType);
                         $item->setItemSubType($itemSubType);
                     }
+                    
+                    $itemType->addSubType($itemSubType);
+                    $item->setItemSubType($itemSubType);
                 }
 
                 $item->setItemType($itemType);
@@ -183,7 +146,7 @@ foreach (array_chunk($data['items'], 1000) as $items) {
 
             $item->save();
         } catch (Exception $e) {
-            $error_values[] = $data['items'][$i];
+            $error_values[] = $item_id;
 
             echo "failed [[ {$e->getMessage()} ]] .. \n";
         }
@@ -192,4 +155,3 @@ foreach (array_chunk($data['items'], 1000) as $items) {
 
 if (count($error_values) > 0)
     var_dump($error_values);
-
