@@ -137,11 +137,16 @@ HTML;
         $html = "";
         
         $this->cleanAttributes();
-        $this->addBuffsToAttributes();
+        $buffs_added = $this->addBuffsToAttributes();
         
         foreach ($this->getAttributes() as $attr) {
-            $pct = ($attr['attribute'] == 'Critical Damage') ? '%' : null;
+            $pct = ($attr['attribute'] == 'Critical Damage' || $attr['attribute'] == 'Critical Chance') ? '%' : null;
             $html .= "<dd class=\"db-stat\">+{$attr['modifier']}{$pct} {$attr['attribute']}</dd>\n";
+        }
+        
+        //Add buffs if they haven't already been added to the attributes, but do exist.
+        if (!$buffs_added) {
+            $html .= "<dd class=\"db-stat\">{$this->getBuffDescription()}</dd>";
         }
         
         return $html;
@@ -164,6 +169,14 @@ HTML;
     
     protected function addBuffsToAttributes() {
         if (isset($this->infix_upgrade['buff']['description'])) {
+            //Certain items like the Major Sigil of bloodlust contain descriptions like:
+            //Gain +7 power each time you kill a foe. (Max 25 stacks; ends on down.)
+            //This will break on this style of formatting, so we ignore that kind of buff description 
+            //and return false because this buff can't be added to attributes.
+            if (strpos($this->infix_upgrade['buff']['description'], "+") !== 0) {
+                return false;
+            }
+            
             $buffs = explode("\n", $this->infix_upgrade['buff']['description']);
             
             $attributes_exist = array();
@@ -176,7 +189,6 @@ HTML;
                 list($modifier_stage1, $attribute) = explode(" ", $buff, 2);
                 $modifier_stage2 = str_replace("+", "", $modifier_stage1);
                 $modifier = (int) str_replace("%", "", $modifier_stage2);
-                
                 if (!in_array($attribute, $attributes_exist)) {
                     $this->infix_upgrade['attributes'][] = array('attribute' => $attribute, 'modifier' => $modifier);
                 }
@@ -187,6 +199,9 @@ HTML;
                 }
             }
         }
+        
+        //Return true to signify that buffs have either been added, or don't need to be added.
+        return true;
     }
     
     protected function getBuffDescription() {
