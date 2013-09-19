@@ -227,12 +227,21 @@ HTML;
     }
     
     public function isUnsellable() {
-        return (count(array_intersect(array("SoulBindOnAcquire", "AccountBound"), $this->flags)) > 0 || $this->isPvpOnly());
+        if (count(array_intersect(array("SoulBindOnAcquire", "AccountBound"), $this->flags)) > 0) {
+            return true;
+        }
+        
+        return $this->isPvpOnly();
     }
     
-    public function isPvpOnly() {        
-        return (in_array("Pvp", $this->game_types) && 
-            count(array_intersect(array("Activity", "Dungeon", "Pve", "Wvw"), $this->game_types)) > 0);
+    public function isPvpOnly() {
+        if (in_array("Pvp", $this->game_types)) {
+            if (count(array_intersect(array("Activity", "Dungeon", "Pve", "Wvw"), $this->game_types)) == 0) {
+                return true;
+            }
+        }
+        
+        return false;
     } 
     
     public function getSuffixItem() {
