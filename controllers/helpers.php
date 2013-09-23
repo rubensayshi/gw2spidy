@@ -87,7 +87,7 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
             'lastpage' => $lastpage,
             'items'    => $items,
 
-            'rarity_filter' => $rarityFilter,
+            'rarity_filter' => $rarityFilter !== null ? $rarityFilter : -1,
 
             'min_level' => $minLevelFilter,
             'max_level' => $maxLevelFilter,
