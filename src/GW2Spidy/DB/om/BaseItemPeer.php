@@ -42,13 +42,13 @@ abstract class BaseItemPeer {
     const TM_CLASS = 'ItemTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 25;
+    const NUM_COLUMNS = 26;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 25;
+    const NUM_HYDRATE_COLUMNS = 26;
 
     /** the column name for the DATA_ID field */
     const DATA_ID = 'item.DATA_ID';
@@ -101,6 +101,9 @@ abstract class BaseItemPeer {
     /** the column name for the ITEM_SUB_TYPE_ID field */
     const ITEM_SUB_TYPE_ID = 'item.ITEM_SUB_TYPE_ID';
 
+    /** the column name for the UNSELLABLE_FLAG field */
+    const UNSELLABLE_FLAG = 'item.UNSELLABLE_FLAG';
+
     /** the column name for the MAX_OFFER_UNIT_PRICE field */
     const MAX_OFFER_UNIT_PRICE = 'item.MAX_OFFER_UNIT_PRICE';
 
@@ -144,12 +147,12 @@ abstract class BaseItemPeer {
      * e.g. ItemPeer::$fieldNames[ItemPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('DataId', 'TypeId', 'Name', 'TpName', 'CleanName', 'CleanTpName', 'GemStoreDescription', 'GemStoreBlurb', 'RestrictionLevel', 'Rarity', 'VendorSellPrice', 'VendorPrice', 'KarmaPrice', 'Img', 'RarityWord', 'ItemTypeId', 'ItemSubTypeId', 'MaxOfferUnitPrice', 'MinSaleUnitPrice', 'OfferAvailability', 'SaleAvailability', 'LastPriceChanged', 'LastUpdated', 'SalePriceChangeLastHour', 'OfferPriceChangeLastHour', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId', 'typeId', 'name', 'tpName', 'cleanName', 'cleanTpName', 'gemStoreDescription', 'gemStoreBlurb', 'restrictionLevel', 'rarity', 'vendorSellPrice', 'vendorPrice', 'karmaPrice', 'img', 'rarityWord', 'itemTypeId', 'itemSubTypeId', 'maxOfferUnitPrice', 'minSaleUnitPrice', 'offerAvailability', 'saleAvailability', 'lastPriceChanged', 'lastUpdated', 'salePriceChangeLastHour', 'offerPriceChangeLastHour', ),
-        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID, ItemPeer::TYPE_ID, ItemPeer::NAME, ItemPeer::TP_NAME, ItemPeer::CLEAN_NAME, ItemPeer::CLEAN_TP_NAME, ItemPeer::GEM_STORE_DESCRIPTION, ItemPeer::GEM_STORE_BLURB, ItemPeer::RESTRICTION_LEVEL, ItemPeer::RARITY, ItemPeer::VENDOR_SELL_PRICE, ItemPeer::VENDOR_PRICE, ItemPeer::KARMA_PRICE, ItemPeer::IMG, ItemPeer::RARITY_WORD, ItemPeer::ITEM_TYPE_ID, ItemPeer::ITEM_SUB_TYPE_ID, ItemPeer::MAX_OFFER_UNIT_PRICE, ItemPeer::MIN_SALE_UNIT_PRICE, ItemPeer::OFFER_AVAILABILITY, ItemPeer::SALE_AVAILABILITY, ItemPeer::LAST_PRICE_CHANGED, ItemPeer::LAST_UPDATED, ItemPeer::SALE_PRICE_CHANGE_LAST_HOUR, ItemPeer::OFFER_PRICE_CHANGE_LAST_HOUR, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID', 'TYPE_ID', 'NAME', 'TP_NAME', 'CLEAN_NAME', 'CLEAN_TP_NAME', 'GEM_STORE_DESCRIPTION', 'GEM_STORE_BLURB', 'RESTRICTION_LEVEL', 'RARITY', 'VENDOR_SELL_PRICE', 'VENDOR_PRICE', 'KARMA_PRICE', 'IMG', 'RARITY_WORD', 'ITEM_TYPE_ID', 'ITEM_SUB_TYPE_ID', 'MAX_OFFER_UNIT_PRICE', 'MIN_SALE_UNIT_PRICE', 'OFFER_AVAILABILITY', 'SALE_AVAILABILITY', 'LAST_PRICE_CHANGED', 'LAST_UPDATED', 'SALE_PRICE_CHANGE_LAST_HOUR', 'OFFER_PRICE_CHANGE_LAST_HOUR', ),
-        BasePeer::TYPE_FIELDNAME => array ('data_id', 'type_id', 'name', 'tp_name', 'clean_name', 'clean_tp_name', 'gem_store_description', 'gem_store_blurb', 'restriction_level', 'rarity', 'vendor_sell_price', 'vendor_price', 'karma_price', 'img', 'rarity_word', 'item_type_id', 'item_sub_type_id', 'max_offer_unit_price', 'min_sale_unit_price', 'offer_availability', 'sale_availability', 'last_price_changed', 'last_updated', 'sale_price_change_last_hour', 'offer_price_change_last_hour', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, )
+        BasePeer::TYPE_PHPNAME => array ('DataId', 'TypeId', 'Name', 'TpName', 'CleanName', 'CleanTpName', 'GemStoreDescription', 'GemStoreBlurb', 'RestrictionLevel', 'Rarity', 'VendorSellPrice', 'VendorPrice', 'KarmaPrice', 'Img', 'RarityWord', 'ItemTypeId', 'ItemSubTypeId', 'UnsellableFlag', 'MaxOfferUnitPrice', 'MinSaleUnitPrice', 'OfferAvailability', 'SaleAvailability', 'LastPriceChanged', 'LastUpdated', 'SalePriceChangeLastHour', 'OfferPriceChangeLastHour', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId', 'typeId', 'name', 'tpName', 'cleanName', 'cleanTpName', 'gemStoreDescription', 'gemStoreBlurb', 'restrictionLevel', 'rarity', 'vendorSellPrice', 'vendorPrice', 'karmaPrice', 'img', 'rarityWord', 'itemTypeId', 'itemSubTypeId', 'unsellableFlag', 'maxOfferUnitPrice', 'minSaleUnitPrice', 'offerAvailability', 'saleAvailability', 'lastPriceChanged', 'lastUpdated', 'salePriceChangeLastHour', 'offerPriceChangeLastHour', ),
+        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID, ItemPeer::TYPE_ID, ItemPeer::NAME, ItemPeer::TP_NAME, ItemPeer::CLEAN_NAME, ItemPeer::CLEAN_TP_NAME, ItemPeer::GEM_STORE_DESCRIPTION, ItemPeer::GEM_STORE_BLURB, ItemPeer::RESTRICTION_LEVEL, ItemPeer::RARITY, ItemPeer::VENDOR_SELL_PRICE, ItemPeer::VENDOR_PRICE, ItemPeer::KARMA_PRICE, ItemPeer::IMG, ItemPeer::RARITY_WORD, ItemPeer::ITEM_TYPE_ID, ItemPeer::ITEM_SUB_TYPE_ID, ItemPeer::UNSELLABLE_FLAG, ItemPeer::MAX_OFFER_UNIT_PRICE, ItemPeer::MIN_SALE_UNIT_PRICE, ItemPeer::OFFER_AVAILABILITY, ItemPeer::SALE_AVAILABILITY, ItemPeer::LAST_PRICE_CHANGED, ItemPeer::LAST_UPDATED, ItemPeer::SALE_PRICE_CHANGE_LAST_HOUR, ItemPeer::OFFER_PRICE_CHANGE_LAST_HOUR, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID', 'TYPE_ID', 'NAME', 'TP_NAME', 'CLEAN_NAME', 'CLEAN_TP_NAME', 'GEM_STORE_DESCRIPTION', 'GEM_STORE_BLURB', 'RESTRICTION_LEVEL', 'RARITY', 'VENDOR_SELL_PRICE', 'VENDOR_PRICE', 'KARMA_PRICE', 'IMG', 'RARITY_WORD', 'ITEM_TYPE_ID', 'ITEM_SUB_TYPE_ID', 'UNSELLABLE_FLAG', 'MAX_OFFER_UNIT_PRICE', 'MIN_SALE_UNIT_PRICE', 'OFFER_AVAILABILITY', 'SALE_AVAILABILITY', 'LAST_PRICE_CHANGED', 'LAST_UPDATED', 'SALE_PRICE_CHANGE_LAST_HOUR', 'OFFER_PRICE_CHANGE_LAST_HOUR', ),
+        BasePeer::TYPE_FIELDNAME => array ('data_id', 'type_id', 'name', 'tp_name', 'clean_name', 'clean_tp_name', 'gem_store_description', 'gem_store_blurb', 'restriction_level', 'rarity', 'vendor_sell_price', 'vendor_price', 'karma_price', 'img', 'rarity_word', 'item_type_id', 'item_sub_type_id', 'unsellable_flag', 'max_offer_unit_price', 'min_sale_unit_price', 'offer_availability', 'sale_availability', 'last_price_changed', 'last_updated', 'sale_price_change_last_hour', 'offer_price_change_last_hour', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, )
     );
 
     /**
@@ -159,12 +162,12 @@ abstract class BaseItemPeer {
      * e.g. ItemPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('DataId' => 0, 'TypeId' => 1, 'Name' => 2, 'TpName' => 3, 'CleanName' => 4, 'CleanTpName' => 5, 'GemStoreDescription' => 6, 'GemStoreBlurb' => 7, 'RestrictionLevel' => 8, 'Rarity' => 9, 'VendorSellPrice' => 10, 'VendorPrice' => 11, 'KarmaPrice' => 12, 'Img' => 13, 'RarityWord' => 14, 'ItemTypeId' => 15, 'ItemSubTypeId' => 16, 'MaxOfferUnitPrice' => 17, 'MinSaleUnitPrice' => 18, 'OfferAvailability' => 19, 'SaleAvailability' => 20, 'LastPriceChanged' => 21, 'LastUpdated' => 22, 'SalePriceChangeLastHour' => 23, 'OfferPriceChangeLastHour' => 24, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId' => 0, 'typeId' => 1, 'name' => 2, 'tpName' => 3, 'cleanName' => 4, 'cleanTpName' => 5, 'gemStoreDescription' => 6, 'gemStoreBlurb' => 7, 'restrictionLevel' => 8, 'rarity' => 9, 'vendorSellPrice' => 10, 'vendorPrice' => 11, 'karmaPrice' => 12, 'img' => 13, 'rarityWord' => 14, 'itemTypeId' => 15, 'itemSubTypeId' => 16, 'maxOfferUnitPrice' => 17, 'minSaleUnitPrice' => 18, 'offerAvailability' => 19, 'saleAvailability' => 20, 'lastPriceChanged' => 21, 'lastUpdated' => 22, 'salePriceChangeLastHour' => 23, 'offerPriceChangeLastHour' => 24, ),
-        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID => 0, ItemPeer::TYPE_ID => 1, ItemPeer::NAME => 2, ItemPeer::TP_NAME => 3, ItemPeer::CLEAN_NAME => 4, ItemPeer::CLEAN_TP_NAME => 5, ItemPeer::GEM_STORE_DESCRIPTION => 6, ItemPeer::GEM_STORE_BLURB => 7, ItemPeer::RESTRICTION_LEVEL => 8, ItemPeer::RARITY => 9, ItemPeer::VENDOR_SELL_PRICE => 10, ItemPeer::VENDOR_PRICE => 11, ItemPeer::KARMA_PRICE => 12, ItemPeer::IMG => 13, ItemPeer::RARITY_WORD => 14, ItemPeer::ITEM_TYPE_ID => 15, ItemPeer::ITEM_SUB_TYPE_ID => 16, ItemPeer::MAX_OFFER_UNIT_PRICE => 17, ItemPeer::MIN_SALE_UNIT_PRICE => 18, ItemPeer::OFFER_AVAILABILITY => 19, ItemPeer::SALE_AVAILABILITY => 20, ItemPeer::LAST_PRICE_CHANGED => 21, ItemPeer::LAST_UPDATED => 22, ItemPeer::SALE_PRICE_CHANGE_LAST_HOUR => 23, ItemPeer::OFFER_PRICE_CHANGE_LAST_HOUR => 24, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID' => 0, 'TYPE_ID' => 1, 'NAME' => 2, 'TP_NAME' => 3, 'CLEAN_NAME' => 4, 'CLEAN_TP_NAME' => 5, 'GEM_STORE_DESCRIPTION' => 6, 'GEM_STORE_BLURB' => 7, 'RESTRICTION_LEVEL' => 8, 'RARITY' => 9, 'VENDOR_SELL_PRICE' => 10, 'VENDOR_PRICE' => 11, 'KARMA_PRICE' => 12, 'IMG' => 13, 'RARITY_WORD' => 14, 'ITEM_TYPE_ID' => 15, 'ITEM_SUB_TYPE_ID' => 16, 'MAX_OFFER_UNIT_PRICE' => 17, 'MIN_SALE_UNIT_PRICE' => 18, 'OFFER_AVAILABILITY' => 19, 'SALE_AVAILABILITY' => 20, 'LAST_PRICE_CHANGED' => 21, 'LAST_UPDATED' => 22, 'SALE_PRICE_CHANGE_LAST_HOUR' => 23, 'OFFER_PRICE_CHANGE_LAST_HOUR' => 24, ),
-        BasePeer::TYPE_FIELDNAME => array ('data_id' => 0, 'type_id' => 1, 'name' => 2, 'tp_name' => 3, 'clean_name' => 4, 'clean_tp_name' => 5, 'gem_store_description' => 6, 'gem_store_blurb' => 7, 'restriction_level' => 8, 'rarity' => 9, 'vendor_sell_price' => 10, 'vendor_price' => 11, 'karma_price' => 12, 'img' => 13, 'rarity_word' => 14, 'item_type_id' => 15, 'item_sub_type_id' => 16, 'max_offer_unit_price' => 17, 'min_sale_unit_price' => 18, 'offer_availability' => 19, 'sale_availability' => 20, 'last_price_changed' => 21, 'last_updated' => 22, 'sale_price_change_last_hour' => 23, 'offer_price_change_last_hour' => 24, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, )
+        BasePeer::TYPE_PHPNAME => array ('DataId' => 0, 'TypeId' => 1, 'Name' => 2, 'TpName' => 3, 'CleanName' => 4, 'CleanTpName' => 5, 'GemStoreDescription' => 6, 'GemStoreBlurb' => 7, 'RestrictionLevel' => 8, 'Rarity' => 9, 'VendorSellPrice' => 10, 'VendorPrice' => 11, 'KarmaPrice' => 12, 'Img' => 13, 'RarityWord' => 14, 'ItemTypeId' => 15, 'ItemSubTypeId' => 16, 'UnsellableFlag' => 17, 'MaxOfferUnitPrice' => 18, 'MinSaleUnitPrice' => 19, 'OfferAvailability' => 20, 'SaleAvailability' => 21, 'LastPriceChanged' => 22, 'LastUpdated' => 23, 'SalePriceChangeLastHour' => 24, 'OfferPriceChangeLastHour' => 25, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('dataId' => 0, 'typeId' => 1, 'name' => 2, 'tpName' => 3, 'cleanName' => 4, 'cleanTpName' => 5, 'gemStoreDescription' => 6, 'gemStoreBlurb' => 7, 'restrictionLevel' => 8, 'rarity' => 9, 'vendorSellPrice' => 10, 'vendorPrice' => 11, 'karmaPrice' => 12, 'img' => 13, 'rarityWord' => 14, 'itemTypeId' => 15, 'itemSubTypeId' => 16, 'unsellableFlag' => 17, 'maxOfferUnitPrice' => 18, 'minSaleUnitPrice' => 19, 'offerAvailability' => 20, 'saleAvailability' => 21, 'lastPriceChanged' => 22, 'lastUpdated' => 23, 'salePriceChangeLastHour' => 24, 'offerPriceChangeLastHour' => 25, ),
+        BasePeer::TYPE_COLNAME => array (ItemPeer::DATA_ID => 0, ItemPeer::TYPE_ID => 1, ItemPeer::NAME => 2, ItemPeer::TP_NAME => 3, ItemPeer::CLEAN_NAME => 4, ItemPeer::CLEAN_TP_NAME => 5, ItemPeer::GEM_STORE_DESCRIPTION => 6, ItemPeer::GEM_STORE_BLURB => 7, ItemPeer::RESTRICTION_LEVEL => 8, ItemPeer::RARITY => 9, ItemPeer::VENDOR_SELL_PRICE => 10, ItemPeer::VENDOR_PRICE => 11, ItemPeer::KARMA_PRICE => 12, ItemPeer::IMG => 13, ItemPeer::RARITY_WORD => 14, ItemPeer::ITEM_TYPE_ID => 15, ItemPeer::ITEM_SUB_TYPE_ID => 16, ItemPeer::UNSELLABLE_FLAG => 17, ItemPeer::MAX_OFFER_UNIT_PRICE => 18, ItemPeer::MIN_SALE_UNIT_PRICE => 19, ItemPeer::OFFER_AVAILABILITY => 20, ItemPeer::SALE_AVAILABILITY => 21, ItemPeer::LAST_PRICE_CHANGED => 22, ItemPeer::LAST_UPDATED => 23, ItemPeer::SALE_PRICE_CHANGE_LAST_HOUR => 24, ItemPeer::OFFER_PRICE_CHANGE_LAST_HOUR => 25, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('DATA_ID' => 0, 'TYPE_ID' => 1, 'NAME' => 2, 'TP_NAME' => 3, 'CLEAN_NAME' => 4, 'CLEAN_TP_NAME' => 5, 'GEM_STORE_DESCRIPTION' => 6, 'GEM_STORE_BLURB' => 7, 'RESTRICTION_LEVEL' => 8, 'RARITY' => 9, 'VENDOR_SELL_PRICE' => 10, 'VENDOR_PRICE' => 11, 'KARMA_PRICE' => 12, 'IMG' => 13, 'RARITY_WORD' => 14, 'ITEM_TYPE_ID' => 15, 'ITEM_SUB_TYPE_ID' => 16, 'UNSELLABLE_FLAG' => 17, 'MAX_OFFER_UNIT_PRICE' => 18, 'MIN_SALE_UNIT_PRICE' => 19, 'OFFER_AVAILABILITY' => 20, 'SALE_AVAILABILITY' => 21, 'LAST_PRICE_CHANGED' => 22, 'LAST_UPDATED' => 23, 'SALE_PRICE_CHANGE_LAST_HOUR' => 24, 'OFFER_PRICE_CHANGE_LAST_HOUR' => 25, ),
+        BasePeer::TYPE_FIELDNAME => array ('data_id' => 0, 'type_id' => 1, 'name' => 2, 'tp_name' => 3, 'clean_name' => 4, 'clean_tp_name' => 5, 'gem_store_description' => 6, 'gem_store_blurb' => 7, 'restriction_level' => 8, 'rarity' => 9, 'vendor_sell_price' => 10, 'vendor_price' => 11, 'karma_price' => 12, 'img' => 13, 'rarity_word' => 14, 'item_type_id' => 15, 'item_sub_type_id' => 16, 'unsellable_flag' => 17, 'max_offer_unit_price' => 18, 'min_sale_unit_price' => 19, 'offer_availability' => 20, 'sale_availability' => 21, 'last_price_changed' => 22, 'last_updated' => 23, 'sale_price_change_last_hour' => 24, 'offer_price_change_last_hour' => 25, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, )
     );
 
     /**
@@ -255,6 +258,7 @@ abstract class BaseItemPeer {
             $criteria->addSelectColumn(ItemPeer::RARITY_WORD);
             $criteria->addSelectColumn(ItemPeer::ITEM_TYPE_ID);
             $criteria->addSelectColumn(ItemPeer::ITEM_SUB_TYPE_ID);
+            $criteria->addSelectColumn(ItemPeer::UNSELLABLE_FLAG);
             $criteria->addSelectColumn(ItemPeer::MAX_OFFER_UNIT_PRICE);
             $criteria->addSelectColumn(ItemPeer::MIN_SALE_UNIT_PRICE);
             $criteria->addSelectColumn(ItemPeer::OFFER_AVAILABILITY);
@@ -281,6 +285,7 @@ abstract class BaseItemPeer {
             $criteria->addSelectColumn($alias . '.RARITY_WORD');
             $criteria->addSelectColumn($alias . '.ITEM_TYPE_ID');
             $criteria->addSelectColumn($alias . '.ITEM_SUB_TYPE_ID');
+            $criteria->addSelectColumn($alias . '.UNSELLABLE_FLAG');
             $criteria->addSelectColumn($alias . '.MAX_OFFER_UNIT_PRICE');
             $criteria->addSelectColumn($alias . '.MIN_SALE_UNIT_PRICE');
             $criteria->addSelectColumn($alias . '.OFFER_AVAILABILITY');

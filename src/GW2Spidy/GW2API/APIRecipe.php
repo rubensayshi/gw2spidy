@@ -19,27 +19,28 @@ class APIRecipe {
     protected $ingredients;
     protected $ingredient_items;
     
-    public function __construct($dataId) {
-        $recipe = $this->getRecipe($dataId);
-        if ($recipe !== null) {
-            $this->recipe_id = $recipe['recipe_id'];
-            $this->type = $recipe['type'];
-            $this->output_item_id = $recipe['output_item_id'];
-            $this->output_item_count = $recipe['output_item_count'];
-            $this->output_item = APIItem::getItem($this->output_item_id);
-            $this->min_rating = $recipe['min_rating'];
-            $this->time_to_craft_ms = $recipe['time_to_craft_ms'];
-            $this->disciplines = $recipe['disciplines'];
-            $this->flags = $recipe['flags'];
-            $this->ingredients = $recipe['ingredients'];
-            $this->items = array();
-            foreach ($this->ingredients as $ingredient) {
-                $this->ingredient_items[] = APIItem::getItem($ingredient['item_id']);
-            }
+    protected function __construct($recipe) {
+        $this->recipe_id = $recipe['recipe_id'];
+        $this->type = $recipe['type'];
+        $this->output_item_id = $recipe['output_item_id'];
+        $this->output_item_count = $recipe['output_item_count'];
+        $this->output_item = APIItem::getItemById($this->output_item_id);
+        $this->min_rating = $recipe['min_rating'];
+        $this->time_to_craft_ms = $recipe['time_to_craft_ms'];
+        $this->disciplines = $recipe['disciplines'];
+        $this->flags = $recipe['flags'];
+        $this->ingredients = $recipe['ingredients'];
+        $this->items = array();
+        foreach ($this->ingredients as $ingredient) {
+            $this->ingredient_items[] = APIItem::getItemById($ingredient['item_id']);
         }
     }
     
-    protected function getRecipe ($dataId) {
+    public static function getRecipeByJSON ($API_JSON) {
+        return new APIRecipe(json_decode($API_JSON, true));
+    }
+    
+    public static function getRecipeById ($dataId) {
         $cache = CacheHandler::getInstance('recipe_gw2api');
         $cacheKey = $dataId . "::" . substr(md5($dataId),0,10);
         $ttl      = 86400;
@@ -59,9 +60,7 @@ class APIRecipe {
             }
         }
         
-        $APIItem = json_decode($API_JSON, true);
-        
-        return $APIItem;
+        return APIRecipe::getRecipeByJSON($API_JSON);
     }
     
     protected function getFormattedIngredients() {

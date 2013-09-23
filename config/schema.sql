@@ -59,6 +59,7 @@ CREATE TABLE `item`
     `rarity_word` VARCHAR(255) NOT NULL,
     `item_type_id` INTEGER,
     `item_sub_type_id` INTEGER,
+    `unsellable_flag` TINYINT(1) DEFAULT 0 NOT NULL,
     `max_offer_unit_price` INTEGER NOT NULL,
     `min_sale_unit_price` INTEGER NOT NULL,
     `offer_availability` INTEGER DEFAULT 0 NOT NULL,

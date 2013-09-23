@@ -36,7 +36,8 @@ class ItemListRoutingExtension extends \Twig_Extension {
             throw new \Exception("invalid context " . var_export(array_keys($context), true));
         }
 
-        $preserveParams = array('rarity_filter', 'min_level', 'max_level', 'min_rating', 'max_rating', 'min_supply', 'max_supply', 'hide_unlock_required');
+        $preserveParams = array('rarity_filter', 'min_level', 'max_level', 'min_rating', 
+                                'max_rating', 'min_supply', 'max_supply', 'hide_unlock_required', 'unsellable_flag');
         foreach ($preserveParams as $param) {
             if (isset($context[$param]) && !array_key_exists($param, $parameters)) {
                 $parameters[$param] = $context[$param];

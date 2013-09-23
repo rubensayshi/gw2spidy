@@ -114,6 +114,11 @@ Watchlist
                         <input class="input-mini" placeholder="min" type="text" name="min_level" id="min_level" value="{{ min_level }}" /> -
                         <input class="input-mini" placeholder="max" type="text" name="max_level" id="max_level" value="{{ max_level }}" />
                     </div>
+                    <div class="controls">
+                        <label class="control-label" for="unsellable_flag">Include items that can't be sold:</label>
+                        <input class="input-mini" type="checkbox" {% if (unsellable_flag > 0) %} checked="checked" {% endif %}
+                               name="unsellable_flag" id="unsellable_flag" value="1" />
+                    </div>
                 </div>
                 <div class="control-group filter">
                     <div class="controls">

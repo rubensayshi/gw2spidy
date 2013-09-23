@@ -184,7 +184,7 @@ class Item extends BaseItem {
     }
     
     public function getTooltip() {
-        $APIItem = APIItem::getItem($this->getDataId());
+        $APIItem = APIItem::getItemById($this->getDataId());
         
         return ($APIItem !== null) ? $APIItem->getTooltip() : null;
     }

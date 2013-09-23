@@ -52,6 +52,9 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
     if (($maxLevelFilter = $request->get('max_level', null))) {
         $q->filterByRestrictionLevel($maxLevelFilter, \Criteria::LESS_EQUAL);
     }
+    if (($unsellableFilter = $request->get('unsellable_flag', null)) === null) {
+        $q->filterByUnsellableFlag(false);
+    }
 
     $count = $q->count();
 
@@ -91,6 +94,7 @@ function item_list(Application $app, Request $request, ItemQuery $q, $page, $ite
 
             'current_sort'       => $sortBy,
             'current_sort_order' => $sortOrder,
+            'unsellable_flag'    => $unsellableFilter
     ));
 }
 
