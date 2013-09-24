@@ -124,10 +124,11 @@ HTML;
         $html = "";
         
         if (($Suffix_Item = $this->getSuffixItem()) !== null) {
-            $buff = (method_exists($Suffix_Item, 'getBuffDescription')) ? $Suffix_Item->getBuffDescription() : null;
+            $bonus = (method_exists($Suffix_Item, 'getBonuses')) ? $Suffix_Item->getBonuses() : null;
             $img = "<img alt='' src='{$Suffix_Item->getImageURL()}' height='16' width='16'>";
             
-            $html .= "<dd class=\"db-slotted-item\">{$img} {$Suffix_Item->getHTMLName()}<br>{$buff}</dd>\n";
+            $html .= "<dd class=\"db-slotted-item\">{$img} {$Suffix_Item->getHTMLName()}<br>".
+                     "{$bonus}<br>{$Suffix_Item->getBuffDescription()}</dd>\n";
         }
         
         return $html;
