@@ -2,6 +2,7 @@
 .settings
 .buildpath
 .vagrant
+.idea
 
 # OS cruft
 Thumbs.db
