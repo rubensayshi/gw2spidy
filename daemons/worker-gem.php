@@ -61,7 +61,6 @@ while ($run < $max) {
         ob_start();
 
         $rates  = GemExchangeSpider::getInstance()->getGemExchangeRate();
-        $volume = GemExchangeSpider::getInstance()->getGemExchangeVolume();
 
         if (!$rates || !$volume) {
             throw new Exception("No gem exchange data");
@@ -77,7 +76,6 @@ while ($run < $max) {
             $goldtogem = new GoldToGemRate();
             $goldtogem->setRateDatetime($date);
             $goldtogem->setRate($rates['gold_to_gem'] * 100); // convert to copper
-            $goldtogem->setVolume($volume['gem_count']);
             $goldtogem->save();
         }
 
@@ -88,7 +86,6 @@ while ($run < $max) {
             $goldtogem = new GemToGoldRate();
             $goldtogem->setRateDatetime($date);
             $goldtogem->setRate($rates['gem_to_gold'] * 100); // convert to copper
-            $goldtogem->setVolume($volume['gold_count']);
             $goldtogem->save();
         }
 
