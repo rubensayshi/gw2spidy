@@ -1,5 +1,7 @@
 <?php
 
+use GW2Spidy\GW2SessionManager;
+
 use \DateTime;
 use \Exception;
 
@@ -62,7 +64,7 @@ while ($run < $max) {
 
         $rates  = GemExchangeSpider::getInstance()->getGemExchangeRate();
 
-        if (!$rates || !$volume) {
+        if (!$rates) {
             throw new Exception("No gem exchange data");
         }
 
