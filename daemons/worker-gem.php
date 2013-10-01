@@ -1,7 +1,5 @@
 <?php
 
-use GW2Spidy\GW2GameSessionManager;
-
 use \DateTime;
 use \Exception;
 
@@ -16,6 +14,10 @@ use GW2Spidy\NewQueue\RequestSlotManager;
 
 require dirname(__FILE__) . '/../autoload.php';
 
+function logg($msg){
+    echo "[" . date("Y-m-d H:i:s") . "] " . $msg;
+}
+
 $UUID    = getmypid() . "::" . time();
 $con     = Propel::getConnection();
 $run     = 0;
@@ -27,15 +29,12 @@ $slotManager  = RequestSlotManager::getInstance();
 /*
  * login here, this allows us to exit right away on failure
  */
-print "login ... \n";
+logg("login ...\n");
 try {
-    $begin = microtime(true);
-    $gw2session = GW2GameSessionManager::getInstance();
-    echo "login ok [".(microtime(true) - $begin)."] -> [{$gw2session->getSessionKey()}] \n";
-
-    GemExchangeSpider::getInstance()->setSession($gw2session);
+    $gw2session = GW2SessionManager::getInstance()->getSessionKey();
+    logg("login ok -> [{$gw2session}] \n");
 } catch (Exception $e) {
-    echo "login failed ... sleeping [60] and restarting \n";
+    logg("login failed ... sleeping [60] and restarting \n");
     sleep(60);
     exit(1);
 }
