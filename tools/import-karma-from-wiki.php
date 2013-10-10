@@ -156,7 +156,14 @@ $urls = array_merge(
         get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Renown_heart_NPCs'),
         get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Renown_heart_NPCs&from=Magister%20Kathryn'),
         get_page_urls2('http://wiki.guildwars2.com/wiki/Karma_merchant'),
-        get_page_urls('http://wiki.guildwars2.com/wiki/Category:Master_chefs')
+        get_page_urls('http://wiki.guildwars2.com/wiki/Category:Master_armorsmiths'),
+        get_page_urls('http://wiki.guildwars2.com/wiki/Category:Master_artificers'),
+        get_page_urls('http://wiki.guildwars2.com/wiki/Category:Master_chefs'),
+        get_page_urls('http://wiki.guildwars2.com/wiki/Category:Master_huntsmen'),
+        get_page_urls('http://wiki.guildwars2.com/wiki/Category:Master_jewelers'),
+        get_page_urls('http://wiki.guildwars2.com/wiki/Category:Master_leatherworkers'),
+        get_page_urls('http://wiki.guildwars2.com/wiki/Category:Master_tailors'),
+        get_page_urls('http://wiki.guildwars2.com/wiki/Category:Master_weaponsmiths')
 );
 
 
