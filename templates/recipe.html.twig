@@ -79,6 +79,10 @@
         background-color: gray;
     }
 
+    .collapse-disabled .children-disabled {
+        display: none;
+    }
+
     .folder-structure-icon {
         width: 25px;
         height: 39px;
@@ -179,7 +183,11 @@
 </div>
 <div id="recipe_container" class="well recipe-wrapper clearfix" style="position: relative;">
     {{ recipe.getTooltip() | raw }}
-    <h4 style="border-bottom: 1px solid black;">Customize</h4>
+    <h4 style="border-bottom: 1px solid black;  margin-top: 30px;">Customize
+        <div style="display: inline-block; padding-left: 50px;">
+            <input type="checkbox" class="collapse"> collapse items marked to BUY / TP
+        </div>
+    </h4>
     <div style="position: absolute; top: 20px; right: 20px;">
         <a href="#help" title="How does it work?"><i class="icon-question-sign"></i></a>
     </div>

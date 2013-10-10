@@ -6,6 +6,7 @@ var Crafting = function(item, container, summarycontainer) {
     var $container = $(container);
     var $sumcont   = $(summarycontainer);
     var $summary   = $sumcont.find(".recipe_summary");
+    var $collapse  = $container.find('.collapse');
 
     var update = function() {
         var total = 0, karmaTotal = 0, sellprice = 0, listingfee = 0, transactionfee = 0, profit = 0;
@@ -50,7 +51,7 @@ var Crafting = function(item, container, summarycontainer) {
         $sumcont.find('.recipe_summary_profit').html(formatGW2Money(profit));
         $sumcont.find('.recipe_summary_transaction_fee').html(formatGW2Money(transactionfee));
         $sumcont.find('.recipe_summary_listing_fee').html(formatGW2Money(listingfee));
-        
+
         $sumcont.find('.recipe_summary_total_karma').html(karmaTotal + karmaIcon).parent().toggle(karmaTotal > 0);
     };
 
@@ -58,6 +59,10 @@ var Crafting = function(item, container, summarycontainer) {
         topentry = new CraftEntry(item, item.recipe.count, self, [], false);
 
         $container.append(topentry.render());
+
+        $collapse.on('click change', function() {
+            $(this).is(":checked") ? $container.addClass('collapse-disabled') : $container.removeClass('collapse-disabled');
+        });
 
         update();
         WP_LoadTooltips($container);
