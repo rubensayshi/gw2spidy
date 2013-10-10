@@ -1,6 +1,7 @@
 var karmaIcon = ' <img alt="Karma" src="/assets/img/Karma.png" height="15" width="18">';
 
 var Crafting = function(item, container, summarycontainer) {
+    var COLLAPSE_KEY = 'collapse_children';
     var self       = this;
     var topentry   = null;
     var $container = $(container);
@@ -55,14 +56,27 @@ var Crafting = function(item, container, summarycontainer) {
         $sumcont.find('.recipe_summary_total_karma').html(karmaTotal + karmaIcon).parent().toggle(karmaTotal > 0);
     };
 
+    var checkCollapse = function() {
+        if ($collapse.is(":checked")) {
+            window.localStorage.setItem(COLLAPSE_KEY, 'collapse');
+            $container.addClass('collapse-disabled');
+        } else {
+            window.localStorage.setItem(COLLAPSE_KEY, '');
+            $container.removeClass('collapse-disabled');
+        }
+    };
+
     var init = function() {
         topentry = new CraftEntry(item, item.recipe.count, self, [], false);
 
         $container.append(topentry.render());
 
-        $collapse.on('click change', function() {
-            $(this).is(":checked") ? $container.addClass('collapse-disabled') : $container.removeClass('collapse-disabled');
-        });
+        if (window.localStorage.getItem(COLLAPSE_KEY) == 'collapse') {
+            $collapse.attr('checked', 'checked');
+        }
+
+        checkCollapse();
+        $collapse.on('click change', checkCollapse);
 
         update();
         WP_LoadTooltips($container);
