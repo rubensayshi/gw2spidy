@@ -7,7 +7,7 @@ var Crafting = function(item, container, summarycontainer) {
     var $container = $(container);
     var $sumcont   = $(summarycontainer);
     var $summary   = $sumcont.find(".recipe_summary");
-    var $collapse  = $container.find('.collapse');
+    var $collapse  = $container.find('.recipe_collapse');
 
     var update = function() {
         var total = 0, karmaTotal = 0, sellprice = 0, listingfee = 0, transactionfee = 0, profit = 0;
