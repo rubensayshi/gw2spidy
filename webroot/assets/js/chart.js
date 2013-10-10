@@ -29,7 +29,7 @@ var GW2SpidyChart = function(url, container, set_options) {
                 s;
 
                 // build the header
-                s = [series.tooltipHeaderFormatter(items[0].key)];
+                s = [series.tooltipHeaderFormatter(items[0])];
 
                 // build the values
                 $.each(items, function (key, item) {
