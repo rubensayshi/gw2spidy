@@ -185,7 +185,7 @@ function get_items($url) {
 
                         foreach ($price as $k => $v) {
                             if ($v > 0 && $cnt > 0) {
-                                $price[$k] = round($v / $cnt);
+                                $price[$k] = $v / $cnt;
                             }
                         }
 
@@ -233,23 +233,30 @@ foreach($urls as $url) {
     if ($vendor = get_items($url)) {
 
         foreach ($vendor['items'] as $item) {
-            if ($item['price']['karma'] !== null) {
-                $stmt = $stmt_karma;
-            } elseif ($item['price']['coin'] !== null) {
-                $stmt = $stmt_coin;
+            $field = '';
+            $price = 0;
+
+            if ($item['price']['karma']) {
+                $stmt  = $stmt_karma;
+                $field = 'karma_price';
+                $price = $item['price']['karma'];
+            } elseif ($item['price']['coin']) {
+                $stmt  = $stmt_coin;
+                $field = 'vendor_price';
+                $price = $item['price']['coin'];
             } else {
                 echo "!! NO COIN NOR KARMA FOUND FOR {$item['name']} !!";
                 continue;
             }
 
+            // if rounding makes the price become 0 we'll just make 1 to avoid fuck ups
+            if (!round($price)) {
+                $price = 1;
+            }
+
             $stmt->bindValue('name', $item['name']);
             $stmt->bindValue('names', "{$item['name']}[s]");
-
-            if ($item['price']['karma']) {
-                $stmt->bindValue('karma_price', $item['price']['karma']);
-            } else {
-                $stmt->bindValue('vendor_price', $item['price']['coin']);
-            }
+            $stmt->bindValue($field, $price);
 
             $stmt->execute();
 
