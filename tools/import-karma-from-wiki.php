@@ -17,6 +17,26 @@ require dirname(__FILE__) . '/../autoload.php';
 // ensure purged cache, otherwise everything goes to hell
 CacheHandler::getInstance("purge")->purge();
 
+function get_html_from_node($node) {
+    $html = '';
+
+    $tmp_doc = new DOMDocument();
+    $tmp_doc->appendChild($tmp_doc->importNode($node,true));
+    $html .= $tmp_doc->saveHTML();
+
+    return $html;
+}
+
+function get_html_from_nodelist($nodeList) {
+    $html = '';
+
+    foreach ($nodeList as $node) {
+        $html .= get_html_from_node($node);
+    }
+
+    return $html;
+}
+
 function get($url) {
     $curl = curl_init();
 
@@ -89,7 +109,7 @@ function get_price($td, $xpath) {
                         }
                     }
 
-                    $pass = true;
+                    $pass = false;
                 }
             }
         }
@@ -136,16 +156,39 @@ function get_items($url) {
             if ($npos >=0 && $rpos >= 0 && $ppos >= 0) {
                 $list = $xpath->query('./tr', $table);
                 for ($i = 0; $i < $list->length; $i++) {
-                    $nameN = $xpath->query('./td[position()='.$npos.']/a', $list->item($i));
+                    $nameN = $xpath->query('./td[position()='.$npos.']', $list->item($i));
                     $rarityN = $xpath->query('./td[position()='.$rpos.']//b', $list->item($i));
                     if ($rarityN->length == 0) {
                         $rarityN = $xpath->query('./td[position()='.$rpos.']', $list->item($i));
                     }
                     $priceN = $xpath->query('./td[position()='.$ppos.']', $list->item($i));
+
+
                     if ($nameN->length > 0 && $rarityN->length > 0 && $priceN->length > 0) {
-                        $name = str_replace('"', '&quot;', trim($nameN->item(0)->textContent));
+                        $name = $nameN->item(0)->textContent;
+                        $cnt  = 1;
+
+                        // cleanup name
+                        $name = str_replace('"', '&quot;', $nameN->item(0)->textContent);
+                        $name = preg_replace('/&.+;/', '', htmlentities($name));
+                        $name = trim($name);
+
+                        // split of any (number)
+                        $a = array();
+                        if (preg_match('/(.+) \(([0-9]+)\)/', $name, $a)) {
+                            $name = trim($a[1]);
+                            $cnt  = intval(trim($a[2]));
+                        }
+
                         $rarity = str_replace('"', '&quot;', strtolower(trim($rarityN->item(0)->textContent)));
                         $price = get_price($priceN->item(0), $xpath);
+
+                        foreach ($price as $k => $v) {
+                            if ($v > 0 && $cnt > 0) {
+                                $price[$k] = round($v / $cnt);
+                            }
+                        }
+
                         $items[] = array('name' => $name, 'price' => $price, 'rarity' => $rarity);
                     }
                 }
@@ -158,10 +201,10 @@ function get_items($url) {
 }
 
 $urls = array_merge(
-        get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Renown_heart_NPCs'),
-        get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Renown_heart_NPCs&from=Magister%20Kathryn'),
-        get_page_urls2('http://wiki.guildwars2.com/wiki/Karma_merchant'),
-        get_page_urls('http://wiki.guildwars2.com/wiki/Category:Vendor_inventory_tables')
+    get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Renown_heart_NPCs'),
+    get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Renown_heart_NPCs&from=Magister%20Kathryn'),
+    get_page_urls2('http://wiki.guildwars2.com/wiki/Karma_merchant'),
+    get_page_urls('http://wiki.guildwars2.com/wiki/Category:Vendor_inventory_tables')
 );
 
 var_dump($urls);
@@ -190,9 +233,9 @@ foreach($urls as $url) {
     if ($vendor = get_items($url)) {
 
         foreach ($vendor['items'] as $item) {
-            if ($item['price']['karma']) {
+            if ($item['price']['karma'] !== null) {
                 $stmt = $stmt_karma;
-            } elseif ($item['price']['coin']) {
+            } elseif ($item['price']['coin'] !== null) {
                 $stmt = $stmt_coin;
             } else {
                 echo "!! NO COIN NOR KARMA FOUND FOR {$item['name']} !!";
