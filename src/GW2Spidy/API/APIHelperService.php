@@ -36,6 +36,8 @@ class APIHelperService {
             return $this->app->abort(500);
         }
 
+        $r->headers->set("Access-Control-Allow-Origin", "*");
+
         return $r;
     }
 
