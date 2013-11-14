@@ -189,7 +189,7 @@ function get_items($url) {
                             }
                         }
 
-                        $items[] = array('name' => $name, 'price' => $price, 'rarity' => $rarity);
+                        $items[] = array('name' => $name, 'price' => $price, 'rarity' => $rarity, 'cnt' => $cnt);
                     }
                 }
             }
@@ -199,6 +199,7 @@ function get_items($url) {
     }
     return null;
 }
+
 
 $urls = array_merge(
     get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Renown_heart_NPCs'),
@@ -249,6 +250,19 @@ foreach($urls as $url) {
                 continue;
             }
 
+            $bulk_for = '';
+            if(preg_match("/^(.+?)s? in Bulk$/", $item['name'], $match)) {
+                $bulk_for = $match[1];
+
+                if(array_key_exists($bulk_for, $singular)) {
+                    $bulk_for = $singular[$bulk_for];
+                }
+            }
+
+            if ($bulk_for && $item['cnt'] > 1) {
+                $price = $price * $item['cnt'];
+            }
+
             // if rounding makes the price become 0 we'll just make 1 to avoid fuck ups
             if (!round($price)) {
                 $price = 1;
@@ -264,24 +278,28 @@ foreach($urls as $url) {
                 echo "{$item['name']} \n";
             }
 
-            if(preg_match("/^(.+?)s? in Bulk$/", $item['name'], $match)) {
-                $name = $match[1];
-                if(array_key_exists($name, $singular)) {
-                    $name = $singular[$name];
+            if($bulk_for) {
+
+                if ($bulk_for && $item['cnt'] > 1) {
+                    $price = $price / $item['cnt'];
+
+                    if (!round($price)) {
+                        $price = 1;
+                    }
                 }
 
-                $stmt->bindValue('name', $name);
-                $stmt->bindValue('names', "{$name}[s]");
+                $stmt->bindValue('name', $bulk_for);
+                $stmt->bindValue('names', "{$bulk_for}[s]");
                 if ($item['price']['karma']) {
-                    $stmt->bindValue('karma_price', $item['price']['karma'] / 25);
+                    $stmt->bindValue($field, $price);
                 } else {
-                    $stmt->bindValue('vendor_price', $item['price']['coin'] / 25);
+                    $stmt->bindValue($field, $price);
                 }
 
                 $stmt->execute();
 
                 if ($stmt->rowCount()) {
-                echo "{$name} !!BULK!! \n";
+                echo "{$bulk_for} !!BULK!! \n";
                 }
             }
         }
