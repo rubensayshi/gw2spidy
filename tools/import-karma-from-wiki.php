@@ -200,13 +200,23 @@ function get_items($url) {
     return null;
 }
 
-
 $urls = array_merge(
     get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Renown_heart_NPCs'),
     get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Renown_heart_NPCs&from=Magister%20Kathryn'),
     get_page_urls2('http://wiki.guildwars2.com/wiki/Karma_merchant'),
-    get_page_urls('http://wiki.guildwars2.com/wiki/Category:Vendor_inventory_tables')
+    get_page_urls('http://wiki.guildwars2.com/wiki/Category:Vendor_inventory_tables'),
+    array('http://wiki.guildwars2.com/wiki/Rojan_the_Penitent')
 );
+
+if (in_array('--all', $argv)) {
+    $urls = array_merge(
+            get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Merchants'),
+            get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Merchants&pagefrom=Hajo'),
+            get_page_urls('http://wiki.guildwars2.com/index.php?title=Category:Merchants&pagefrom=Radarr Boommaker')
+    );
+}
+
+$urls = array_unique($urls);
 
 var_dump($urls);
 
