@@ -5,16 +5,15 @@ This project aims to provide you with graphs of the sale and buy listings of ite
 
 How does it work?
 =================
-ArenaNet has build the Trade Market so that it's loaded into the game from a website.  
+ArenaNet has built the Trade Market so that it's loaded into the game from a website.  
 You can also access this website with a browser and use your game account to login and view all the items and listings.
 
-Now what I've build is some tools which will run constantly to automatically login to that website and record all data we can find,  
-as a result I can record the sale listings for all the items about every hour and with that data I can create graphs with the price changing over time! 
+Now what I've built are some tools which will run constantly to automatically login to that website and record all data we can find, as a result I can record the sale listings for all the items about every hour and with that data I can create graphs with the price changing over time! 
 
 
 Contributing
 ============
-Everyone is very much welcome to contribute, 99% chance you're reading this on github so it shouldn't be to hard to fork and do pull requests right :) ?
+Everyone is very much welcome to contribute, 99% chance you're reading this on github so it shouldn't be too hard to fork and do pull requests right :) ?
 
 If you need any help with setup of the project or using git(hub) then just contact me and I'll be glad to help you!  
 If you want a dump of the database, since that's a lot easier to work with, then just contact me ;)
@@ -123,7 +122,7 @@ This is also done using Redis sorted sets.
 Config / Env
 ------------
 Think of a name that represents your machine / evn, eg *ruben-vm1* or *gw2spidy-prod-vps2*.  
-Copy the `config/cnf/example-custom-cnf.json` to `config/cnf/<your-chosen-name>.json` an edit it to set the values for *auth_email* and *auth_password*.
+Copy the `config/cnf/example-custom-cnf.json` to `config/cnf/<your-chosen-name>.json` and edit it to set the values for *auth_email* and *auth_password*.
 
 Copy `config/cnf/example-env` to `config/cnf/env` and edit it, it contains a line for each config file it should load from `config/cnf/<name>.json`  
 Replace the first line (*ruben-vm1*) with the name you had previously chosen, leave the *dev* and *default*, those are other config files it should load too (or change *dev* to *prod* if you don't want debug mode.
@@ -152,16 +151,16 @@ Ater this you should have a full item database, without any listings yet.
 
 Crawling The Tradingpost
 ------------------------
-The crawling can be done in 3 ways and I'm gonna explain them a bit before continueing your journey how to use GW2Spidy ;)
+The crawling can be done in 3 ways and I'm gonna explain them a bit before continuing your journey how to use GW2Spidy ;)
 
 ### listings.json
 A request to **/ws/listings.json?id=<item-id>** gives back all the buy and sell listings for a single item.  
-Atm I grab the lowest and don't even store the other except summing up their total quantity, this is because I'm not using the other listings and the database is getting too big to just carelessly store them.  
+Atm I grab the lowest and don't even store the others except summing up their total quantity, this is because I'm not using the other listings and the database is getting too big to just carelessly store them.  
 
 This method is always the most accurate and guaranteed to work because it's what the game relies on heavily.  
 
-The disadvantage of this method is that we have to do 1 request for every item to update their price, with around 20k items and ArenaNet who prefers if we could stay near 5 requests / second we can't do more frequent updates then 1 per hour this way.  
-I created a priority system (read below) to update more interesting items more often then the less interesting items to work with this.  
+The disadvantage of this method is that we have to do 1 request for every item to update their price, with around 20k items and ArenaNet who prefers if we could stay near 5 requests / second we can't do more frequent updates than 1 per hour this way.  
+I created a priority system (read below) to update more interesting items more often than the less interesting items to work with this.  
 Another problem with this method is that we need a session_key from the game client, read below for more information GW2 Sessions.
 
 ### search.json
@@ -184,7 +183,7 @@ Before all this madness, I always used the normal *search.json*, I suggest other
 Or use *listings.json* but you'll have a lot lower frequency!
 
 ### How To Configure it
-The default config will use the *listings.json* method if you use the listingsDB worker, to match how it was working before I reimplemented all this, you can instead disabled 'use_listings-json' in the config to use *search.json?ids=* if you want too.  
+The default config will use the *listings.json* method if you use the listingsDB worker, to match how it was working before I reimplemented all this, you can instead disabled 'use_listings-json' in the config to use *search.json?ids=* if you want to.  
 However, the best way atm to go is with the 'save_listing_from_item_data' enabled (default enabled) and only use the itemDB worker!
 
 ItemDB Worker
@@ -200,7 +199,7 @@ And you should have a couple (2~4) worker-queue scripts running to processes and
 ItemListingDB Worker
 --------------------
 The ItemListingDB Worker itself is this script: `daemons/worker-queue-item-listing-db.php`.  
-It will pop items off the listing queue and process them, these queue-items are automatically requeue'd with their priority so you should only haveto run `daemons/fill-queue-item-listing-db.php` once to get the initial batch in.  
+It will pop items off the listing queue and process them, these queue-items are automatically requeue'd with their priority so you should only have to run `daemons/fill-queue-item-listing-db.php` once to get the initial batch in.  
 When 'use_listings-json' is enabled and there's a game session_key (see the GW2Session section below) it will just process 1 item at a time and use *listings.json* method to retrieve it.  
 When it's not enabled it will use *search.json?ids=* and process the configured 'items-per-request' amount of items at 1 time (max 250!).  
 
@@ -228,7 +227,7 @@ You should check the bash scripts and understand them before running them imo ;)
 
 Priority System
 ---------------
-Our amount of request we do are limited by our requestslot system, unfortunatly we're now bound by doing 1 item per request (previously we could combine up to 250).  
+The amount of requests we do are limited by our requestslot system, unfortunatly we're now bound by doing 1 item per request (previously we could combine up to 250).  
 So I created a priority system to process 'important' items more often, in the this spreadsheet I calculated the priorities:  
 https://docs.google.com/a/rubensayshi.com/spreadsheet/ccc?key=0Alq65aekWXJmdGotSmdBYXJPZ0NKbHBhdzVZMlh5Q1E#gid=0
 
@@ -237,7 +236,7 @@ https://docs.google.com/a/rubensayshi.com/spreadsheet/ccc?key=0Alq65aekWXJmdGotS
 GW2 Sessions
 ============
 When spidering we used to access the tradingpost using a session created by logging into accounts.guildwars2.com.  
-Aftering logging in it gives us a session_key which allows access to the tradingpost, however limited to only being able to get the lists of items!  
+After logging in it gives us a session_key which allows access to the tradingpost, however limited to only being able to get the lists of items!  
 
 When you open the tradingpost from inside the game you access it using a session_key generated from the game login, these sessions have access to more features of the tradingpost!  
 With that session you can also see the list of offers for the various prices, instead of only the lowest sell and highest buy!  
