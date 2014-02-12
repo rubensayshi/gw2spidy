@@ -24,7 +24,7 @@ use GW2Spidy\GW2API\APIRecipe;
 
 class v090APIControllerProvider implements ControllerProviderInterface {
     public function connect(Application $app) {
-        
+
         $controllers = $app['controllers_factory'];
 
         /**
@@ -246,9 +246,13 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          */
         $controllers->get("/{format}/listings/{dataId}/{type}/{page}", function(Request $request, $format, $dataId, $type, $page) use($app) {
 
-            $itemsperpage = 1000;
+            if ($small = $request->get('small')) {
+                $itemsperpage = 10;
+            } else {
+                $itemsperpage = 1000;
+            }
             $page = intval($page > 0 ? $page : 1);
-            
+
             if ($type == 'sell') {
                 $q = SellListingQuery::create()->select(SellListingPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
             } else {
@@ -486,7 +490,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             return $app['api-helper']->outputResponse($request, $response, $format, "gem-price");
         })
         ->assert('format', 'csv|json|xml');
-        
+
         /**
          * ----------------------
          *  route /item-tooltip
@@ -501,7 +505,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
         })
         ->assert('format', 'csv|json|xml')
         ->assert('dataId', '\d+');
-        
+
         /**
          * ----------------------
          *  route /recipe-tooltip
