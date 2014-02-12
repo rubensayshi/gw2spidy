@@ -98,7 +98,8 @@ class v090APIControllerProvider implements ControllerProviderInterface {
                 array("id" => 3, "name" => "Masterwork"),
                 array("id" => 4, "name" => "Rare"),
                 array("id" => 5, "name" => "Exotic"),
-                array("id" => 6, "name" => "Legendary"),
+                array("id" => 6, "name" => "Ascended"),
+                array("id" => 7, "name" => "Legendary"),
             );
 
             $response = array('results' => $results);
