@@ -218,7 +218,8 @@ class v090APIControllerProvider implements ControllerProviderInterface {
         })
         ->assert('format', 'csv|json|xml')
         ->assert('typeId', '\d+|\*?all\*?')
-        ->assert('page', '\d*');
+        ->assert('page',   '\d*')
+        ->value('page',    1);
 
         /**
          * ----------------------
@@ -293,7 +294,8 @@ class v090APIControllerProvider implements ControllerProviderInterface {
         ->assert('dataId', '\d+')
         ->assert('format', 'csv|json|xml')
         ->assert('page',   '\d*')
-        ->assert('type',   'sell|buy');
+        ->assert('type',   'sell|buy')
+        ->value('page',    1);
 
         /**
          * ----------------------
@@ -344,7 +346,8 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             return $app['api-helper']->outputResponse($request, $response, $format, "item-search-{$page}");
         })
         ->assert('format', 'csv|json|xml')
-        ->assert('page', '\d*');
+        ->assert('page',   '\d*')
+        ->value('page',    1);
 
         /**
          * ----------------------
@@ -400,7 +403,8 @@ class v090APIControllerProvider implements ControllerProviderInterface {
         })
         ->assert('format', 'csv|json|xml')
         ->assert('discId', '\d+|\*?all\*?')
-        ->assert('page', '\d*');
+        ->assert('page',   '\d*')
+        ->value('page',    1);
 
         /**
          * ----------------------
