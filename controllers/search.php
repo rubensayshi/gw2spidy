@@ -69,7 +69,7 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
     } else {
         $content = item_list($app, $request, $q, $page, 25, array('search' => $search, 'type'=>'search', 'included' => true));
     }
-    
+
     $params = array();
     if ($minLevelFilter = $request->get('min_level', null)) {
         $params['min_level'] = $minLevelFilter;
@@ -101,7 +101,7 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
  * ----------------------
  */
 $app->get("/searchform", function() use($app) {
-    return $app['twig']->render('search.html.twig', array('content' => '', 'search' => '', 'recipes' => false));
+    return $app['twig']->render('search.html.twig', array('content' => '', 'search' => '', 'recipes' => false, params => array()));
 })
 ->bind('searchform');
 

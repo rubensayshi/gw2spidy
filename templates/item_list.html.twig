@@ -76,23 +76,7 @@ Watchlist
 {% block content %}
     <div class="clearfix">
         <div style="float: right;">
-            {% if app['google_ad_client'] %}
-            <script type="text/javascript">
-            <!--
-            google_ad_client = "{{ app['google_ad_client'] }}";
-            /* Medium Rectangle (300 x 250) */
-            google_ad_slot = "5148573296";
-            google_ad_width = 300;
-            google_ad_height = 250;
-
-            /* Medium Rectangle (336 x 280) */
-            google_ad_slot = "4004405877";
-            google_ad_width = 336;
-            google_ad_height = 280;
-            //-->
-            </script>
-            <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-            {% endif %}
+            {% include "ads_medium_rectangle.html.twig" %}
         </div>
         {{ _self.pager(page, lastpage, _context) }}
 

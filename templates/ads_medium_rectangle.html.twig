@@ -1,0 +1,24 @@
+{% if app['switchad_client'] %}
+    <!--/* Vanilla 4.0.1 - GW2Spidy - http://www.gw2spidy.com-300x250-1 - 300x250 */-->
+    <script type='text/javascript' src='http://delivery.myswitchads.com/adserver/tag.php?_t=1d30&amp;_i=721&amp;_r=INSERT_RANDOM_NUMBER'>
+    </script><noscript><iframe id='fc809d' name='fc809d' src='http://delivery.myswitchads.com/adserver/tag.php?_t=2d3c&amp;_i=721&amp;_r=INSERT_RANDOM_NUMBER' frameborder='0' scrolling='no' width='300' height='250'>
+    <a href='http://delivery.myswitchads.com/adserver/tag.php?_t=3d3d&amp;_n=fc809d&amp;_i=721&amp;_r=INSERT_RANDOM_NUMBER' target='_blank'>
+    <img src='http://delivery.myswitchads.com/adserver/tag.php?_t=4d3a&amp;_n=fc809d&amp;_i=721&amp;_r=INSERT_RANDOM_NUMBER' border='0' alt='' /></a>
+    </iframe></noscript>
+{% elseif app['google_ad_client'] %}
+    <script type="text/javascript">
+    <!--
+    google_ad_client = "{{ app['google_ad_client'] }}";
+    /* Medium Rectangle (300 x 250) */
+    google_ad_slot = "5148573296";
+    google_ad_width = 300;
+    google_ad_height = 250;
+
+    /* Medium Rectangle (336 x 280) */
+    google_ad_slot = "4004405877";
+    google_ad_width = 336;
+    google_ad_height = 280;
+    //-->
+    </script>
+    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+{% endif %}
