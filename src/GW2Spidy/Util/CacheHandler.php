@@ -6,6 +6,10 @@ use GW2Spidy\Application;
 
 use \Memcache;
 
+if (!defined('MEMCACHE_COMPRESSED')) {
+    define('MEMCACHE_COMPRESSED', 2);
+}
+
 /**
  *
  * @TODO memcache will emit "PHP Warning:  MemcachePool::get(): No servers added to memcache connection"
@@ -98,6 +102,10 @@ class CacheHandler extends Memcache implements MemcacheReplacement {
             return null;
         }
 
+        if (!$this->allowCompressed()) {
+            $flag = $flag & ~MEMCACHE_COMPRESSED;
+        }
+
         return parent::set($this->generateKey($key), $var, $flag, $expire);
     }
     public function purge() {
@@ -106,5 +114,9 @@ class CacheHandler extends Memcache implements MemcacheReplacement {
         }
 
         return parent::flush();
+    }
+
+    protected function allowCompressed() {
+        return !defined('HHVM_VERSION');
     }
 }
