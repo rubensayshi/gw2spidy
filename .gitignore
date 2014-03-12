@@ -3,6 +3,7 @@
 .buildpath
 .vagrant
 .idea
+www.pid
 
 # OS cruft
 Thumbs.db
