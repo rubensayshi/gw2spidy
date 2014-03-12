@@ -35,7 +35,7 @@ class CacheHandler extends Memcache implements MemcacheReplacement {
         return static::$instances[$key];
     }
 
-    protected function __construct($key) {
+    public function __construct($key) {
         $this->baseKey = substr(md5(getAppEnv()->getEnv() . $key), 0, 10);
     }
 

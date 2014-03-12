@@ -12,7 +12,7 @@ class ApplicationCache extends CacheHandler {
         return parent::getInstance(self::$applicationCacheKey);
     }
 
-    protected function __construct() {
+    public function __construct() {
         parent::__construct(self::$applicationCacheKey);
     }
 }
