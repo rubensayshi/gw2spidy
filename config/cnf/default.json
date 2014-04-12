@@ -43,9 +43,10 @@ cnf = {
         },
         "tradingpost_url" : "https://tradingpost-live.ncplatform.net",
         "gemexchange_url" : "https://exchange-live.ncplatform.net",
-        "auth_url"        : "https://account.guildwars2.com",
+        "auth_url"        : "https://account-live.ncplatform.net",
         "gw2api_url"      : "https://api.guildwars2.com",
         "gw2render_url"   : "https://render.guildwars2.com",
+        "auth_app"        : null,
 
         "api_secrets"     : {},
 

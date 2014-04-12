@@ -1,0 +1,11 @@
+{
+    "name": "gw2spidy-session-app",
+    "engines": {
+        "node": "*"
+    },
+    "dependencies": {
+        "zombie" : "~1.4.1",
+        "async" : "*",
+        "underscore" : "*"
+    }
+}
