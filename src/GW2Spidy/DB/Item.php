@@ -199,12 +199,20 @@ class Item extends BaseItem {
     }
 
     public function getIngameCode() {
-        $code = chr(2);
+        $id = $this->getDataId();
+        
+        $code  = chr(2);
         $code .= chr(1);
-        $code .= chr($this->getDataId() % 256);
-        $code .= chr(floor($this->getDataId() / 256)) . chr(0) . chr(0);
-
-        $code = base64_encode($code);
+        
+        $code .= chr($id & 0xFF);
+        $id >>= 8;
+        do {
+            $code .= chr($id & 0xFF);
+            $id >>= 8;
+        } while($id != 0);
+        
+        $code .= chr(0) . chr(0);
+        $code  = base64_encode($code);
 
         return "[&{$code}]";
     }
