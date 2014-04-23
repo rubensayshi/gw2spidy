@@ -27,7 +27,7 @@ class APIItem {
     protected function __construct($APIItem) {        
         $this->item_id = (int) $APIItem['item_id'];
         $this->name = $APIItem['name'];
-        $this->description = $APIItem['description'];
+        $this->description = isset($APIItem['description']) ? $APIItem['description'] : '';
         $this->type = $APIItem['type'];
         $this->sub_type = null;
         $this->level = $APIItem['level'];
