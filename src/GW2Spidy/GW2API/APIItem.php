@@ -141,7 +141,7 @@ HTML;
         $buffs_added = $this->addBuffsToAttributes();
         
         foreach ($this->getAttributes() as $attr) {
-            $pct = ($attr['attribute'] == 'Critical Damage' || $attr['attribute'] == 'Critical Chance') ? '%' : null;
+            $pct = ($attr['attribute'] == 'Critical Chance') ? '%' : null;
             $html .= "<dd class=\"db-stat\">+{$attr['modifier']}{$pct} {$attr['attribute']}</dd>\n";
         }
         
@@ -161,7 +161,7 @@ HTML;
         //Rename certain attributes to be in line with how they appear in game.
         if (isset($this->infix_upgrade['attributes'])) {
             array_walk($this->infix_upgrade['attributes'], function(&$attr){
-                if ($attr['attribute'] == 'CritDamage')         $attr['attribute'] = 'Critical Damage';
+                if ($attr['attribute'] == 'CritDamage')         $attr['attribute'] = 'Ferocity';
                 if ($attr['attribute'] == 'ConditionDamage')    $attr['attribute'] = 'Condition Damage';
                 if ($attr['attribute'] == 'Healing')            $attr['attribute'] = 'Healing Power';
             });
