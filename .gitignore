@@ -4,6 +4,8 @@
 .vagrant
 .idea
 www.pid
+node_modules
+.tmp
 
 # OS cruft
 Thumbs.db
