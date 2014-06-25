@@ -26,6 +26,7 @@ module.exports = function (grunt) {
                     'webroot/assets/js/gw2money.js',
                     'webroot/assets/js/item-history.js',
                     'webroot/assets/js/js-flash-messages.js',
+                    'webroot/assets/js/crafting.js',
                     'webroot/assets/js/watchlist.js'
                 ],
                 dest : 'webroot/assets/compiled/scripts.js'
