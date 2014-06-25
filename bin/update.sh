@@ -9,6 +9,10 @@ flush_twig_cache() {
 	rm -rf $ROOT/tmp/twig-cache/*
 }
 
+rebuild_assets() {
+    grunt
+}
+
 flush_varnish() {
     varnishadm ban.url "^"
 }
@@ -17,6 +21,7 @@ flush_apc() {
     php $ROOT/tools/purge-cache.php -a
 }
 
+rebuild_assets
 flush_twig_cache
 flush_apc
 flush_varnish

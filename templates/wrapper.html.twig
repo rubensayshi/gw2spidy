@@ -6,35 +6,10 @@
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
     <script type="text/javascript"> var _gaq = _gaq || []; </script>
 
+    <script src="{{ versioned_asset('/assets/compiled/vendor.js') }}"></script>
+    <script src="{{ versioned_asset('/assets/compiled/scripts.js') }}"></script>
 
-    <!-- build:js /assets/js/vendor.js -->
-    <script src="/assets/js/vendor/jquery.min.js"></script>
-    <script src="/assets/js/vendor/highstock/js/highstock.js"></script>
-
-    <script src="/assets/js/tooltip.js"></script>
-    <script src="/assets/js/vendor/bootstrap/bootstrap-transition.js"></script>
-    <script src="/assets/js/vendor/bootstrap/bootstrap-alert.js"></script>
-    <script src="/assets/js/vendor/bootstrap/bootstrap-dropdown.js"></script>
-    <script src="/assets/js/vendor/bootstrap/bootstrap-tooltip.js"></script>
-    <script src="/assets/js/vendor/bootstrap/bootstrap-tab.js"></script>
-    <script src="/assets/js/vendor/bootstrap/bootstrap-button.js"></script>
-    <!-- endbuild -->
-
-    <!-- build:js /assets/js/scripts.js -->
-    <script src="/assets/js/chart.js"></script>
-    <script src="/assets/js/gw2money.js"></script>
-    <script src="/assets/js/item-history.js"></script>
-    <script src="/assets/js/js-flash-messages.js"></script>
-    <script src="/assets/js/watchlist.js"></script>
-    <!-- endbuild -->
-
-    <!-- build:css /assets/css/bundle.css -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet" />
-    <link href="/assets/css/bootstrap-responsive.css" rel="stylesheet" />
-    <link href="/assets/css/font-awesome.css" rel="stylesheet" />
-    <link href="/assets/css/style.css" rel="stylesheet" />
-    <link href="/assets/css/tooltip.css" rel="stylesheet" />
-    <!-- endbuild -->
+    <link href="{{ versioned_asset('/assets/compiled/bundle.css') }}" rel="stylesheet" />
 
     <link href="{{ versioned_asset('/assets/xml/OpenSearch_GW2Spidy.xml') }}" rel="search" type="application/opensearchdescription+xml" title="GW2Spidy Search">
 

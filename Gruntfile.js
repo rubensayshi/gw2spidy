@@ -1,74 +1,86 @@
 module.exports = function (grunt) {
-  // Load all required grunt tasks.
-  require('load-grunt-tasks')(grunt);
+    grunt.initConfig({
+        /*
+         * Javascript concatenation
+         */
+        concat : {
+            vendor: {
+                src : [
 
-  grunt.initConfig({
-    useminPrepare: {
-      html: 'templates/wrapper.html.twig',
-      options: {
-        root: 'webroot',
-        dest: 'webroot'
-      }
-    },
-    usemin: {
-      html: 'templates/dist/wrapper.html.twig'
-    },
-    clean: {
-      distTemplates: ['templates/dist'],
-    },
-    copy: {
-      templates: {
-        files: [
-          {
-            expand: true,
-            cwd: 'templates',
-            src: ['**/*'],
-            dest: 'templates/dist'
-          }
-        ]
-      }
-    },
-    sed: {
-      twigPathDist: {
-        path: 'webroot/index.php',
-        pattern: "\'/../templates\'",
-        replacement: "\'/../templates/dist\'"
-      },
-      twigPathDev: {
-        path: 'webroot/index.php',
-        pattern: "\'/../templates/dist\'",
-        replacement: "\'/../templates\'"
-      }
-    },
-    surround: {
-      dist: {
-        options: {
-          prepend: '{% spaceless %}',
-          append: '{% endspaceless %}',
-          overwrite: true,
-          ignoreRepetition: true
+                    'webroot/assets/js/vendor/jquery.min.js',
+                    'webroot/assets/js/vendor/highstock/js/highstock.js',
+
+                    'webroot/assets/js/tooltip.js',
+                    'webroot/assets/js/vendor/bootstrap/bootstrap-transition.js',
+                    'webroot/assets/js/vendor/bootstrap/bootstrap-alert.js',
+                    'webroot/assets/js/vendor/bootstrap/bootstrap-dropdown.js',
+                    'webroot/assets/js/vendor/bootstrap/bootstrap-tooltip.js',
+                    'webroot/assets/js/vendor/bootstrap/bootstrap-tab.js',
+                    'webroot/assets/js/vendor/bootstrap/bootstrap-button.js'
+                ],
+                dest : 'webroot/assets/compiled/vendor.js'
+            },
+            scripts: {
+                src : [
+                    'webroot/assets/js/chart.js',
+                    'webroot/assets/js/gw2money.js',
+                    'webroot/assets/js/item-history.js',
+                    'webroot/assets/js/js-flash-messages.js',
+                    'webroot/assets/js/watchlist.js'
+                ],
+                dest : 'webroot/assets/compiled/scripts.js'
+            }
         },
-        files: [{
-          src: ['templates/dist/wrapper.html.twig']
-        }]
-      }
-    }
-  });
 
-  grunt.registerTask('unbuild', [
-    'clean:distTemplates',
-    'sed:twigPathDev' // Replace twig template path to dev.
-  ]);
+        /*
+         * CSS concatenation
+         */
+        concat_css : {
+            bundle: {
+                src : [
+                    'webroot/assets/css/bootstrap.css',
+                    'webroot/assets/css/bootstrap-responsive.css',
+                    'webroot/assets/css/font-awesome.css',
+                    'webroot/assets/css/style.css',
+                    'webroot/assets/css/tooltip.css'
+                ],
+                dest : 'webroot/assets/compiled/bundle.css'
+            }
+        },
 
-  grunt.registerTask('build', [
-    'clean:distTemplates',
-    'copy:templates', // Copy dev templates to dist folder.
-    'useminPrepare',
-    'concat',
-    'cssmin',
-    'uglify',
-    'usemin',
-    'sed:twigPathDist', // Replace twig template path to dist.
-    'surround:dist' // Prepend and append spaceless twig tags.
-  ]);
+        /*
+         * Javascript uglifying
+         */
+        uglify : {
+            dist : {
+                files : {
+                    'webroot/assets/compiled/vendor.min.js'  : ['<%= concat.vendor.dest %>'],
+                    'webroot/assets/compiled/scripts.min.js' : ['<%= concat.scripts.dest %>']
+                }
+            }
+        },
+
+        /*
+         * Watch
+         */
+        watch : {
+            options : {},
+            css: {
+                files : ['webroot/assets/css/*', 'webroot/static/less/*.less', 'webroot/static/less/**/*.less'],
+                tasks : ['concat_css']
+            },
+            js: {
+                files : ['webroot/assets/js/*.js', 'webroot/assets/js/**/*.js'],
+                tasks : ['concat', 'uglify']
+            }
+        }
+    });
+
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-concat-css');
+    grunt.loadNpmTasks('grunt-notify');
+
+    grunt.registerTask('default', ['concat', 'uglify', 'concat_css']);
 };
