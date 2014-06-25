@@ -6,8 +6,8 @@
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
     <script type="text/javascript"> var _gaq = _gaq || []; </script>
 
-    <script src="{{ versioned_asset('/assets/compiled/vendor.js') }}"></script>
-    <script src="{{ versioned_asset('/assets/compiled/scripts.js') }}"></script>
+    <script src="{{ versioned_asset('/assets/compiled/vendor' ~ (app['minify'] ? '.min' : '') ~ '.js') }}"></script>
+    <script src="{{ versioned_asset('/assets/compiled/scripts' ~ (app['minify'] ? '.min' : '') ~ '.js') }}"></script>
 
     <link href="{{ versioned_asset('/assets/compiled/bundle.css') }}" rel="stylesheet" />
 

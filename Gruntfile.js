@@ -72,7 +72,7 @@ module.exports = function (grunt) {
             },
             js: {
                 files : ['webroot/assets/js/*.js', 'webroot/assets/js/**/*.js'],
-                tasks : ['concat', 'uglify']
+                tasks : ['concat']
             }
         }
     });

@@ -9,6 +9,7 @@ cnf = {
      * application settings
      */
     "version_string"     : "dev",
+    "minify"             : false,
     "memcached_enabled"  : true,
     "google-analytics-id": null,
     "chartbeat-id"       : null,
