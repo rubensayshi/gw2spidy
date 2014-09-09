@@ -7,10 +7,12 @@ use \Exception;
 
 use GW2Spidy\DB\Item;
 use GW2Spidy\DB\BuyListing;
+use GW2Spidy\DB\ItemQuery;
 use GW2Spidy\DB\SellListing;
 use GW2Spidy\DB\BuyListingQuery;
 use GW2Spidy\DB\SellListingQuery;
 
+use GW2Spidy\OfficialTPAPISpider;
 use GW2Spidy\TradingPostSpider;
 
 
@@ -19,10 +21,7 @@ class ItemListingDBQueueWorker extends BaseWorker {
         $items = array();
 
         if ($workload instanceof ItemListingDBQueueItem) {
-            $item = $workload->getItem();
-            $items[$item->getDataId()] = $workload->getItem();
-
-            $this->updateListings($item);
+            throw new \Exception("No longer supported!");
         } else {
             foreach ($workload as $queueItem) {
                 $item = $queueItem->getItem();
@@ -38,18 +37,14 @@ class ItemListingDBQueueWorker extends BaseWorker {
     }
 
     public function massUpdateListings($items) {
-        if (getAppConfig("gw2spidy.use_samuirai_magic") && class_exists("\\SamuiraiMagic\\TradingPostSpider")) {
-            $itemsData = \SamuiraiMagic\TradingPostSpider::getInstance()->getItemsByIds(array_keys($items));
-        } else {
-            $itemsData = TradingPostSpider::getInstance()->getItemsByIds(array_keys($items));
-        }
+        $listings = OfficialTPAPISpider::getInstance()->getListingsByIds(array_keys($items));
 
-        if ($itemsData) {
+        if ($listings) {
             $exceptions = array();
 
-            foreach ($itemsData as $itemData) {
+            foreach ($listings as $itemListings) {
                 try {
-                    $this->updateListingFromItemData($itemData, $items[$itemData['data_id']]);
+                    $this->updateListingsFromListings($itemListings);
                 } catch (Exception $e) {
                     if (strstr("CurlRequest failed [[ 401 ]]", $e->getMessage())) {
                         continue;
@@ -80,14 +75,15 @@ class ItemListingDBQueueWorker extends BaseWorker {
         $this->processListingsFromItemData($itemData, $item);
     }
 
-    protected function updateListings(Item $item) {
+    protected function updateListings($listings) {
         $now  = new DateTime();
+
+        $item = ItemQuery::create()->findOneByDataId($listings['id']);
 
         $item->setLastUpdated($now);
 
-        $listings = TradingPostSpider::getInstance()->getAllListingsById($item->getDataId());
-        $sell = $listings[TradingPostSpider::LISTING_TYPE_SELL];
-        $buy  = $listings[TradingPostSpider::LISTING_TYPE_BUY];
+        $sell = $listings['sells'];
+        $buy  = $listings['buys'];
 
         $lowestSell = null;
         $lowestBuy  = null;
