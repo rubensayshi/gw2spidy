@@ -35,27 +35,6 @@ $queueManager = new ItemListingDBQueueManager();
 $queueWorker  = new ItemListingDBQueueWorker($queueManager);
 
 /*
- * login here, this allows us to exit right away on failure
- */
-logg("login ...\n");
-try {
-    $gw2session = GW2SessionManager::getInstance()->getSessionKey();
-    logg("login ok -> [{$gw2session}] \n");
-} catch (Exception $e) {
-    logg("login failed ... sleeping [60] and restarting \n");
-    sleep(60);
-    exit(1);
-}
-
-/*
- * determine if we're crawling the item listings with search.json or listings.json
- */
-$method = METHOD_SEARCH_JSON;
-if (getAppConfig("gw2spidy.use_listings-json")) {
-    throw new Exception("'gw2spidy.use_listings-json' is deprecated.");
-}
-
-/*
  * $run up to $max in 1 process, then exit so process gets revived
  *  this is to avoid any memory problems (propel keeps a lot of stuff in memory)
  */
@@ -77,14 +56,10 @@ while ($run < $max) {
 
     logg("got slot, begin ...");
 
-    if ($method == METHOD_LISTINGS_JSON) {
-        $workload = $queueManager->next();
-    } else {
-        $workload = array();
-        for ($i = 0; $i < getAppConfig("gw2spidy.items-per-request"); $i++) {
-            if ($queueItem = $queueManager->next()) {
-                $workload[] = $queueItem;
-            }
+    $workload = array();
+    for ($i = 0; $i < getAppConfig("gw2spidy.items-per-request"); $i++) {
+        if ($queueItem = $queueManager->next()) {
+            $workload[] = $queueItem;
         }
     }
 

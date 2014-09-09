@@ -21,6 +21,6 @@ class OfficialTPAPISpider extends BaseSpider {
 
         $data = json_decode($curl->getResponseBody(), true);
 
-        return $data['results'];
+        return $data;
     }
 }
