@@ -44,7 +44,7 @@ class ItemListingDBQueueWorker extends BaseWorker {
 
             foreach ($listings as $itemListings) {
                 try {
-                    $this->updateListingsFromListings($itemListings);
+                    $this->updateListings($itemListings);
                 } catch (Exception $e) {
                     if (strstr("CurlRequest failed [[ 401 ]]", $e->getMessage())) {
                         continue;
