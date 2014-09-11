@@ -13,9 +13,6 @@ use GW2Spidy\NewQueue\RequestSlotManager;
 use GW2Spidy\NewQueue\ItemListingDBQueueManager;
 use GW2Spidy\NewQueue\ItemListingDBQueueWorker;
 
-define('METHOD_SEARCH_JSON', 'search.json');
-define('METHOD_LISTINGS_JSON', 'listings.json');
-
 require dirname(__FILE__) . '/../autoload.php';
 
 function logg($msg){
