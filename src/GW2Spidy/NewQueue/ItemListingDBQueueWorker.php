@@ -86,12 +86,12 @@ class ItemListingDBQueueWorker extends BaseWorker {
         $buy  = $listings['buys'];
 
         $lowestSell = null;
-        $lowestBuy  = null;
+        $maxBuy     = null;
 
         $sellQuantityAmount = 0;
         $sellListingsAmount = 0;
         if (count($sell)) {
-            $lowestSell = reset($sell);
+            $lowestSell = min(array_map(function($row) { return $row['unit_price']; }, $sell));
 
             foreach ($sell as $s) {
                 $sellQuantityAmount += $s['quantity'];
@@ -106,8 +106,8 @@ class ItemListingDBQueueWorker extends BaseWorker {
         $sellListing->setListings($sellListingsAmount);
 
         if ($lowestSell) {
-            $sellListing->setUnitPrice($lowestSell['unit_price']);
-            $item->setMinSaleUnitPrice($lowestSell['unit_price']);
+            $sellListing->setUnitPrice($lowestSell);
+            $item->setMinSaleUnitPrice($lowestSell);
         } else {
             $sellListing->setUnitPrice($item->getMinSaleUnitPrice());
         }
@@ -119,7 +119,7 @@ class ItemListingDBQueueWorker extends BaseWorker {
         $buyQuantityAmount = 0;
         $buyListingsAmount = 0;
         if (count($buy)) {
-            $lowestBuy = reset($buy);
+            $maxBuy = max(array_map(function($row) { return $row['unit_price']; }, $buy));
 
             foreach ($buy as $b) {
                 $buyQuantityAmount += $b['quantity'];
@@ -133,9 +133,9 @@ class ItemListingDBQueueWorker extends BaseWorker {
         $buyListing->setQuantity($buyQuantityAmount);
         $buyListing->setListings($buyListingsAmount);
 
-        if ($lowestBuy) {
-            $buyListing->setUnitPrice($lowestBuy['unit_price']);
-            $item->setMaxOfferUnitPrice($lowestBuy['unit_price']);
+        if ($maxBuy) {
+            $buyListing->setUnitPrice($maxBuy);
+            $item->setMaxOfferUnitPrice($maxBuy);
         } else {
             $buyListing->setUnitPrice($item->getMaxOfferUnitPrice());
         }
