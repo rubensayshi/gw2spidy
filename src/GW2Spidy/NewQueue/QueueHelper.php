@@ -30,6 +30,8 @@ class QueueHelper extends Singleton {
 
             $queueManager->enqueue(new ItemDBQueueItem($type, null));
         }
+
+        Propel::enableInstancePooling();
     }
 
     public function enqueueItemListingDB($type = null) {
@@ -53,6 +55,8 @@ class QueueHelper extends Singleton {
 
             var_dump($i++);
         }
+
+        Propel::enableInstancePooling();
     }
 
     public function superviseItemListingDB($type = null) {
@@ -78,5 +82,7 @@ class QueueHelper extends Singleton {
                 $queueManager->enqueue($queueItem, $lowestprio);
             }
         }
+
+        Propel::enableInstancePooling();
     }
 }
