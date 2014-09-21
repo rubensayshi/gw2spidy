@@ -1,6 +1,22 @@
 class gw2spidy {
-  exec { "apt-get update":
-    command => "sudo apt-get update"
+
+  exec { "apt-get update 1":
+    command => "sudo apt-get update",
+  }
+
+  package { "python-software-properties":
+    ensure => "installed",
+    require => Exec["apt-get update 1"]
+  }
+
+  exec { "add current node.js repo":
+    command => "sudo add-apt-repository -y ppa:chris-lea/node.js",
+    require => Package["python-software-properties"],
+  }
+
+  exec { "apt-get update 2":
+    command => "sudo apt-get update",
+    require => Exec["add current node.js repo"]
   }
 
   $packages = [
@@ -20,12 +36,13 @@ class gw2spidy {
     "php-pear",
     "redis-server",
     "memcached",
-    "mysql-server"
+    "mysql-server",
+    "nodejs"
   ]
 
   package {
     $packages: ensure => "installed",
-    require => Exec["apt-get update"]
+    require => Exec["apt-get update 2"]
   }
 
   $password = "root"
@@ -73,6 +90,18 @@ class gw2spidy {
 #    cwd => "/vagrant",
 #    require => Exec["purge-caches"]
 #  }
+
+  exec { "npm-install":
+    command => "sudo npm install -g grunt-cli",
+    cwd => "/vagrant",
+    require => Package["nodejs"]
+  }
+
+  exec { "do-grunt":
+    command => "sudo bin/update.sh",
+    cwd => "/vagrant",
+    require => [Exec["npm-install"], Package["varnish"] ]
+  }
 
   service { 'nginx':
       ensure => running,
