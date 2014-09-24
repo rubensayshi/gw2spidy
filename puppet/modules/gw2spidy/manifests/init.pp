@@ -53,7 +53,7 @@ class gw2spidy {
   }
 
   exec { "setup-project-database":
-    command => "mysqladmin -uroot -p$password create gw2spidy; mysql -uroot -p$password gw2spidy < config/schema.sql",
+    command => "mysqladmin -uroot -p$password create gw2spidy; mysql -uroot -p$password gw2spidy < config/schema.sql; mysql -uroot -p$password gw2spidy < config/itemTypesAndDisciplines.sql",
     cwd => "/vagrant",
     require => Exec["mysql root password"]
   }
@@ -79,11 +79,18 @@ class gw2spidy {
     require => Exec["pear-channel-discovery"]
   }
 
-#  exec { "purge-caches":
-#    command => "php tools/purge-cache.php; php tools/setup-request-slots.php; php daemons/worker-types.php; php tools/purge-cache.php",
-#    cwd => "/vagrant",
-#    require => Package["php5-cli"]
-#  }
+  exec { "purge-caches":
+    command => "php tools/purge-cache.php; php tools/setup-request-slots.php; php tools/purge-cache.php",
+    cwd => "/vagrant",
+    require => Package["php5-cli"]
+  }
+
+  exec { "importInitialItemData":
+    command => "php tools/update-items-from-api.php > tmp/update-items-from-api.log",
+    cwd => "/vagrant",
+    require => [ Exec["setup-project-database"], Package["php5-cli"], Package["php5-curl"] ],
+    timeout => 0
+  }
 
 #  exec { "exercise-daemons":
 #    command => "php daemons/fill-queue-item-db.php; php daemons/fill-queue-item-listing-db.pp",

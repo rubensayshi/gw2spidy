@@ -185,3 +185,5 @@ foreach (array_chunk($data['items'], 1000) as $items) {
 
 if (count($error_values) > 0)
     var_dump($error_values);
+
+exit(0);
