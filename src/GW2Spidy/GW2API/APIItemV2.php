@@ -5,7 +5,7 @@ namespace GW2Spidy\GW2API;
 use GW2Spidy\Util\CurlRequest;
 use GW2Spidy\Util\CacheHandler;
 
-class APIItem {
+class APIItemV2 {
     protected $item_id;
     protected $name;
     protected $description;
@@ -14,8 +14,6 @@ class APIItem {
     protected $level;
     protected $rarity;
     protected $vendor_value;
-    protected $icon_file_id;
-    protected $icon_file_signature;
     protected $game_types;
     protected $flags;
     protected $restrictions;
@@ -25,51 +23,38 @@ class APIItem {
     protected $suffix_item_id;
     
     protected function __construct($APIItem) {        
-        $this->item_id = (int) $APIItem['item_id'];
+        $this->item_id = $APIItem['id'];
         $this->name = $APIItem['name'];
         $this->description = isset($APIItem['description']) ? $APIItem['description'] : '';
         $this->type = $APIItem['type'];
         $this->sub_type = null;
         $this->level = $APIItem['level'];
         $this->rarity = $APIItem['rarity'];
-        $this->vendor_value = (int) $APIItem['vendor_value'];
-        $this->icon_file_id = $APIItem['icon_file_id'];
-        $this->icon_file_signature = $APIItem['icon_file_signature'];
+        $this->vendor_value = $APIItem['vendor_value'];
         $this->game_types = $APIItem['game_types'];
         $this->flags = $APIItem['flags'];
         $this->restrictions = $APIItem['restrictions'];
         
-        $this->image = getAppConfig('gw2spidy.gw2render_url')."/file/{$this->icon_file_signature}/{$this->icon_file_id}.png";
+        $this->image = $APIItem['icon'];
         
         $this->infusion_slots = null;
         $this->infix_upgrade = array();
         $this->suffix_item_id = null;
     }
     
-    public static function getItemByJSON($API_JSON) {
+    public static function getSingleItemByJSON($API_JSON) {
         $APIItem = json_decode($API_JSON, true);
-        
-        if (!isset($APIItem['type'])) {
-            return null;
+
+        return self::convertItemJsonToObject($APIItem);
+    }
+
+    public static function getMultipleItemsByJSON($API_JSON){
+        $APIItems = json_decode($API_JSON, true);
+        $ret = array();
+        foreach($APIItems as $APIItem){
+            $ret[] = self::convertItemJsonToObject($APIItem);
         }
-        
-        switch($APIItem['type']) {
-            case "Armor": return new Armor($APIItem);
-            case "Back": return new Back($APIItem);
-            case "Bag": return new Bag($APIItem);
-            case "Consumable": return new Consumable($APIItem);
-            case "Container": return new Container($APIItem);
-            case "CraftingMaterial": return new CraftingMaterial($APIItem);
-            case "Gathering": return new Gathering($APIItem);
-            case "Gizmo": return new Gizmo($APIItem);
-            case "MiniPet": return new MiniPet($APIItem);
-            case "Tool": return new Tool($APIItem);
-            case "Trinket": return new Trinket($APIItem);
-            case "Trophy": return new Trophy($APIItem);
-            case "UpgradeComponent": return new UpgradeComponent($APIItem);
-            case "Weapon": return new Weapon($APIItem);
-            default: return null;
-        }
+        return $ret;
     }
     
     public static function getItemById($itemID) {
@@ -92,9 +77,53 @@ class APIItem {
             }
         }
         
-        return self::getItemByJSON($API_JSON);
+        return self::getSingleItemByJSON($API_JSON);
     }
-    
+
+    /**
+     * @param $APIItem
+     * @return CraftingMaterialV2|GatheringV2|GizmoV2|MiniPetV2|ToolV2|TrinketV2|TrophyV2|UpgradeComponentV2|WeaponV2|null
+     */
+    private static function convertItemJsonToObject($APIItem)
+    {
+        if (!isset($APIItem['type'])) {
+            return null;
+        }
+
+        switch ($APIItem['type']) {
+            case "Armor":
+                return new ArmorV2($APIItem);
+            case "Back":
+                return new BackV2($APIItem);
+            case "Bag":
+                return new BagV2($APIItem);
+            case "Consumable":
+                return new ConsumableV2($APIItem);
+            case "Container":
+                return new ContainerV2($APIItem);
+            case "CraftingMaterial":
+                return new CraftingMaterialV2($APIItem);
+            case "Gathering":
+                return new GatheringV2($APIItem);
+            case "Gizmo":
+                return new GizmoV2($APIItem);
+            case "MiniPet":
+                return new MiniPetV2($APIItem);
+            case "Tool":
+                return new ToolV2($APIItem);
+            case "Trinket":
+                return new TrinketV2($APIItem);
+            case "Trophy":
+                return new TrophyV2($APIItem);
+            case "UpgradeComponent":
+                return new UpgradeComponentV2($APIItem);
+            case "Weapon":
+                return new WeaponV2($APIItem);
+            default:
+                return null;
+        }
+    }
+
     public function getTooltip() {
         $tooltip = <<<HTML
         <div class="p-tooltip-a p-tooltip_gw2 db-tooltip">

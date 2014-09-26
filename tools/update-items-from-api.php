@@ -5,7 +5,7 @@ use GW2Spidy\DB\ItemSubType;
 use GW2Spidy\DB\ItemSubTypeQuery;
 use GW2Spidy\DB\ItemType;
 use GW2Spidy\DB\ItemTypeQuery;
-use GW2Spidy\GW2API\APIItem;
+use GW2Spidy\GW2API\APIItemV2;
 use GW2Spidy\Util\CurlRequest;
 
 ini_set('memory_limit', '1G');
@@ -78,6 +78,10 @@ function getSubIDFromMarketData ($marketData, $searchValue, $itemSubTypeName) {
     return $marketID;
 }
 
+Propel::disableInstancePooling();
+
+$chunk_size = 200;
+
 $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/items.json") ->exec();
 $data = json_decode($curl->getResponseBody(), true);
 $multi_curl = EpiCurl::getInstance();
@@ -85,96 +89,101 @@ $item_curls = array();
 
 $error_values = array();
 
-$number_of_items = count($data['items']);
+$number_of_chunks = ceil(count($data['items']) / $chunk_size);
 
 $itemSubTypes = array();
 
 $i = 0;
 $ii = 0;
 
-foreach (array_chunk($data['items'], 1000) as $items) {
+foreach (array_chunk($data['items'], $chunk_size * 1000) as $items) {
 
-    Propel::disableInstancePooling();
+    $chunks_per_run = -1;
 
     //Add all curl requests to the EpiCurl instance.
-    foreach ($items as $item_id) {
+    foreach (array_chunk($items, $chunk_size) as $item_chunk) {
         $i++;
+        $chunks_per_run++;
 
-        $ch = curl_init(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$item_id}");
+        $ch = curl_init(getAppConfig('gw2spidy.gw2api_url')."/v2/items?ids=" . implode(",", $item_chunk));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $item_curls[$item_id] = $multi_curl->addCurl($ch);
+        $item_curls[$i] = $multi_curl->addCurl($ch);
 
-        echo "[{$i} / {$number_of_items}]: {$item_id}\n";
+        echo "[{$i} / {$number_of_chunks}] \n";
     }
 
-    foreach ($items as $item_id) {
-        $ii++;
-
+    for ($count = $i - $chunks_per_run; $count<=$i; $count++){
         try {
-            echo "[{$ii} / {$number_of_items}]: ";
+            echo "[{$count} / {$number_of_chunks}]: ";
 
-            $API_JSON = $item_curls[$item_id]->data;
-            $APIItem = APIItem::getItemByJSON($API_JSON);
-            
-            if ($APIItem === null) throw new Exception("Item not found: $item_id");
+            $API_JSON = $item_curls[$count]->data;
+            $APIItems = APIItemV2::getMultipleItemsByJSON($API_JSON);
 
-            echo $APIItem->getName() . "\n";
+            foreach($APIItems as $APIItem) {
 
-            $itemData = array(  'TypeId'            => getOrCreateTypeID($APIItem->getMarketType()),
-                                'DataId'            => $APIItem->getItemId(),
-                                'Name'              => $APIItem->getName(),
-                                'RestrictionLevel'  => $APIItem->getLevel(),
-                                'Rarity'            => getRarityID($APIItem->getRarity()),
-                                'VendorSellPrice'   => $APIItem->getVendorValue(),
-                                'Img'               => $APIItem->getImageURL(),
-                                'RarityWord'        => $APIItem->getRarity(),
-                                'UnsellableFlag'    => $APIItem->isUnsellable());
-            
-            $item = ItemQuery::create()->findPK($APIItem->getItemId());
-            
-            if ($item === null) {
-                $item = new Item();
-            }
+                if($APIItem == null) continue;
 
-            $item->fromArray($itemData);
+                $ii++;
 
-            $itemType = ItemTypeQuery::create()->findPk($itemData['TypeId']);
+                echo $APIItem->getItemId() . ": ";
+                echo $APIItem->getName() . "\n";
 
-            if ($itemType !== null) {
-                if ($APIItem->getSubType() !== null) {
+                $itemData = array('TypeId' => getOrCreateTypeID($APIItem->getMarketType()),
+                    'DataId' => $APIItem->getItemId(),
+                    'Name' => $APIItem->getName(),
+                    'RestrictionLevel' => $APIItem->getLevel(),
+                    'Rarity' => getRarityID($APIItem->getRarity()),
+                    'VendorSellPrice' => $APIItem->getVendorValue(),
+                    'Img' => $APIItem->getImageURL(),
+                    'RarityWord' => $APIItem->getRarity(),
+                    'UnsellableFlag' => $APIItem->isUnsellable());
 
-                    $itemSubType = ItemSubTypeQuery::create()->findOneByTitle($APIItem->getDBSubType());
-                    
-                    if ($itemSubType === null) {
-                        //All of the below types are known to not exist in the market data with an ID (by this name).
-                        //Rune/Sigil/Utility/Gem/Booze/Halloween/LargeBundle/RentableContractNpc/ContractNPC/UnlimitedConsumable
-                        //TwoHandedToy/AppearanceChange/Immediate/Unknown
+                $item = ItemQuery::create()->findPK($APIItem->getItemId());
 
-                        $itemSubTypes = ItemSubTypeQuery::create()
+                if ($item === null) {
+                    $item = new Item();
+                }
+
+                $item->fromArray($itemData);
+
+                $itemType = ItemTypeQuery::create()->findPk($itemData['TypeId']);
+
+                if ($itemType !== null) {
+                    if ($APIItem->getSubType() !== null) {
+
+                        $itemSubType = ItemSubTypeQuery::create()->findOneByTitle($APIItem->getDBSubType());
+
+                        if ($itemSubType === null) {
+                            //All of the below types are known to not exist in the market data with an ID (by this name).
+                            //Rune/Sigil/Utility/Gem/Booze/Halloween/LargeBundle/RentableContractNpc/ContractNPC/UnlimitedConsumable
+                            //TwoHandedToy/AppearanceChange/Immediate/Unknown
+
+                            $itemSubTypes = ItemSubTypeQuery::create()
                                 ->filterByMainTypeId($itemData['TypeId'])
                                 ->withColumn('MAX(id)', 'MAXid')
                                 ->find();
 
-                        $SubTypeID = $itemSubTypes[0]->getMAXid() + 1;
+                            $SubTypeID = $itemSubTypes[0]->getMAXid() + 1;
 
-                        $itemSubType = new ItemSubType();
-                        $itemSubType->fromArray(array(  'Id'            => $SubTypeID, 
-                                                        'MainTypeId'    => $itemData['TypeId'], 
-                                                        'Title'         => $APIItem->getDBSubType()));
-                        $itemSubType->save();
+                            $itemSubType = new ItemSubType();
+                            $itemSubType->fromArray(array('Id' => $SubTypeID,
+                                'MainTypeId' => $itemData['TypeId'],
+                                'Title' => $APIItem->getDBSubType()));
+                            $itemSubType->save();
+
+                            $itemType->addSubType($itemSubType);
+                            $item->setItemSubType($itemSubType);
+                        }
 
                         $itemType->addSubType($itemSubType);
                         $item->setItemSubType($itemSubType);
                     }
-                    
-                    $itemType->addSubType($itemSubType);
-                    $item->setItemSubType($itemSubType);
+
+                    $item->setItemType($itemType);
                 }
 
-                $item->setItemType($itemType);
+                $item->save();
             }
-
-            $item->save();
         } catch (Exception $e) {
             $error_values[] = $item_id;
 
@@ -185,5 +194,7 @@ foreach (array_chunk($data['items'], 1000) as $items) {
 
 if (count($error_values) > 0)
     var_dump($error_values);
+
+echo "Updated {$ii} items.\n";
 
 exit(0);
