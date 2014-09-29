@@ -4,12 +4,9 @@
  * process queue items
  */
 
-use GW2Spidy\GW2SessionManager;
-
+use GW2Spidy\NewQueue\BaseWorker;
 use GW2Spidy\NewQueue\ItemListingDBQueueItem;
-use GW2Spidy\TradingPostSpider;
 
-use GW2Spidy\NewQueue\ItemDBQueueWorker;
 use GW2Spidy\NewQueue\RequestSlotManager;
 use GW2Spidy\NewQueue\ItemListingDBQueueManager;
 use GW2Spidy\NewQueue\ItemListingDBQueueWorker;
@@ -104,7 +101,7 @@ while ($run < $max) {
             $log = ob_get_clean();
             echo " --------------- \n !! worker process threw exception !!\n --------------- \n {$log} \n --------------- \n {$e} \n --------------- \n";
 
-           if ($e->getCode() == ItemDBQueueWorker::ERROR_CODE_NO_LONGER_EXISTS || strstr("CurlRequest failed [[ 401 ]]", $e->getMessage())) {
+           if ($e->getCode() == BaseWorker::ERROR_CODE_NO_LONGER_EXISTS || strstr("CurlRequest failed [[ 401 ]]", $e->getMessage())) {
                 break;
             }
 

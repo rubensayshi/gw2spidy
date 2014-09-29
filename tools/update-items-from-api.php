@@ -78,123 +78,119 @@ function getSubIDFromMarketData ($marketData, $searchValue, $itemSubTypeName) {
     return $marketID;
 }
 
-Propel::disableInstancePooling();
+/**
+ * @param $API_JSON
+ * @param $offset
+ */
+function processApiData($API_JSON, $offset)
+{
 
-$chunk_size = 200;
+    $APIItems = APIItemV2::getMultipleItemsByJSON($API_JSON);
 
-$curl = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/items.json") ->exec();
-$data = json_decode($curl->getResponseBody(), true);
-$multi_curl = EpiCurl::getInstance();
-$item_curls = array();
+    try {
+        $itemCount = $offset;
 
-$error_values = array();
+        foreach ($APIItems as $APIItem) {
 
-$number_of_chunks = ceil(count($data['items']) / $chunk_size);
+            if ($APIItem == null) continue;
 
-$itemSubTypes = array();
+            $itemCount++;
 
-$i = 0;
-$ii = 0;
 
-foreach (array_chunk($data['items'], $chunk_size * 1000) as $items) {
+            echo "{$itemCount}: {$APIItem->getName()} (ID: {$APIItem->getItemId()})\n";
 
-    $chunks_per_run = -1;
+            $itemData = array('TypeId' => getOrCreateTypeID($APIItem->getMarketType()),
+                'DataId' => $APIItem->getItemId(),
+                'Name' => $APIItem->getName(),
+                'RestrictionLevel' => $APIItem->getLevel(),
+                'Rarity' => getRarityID($APIItem->getRarity()),
+                'VendorSellPrice' => $APIItem->getVendorValue(),
+                'Img' => $APIItem->getImageURL(),
+                'RarityWord' => $APIItem->getRarity(),
+                'UnsellableFlag' => $APIItem->isUnsellable());
 
-    //Add all curl requests to the EpiCurl instance.
-    foreach (array_chunk($items, $chunk_size) as $item_chunk) {
-        $i++;
-        $chunks_per_run++;
+            $item = ItemQuery::create()->findPK($APIItem->getItemId());
 
-        $ch = curl_init(getAppConfig('gw2spidy.gw2api_url')."/v2/items?ids=" . implode(",", $item_chunk));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $item_curls[$i] = $multi_curl->addCurl($ch);
+            if ($item === null) {
+                $item = new Item();
+            }
 
-        echo "[{$i} / {$number_of_chunks}] \n";
-    }
+            $item->fromArray($itemData);
 
-    for ($count = $i - $chunks_per_run; $count<=$i; $count++){
-        try {
-            echo "[{$count} / {$number_of_chunks}]: ";
+            $itemType = ItemTypeQuery::create()->findPk($itemData['TypeId']);
 
-            $API_JSON = $item_curls[$count]->data;
-            $APIItems = APIItemV2::getMultipleItemsByJSON($API_JSON);
+            if ($itemType !== null) {
 
-            foreach($APIItems as $APIItem) {
+                if ($APIItem->getSubType() !== null) {
 
-                if($APIItem == null) continue;
+                    $itemSubType = ItemSubTypeQuery::create()->findOneByTitle($APIItem->getDBSubType());
 
-                $ii++;
+                    if ($itemSubType === null) {
+                        //All of the below types are known to not exist in the market data with an ID (by this name).
+                        //Rune/Sigil/Utility/Gem/Booze/Halloween/LargeBundle/RentableContractNpc/ContractNPC/UnlimitedConsumable
+                        //TwoHandedToy/AppearanceChange/Immediate/Unknown
 
-                echo $APIItem->getItemId() . ": ";
-                echo $APIItem->getName() . "\n";
+                        $itemSubTypes = ItemSubTypeQuery::create()
+                            ->filterByMainTypeId($itemData['TypeId'])
+                            ->withColumn('MAX(id)', 'MAXid')
+                            ->find();
 
-                $itemData = array('TypeId' => getOrCreateTypeID($APIItem->getMarketType()),
-                    'DataId' => $APIItem->getItemId(),
-                    'Name' => $APIItem->getName(),
-                    'RestrictionLevel' => $APIItem->getLevel(),
-                    'Rarity' => getRarityID($APIItem->getRarity()),
-                    'VendorSellPrice' => $APIItem->getVendorValue(),
-                    'Img' => $APIItem->getImageURL(),
-                    'RarityWord' => $APIItem->getRarity(),
-                    'UnsellableFlag' => $APIItem->isUnsellable());
+                        $SubTypeID = $itemSubTypes[0]->getMAXid() + 1;
 
-                $item = ItemQuery::create()->findPK($APIItem->getItemId());
-
-                if ($item === null) {
-                    $item = new Item();
-                }
-
-                $item->fromArray($itemData);
-
-                $itemType = ItemTypeQuery::create()->findPk($itemData['TypeId']);
-
-                if ($itemType !== null) {
-                    if ($APIItem->getSubType() !== null) {
-
-                        $itemSubType = ItemSubTypeQuery::create()->findOneByTitle($APIItem->getDBSubType());
-
-                        if ($itemSubType === null) {
-                            //All of the below types are known to not exist in the market data with an ID (by this name).
-                            //Rune/Sigil/Utility/Gem/Booze/Halloween/LargeBundle/RentableContractNpc/ContractNPC/UnlimitedConsumable
-                            //TwoHandedToy/AppearanceChange/Immediate/Unknown
-
-                            $itemSubTypes = ItemSubTypeQuery::create()
-                                ->filterByMainTypeId($itemData['TypeId'])
-                                ->withColumn('MAX(id)', 'MAXid')
-                                ->find();
-
-                            $SubTypeID = $itemSubTypes[0]->getMAXid() + 1;
-
-                            $itemSubType = new ItemSubType();
-                            $itemSubType->fromArray(array('Id' => $SubTypeID,
-                                'MainTypeId' => $itemData['TypeId'],
-                                'Title' => $APIItem->getDBSubType()));
-                            $itemSubType->save();
-
-                            $itemType->addSubType($itemSubType);
-                            $item->setItemSubType($itemSubType);
-                        }
+                        $itemSubType = new ItemSubType();
+                        $itemSubType->fromArray(array('Id' => $SubTypeID,
+                            'MainTypeId' => $itemData['TypeId'],
+                            'Title' => $APIItem->getDBSubType()));
+                        $itemSubType->save();
 
                         $itemType->addSubType($itemSubType);
                         $item->setItemSubType($itemSubType);
                     }
 
-                    $item->setItemType($itemType);
+                    $itemType->addSubType($itemSubType);
+                    $item->setItemSubType($itemSubType);
                 }
 
-                $item->save();
+                $item->setItemType($itemType);
             }
-        } catch (Exception $e) {
-            $error_values[] = $item_id;
 
-            echo "failed [[ {$e->getMessage()} ]] .. \n";
+            $item->save();
         }
+    } catch (Exception $e) {
+        echo "failed [[ {$e->getMessage()} ]] .. \n";
     }
+}
+
+Propel::disableInstancePooling();
+
+$pageSize = 200;
+
+$curl = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v2/items?page=0&page_size={$pageSize}") ->exec();
+processApiData($curl->getResponseBody(), 0);
+$numberOfPages = intval($curl->getResponseHeaders("X-Page-Total"));
+
+$error_values = array();
+$multi_curl = EpiCurl::getInstance();
+$item_curls = array();
+$itemSubTypes = array();
+
+//Add all curl requests to the EpiCurl instance.
+for($page=1; $page < $numberOfPages; $page++) {
+    echo "REQUESTING [{$page} / {$numberOfPages}]\n";
+    $ch = curl_init(getAppConfig('gw2spidy.gw2api_url')."/v2/items?page={$page}&page_size={$pageSize}");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $item_curls[$page] = $multi_curl->addCurl($ch);
+}
+
+for ($page = 1; $page < $numberOfPages; $page++){
+    echo "PROCESSING [{$page} / {$numberOfPages}]:\n";
+    $API_JSON = $item_curls[$page]->data;
+    processApiData($API_JSON, $page * $pageSize);
 }
 
 if (count($error_values) > 0)
     var_dump($error_values);
 
-echo "Updated {$ii} items.\n";
+Propel::enableInstancePooling();
 
 exit(0);

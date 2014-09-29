@@ -14,26 +14,6 @@ class QueueHelper extends Singleton {
         return new ItemListingDBQueueManager();
     }
 
-    public function getItemDBQueueManager() {
-        return new ItemDBQueueManager();
-    }
-
-    public function enqueueItemDB($type = null) {
-        Propel::disableInstancePooling();
-
-        $queueManager = $this->getItemDBQueueManager();
-
-        foreach (ItemTypeQuery::getAllTypes() as $type) {
-            foreach ($type->getSubTypes() as $subtype) {
-                $queueManager->enqueue(new ItemDBQueueItem($type, $subtype));
-            }
-
-            $queueManager->enqueue(new ItemDBQueueItem($type, null));
-        }
-
-        Propel::enableInstancePooling();
-    }
-
     public function enqueueItemListingDB($type = null) {
         Propel::disableInstancePooling();
 
