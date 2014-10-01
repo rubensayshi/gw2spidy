@@ -14,6 +14,8 @@ class NoIngredientItemException extends FailedImportException {}
 
 require dirname(__FILE__) . '/../autoload.php';
 
+Propel::disableInstancePooling();
+
 if (!isset($argv[1]) || !($mapfilename = $argv[1])) {
     die('map file required.');
 }
@@ -136,3 +138,5 @@ foreach ($data as $i => $row) {
 
 if (count($failed) > 0)
     var_dump($failed);
+
+Propel::enableInstancePooling();

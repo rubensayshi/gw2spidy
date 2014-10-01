@@ -143,63 +143,23 @@ Run `tools/setup-request-slots.php` to create the initial request slots, you can
 
 Building The Item Database
 --------------------------
+
+The scripts described below are called by the script `bin/rebuild-items-recpipes.sh`.
+
 To build the item database, you want to run `tools/update-items-from-api.php`. This gives you all known items in the game and creates new types and subtypes on the fly.
 
 Afterwards you may want to run the script nightly to keep up to date with known items.
 
+If you want or need the recipe data in the database, you also need to run `php tools/create-recipe-map /some/place/on/harddrive`. After this is complete, you also have to import the map with `php tools/import-recipe-map /some/place/on/harddrive`.
+
 Crawling The Tradingpost
 ------------------------
-The crawling can be done in 3 ways and I'm gonna explain them a bit before continuing your journey how to use GW2Spidy ;)
-
-### listings.json
-A request to **/ws/listings.json?id=<item-id>** gives back all the buy and sell listings for a single item.  
-Atm I grab the lowest and don't even store the others except summing up their total quantity, this is because I'm not using the other listings and the database is getting too big to just carelessly store them.  
-
-This method is always the most accurate and guaranteed to work because it's what the game relies on heavily.  
-
-The disadvantage of this method is that we have to do 1 request for every item to update their price, with around 20k items and ArenaNet who prefers if we could stay near 5 requests / second we can't do more frequent updates than 1 per hour this way.  
-I created a priority system (read below) to update more interesting items more often than the less interesting items to work with this.  
-Another problem with this method is that we need a session_key from the game client, read below for more information GW2 Sessions.
-
-### search.json
-A request to **/ws/search.json?type=<type-id>&page=<page>** is what we also use to build up the item database and gives us data for 10 items in 1 request.  
-However ArenaNet had a lot of bugs which made the prices unreliable (ingame too), so I started using listings.json a few weeks ago!  
-They however fixed the bugs in the past patch for this method and we can use it again to build listings data on too.  
-
-### search.json?ids=
-There's another way to use search.json, namely a request to **/ws/search.json?ids=<csv-ids-max-250>** which allows us to get up to 250 items in 1 request!  
-This was (even more) buggy too and ArenaNet hasn't fixed it propely yet, mostly because they themselves only use them when you click on an item on the homepage of the TP (click the Unidentified Dye ingame, you'll notice the price is wrong).  
-
-I got a tip from *shroud* how to get around this bug, but he didn't want me to share it with anyone because he feels it might allow a lot of other people to use this to play the market a bit too well.  
-I respect that and am really happy he at least shared it with me for gw2spidy, because 250 items in request is superb to the other 2 methods, by a large margin! 
-
-### Choices To Make
-So for the real gw2spidy database I want to use the *search.json?ids=* method and I build the code so that I can use it and still have a fallback to *listings.json* in case ArenaNet messes up again and I know *listings.json* will always be as accurate as possible.  
-However since ArenaNet only fixed the normal *search.json* without the *shroud-magic* the *search.json?ids=* method ain't really viable for other people to use, unless you like weird inaccurate spikes in your data once in a while.  
-
-Before all this madness, I always used the normal *search.json*, I suggest others should do that too atm until I can either release *shrouds* magic or ArenaNet fixes it themselves.  
-Or use *listings.json* but you'll have a lot lower frequency!
-
-### How To Configure it
-The default config will use the *listings.json* method if you use the listingsDB worker, to match how it was working before I reimplemented all this, you can instead disabled 'use_listings-json' in the config to use *search.json?ids=* if you want to.  
-However, the best way atm to go is with the 'save_listing_from_item_data' enabled (default enabled) and only use the itemDB worker!
-
-ItemDB Worker
--------------
-The ItemDB Worker itself is this script: `daemons/worker-queue-item-db.php`.  
-It processes items from the 'item-db-queue' queue and that queue is filled by `daemons/fill-queue-item-db.php`.  
-
-When you want to use the *search.json?ids=* or *listings.json* method this worker and queue are only to find new items, never seen before items on the tradingpost and in that case should just run the fill-queue script nightly and have 1 worker running to process that queue.  
-
-When you want to use the normal *search.json* method (you should atm) we'll (ab)use this worker and you should run the fill-queue script at a frequency at which you want your listing data to be at (15min ~ 30min is a fair frequency).  
-And you should have a couple (2~4) worker-queue scripts running to processes and keep up with your desired frequency, the queue should generally be empty before it's (re)filled.  
 
 ItemListingDB Worker
 --------------------
 The ItemListingDB Worker itself is this script: `daemons/worker-queue-item-listing-db.php`.  
 It will pop items off the listing queue and process them, these queue-items are automatically requeue'd with their priority so you should only have to run `daemons/fill-queue-item-listing-db.php` once to get the initial batch in.  
-When 'use_listings-json' is enabled and there's a game session_key (see the GW2Session section below) it will just process 1 item at a time and use *listings.json* method to retrieve it.  
-When it's not enabled it will use *search.json?ids=* and process the configured 'items-per-request' amount of items at 1 time (max 250!).  
+Since the v2/commerce APIs are enabled, the worker uses the v2/commerce/listings endpoint to process the configured 'items-per-request' amount of items at 1 time (max 250!).  
 
 However if the script fails we might sometimes loose a queue-item or new items might be added to the database at some point so there's a `daemons/supervise-queue-item-listing-db.php` script which makes sure that the queue is still filled properly.
 

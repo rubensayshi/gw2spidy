@@ -56,6 +56,7 @@ class Item extends BaseItem {
     const TYPE_ID_CONSUMABLE = 3;
     const TYPE_ID_WEAPON = 18;
     const TYPE_ID_TOOL = 13;
+    const TYPE_ID_BACK = 19;
 
     public function getBestPrice() {
         if ($this->getVendorPrice()) {
@@ -158,6 +159,7 @@ class Item extends BaseItem {
             case self::TYPE_ID_CONSUMABLE:
             case self::TYPE_ID_UPGRADE_COMPONENT:
             case self::TYPE_ID_TRINKET:
+            case self::TYPE_ID_BACK:
                 return self::PRIO_TWO;
 
                 break;
