@@ -37,13 +37,13 @@ function getRarityID($rarityName){
     $rarities = array(
         "Junk"       => 0,
         "Common"     => 1,
+        "Basic"      => 1,
         "Fine"       => 2,
         "Masterwork" => 3,
         "Rare"       => 4,
         "Exotic"     => 5,
         "Ascended"   => 6,
         "Legendary"  => 7,
-        "Basic"      => 8,
     );
     return $rarities[$rarityName];
 }
