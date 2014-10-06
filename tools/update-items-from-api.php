@@ -43,7 +43,6 @@ function getRarityID($rarityName){
         "Exotic"     => 5,
         "Ascended"   => 6,
         "Legendary"  => 7,
-        "Basic"      => 8,
     );
     return $rarities[$rarityName];
 }
@@ -92,10 +91,12 @@ function processApiData($API_JSON, $offset)
 
         foreach ($APIItems as $APIItem) {
 
-            if ($APIItem == null) continue;
-
             $itemCount++;
 
+            if ($APIItem == null) {
+                print "Skipped item {$offset}.\n";
+                continue;
+            }
 
             echo "{$itemCount}: {$APIItem->getName()} (ID: {$APIItem->getItemId()})\n";
 
@@ -166,6 +167,11 @@ Propel::disableInstancePooling();
 $pageSize = 200;
 
 $curl = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v2/items?page=0&page_size={$pageSize}") ->exec();
+if($curl->getInfo("http_code") != 200) {
+    print "Failed curl request. Returned Status was {$curl->getInfo("http_code")}.\n";
+    print "Returned body: {$curl->getResponseBody()}\n";
+    exit(1);
+}
 processApiData($curl->getResponseBody(), 0);
 $numberOfPages = intval($curl->getResponseHeaders("X-Page-Total"));
 
@@ -185,6 +191,11 @@ for($page=1; $page < $numberOfPages; $page++) {
 for ($page = 1; $page < $numberOfPages; $page++){
     echo "PROCESSING [{$page} / {$numberOfPages}]:\n";
     $API_JSON = $item_curls[$page]->data;
+    if($item_curls[$page]->code != 200) {
+        print "Failed curl request. Returned Status was $item_curls[$page]->code}.\n";
+        print "Returned body: {$API_JSON}\n";
+        exit(1);
+    }
     processApiData($API_JSON, $page * $pageSize);
 }
 
