@@ -94,7 +94,7 @@ function processApiData($API_JSON, $offset)
             $itemCount++;
 
             if ($APIItem == null) {
-                print "Skipped item {$offset}.\n";
+                print "Skipped item {$itemCount} on page {$offset}.\n";
                 continue;
             }
 
@@ -175,7 +175,6 @@ if($curl->getInfo("http_code") != 200) {
 processApiData($curl->getResponseBody(), 0);
 $numberOfPages = intval($curl->getResponseHeaders("X-Page-Total"));
 
-$error_values = array();
 $multi_curl = EpiCurl::getInstance();
 $item_curls = array();
 $itemSubTypes = array();
@@ -198,9 +197,6 @@ for ($page = 1; $page < $numberOfPages; $page++){
     }
     processApiData($API_JSON, $page * $pageSize);
 }
-
-if (count($error_values) > 0)
-    var_dump($error_values);
 
 Propel::enableInstancePooling();
 
