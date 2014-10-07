@@ -42,12 +42,16 @@ class ItemPeer extends BaseItemPeer {
             }
 
             ItemPeer::$instances[$key] = $obj;
+        } else {
+            if ($memPool = static::getMemPool()) {
+                $memPool->removeInstanceFromPool($key);
+            }
         }
     }
 
     public static function removeInstanceFromPool($value)
     {
-        if (Propel::isInstancePoolingEnabled() && $value !== null) {
+        if ($value !== null) {
             if (is_object($value) && $value instanceof Item) {
                 $key = (string) $value->getDataId();
             } elseif (is_scalar($value)) {
@@ -62,7 +66,7 @@ class ItemPeer extends BaseItemPeer {
                 $memPool->removeInstanceFromPool($key);
             }
 
-            unset(ItemPeer::$instances[$key]);
+            parent::removeInstanceFromPool($value);
         }
     }
 
