@@ -354,7 +354,14 @@ HTML;
     }
         
     public function getRarity() {
-        return $this->rarity;
+
+        // Map the "Basic" rarity to "Common".
+        // That's what the database is used to :P
+        $rarityName = $this->rarity;
+        if($rarityName == "Basic"){
+            $rarityName = "Common";
+        }
+        return $rarityName;
     }
     
     public function getRarityLower() {
