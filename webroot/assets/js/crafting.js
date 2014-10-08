@@ -20,10 +20,10 @@ var Crafting = function(item, container, summarycontainer) {
 
         ingredients = {};
         $.each(topentry.ingredients(), function(k, ingredient) {
-            if (ingredients[ingredient[1].id] == undefined) {
-                ingredients[ingredient[1].id] = ingredient;
+            if (ingredients[ingredient[1].dataId] == undefined) {
+                ingredients[ingredient[1].dataId] = ingredient;
             } else {
-                ingredients[ingredient[1].id][0] += ingredient[0];
+                ingredients[ingredient[1].dataId][0] += ingredient[0];
             }
         });
 

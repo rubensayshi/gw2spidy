@@ -284,7 +284,7 @@ function buildMultiRecipeTree($item, $app, $recipe = null) {
 
 function buildRecipeTree($item, $app, $recipe = null, $multiplier = 1) {
     $tree = array(
-        'id' => $item->getDataId(),
+        'dataId' => $item->getDataId(),
         'name' => $item->getName(),
         'href' => $app['url_generator']->generate('item', array('dataId' => $item->getDataId())),
         'rarity' => $item->getRarityName(),
