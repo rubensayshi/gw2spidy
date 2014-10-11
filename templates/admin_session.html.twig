@@ -3,45 +3,7 @@
 {% block content %}
 <h1>Admin <small> - Session Manager</small></h1>
 
-{% if (flash == 'ok') %}
-<div class="alert alert-success">
-    Saved session key successfully!
+<div class="alert-info">
+    This form is not used anymore since we now completely use API calls without authentication :)
 </div>
-{% elseif (flash == 'duplicate') %}
-<div class="alert alert-info">
-    Duplicate, we already have this session key!
-</div>
-{% elseif (flash == 'tpdown') %}
-<div class="alert alert-warning">
-    The tradingpost seems to be down atm, but we saved your session key successfully!
-</div>
-{% elseif (flash == 'dead') %}
-<div class="alert alert-error">
-    You session key seems to be dead, we couldn't login with it at least ...
-</div>
-{% endif %}
-
-<p>
-    <form class="form-horizontal" action="{{ path('admin_session_post') }}" method="POST">
-        <div class="control-group">
-            <label class="control-label" for="inputSessionKey">Session Key</label>
-            <div class="controls">
-                <input type="text" id="inputSessionKey" name="session_key" placeholder="Session Key">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="inputGameSession">Game Session</label>
-            <div class="controls">
-                <label class="checkbox">
-                    <input type="checkbox" id="inputGameSession" name="game_session" value="1"> yes
-                </label>
-            </div>
-        </div>
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn btn-primary">Store Session</button>
-            </div>
-        </div>
-    </form>
-</p>
 {% endblock %}

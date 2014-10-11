@@ -1,8 +1,7 @@
 #!/bin/bash
 
 LISTING_CNT=$1
-ITEM_CNT=$2
-GEM_CNT=$3
+GEM_CNT=$2
 LOGDIR="/var/log/gw2spidy"
 PIDDIR="/var/run/gw2spidy"
 
@@ -18,9 +17,6 @@ sudo chmod -R 0777 $PIDDIR
 
 if [[ -z "${LISTING_CNT}" ]]; then
     LISTING_CNT=1
-fi
-if [[ -z "${ITEM_CNT}" ]]; then
-    ITEM_CNT=1
 fi
 if [[ -z "${GEM_CNT}" ]]; then
     GEM_CNT=1
@@ -60,11 +56,7 @@ for ((i = 0; i < LISTING_CNT; i++)); do
 	start_worker "worker-queue-item-listing-db" $i
 done
 
-for ((i = 0; i < ITEM_CNT; i++)); do 
-	start_worker "worker-queue-item-db" $i
-done
-
-for ((i = 0; i < GEM_CNT; i++)); do 
+for ((i = 0; i < GEM_CNT; i++)); do
 	start_worker "worker-gem" $i
 done
 
