@@ -89,7 +89,7 @@ $app->get("/item/{dataId}", function($dataId) use ($app) {
     // a recipe item, should link to the recipe
     if (strpos($item->getName(), "Recipe: ") === 0) {
         $recipes = RecipeQuery::create()->findByName(substr($item->getName(), strlen("Recipe: ")));
-        $recipe = $recipes ? $recipes[0] : null;
+        $recipe = count($recipes) ? $recipes[0] : null;
     } else {
         $recipe = null;
     }
