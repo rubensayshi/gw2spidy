@@ -18,7 +18,7 @@ flush_varnish() {
 }
 
 flush_apc() {
-    php $ROOT/tools/purge-cache.php -a
+    php $ROOT/tools/purge-cache.php -a -m
 }
 
 rebuild_assets
