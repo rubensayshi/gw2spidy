@@ -69,7 +69,15 @@
     </div>
 
 <div class="clearfix">
-	{% if item.resultOfRecipes | length %}
+    {% if recipe %}
+        <table class="table recipes" style="width: 650px;">
+            <tr>
+                <th style="width: 250px;">Recipe:</th>
+                <td><a href="{{ path('recipe', {dataId : recipe.dataId}) }}">{{ recipe.name }}</a></td>
+            </tr>
+        </table>
+    {% endif %}
+    {% if item.resultOfRecipes | length %}
 		<table class="table recipes" style="width: 650px;">
 			<tr>
 				<th>Created By</th>

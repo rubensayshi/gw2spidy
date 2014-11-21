@@ -86,8 +86,17 @@ $app->get("/item/{dataId}", function($dataId) use ($app) {
         return $app->abort(404, "Page does not exist.");
     }
 
+    // a recipe item, should link to the recipe
+    if (strpos($item->getName(), "Recipe: ") === 0) {
+        $recipes = RecipeQuery::create()->findByName(substr($item->getName(), strlen("Recipe: ")));
+        $recipe = $recipes ? $recipes[0] : null;
+    } else {
+        $recipe = null;
+    }
+
     return $app['twig']->render('item.html.twig', array(
         'item'                => $item,
+        'recipe'              => $recipe,
         'ingredientInRecipes' => $ingredientInRecipes,
     ));
 })
