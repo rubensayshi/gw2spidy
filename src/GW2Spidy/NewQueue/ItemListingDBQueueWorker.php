@@ -13,7 +13,6 @@ use GW2Spidy\DB\BuyListingQuery;
 use GW2Spidy\DB\SellListingQuery;
 
 use GW2Spidy\OfficialTPAPISpider;
-use GW2Spidy\TradingPostSpider;
 
 
 class ItemListingDBQueueWorker extends BaseWorker {

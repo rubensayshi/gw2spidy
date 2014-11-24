@@ -2,16 +2,11 @@
 
 use GW2Spidy\DB\UserQuery;
 
-use \DateTime;
-use \DateInterval;
-
-use GW2Spidy\GW2SessionManager;
 use GW2Spidy\NewQueue\RequestSlotManager;
 use GW2Spidy\NewQueue\QueueHelper;
 
 use Symfony\Component\HttpFoundation\Request;
 
-use GW2Spidy\DB\GW2Session;
 use GW2Spidy\DB\ItemQuery;
 
 
@@ -101,48 +96,6 @@ $app->get("/admin/session", function(Request $request) use($app) {
     ));
 })
 ->bind('admin_session');
-
-/**
- * ----------------------
- *  route /admin/session POST
- * ----------------------
-*/
-$app->post("/admin/session", function(Request $request) use($app) {
-    $session_key  = $request->get('session_key');
-    $game_session = (boolean)$request->get('game_session');
-
-    if (preg_match('/s=(.+)/', $session_key, $a)) {
-        $session_key = $a[1];
-    }
-
-    $gw2session = new GW2Session();
-    $gw2session->setSessionKey($session_key);
-    $gw2session->setGameSession($game_session);
-    $gw2session->setCreated(new DateTime());
-
-    try {
-        try {
-            $ok = GW2SessionManager::getInstance()->checkSessionAlive($gw2session);
-        } catch (Exception $e) {
-            $gw2session->save();
-            return $app->redirect($app['url_generator']->generate('admin_session', array('flash' => "tpdown")));
-        }
-
-        if ($ok) {
-            $gw2session->save();
-            return $app->redirect($app['url_generator']->generate('admin_session', array('flash' => "ok")));
-        } else {
-            return $app->redirect($app['url_generator']->generate('admin_session', array('flash' => "dead")));
-        }
-    } catch (PropelException $e) {
-        if (strstr($e->getMessage(), "Duplicate")) {
-            return $app->redirect($app['url_generator']->generate('admin_session', array('flash' => "duplicate")));
-        } else {
-            throw $e;
-        }
-    }
-})
-->bind('admin_session_post');
 
 /**
  * ----------------------

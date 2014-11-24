@@ -42,9 +42,6 @@ cnf = {
             "count"    : 100,
             "cooldown" : 30
         },
-        "tradingpost_url" : "https://tradingpost-live.ncplatform.net",
-        "gemexchange_url" : "https://exchange-live.ncplatform.net",
-        "auth_url"        : "https://account.guildwars2.com",
         "gw2api_url"      : "https://api.guildwars2.com",
         "gw2render_url"   : "https://render.guildwars2.com",
         "auth_app"        : null,
@@ -62,7 +59,7 @@ cnf = {
         "use_shroud_magic"  : false,
         "use_samuirai_magic" : false,
         "save_listing_from_item_data" : true,
-        "items-per-request" : 100
+        "items-per-request" : 200
     },
 
     /*

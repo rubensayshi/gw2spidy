@@ -1,10 +1,5 @@
 <?php
 
-use GW2Spidy\GW2SessionManager;
-
-use \DateTime;
-use \Exception;
-
 use GW2Spidy\DB\GoldToGemRate;
 use GW2Spidy\DB\GoldToGemRateQuery;
 
@@ -27,19 +22,6 @@ $max     = 100;
 $debug   = in_array('--debug', $argv);
 
 $slotManager  = RequestSlotManager::getInstance();
-
-/*
- * login here, this allows us to exit right away on failure
- */
-logg("login ...\n");
-try {
-    $gw2session = GW2SessionManager::getInstance()->getSessionKey();
-    logg("login ok -> [{$gw2session}] \n");
-} catch (Exception $e) {
-    logg("login failed ... sleeping [60] and restarting \n");
-    sleep(60);
-    exit(1);
-}
 
 /*
  * $run up to $max in 1 process, then exit so process gets revived
