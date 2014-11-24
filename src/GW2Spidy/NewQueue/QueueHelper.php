@@ -26,6 +26,8 @@ class QueueHelper extends Singleton {
             $q->filterByTypeId($type);
         }
 
+        $q->filterByUnsellableFlag(false);
+
         $i = 0;
         foreach ($q->find() as $item) {
             $queueItem = new ItemListingDBQueueItem($item);
@@ -51,6 +53,8 @@ class QueueHelper extends Singleton {
         } else if (is_numeric($type)) {
             $q->filterByTypeId($type);
         }
+
+        $q->filterByUnsellableFlag(false);
 
         list($exists, $nexists) = $queueManager->multi_exists($q->find()->toArray(), true);
 
