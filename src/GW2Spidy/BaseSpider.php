@@ -19,7 +19,7 @@ abstract class BaseSpider extends Singleton {
             ->exec();
 
         if ($curl->getInfo("http_code") != 200) {
-            throw new Exception("Failed to retrieve API data.");
+            throw new Exception("Failed to retrieve API data [{$url}].");
         }
 
         $data = json_decode($curl->getResponseBody(), true);
