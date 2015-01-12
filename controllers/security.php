@@ -175,3 +175,80 @@ $app->match("/register", function(Request $request) use ($app) {
     ));
 })
 ->bind('register');
+
+
+/**
+ * ----------------------
+ *  route /reset-password
+ * ----------------------
+ */
+$app->get("/reset-password/{reset}", function(Request $request, $reset) use($app) {
+    $app->setLoginActive();
+
+    if (!$reset || !($user = UserQuery::create()->findOneByResetPassword($reset))) {
+        return $app->redirect($app['url_generator']->generate('login'));
+    }
+
+    return $app['twig']->render('reset_password.html.twig', array(
+        'reset' => $reset,
+        'error' => '',
+    ));
+})
+    ->bind('reset_password');
+
+/**
+ * ----------------------
+ *  route /reset-password POST
+ * ----------------------
+ */
+$app->post("/reset-password/{reset}", function(Request $request, $reset) use($app) {
+    $app->setLoginActive();
+
+    if (!$reset || !($user = UserQuery::create()->findOneByResetPassword($reset))) {
+        return $app->redirect($app['url_generator']->generate('login'));
+    }
+
+    $error = null;
+
+    if ($request->getMethod() == 'POST') {
+        if (!($password = $request->get('password'))) {
+            $error = "Password is required";
+        } else if (preg_match("/\s/", $password)) {
+            $error = "Password can't contain whitespaces";
+        } else if (!($password2 = $request->get('password2'))) {
+            $error = "Repeating your password is required";
+        } else if ($password != $password2) {
+            $error = "Please repeat your password";
+        }
+
+        if (!$error) {
+            // save encoded passwd
+            $encoder = $app['security.encoder_factory']->getEncoder($user);
+            $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
+            $user->setResetPassword("");
+
+            if ($user->validate()) {
+                $user->save();
+
+                // force login
+                $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+                $app['security']->setToken($token);
+
+                $response = $app->redirect($app['url_generator']->generate('homepage'));
+                $response->headers->setCookie(new Cookie('logged_in', true));
+
+                return $response;
+            } else {
+                foreach ($user->getValidationFailures() as $failure) {
+                    $error .= $failure->getMessage() . "\n";
+                }
+            }
+        }
+    }
+
+    return $app['twig']->render('reset_password.html.twig', array(
+        'error' => $error,
+        'reset' => $reset,
+    ));
+})
+    ->bind('reset_password_post');

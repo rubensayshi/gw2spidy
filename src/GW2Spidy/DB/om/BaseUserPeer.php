@@ -36,13 +36,13 @@ abstract class BaseUserPeer {
     const TM_CLASS = 'UserTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /** the column name for the ID field */
     const ID = 'user.ID';
@@ -65,6 +65,9 @@ abstract class BaseUserPeer {
     /** the column name for the HYBRID_AUTH_ID field */
     const HYBRID_AUTH_ID = 'user.HYBRID_AUTH_ID';
 
+    /** the column name for the RESET_PASSWORD field */
+    const RESET_PASSWORD = 'user.RESET_PASSWORD';
+
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
@@ -84,12 +87,12 @@ abstract class BaseUserPeer {
      * e.g. UserPeer::$fieldNames[UserPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('Id', 'Username', 'Email', 'Password', 'Roles', 'HybridAuthProviderId', 'HybridAuthId', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'username', 'email', 'password', 'roles', 'hybridAuthProviderId', 'hybridAuthId', ),
-        BasePeer::TYPE_COLNAME => array (UserPeer::ID, UserPeer::USERNAME, UserPeer::EMAIL, UserPeer::PASSWORD, UserPeer::ROLES, UserPeer::HYBRID_AUTH_PROVIDER_ID, UserPeer::HYBRID_AUTH_ID, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'USERNAME', 'EMAIL', 'PASSWORD', 'ROLES', 'HYBRID_AUTH_PROVIDER_ID', 'HYBRID_AUTH_ID', ),
-        BasePeer::TYPE_FIELDNAME => array ('id', 'username', 'email', 'password', 'roles', 'hybrid_auth_provider_id', 'hybrid_auth_id', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+        BasePeer::TYPE_PHPNAME => array ('Id', 'Username', 'Email', 'Password', 'Roles', 'HybridAuthProviderId', 'HybridAuthId', 'ResetPassword', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'username', 'email', 'password', 'roles', 'hybridAuthProviderId', 'hybridAuthId', 'resetPassword', ),
+        BasePeer::TYPE_COLNAME => array (UserPeer::ID, UserPeer::USERNAME, UserPeer::EMAIL, UserPeer::PASSWORD, UserPeer::ROLES, UserPeer::HYBRID_AUTH_PROVIDER_ID, UserPeer::HYBRID_AUTH_ID, UserPeer::RESET_PASSWORD, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID', 'USERNAME', 'EMAIL', 'PASSWORD', 'ROLES', 'HYBRID_AUTH_PROVIDER_ID', 'HYBRID_AUTH_ID', 'RESET_PASSWORD', ),
+        BasePeer::TYPE_FIELDNAME => array ('id', 'username', 'email', 'password', 'roles', 'hybrid_auth_provider_id', 'hybrid_auth_id', 'reset_password', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -99,12 +102,12 @@ abstract class BaseUserPeer {
      * e.g. UserPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Username' => 1, 'Email' => 2, 'Password' => 3, 'Roles' => 4, 'HybridAuthProviderId' => 5, 'HybridAuthId' => 6, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'username' => 1, 'email' => 2, 'password' => 3, 'roles' => 4, 'hybridAuthProviderId' => 5, 'hybridAuthId' => 6, ),
-        BasePeer::TYPE_COLNAME => array (UserPeer::ID => 0, UserPeer::USERNAME => 1, UserPeer::EMAIL => 2, UserPeer::PASSWORD => 3, UserPeer::ROLES => 4, UserPeer::HYBRID_AUTH_PROVIDER_ID => 5, UserPeer::HYBRID_AUTH_ID => 6, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'USERNAME' => 1, 'EMAIL' => 2, 'PASSWORD' => 3, 'ROLES' => 4, 'HYBRID_AUTH_PROVIDER_ID' => 5, 'HYBRID_AUTH_ID' => 6, ),
-        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'username' => 1, 'email' => 2, 'password' => 3, 'roles' => 4, 'hybrid_auth_provider_id' => 5, 'hybrid_auth_id' => 6, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+        BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Username' => 1, 'Email' => 2, 'Password' => 3, 'Roles' => 4, 'HybridAuthProviderId' => 5, 'HybridAuthId' => 6, 'ResetPassword' => 7, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'username' => 1, 'email' => 2, 'password' => 3, 'roles' => 4, 'hybridAuthProviderId' => 5, 'hybridAuthId' => 6, 'resetPassword' => 7, ),
+        BasePeer::TYPE_COLNAME => array (UserPeer::ID => 0, UserPeer::USERNAME => 1, UserPeer::EMAIL => 2, UserPeer::PASSWORD => 3, UserPeer::ROLES => 4, UserPeer::HYBRID_AUTH_PROVIDER_ID => 5, UserPeer::HYBRID_AUTH_ID => 6, UserPeer::RESET_PASSWORD => 7, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'USERNAME' => 1, 'EMAIL' => 2, 'PASSWORD' => 3, 'ROLES' => 4, 'HYBRID_AUTH_PROVIDER_ID' => 5, 'HYBRID_AUTH_ID' => 6, 'RESET_PASSWORD' => 7, ),
+        BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'username' => 1, 'email' => 2, 'password' => 3, 'roles' => 4, 'hybrid_auth_provider_id' => 5, 'hybrid_auth_id' => 6, 'reset_password' => 7, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -185,6 +188,7 @@ abstract class BaseUserPeer {
             $criteria->addSelectColumn(UserPeer::ROLES);
             $criteria->addSelectColumn(UserPeer::HYBRID_AUTH_PROVIDER_ID);
             $criteria->addSelectColumn(UserPeer::HYBRID_AUTH_ID);
+            $criteria->addSelectColumn(UserPeer::RESET_PASSWORD);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
             $criteria->addSelectColumn($alias . '.USERNAME');
@@ -193,6 +197,7 @@ abstract class BaseUserPeer {
             $criteria->addSelectColumn($alias . '.ROLES');
             $criteria->addSelectColumn($alias . '.HYBRID_AUTH_PROVIDER_ID');
             $criteria->addSelectColumn($alias . '.HYBRID_AUTH_ID');
+            $criteria->addSelectColumn($alias . '.RESET_PASSWORD');
         }
     }
 

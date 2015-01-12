@@ -107,33 +107,43 @@ $app->get("/admin/password", function(Request $request) use($app) {
     $app->setHomeActive();
 
     return $app['twig']->render('admin_password.html.twig', array(
-            'flash'    => $request->get('flash'),
+        'flash'    => $request->get('flash'),
     ));
 })
-->bind('admin_password');
+    ->bind('admin_password');
 
 /**
  * ----------------------
  *  route /admin/password POST
  * ----------------------
-*/
+ */
 $app->post("/admin/password", function(Request $request) use($app) {
     $user_id  = $request->get('user_id');
-    $password = $request->get('password');
+    $username = $request->get('username');
+    $email    = $request->get('email');
 
-    $user = UserQuery::create()->findPk($user_id);
+    if ($user_id) {
+        $user = UserQuery::create()->findPk($user_id);
+    } else if ($username) {
+        $user = UserQuery::create()->findOneByUsername($username);
+    } else if ($email) {
+        $user = UserQuery::create()->findOneByEmail($email);
+    } else {
+        $user = null;
+    }
 
     if (!$user) {
         return $app->redirect($app['url_generator']->generate('admin_password', array('flash' => "no_user")));
     }
 
-    $encoder = $app['security.encoder_factory']->getEncoder($user);
-    $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
+    $reset = bin2hex(openssl_random_pseudo_bytes(16));
+
+    $user->setResetPassword($reset);
     $user->save();
 
-    return $app->redirect($app['url_generator']->generate('admin_password', array('flash' => "ok")));
+    return $app->redirect($app['url_generator']->generate('admin_password', array('flash' => "ok [{$reset}]")));
 })
-->bind('admin_password_post');
+    ->bind('admin_password_post');
 
 /**
  * ----------------------

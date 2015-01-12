@@ -246,6 +246,7 @@ CREATE TABLE `user`
     `roles` VARCHAR(255) DEFAULT 'USER_ROLE',
     `hybrid_auth_provider_id` VARCHAR(50),
     `hybrid_auth_id` VARCHAR(255),
+    `reset_password` VARCHAR(255) DEFAULT '',
     PRIMARY KEY (`id`),
     UNIQUE INDEX `unique_username` (`username`)
 ) ENGINE=MyISAM;

@@ -154,6 +154,8 @@
         
         <column name="hybrid_auth_provider_id" type="varchar" size="50" />
         <column name="hybrid_auth_id" type="varchar" size="255" />
+
+        <column name="reset_password" type="varchar" size="255" default="" />
         
         <unique name="unique_username">
             <unique-column name="username" />

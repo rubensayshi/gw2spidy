@@ -30,6 +30,7 @@ use GW2Spidy\DB\Watchlist;
  * @method     UserQuery orderByRoles($order = Criteria::ASC) Order by the roles column
  * @method     UserQuery orderByHybridAuthProviderId($order = Criteria::ASC) Order by the hybrid_auth_provider_id column
  * @method     UserQuery orderByHybridAuthId($order = Criteria::ASC) Order by the hybrid_auth_id column
+ * @method     UserQuery orderByResetPassword($order = Criteria::ASC) Order by the reset_password column
  *
  * @method     UserQuery groupById() Group by the id column
  * @method     UserQuery groupByUsername() Group by the username column
@@ -38,6 +39,7 @@ use GW2Spidy\DB\Watchlist;
  * @method     UserQuery groupByRoles() Group by the roles column
  * @method     UserQuery groupByHybridAuthProviderId() Group by the hybrid_auth_provider_id column
  * @method     UserQuery groupByHybridAuthId() Group by the hybrid_auth_id column
+ * @method     UserQuery groupByResetPassword() Group by the reset_password column
  *
  * @method     UserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     UserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -57,6 +59,7 @@ use GW2Spidy\DB\Watchlist;
  * @method     User findOneByRoles(string $roles) Return the first User filtered by the roles column
  * @method     User findOneByHybridAuthProviderId(string $hybrid_auth_provider_id) Return the first User filtered by the hybrid_auth_provider_id column
  * @method     User findOneByHybridAuthId(string $hybrid_auth_id) Return the first User filtered by the hybrid_auth_id column
+ * @method     User findOneByResetPassword(string $reset_password) Return the first User filtered by the reset_password column
  *
  * @method     array findById(int $id) Return User objects filtered by the id column
  * @method     array findByUsername(string $username) Return User objects filtered by the username column
@@ -65,6 +68,7 @@ use GW2Spidy\DB\Watchlist;
  * @method     array findByRoles(string $roles) Return User objects filtered by the roles column
  * @method     array findByHybridAuthProviderId(string $hybrid_auth_provider_id) Return User objects filtered by the hybrid_auth_provider_id column
  * @method     array findByHybridAuthId(string $hybrid_auth_id) Return User objects filtered by the hybrid_auth_id column
+ * @method     array findByResetPassword(string $reset_password) Return User objects filtered by the reset_password column
  *
  * @package    propel.generator.gw2spidy.om
  */
@@ -155,7 +159,7 @@ abstract class BaseUserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `ID`, `USERNAME`, `EMAIL`, `PASSWORD`, `ROLES`, `HYBRID_AUTH_PROVIDER_ID`, `HYBRID_AUTH_ID` FROM `user` WHERE `ID` = :p0';
+        $sql = 'SELECT `ID`, `USERNAME`, `EMAIL`, `PASSWORD`, `ROLES`, `HYBRID_AUTH_PROVIDER_ID`, `HYBRID_AUTH_ID`, `RESET_PASSWORD` FROM `user` WHERE `ID` = :p0';
         try {
             $stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -443,6 +447,35 @@ abstract class BaseUserQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserPeer::HYBRID_AUTH_ID, $hybridAuthId, $comparison);
+    }
+
+    /**
+     * Filter the query on the reset_password column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByResetPassword('fooValue');   // WHERE reset_password = 'fooValue'
+     * $query->filterByResetPassword('%fooValue%'); // WHERE reset_password LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $resetPassword The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return UserQuery The current query, for fluid interface
+     */
+    public function filterByResetPassword($resetPassword = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($resetPassword)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $resetPassword)) {
+                $resetPassword = str_replace('*', '%', $resetPassword);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(UserPeer::RESET_PASSWORD, $resetPassword, $comparison);
     }
 
     /**

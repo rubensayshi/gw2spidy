@@ -94,6 +94,13 @@ abstract class BaseUser extends BaseObject implements Persistent
     protected $hybrid_auth_id;
 
     /**
+     * The value for the reset_password field.
+     * Note: this column has a database default value of: ''
+     * @var        string
+     */
+    protected $reset_password;
+
+    /**
      * @var        PropelObjectCollection|Watchlist[] Collection to store aggregation of Watchlist objects.
      */
     protected $collWatchlists;
@@ -139,6 +146,7 @@ abstract class BaseUser extends BaseObject implements Persistent
     public function applyDefaultValues()
     {
         $this->roles = 'USER_ROLE';
+        $this->reset_password = '';
     }
 
     /**
@@ -226,6 +234,17 @@ abstract class BaseUser extends BaseObject implements Persistent
     {
 
         return $this->hybrid_auth_id;
+    }
+
+    /**
+     * Get the [reset_password] column value.
+     * 
+     * @return   string
+     */
+    public function getResetPassword()
+    {
+
+        return $this->reset_password;
     }
 
     /**
@@ -376,6 +395,27 @@ abstract class BaseUser extends BaseObject implements Persistent
     } // setHybridAuthId()
 
     /**
+     * Set the value of [reset_password] column.
+     * 
+     * @param      string $v new value
+     * @return   User The current object (for fluent API support)
+     */
+    public function setResetPassword($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->reset_password !== $v) {
+            $this->reset_password = $v;
+            $this->modifiedColumns[] = UserPeer::RESET_PASSWORD;
+        }
+
+
+        return $this;
+    } // setResetPassword()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -386,6 +426,10 @@ abstract class BaseUser extends BaseObject implements Persistent
     public function hasOnlyDefaultValues()
     {
             if ($this->roles !== 'USER_ROLE') {
+                return false;
+            }
+
+            if ($this->reset_password !== '') {
                 return false;
             }
 
@@ -418,6 +462,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $this->roles = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
             $this->hybrid_auth_provider_id = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
             $this->hybrid_auth_id = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+            $this->reset_password = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -426,7 +471,7 @@ abstract class BaseUser extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = UserPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = UserPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating User object", $e);
@@ -699,6 +744,9 @@ abstract class BaseUser extends BaseObject implements Persistent
         if ($this->isColumnModified(UserPeer::HYBRID_AUTH_ID)) {
             $modifiedColumns[':p' . $index++]  = '`HYBRID_AUTH_ID`';
         }
+        if ($this->isColumnModified(UserPeer::RESET_PASSWORD)) {
+            $modifiedColumns[':p' . $index++]  = '`RESET_PASSWORD`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `user` (%s) VALUES (%s)',
@@ -730,6 +778,9 @@ abstract class BaseUser extends BaseObject implements Persistent
                         break;
                     case '`HYBRID_AUTH_ID`':
 						$stmt->bindValue($identifier, $this->hybrid_auth_id, PDO::PARAM_STR);
+                        break;
+                    case '`RESET_PASSWORD`':
+						$stmt->bindValue($identifier, $this->reset_password, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -894,6 +945,9 @@ abstract class BaseUser extends BaseObject implements Persistent
             case 6:
                 return $this->getHybridAuthId();
                 break;
+            case 7:
+                return $this->getResetPassword();
+                break;
             default:
                 return null;
                 break;
@@ -930,6 +984,7 @@ abstract class BaseUser extends BaseObject implements Persistent
             $keys[4] => $this->getRoles(),
             $keys[5] => $this->getHybridAuthProviderId(),
             $keys[6] => $this->getHybridAuthId(),
+            $keys[7] => $this->getResetPassword(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->collWatchlists) {
@@ -990,6 +1045,9 @@ abstract class BaseUser extends BaseObject implements Persistent
             case 6:
                 $this->setHybridAuthId($value);
                 break;
+            case 7:
+                $this->setResetPassword($value);
+                break;
         } // switch()
     }
 
@@ -1021,6 +1079,7 @@ abstract class BaseUser extends BaseObject implements Persistent
         if (array_key_exists($keys[4], $arr)) $this->setRoles($arr[$keys[4]]);
         if (array_key_exists($keys[5], $arr)) $this->setHybridAuthProviderId($arr[$keys[5]]);
         if (array_key_exists($keys[6], $arr)) $this->setHybridAuthId($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setResetPassword($arr[$keys[7]]);
     }
 
     /**
@@ -1039,6 +1098,7 @@ abstract class BaseUser extends BaseObject implements Persistent
         if ($this->isColumnModified(UserPeer::ROLES)) $criteria->add(UserPeer::ROLES, $this->roles);
         if ($this->isColumnModified(UserPeer::HYBRID_AUTH_PROVIDER_ID)) $criteria->add(UserPeer::HYBRID_AUTH_PROVIDER_ID, $this->hybrid_auth_provider_id);
         if ($this->isColumnModified(UserPeer::HYBRID_AUTH_ID)) $criteria->add(UserPeer::HYBRID_AUTH_ID, $this->hybrid_auth_id);
+        if ($this->isColumnModified(UserPeer::RESET_PASSWORD)) $criteria->add(UserPeer::RESET_PASSWORD, $this->reset_password);
 
         return $criteria;
     }
@@ -1108,6 +1168,7 @@ abstract class BaseUser extends BaseObject implements Persistent
         $copyObj->setRoles($this->getRoles());
         $copyObj->setHybridAuthProviderId($this->getHybridAuthProviderId());
         $copyObj->setHybridAuthId($this->getHybridAuthId());
+        $copyObj->setResetPassword($this->getResetPassword());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1600,6 +1661,7 @@ abstract class BaseUser extends BaseObject implements Persistent
         $this->roles = null;
         $this->hybrid_auth_provider_id = null;
         $this->hybrid_auth_id = null;
+        $this->reset_password = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->clearAllReferences();

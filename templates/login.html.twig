@@ -26,7 +26,7 @@
     <div class="span6" style="margin-top: 20px;">
         <h1>Account Login</h1>
         <p>Or you can register and login with a GW2Spidy account. <br />
-        Don't have an account yet? <a href="{{ path('register') }}">Register one now</a></p>
+            Don't have an account yet? <a href="{{ path('register') }}">Register one now</a></p>
         <form class="form form-horizontal" action="{{ path('login_check') }}" method="post">
             {{ error }}
             <div class="control-group">
@@ -51,7 +51,17 @@
 </div>
 <div class="row-fluid">
     <p>Your information won't be used for anything other than signing you in. <br />
-       Please read the <a href="{{ path('faq') }}">privacy policy</a> if you care about that kind of stuff xD.</p>
+        Please read the <a href="{{ path('faq') }}">privacy policy</a> if you care about that kind of stuff xD.</p>
+</div>
+
+<div class="row-fluid">
+    <div class="span12" style="margin-top: 20px;">
+        <h1>Password Recovery</h1>
+        <p>
+            If you want to have your password reset please send an email to <a href="mailto:gw2spidy@rubensayshi.com">gw2spidy@rubensayshi.com</a>
+            using the email address you signed up with and I will send you a link so you can reset your password!
+        </p>
+    </div>
 </div>
 
 {% endblock %}

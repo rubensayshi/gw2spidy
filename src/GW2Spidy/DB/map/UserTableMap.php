@@ -49,6 +49,7 @@ class UserTableMap extends TableMap
         $this->addColumn('ROLES', 'Roles', 'VARCHAR', false, 255, 'USER_ROLE');
         $this->addColumn('HYBRID_AUTH_PROVIDER_ID', 'HybridAuthProviderId', 'VARCHAR', false, 50, null);
         $this->addColumn('HYBRID_AUTH_ID', 'HybridAuthId', 'VARCHAR', false, 255, null);
+        $this->addColumn('RESET_PASSWORD', 'ResetPassword', 'VARCHAR', false, 255, '');
         // validators
         $this->addValidator('USERNAME', 'unique', 'propel.validator.UniqueValidator', '', 'Username already exists!');
         $this->addValidator('EMAIL', 'unique', 'propel.validator.UniqueValidator', '', 'E-mail already exists!');
