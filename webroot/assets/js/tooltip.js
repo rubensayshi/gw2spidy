@@ -304,7 +304,7 @@ function WP_LoadTooltipsElements(a) {
             var g = 'api/v0.9/json/item-tooltip';
         }
         var j = "".split("?");
-        var e = "http://" + window.location.host;
+        var e = location.protocol + "//" + location.host;
         var h = c;
         var d = null;
         var i = j[3];
