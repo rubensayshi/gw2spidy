@@ -24,13 +24,15 @@ cnf = {
 	 * hybrid auth config
 	 */
 	 "hybrid_auth" : {
-	 	"callback_url"    : "http://4gsd.localtunnel.com/hybridauth",
-	 	"google_id" 	  : "",
-	 	"google_secret"   : "",
-	 	"facebook_id" 	  : "",
-	 	"facebook_secret" : "",
-	 	"twitter_key" 	  : "",
-	 	"twitter_secret"  : ""
+		"callback_url"     : "http://localhost:8080/hybridauth",
+		"google_id" 	   : "",
+		"google_secret"    : "",
+		"facebook_id" 	   : "",
+		"facebook_secret"  : "",
+		"twitter_key" 	   : "",
+		"twitter_secret"   : "",
+		"guildwars_key"    : "",
+		"guildwars_secret" : ""
 	 },
 
     /*

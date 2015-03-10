@@ -68,10 +68,15 @@ return
                 "enabled" => false,
                 "keys"    => array ( "id" => "", "secret" => "" )
             ),
+
+            "GuildWars" => array (
+                "enabled" => true,
+                "keys"    => array ( "id" => getAppConfig("hybrid_auth.guildwars_key"), "secret" => getAppConfig("hybrid_auth.guildwars_secret"))
+            )
         ),
 
         // if you want to enable logging, set 'debug_mode' to true  then provide a writable file by the web server on "debug_file"
-        "debug_mode" => false,
+        "debug_mode" => true,
 
         "debug_file" => "/tmp/hauth.log"
     );
