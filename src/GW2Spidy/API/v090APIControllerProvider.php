@@ -152,7 +152,7 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          */
         $controllers->match("/{format}/items/{typeId}/{page}", function(Request $request, $format, $typeId, $page) use($app) {
 
-            $itemsperpage = 100;
+            $itemsperpage = min($request->get('perpage', 100), 250);
             $page = intval($page > 0 ? $page : 1);
 
             $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
