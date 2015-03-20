@@ -178,6 +178,10 @@ class v090APIControllerProvider implements ControllerProviderInterface {
                 }
             }
 
+            if (($rarity = $request->get('rarity'))) {
+                $q->filterByRarity($rarity);
+            }
+
             if ($filterIds = $request->get('filter_ids')) {
                 $filterIds = array_unique(array_filter(array_map('intval', explode(",", $filterIds))));
 
