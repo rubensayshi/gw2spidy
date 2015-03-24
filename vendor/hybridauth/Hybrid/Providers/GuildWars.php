@@ -25,4 +25,26 @@ class Hybrid_Providers_GuildWars extends Hybrid_Provider_Model_OAuth2 {
         $this->api->token_url      = "https://account.guildwars2.com/oauth2/token";
         $this->api->curl_authenticate_method = "GET";
     }
+
+    function getUserProfile()
+    {
+        // refresh tokens if needed
+        $this->refreshToken();
+
+        // ask api for user infos
+        $originalHeader = $this->api->curl_header;
+        $this->api->curl_header = array_merge($this->api->curl_header, array("Authorization: Bearer {$this->api->access_token}"));
+        $response = $this->api->api("https://api.guildwars2.com/v2/account");
+        $this->api->curl_header = $originalHeader;
+
+        if (!isset($response->id) || isset($response->error)) {
+            throw new Exception("User profile request failed! {$this->providerId} returned an invalid response.", 6);
+        }
+
+        $profile = new Hybrid_User_Profile();
+        $profile->identifier = $response->id;
+        $profile->displayName = $response->name;
+        $profile->email = $response->name . "@guildwars.com";
+        return $profile;
+    }
 }

@@ -180,13 +180,13 @@ class OAuth2Client
 			$params[$k] = $v; 
 		}
 
-		$response = $this->request( $this->token_url, $params, "POST" );
+		$response = $this->request( $this->token_url, $params, $this->curl_authenticate_method );
 		return $this->parseRequestResult( $response );
 	}
 
 	// -- utilities
 
-	private function request( $url, $params=false, $type="GET" )
+	private function request( $url, $params=array(), $type="GET" )
 	{
 		Hybrid_Logger::info( "Enter OAuth2Client::request( $url )" );
 		Hybrid_Logger::debug( "OAuth2Client::request(). dump request params: ", serialize( $params ) );
