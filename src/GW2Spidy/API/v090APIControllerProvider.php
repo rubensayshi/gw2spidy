@@ -318,10 +318,18 @@ class v090APIControllerProvider implements ControllerProviderInterface {
             $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
             $q->filterByName("%{$name}%");
 
+            if ($request->get('exclude_unsellable', false)) {
+                $q->filterByUnsellableFlag(false);
+            }
+
             if ($q->count() == 0 && $name != trim($name)) {
                 $name = trim($name);
                 $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
                 $q->filterByName("%{$name}%");
+
+                if ($request->get('exclude_unsellable', false)) {
+                    $q->filterByUnsellableFlag(false);
+                }
             }
 
             $total = $q->count();
