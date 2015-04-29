@@ -2,6 +2,7 @@
 
 namespace GW2Spidy\API;
 
+use GW2Spidy\DB\Item;
 use Symfony\Component\HttpFoundation\Response;
 
 use GW2Spidy\DB\Recipe;
@@ -132,22 +133,33 @@ class APIHelperService {
         return $jsonp ? "{$jsonp}({$json})" : $json;
     }
 
-    public function buildItemDataArray(array $item) {
+    public function buildItemDataArray(Item $item) {
+        $resultOf = array();
+        foreach ($item->getResultOfRecipes() as $recipe) {
+            $resultOf[] = array(
+                'recipe_id' => $recipe->getDataId(),
+                'name' => $recipe->getName(),
+            );
+        }
+
+        $raw = $item->toArray(\BasePeer::TYPE_PHPNAME);
+
         $data = array(
-            'data_id' => intval($item['DataId']),
-            'name' => $item['Name'],
-            'rarity' => intval($item['Rarity']),
-            'restriction_level' => intval($item['RestrictionLevel']),
-            'img' => $item['Img'],
-            'type_id' => intval($item['ItemTypeId']),
-            'sub_type_id' => intval($item['ItemSubTypeId']),
-            'price_last_changed' => $this->date($item['LastPriceChanged']),
-            'max_offer_unit_price' => intval($item['MaxOfferUnitPrice']),
-            'min_sale_unit_price' => intval($item['MinSaleUnitPrice']),
-            'offer_availability' => intval($item['OfferAvailability']),
-            'sale_availability' => intval($item['SaleAvailability']),
-            'sale_price_change_last_hour' => intval($item['SalePriceChangeLastHour']),
-            'offer_price_change_last_hour' => intval($item['OfferPriceChangeLastHour']),
+            'data_id' => intval($raw['DataId']),
+            'name' => $raw['Name'],
+            'rarity' => intval($raw['Rarity']),
+            'restriction_level' => intval($raw['RestrictionLevel']),
+            'img' => $raw['Img'],
+            'type_id' => intval($raw['ItemTypeId']),
+            'sub_type_id' => intval($raw['ItemSubTypeId']),
+            'price_last_changed' => $this->date($raw['LastPriceChanged']),
+            'max_offer_unit_price' => intval($raw['MaxOfferUnitPrice']),
+            'min_sale_unit_price' => intval($raw['MinSaleUnitPrice']),
+            'offer_availability' => intval($raw['OfferAvailability']),
+            'sale_availability' => intval($raw['SaleAvailability']),
+            'sale_price_change_last_hour' => intval($raw['SalePriceChangeLastHour']),
+            'offer_price_change_last_hour' => intval($raw['OfferPriceChangeLastHour']),
+            'result_of' => $resultOf,
         );
 
         return $data;

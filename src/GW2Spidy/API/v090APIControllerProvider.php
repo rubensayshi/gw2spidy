@@ -232,7 +232,8 @@ class v090APIControllerProvider implements ControllerProviderInterface {
          * ----------------------
          */
         $controllers->get("/{format}/item/{dataId}", function(Request $request, $format, $dataId) use($app) {
-            $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
+            $q = ItemQuery::create();
+            // $q = ItemQuery::create()->select(ItemPeer::getFieldNames(\BasePeer::TYPE_PHPNAME));
             $q->filterByPrimaryKey($dataId);
             if (!($item = $q->findOne())) {
                 return $app->abort(404, "Item Not Found [{$dataId}].");
