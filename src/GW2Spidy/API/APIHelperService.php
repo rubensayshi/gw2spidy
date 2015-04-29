@@ -133,16 +133,21 @@ class APIHelperService {
         return $jsonp ? "{$jsonp}({$json})" : $json;
     }
 
-    public function buildItemDataArray(Item $item) {
-        $resultOf = array();
-        foreach ($item->getResultOfRecipes() as $recipe) {
-            $resultOf[] = array(
-                'recipe_id' => $recipe->getDataId(),
-                'name' => $recipe->getName(),
-            );
-        }
+    public function buildItemDataArray($item) {
+        if ($item instanceof Item) {
+            $resultOf = array();
+            foreach ($item->getResultOfRecipes() as $recipe) {
+                $resultOf[] = array(
+                    'recipe_id' => $recipe->getDataId(),
+                    'name' => $recipe->getName(),
+                );
+            }
 
-        $raw = $item->toArray(\BasePeer::TYPE_PHPNAME);
+            $raw = $item->toArray(\BasePeer::TYPE_PHPNAME);
+        } else {
+            $resultOf = null;
+            $raw = $item;
+        }
 
         $data = array(
             'data_id' => intval($raw['DataId']),
@@ -159,8 +164,11 @@ class APIHelperService {
             'sale_availability' => intval($raw['SaleAvailability']),
             'sale_price_change_last_hour' => intval($raw['SalePriceChangeLastHour']),
             'offer_price_change_last_hour' => intval($raw['OfferPriceChangeLastHour']),
-            'result_of' => $resultOf,
         );
+
+        if ($resultOf !== null) {
+            $data['result_of'] = $resultOf;
+        }
 
         return $data;
     }
