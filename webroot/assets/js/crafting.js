@@ -18,7 +18,7 @@ var Crafting = function(item, container, summarycontainer) {
 
         $summary.html("");
 
-        ingredients = {};
+        var ingredients = {};
         $.each(topentry.ingredients(), function(k, ingredient) {
             if (ingredients[ingredient[1].dataId] == undefined) {
                 ingredients[ingredient[1].dataId] = ingredient;
@@ -58,10 +58,10 @@ var Crafting = function(item, container, summarycontainer) {
 
     var checkCollapse = function() {
         if ($collapse.is(":checked")) {
-            window.localStorage.setItem(COLLAPSE_KEY, 'collapse');
+            localforage.setItem(COLLAPSE_KEY, 'collapse');
             $container.addClass('collapse-disabled');
         } else {
-            window.localStorage.setItem(COLLAPSE_KEY, '');
+            localforage.setItem(COLLAPSE_KEY, '');
             $container.removeClass('collapse-disabled');
         }
     };
@@ -71,16 +71,20 @@ var Crafting = function(item, container, summarycontainer) {
 
         $container.append(topentry.render());
 
-        if (window.localStorage.getItem(COLLAPSE_KEY) == 'collapse') {
-            $collapse.attr('checked', 'checked');
-        }
+        localforage.getItem(COLLAPSE_KEY)
+            .then(function(collapse) { return collapse; }, function(err) { console.error(err); return ''; })
+            .then(function(collapse) {
+                if (collapse == 'collapse') {
+                    $collapse.attr('checked', 'checked');
+                }
 
-        checkCollapse();
-        $collapse.on('click change', checkCollapse);
+                checkCollapse();
+                $collapse.on('click change', checkCollapse);
 
-        update();
-        WP_LoadTooltips($container);
-        WP_LoadTooltips($summary);
+                update();
+                WP_LoadTooltips($container);
+                WP_LoadTooltips($summary);
+            });
     };
 
     this.update = update;

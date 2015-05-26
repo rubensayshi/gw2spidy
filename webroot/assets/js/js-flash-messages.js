@@ -32,24 +32,23 @@ var GW2SpidyFlashMessages = (function() {
                     }
                 },1);
 
-                window.localStorage.setItem(FLASHED_KEY, JSON.stringify(flashed));
+                localforage.setItem(FLASHED_KEY, JSON.stringify(flashed));
             });
         });
     };
 
     var initData = function() {
-        if (json = window.localStorage.getItem(FLASHED_KEY)) {
-            flashed = JSON.parse(json);
-        }
+        localforage.getItem(FLASHED_KEY).then(function(json) {
+            console.log(json);
 
-        flashed = flashed || {};
+            flashed = JSON.parse(json);
+
+            flashed = flashed || {};
+        })
+        .then(void 0, function(err) { console.error(err); });
     };
 
     var init = function() {
-        if (typeof window.localStorage === 'undefined') {
-            return;
-        }
-
         initData();
     };
 

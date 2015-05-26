@@ -8,6 +8,7 @@ module.exports = function (grunt) {
                 src : [
 
                     'webroot/assets/js/vendor/jquery.min.js',
+                    'webroot/assets/js/vendor/localforage.js',
                     'webroot/assets/js/vendor/highstock/js/highstock.js',
 
                     'webroot/assets/js/tooltip.js',

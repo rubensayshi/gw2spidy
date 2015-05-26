@@ -32,26 +32,30 @@ var GW2SpidyItemHistory = (function() {
     };
 
     var initData = function() {
-
-        if (json = window.localStorage.getItem(HISTORY_KEY)) {
+        localforage.getItem(HISTORY_KEY).then(function(json) {
             itemHistory = JSON.parse(json);
-        }
 
-        if (json = window.localStorage.getItem(SNIPPET_KEY)) {
-            itemSnippets = JSON.parse(json);
-        }
+            return localforage.getItem(SNIPPET_KEY).then(function(json) {
+                itemSnippets = JSON.parse(json);
 
-        if (!(version = window.localStorage.getItem(VERSION_KEY)) || version != VERSION) {
-            window.localStorage.setItem(VERSION_KEY, VERSION);
+                return localforage.getItem(VERSION_KEY).then(function(version) {
+                    if (!version || version != VERSION) {
+                        localforage.setItem(VERSION_KEY, VERSION);
+                        localforage.setItem(HISTORY_KEY, JSON.stringify({}));
+                        localforage.setItem(SNIPPET_KEY, JSON.stringify({}));
 
-            itemSnippets = null;
-            itemHistory  = null;
-        }
+                        itemSnippets = null;
+                        itemHistory = null;
+                    }
 
-        itemSnippets = itemSnippets || {};
-        itemHistory  = itemHistory  || {};
+                    itemSnippets = itemSnippets || {};
+                    itemHistory = itemHistory || {};
 
-        cleanData();
+                    cleanData();
+                });
+            });
+        })
+        .then(void 0, function(err) { console.error(err); });
     };
 
     var cleanData = function() {
@@ -86,10 +90,6 @@ var GW2SpidyItemHistory = (function() {
     };
 
     var init = function() {
-        if (typeof window.localStorage === 'undefined') {
-            return;
-        }
-
         initData();
     };
 
@@ -105,8 +105,8 @@ var GW2SpidyItemHistory = (function() {
 
         cleanData();
 
-        window.localStorage.setItem(SNIPPET_KEY, JSON.stringify(itemSnippets));
-        window.localStorage.setItem(HISTORY_KEY, JSON.stringify(itemHistory));
+        localforage.setItem(SNIPPET_KEY, JSON.stringify(itemSnippets));
+        localforage.setItem(HISTORY_KEY, JSON.stringify(itemHistory));
     };
 
     init();
