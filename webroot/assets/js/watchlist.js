@@ -54,28 +54,28 @@ var GW2SpidyWatchlist = (function() {
     };
     
     var store = function() {
-        window.localStorage.setItem(WATCHLIST_KEY, JSON.stringify(watchlist));
+        localforage.setItem(WATCHLIST_KEY, JSON.stringify(watchlist));
     };
     
     var initData = function() {
-        if (json = window.localStorage.getItem(WATCHLIST_KEY)) {
+        localforage.getItem(WATCHLIST_KEY).then(function(json) {
         	watchlist = JSON.parse(json);
-        }
 
-        if (!(version = window.localStorage.getItem(VERSION_KEY)) || version != VERSION) {
-            window.localStorage.setItem(VERSION_KEY, VERSION);
+            return localforage.getItem(VERSION_KEY).then(function(version) {
+                if (!version || version != VERSION) {
+                    localforage.setItem(VERSION_KEY, VERSION);
+                    localforage.setItem(WATCHLIST_KEY, JSON.stringify([]));
 
-            watchlist = null;
-        }
+                    watchlist = null;
+                }
 
-        watchlist = watchlist || [];
+                watchlist = watchlist || [];
+            });
+        })
+        .then(void 0, function(err) { console.error(err); });
     };
 
     var init = function() {
-        if (typeof window.localStorage === 'undefined') {
-            return;
-        }
-
         initData();
     };
 
