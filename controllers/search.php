@@ -101,7 +101,7 @@ $app->get("/search/{search}/{page}", function(Request $request, $search, $page) 
  * ----------------------
  */
 $app->get("/searchform", function() use($app) {
-    return $app['twig']->render('search.html.twig', array('content' => '', 'search' => '', 'recipes' => false, params => array()));
+    return $app['twig']->render('search.html.twig', array('content' => '', 'search' => '', 'recipes' => false, 'params' => array()));
 })
 ->bind('searchform');
 
