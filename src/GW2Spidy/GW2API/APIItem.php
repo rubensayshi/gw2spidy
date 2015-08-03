@@ -71,28 +71,32 @@ class APIItem {
             default: return null;
         }
     }
-    
-    public static function getItemById($itemID) {
+
+    public static function getItemById($itemID, $retry = 3) {
         $cache = CacheHandler::getInstance('item_gw2api');
-        $cacheKey = $itemID . "::" . substr(md5($itemID),0,10);
-        $ttl      = 86400;
-        
+        $cacheKey = $itemID . "::" . substr(md5($itemID), 0, 10);
+        $ttl = 86400;
+
         if (!($API_JSON = $cache->get($cacheKey))) {
-            try {
-                $curl_item = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url')."/v1/item_details.json?item_id={$itemID}")
-                    ->exec();
-                $API_JSON = $curl_item->getResponseBody();
-                
-                $cache->set($cacheKey, $API_JSON, MEMCACHE_COMPRESSED, $ttl);
-            } catch (\Exception $e){
-                $ttl = 600;
-                $cache->set($cacheKey, null, MEMCACHE_COMPRESSED, $ttl);
-                
-                return null;
+            for ($i = 0; $i < $retry; $i++) {
+                try {
+                    $curl_item = CurlRequest::newInstance(getAppConfig('gw2spidy.gw2api_url') . "/v1/item_details.json?item_id={$itemID}")
+                        ->exec();
+                    $API_JSON = $curl_item->getResponseBody();
+                    $cache->set($cacheKey, $API_JSON, MEMCACHE_COMPRESSED, $ttl);
+
+                    return self::getItemByJSON($API_JSON);
+                } catch (\Exception $e) {
+                    // - supress and short sleep
+                    usleep(0.2 * 1000 * 1000); // 0.2s
+                }
             }
+
+            $ttl = 600;
+            $cache->set($cacheKey, null, MEMCACHE_COMPRESSED, $ttl);
+
+            return null;
         }
-        
-        return self::getItemByJSON($API_JSON);
     }
     
     public function getTooltip() {
