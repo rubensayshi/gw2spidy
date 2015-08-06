@@ -86,6 +86,8 @@ class APIItemV2 {
             $cache->set($cacheKey, null, MEMCACHE_COMPRESSED, $ttl);
 
             return null;
+        } else {
+            return self::getSingleItemByJSON($API_JSON);
         }
     }
 
