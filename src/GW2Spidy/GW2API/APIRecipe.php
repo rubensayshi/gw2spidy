@@ -11,12 +11,20 @@ class APIRecipe {
     protected $type;
     protected $output_item_id;
     protected $output_item_count;
+
+    /**
+     * @var APIItem
+     */
     protected $output_item;
     protected $min_rating;
     protected $time_to_craft_ms;
     protected $disciplines;
     protected $flags;
     protected $ingredients;
+
+    /**
+     * @var APIItem[]
+     */
     protected $ingredient_items;
     
     protected function __construct($recipe) {

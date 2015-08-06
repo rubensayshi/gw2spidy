@@ -45,7 +45,11 @@ class APIItem {
         $this->infix_upgrade = array();
         $this->suffix_item_id = null;
     }
-    
+
+    /**
+     * @param $API_JSON
+     * @return APIItem
+     */
     public static function getItemByJSON($API_JSON) {
         $APIItem = json_decode($API_JSON, true);
         
@@ -72,6 +76,11 @@ class APIItem {
         }
     }
 
+    /**
+     * @param     $itemID
+     * @param int $retry
+     * @return APIItem
+     */
     public static function getItemById($itemID, $retry = 3) {
         $cache = CacheHandler::getInstance('item_gw2api');
         $cacheKey = $itemID . "::" . substr(md5($itemID), 0, 10);
@@ -92,7 +101,7 @@ class APIItem {
                 }
             }
 
-            $ttl = 600;
+            $ttl = 60;
             $cache->set($cacheKey, null, MEMCACHE_COMPRESSED, $ttl);
 
             return null;
@@ -209,7 +218,7 @@ HTML;
         return true;
     }
     
-    protected function getBuffDescription() {
+    public function getBuffDescription() {
         if (isset($this->infix_upgrade['buff']['description'])) {
             return nl2br($this->infix_upgrade['buff']['description'], false);
         }
