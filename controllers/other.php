@@ -141,7 +141,7 @@ $app->post("/admin/password", function(Request $request) use($app) {
     $user->setResetPassword($reset);
     $user->save();
 
-    return $app->redirect($app['url_generator']->generate('admin_password', array('flash' => "ok [{$user->getUsername()}][http://www.gw2spidy.com/password-reset/{$reset}]")));
+    return $app->redirect($app['url_generator']->generate('admin_password', array('flash' => "ok [{$user->getUsername()}][http://www.gw2spidy.com/reset-password/{$reset}]")));
 })
     ->bind('admin_password_post');
 
