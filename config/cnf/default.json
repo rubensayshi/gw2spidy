@@ -16,6 +16,7 @@ cnf = {
     "chartbeat-domain"   : null,
     "password-salt"      : "YOU-SHOULD-CHANGE-THIS-IN-LIVE-ENVS",
     "google_ad_client"   : null,
+    "revenuehits"        : false,
     "switchad_client"    : null,
     "request-language"   : "en",
     "apc_clear_cache_host" : null,
