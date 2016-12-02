@@ -60,7 +60,8 @@ $disciplines = array(
     'Leatherworker' => 5,
     'Tailor' => 6,
     'Jeweler' => 7,
-    'Chef' => 8
+    'Chef' => 8,
+    'Scribe' => 9
 );
 
 //Gather all recipes by recipe_id
