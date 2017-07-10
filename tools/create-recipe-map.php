@@ -77,7 +77,7 @@ $error_values = array();
 $i = 0;
 $ii = 0;
 
-foreach (array_chunk($data['recipes'], 1000) as $recipes) {
+foreach (array_chunk($data['recipes'], 200) as $recipes) {
     //Add all curl requests to the EpiCurl instance.
     foreach ($recipes as $recipe_id) {
         $i ++;
@@ -96,6 +96,11 @@ foreach (array_chunk($data['recipes'], 1000) as $recipes) {
             echo "[{$ii} / {$recipe_count}] ";
 
             $recipe_details = json_decode($recipe_curls[$recipe_id]->data, true);
+
+            if (!isset($recipe_details['output_item_id']) && isset($recipe_details['text']) && $recipe_details['text'] === "too many requests") {
+                die("TOO MANY REQUESTS");
+            }
+
             $created_item = ItemQuery::create()->findPK($recipe_details['output_item_id']);
 
             if (!$created_item) throw new NoResultItemException("no result [[ {$recipe_details['output_item_id']} ]]");
@@ -125,6 +130,8 @@ foreach (array_chunk($data['recipes'], 1000) as $recipes) {
             echo "failed [[ {$e->getMessage()} ]] .. \n";
         }
     }
+
+    sleep(180);
 }
 
 if (count($error_values) > 0)
