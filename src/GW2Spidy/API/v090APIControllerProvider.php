@@ -187,8 +187,8 @@ class v090APIControllerProvider implements ControllerProviderInterface {
 
                 if (count($filterIds) > $itemsperpage) {
                     return $app->abort(400, "More IDs in filter_ids than allowed.");
-                } else if (count($filterIds) > 0) {
-                    $q->filterByDataId($filterIds, \Criteria::IN);
+                } else if (count($filterIds) == 0) {
+                    return $app->abort(404, "?filter_ids= can't be empty");
                 }
             }
 
