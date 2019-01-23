@@ -14,7 +14,7 @@ rebuild_assets() {
 }
 
 flush_varnish() {
-    varnishadm ban.url "^"
+    varnishadm ban req.url '~' '^'
 }
 
 flush_apc() {
