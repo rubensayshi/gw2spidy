@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
 class UserProvider implements UserProviderInterface {
     public function loadUserByUsername($username) {
-        $user = UserQuery::create()->findOneByUsername($username);
+        $user = UserQuery::create()->findOneByUsername($username) ?: UserQuery::create()->findOneByEmail($username);
 
         if (!$user) {
             throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
