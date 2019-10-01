@@ -13,7 +13,7 @@ Now what I've built are some tools which will run constantly to automatically lo
 
 Contributing
 ============
-Everyone is very much welcome to contribute, 99% chance you're reading this on github so it shouldn't be too hard to fork and do pull requests right :) ?
+Everyone is very much welcome to contribute, 99% chance you're reading this on GitHub so it shouldn't be too hard to fork and do pull requests right :) ?
 
 If you need any help with setup of the project or using git(hub) then just contact me and I'll be glad to help you!  
 If you want a dump of the database, since that's a lot easier to work with, then just contact me ;)
@@ -27,7 +27,7 @@ If you need help or have any feedback, you can contact me on gw2spidy@rubensaysh
 Date/time data
 ==============
 As usual I didn't really think about timezones when I started this project, but now that multiple people forked the project and that I'm exporting data to some people it suddenly matters ... 
-All data is stored in the server's timezone, however I've made sure that data going out (charts and API) are converted to UTC (and Highcharts converts it to the browsers timezone).
+All data is stored in the server's timezone, however I've made sure that data going out (charts and API) are converted to UTC (and Highcharts converts it to the browser's timezone).
 
 Mailing List
 ============
@@ -233,7 +233,7 @@ When you open the tradingpost from inside the game you access it using a session
 With that session you can also see the list of offers for the various prices, instead of only the lowest sell and highest buy!  
 For the gem-exchange the ingame session_key allows you to calculate conversions, while the accounts.guildwars2.com session only gives you a rounded average (which is kinda useless).  
 
-As of late ArenaNet has messed up the item lists (search results and such) to be very unaccurate (due to caching), you can also see this ingame.  
+As of late ArenaNet has messed up the item lists (search results and such) to be very unaccurate (due to caching), you can also see this in-game.  
 I also want to collect gem-exchange data ...  
 So I needed a way to be able to use an ingame session_key when spidering!  
 
