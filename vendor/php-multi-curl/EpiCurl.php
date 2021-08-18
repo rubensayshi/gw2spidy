@@ -66,14 +66,14 @@ class EpiCurl
       $innerSleepInt = $outerSleepInt = 1;
       while($this->running && ($this->execStatus == CURLM_OK || $this->execStatus == CURLM_CALL_MULTI_PERFORM))
       {
-        usleep($outerSleepInt);
+        if ($outerSleepInt > 0) usleep($outerSleepInt);
         $outerSleepInt *= $this->sleepIncrement;
         $ms=curl_multi_select($this->mc);
         if($ms >= 0)
         {
           do{
             $this->execStatus = curl_multi_exec($this->mc, $this->running);
-            usleep($innerSleepInt);
+            if ($innerSleepInt > 0) usleep($innerSleepInt);
             $innerSleepInt *= $this->sleepIncrement;
           }while($this->execStatus==CURLM_CALL_MULTI_PERFORM);
           $innerSleepInt = 1;

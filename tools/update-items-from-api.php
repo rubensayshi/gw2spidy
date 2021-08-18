@@ -101,15 +101,19 @@ function processApiData($API_JSON, $offset)
 
             echo "{$itemCount}: {$APIItem->getName()} (ID: {$APIItem->getItemId()})\n";
 
-            $itemData = array('TypeId' => getOrCreateTypeID($APIItem->getMarketType()),
+            $itemData = array(
+                'TypeId' => getOrCreateTypeID($APIItem->getMarketType()),
                 'DataId' => $APIItem->getItemId(),
                 'Name' => $APIItem->getName(),
+                'TpName' => $APIItem->getName(),
                 'RestrictionLevel' => $APIItem->getLevel(),
                 'Rarity' => getRarityID($APIItem->getRarity()),
                 'VendorSellPrice' => $APIItem->getVendorValue(),
                 'Img' => $APIItem->getImageURL(),
                 'RarityWord' => $APIItem->getRarity(),
-                'UnsellableFlag' => $APIItem->isUnsellable());
+                'UnsellableFlag' => $APIItem->isUnsellable(),
+                'GemStoreDescription' -> "",
+            );
 
             $item = ItemQuery::create()->findPK($APIItem->getItemId());
 
